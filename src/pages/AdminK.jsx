@@ -424,16 +424,16 @@ export default function AdminK() {
   const [activeSection, setActiveSection] = useState("hero");
   const [activeTab, setActiveTab] = useState("content");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState(undefined); // undefined = not checked yet
 
   useEffect(() => {
     base44.auth.me()
-      .then(u => { setUser(u); setAuthLoading(false); })
-      .catch(() => { setUser(null); setAuthLoading(false); });
+      .then(u => setUser(u))
+      .catch(() => setUser(null));
   }, []);
 
-  if (authLoading) return (
+  // Still checking auth — show nothing (blank screen prevents flash)
+  if (user === undefined) return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
       <div className="w-8 h-8 border-2 border-orange-red border-t-transparent rounded-full animate-spin" />
     </div>
