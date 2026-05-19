@@ -42,8 +42,8 @@ export default function DegradingSection() {
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="flex items-start gap-3 pt-5 border-b border-dark-border pb-5"
                 >
-                  <span className="mt-1.5 w-1.5 h-1.5 bg-orange-red rounded-full flex-shrink-0" />
-                  <span className="font-body text-base text-off-white">{point}</span>
+                  <span className="mt-2 w-2 h-2 bg-orange-red rounded-full flex-shrink-0" />
+                  <span className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight">{point}</span>
                 </motion.li>
               ))}
             </ul>
