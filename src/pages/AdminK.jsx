@@ -428,16 +428,9 @@ export default function AdminK() {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) { setAuthLoading(false); return; }
-      try {
-        const u = await base44.auth.me();
-        setUser(u);
-      } catch (e) { /* not authenticated */ }
-      setAuthLoading(false);
-    };
-    checkAuth();
+    base44.auth.me()
+      .then(u => { setUser(u); setAuthLoading(false); })
+      .catch(() => { setUser(null); setAuthLoading(false); });
   }, []);
 
   if (authLoading) return (
