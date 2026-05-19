@@ -28,8 +28,8 @@ module.exports = {
         'off-white': '#F5F5F5',
         'white-muted': '#888888',
         'white-dim': '#555555',
-        'orange-red': '#D4512B',
-        'orange-red-hover': '#C04424',
+        'orange-red': '#00fff7',
+        'orange-red-hover': '#00ccc6',
         chart: { '1': 'hsl(var(--chart-1))', '2': 'hsl(var(--chart-2))', '3': 'hsl(var(--chart-3))', '4': 'hsl(var(--chart-4))', '5': 'hsl(var(--chart-5))' },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
