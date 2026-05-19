@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import SocialLinks from "./SocialLinks";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
+          <SocialLinks />
           <a href="#pricing" className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
             {c.cta}
           </a>
@@ -45,6 +47,7 @@ export default function Navbar() {
                   {l.label}
                 </a>
               ))}
+              <SocialLinks showLabels className="flex-wrap" />
               <a href="#pricing" className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-3 rounded-full text-center" onClick={() => setOpen(false)}>
                 {c.cta}
               </a>

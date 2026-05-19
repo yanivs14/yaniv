@@ -1,0 +1,39 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Full name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    },
+    "source": {
+      "type": "string",
+      "description": "Form source (e.g. quiz)"
+    },
+    "quiz_recommendation": {
+      "type": "string",
+      "description": "Quiz result title"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "converted"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "full_name",
+    "phone"
+  ]
+}

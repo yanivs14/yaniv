@@ -120,6 +120,13 @@ const DEFAULT_CONTENT = {
     tagline: "Kinetiqo by Roye Gold — The movement operating system",
     copyright: "© 2026 · Movement, restored.",
   },
+  social: {
+    links: [
+      { platform: "Instagram", url: "https://instagram.com", icon: "instagram" },
+      { platform: "YouTube", url: "https://youtube.com", icon: "youtube" },
+      { platform: "TikTok", url: "https://tiktok.com", icon: "tiktok" },
+    ]
+  },
 };
 
 const SiteContentContext = createContext(null);
