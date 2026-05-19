@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 
@@ -13,8 +13,6 @@ const sharedFeatures = [
 const annualExtra = "Unlocked: Advanced flows + restoration protocols";
 
 export default function PricingSection() {
-  const [billing, setBilling] = useState("monthly");
-
   return (
     <section className="py-20 lg:py-32 bg-dark-surface" id="pricing">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -33,25 +31,6 @@ export default function PricingSection() {
           <p className="mt-4 font-body text-base text-white-muted">
             Monthly or annual — pick what fits, switch any time.
           </p>
-
-          <div className="mt-8 inline-flex items-center bg-dark-bg rounded-full p-1 border border-dark-border">
-            <button
-              onClick={() => setBilling("monthly")}
-              className={`font-body text-sm px-6 py-2.5 rounded-full transition-all ${
-                billing === "monthly" ? "bg-off-white text-dark-bg font-semibold" : "text-white-muted hover:text-off-white"
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBilling("annual")}
-              className={`font-body text-sm px-6 py-2.5 rounded-full transition-all ${
-                billing === "annual" ? "bg-off-white text-dark-bg font-semibold" : "text-white-muted hover:text-off-white"
-              }`}
-            >
-              Annual
-            </button>
-          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -61,9 +40,7 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className={`bg-dark-bg border rounded-2xl p-8 transition-all ${
-              billing === "monthly" ? "border-off-white/30 ring-1 ring-off-white/20" : "border-dark-border opacity-60"
-            }`}
+            className="bg-dark-bg border border-dark-border rounded-2xl p-8"
           >
             <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
             <div className="flex items-baseline gap-1 my-5">
@@ -93,30 +70,28 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className={`bg-orange-red border rounded-2xl p-8 relative transition-all ${
-              billing === "annual" ? "border-orange-red ring-2 ring-orange-red/50" : "border-orange-red/50 opacity-70"
-            }`}
+            className="bg-orange-red border border-orange-red rounded-2xl p-8 relative"
           >
-            <div className="absolute top-4 right-4 bg-white/20 text-white font-body text-xs font-semibold px-3 py-1 rounded-full">
+            <div className="absolute top-4 right-4 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
               Best value
             </div>
-            <p className="font-body text-sm text-white/70 mb-1">Kinetiqo Annual</p>
+            <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
             <div className="flex items-baseline gap-2 my-5">
-              <span className="font-heading text-6xl font-bold text-white">$250</span>
-              <span className="font-body text-sm text-white/60">/ year</span>
-              <span className="font-body text-sm text-white/40 line-through">$420</span>
+              <span className="font-heading text-6xl font-bold text-dark-bg">$250</span>
+              <span className="font-body text-sm text-dark-bg/60">/ year</span>
+              <span className="font-body text-sm text-dark-bg/40 line-through">$420</span>
             </div>
-            <p className="font-body text-xs text-white/70 mb-4">Save 40% · billed yearly</p>
+            <p className="font-body text-xs text-dark-bg/70 mb-4">Save 40% · billed yearly</p>
             <ul className="space-y-3 mb-5">
               {sharedFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <Check className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-white/90">{f}</span>
+                  <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                  <span className="font-body text-sm text-dark-bg/90">{f}</span>
                 </li>
               ))}
               <li className="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
-                <span className="font-body text-sm text-white font-semibold">{annualExtra}</span>
+                <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                <span className="font-body text-sm text-dark-bg font-semibold">{annualExtra}</span>
               </li>
             </ul>
             <a
@@ -125,7 +100,7 @@ export default function PricingSection() {
             >
               Begin annual <ArrowRight className="w-4 h-4" />
             </a>
-            <p className="mt-3 font-body text-xs text-white/60 text-center">Cancel anytime</p>
+            <p className="mt-3 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
           </motion.div>
         </div>
 
