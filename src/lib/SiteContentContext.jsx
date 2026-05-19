@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 
 const DEFAULT_CONTENT = {
   hero: {
@@ -131,27 +132,90 @@ const DEFAULT_CONTENT = {
 
 const SiteContentContext = createContext(null);
 
+// Merge DB records into the default content structure
+function mergeDbRecords(records) {
+  const merged = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+  for (const rec of records) {
+    if (rec.section_key && rec.data) {
+      merged[rec.section_key] = rec.data;
+    }
+  }
+  return merged;
+}
+
 export function SiteContentProvider({ children }) {
   const [content, setContent] = useState(DEFAULT_CONTENT);
-  const [adminMode, setAdminMode] = useState(false);
+  const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
+  const [loading, setLoading] = useState(true);
 
-  const update = useCallback((section, field, value) => {
+  // Load all content from DB on mount
+  useEffect(() => {
+    base44.entities.SiteContent.list().then(records => {
+      const byKey = {};
+      for (const rec of records) {
+        byKey[rec.section_key] = rec;
+      }
+      setDbRecords(byKey);
+      setContent(mergeDbRecords(records));
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  // Update a field and persist to DB
+  const update = useCallback(async (section, field, value) => {
+    // Optimistic update
     setContent(prev => ({
       ...prev,
       [section]: { ...prev[section], [field]: value },
     }));
+
+    // Persist
+    setDbRecords(prev => {
+      const existing = prev[section];
+      const newData = { ...(existing?.data || DEFAULT_CONTENT[section] || {}), [field]: value };
+      
+      const saveToDb = async () => {
+        if (existing?.id) {
+          await base44.entities.SiteContent.update(existing.id, { data: newData });
+        } else {
+          const created = await base44.entities.SiteContent.create({ section_key: section, data: newData });
+          setDbRecords(p => ({ ...p, [section]: created }));
+        }
+      };
+      saveToDb();
+
+      return { ...prev, [section]: { ...existing, data: newData } };
+    });
   }, []);
 
-  const updateDeep = useCallback((section, field, index, subField, value) => {
+  // Update a nested array item and persist to DB
+  const updateDeep = useCallback(async (section, field, index, subField, value) => {
     setContent(prev => {
       const arr = [...prev[section][field]];
       arr[index] = { ...arr[index], [subField]: value };
-      return { ...prev, [section]: { ...prev[section], [field]: arr } };
+      const newSectionData = { ...prev[section], [field]: arr };
+
+      // Persist
+      setDbRecords(prevRec => {
+        const existing = prevRec[section];
+        const saveToDb = async () => {
+          if (existing?.id) {
+            await base44.entities.SiteContent.update(existing.id, { data: newSectionData });
+          } else {
+            const created = await base44.entities.SiteContent.create({ section_key: section, data: newSectionData });
+            setDbRecords(p => ({ ...p, [section]: created }));
+          }
+        };
+        saveToDb();
+        return { ...prevRec, [section]: { ...existing, data: newSectionData } };
+      });
+
+      return { ...prev, [section]: newSectionData };
     });
   }, []);
 
   return (
-    <SiteContentContext.Provider value={{ content, update, updateDeep, adminMode, setAdminMode }}>
+    <SiteContentContext.Provider value={{ content, update, updateDeep, loading }}>
       {children}
     </SiteContentContext.Provider>
   );

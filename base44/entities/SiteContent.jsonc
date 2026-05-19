@@ -1,0 +1,17 @@
+{
+  "name": "SiteContent",
+  "type": "object",
+  "properties": {
+    "section_key": {
+      "type": "string",
+      "description": "Unique key for the content section (e.g. hero, navbar, footer)"
+    },
+    "data": {
+      "type": "object",
+      "description": "The content data for this section"
+    }
+  },
+  "required": [
+    "section_key"
+  ]
+}
