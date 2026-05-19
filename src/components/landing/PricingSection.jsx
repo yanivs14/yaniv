@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
+import { useSiteContent } from "@/lib/SiteContentContext";
 
 const sharedFeatures = [
   "The full Kinetiqo OS — daily adaptive practice",
@@ -13,6 +14,9 @@ const sharedFeatures = [
 const annualExtra = "Unlocked: Advanced flows + restoration protocols";
 
 export default function PricingSection() {
+  const { content } = useSiteContent();
+  const c = content.pricing;
+
   return (
     <section className="py-20 lg:py-32 bg-dark-surface" id="pricing">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -23,14 +27,12 @@ export default function PricingSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">Begin</p>
+          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            One method.<br />
-            Pick your <span className="text-orange-red">path.</span>
+            {c.headline1}<br />
+            {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
           </h2>
-          <p className="mt-4 font-body text-base text-white-muted">
-            Monthly or annual — pick what fits, switch any time.
-          </p>
+          <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -44,7 +46,7 @@ export default function PricingSection() {
           >
             <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
             <div className="flex items-baseline gap-1 my-5">
-              <span className="font-heading text-6xl font-bold text-off-white">$35</span>
+              <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
               <span className="font-body text-sm text-white-muted">/ month</span>
             </div>
             <ul className="space-y-3 mb-8">
@@ -55,11 +57,8 @@ export default function PricingSection() {
                 </li>
               ))}
             </ul>
-            <a
-              href="#"
-              className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors"
-            >
-              Begin monthly <ArrowRight className="w-4 h-4" />
+            <a href="#" className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors">
+              {c.ctaMonthly} <ArrowRight className="w-4 h-4" />
             </a>
             <p className="mt-3 font-body text-xs text-white-muted text-center">Cancel anytime</p>
           </motion.div>
@@ -77,11 +76,11 @@ export default function PricingSection() {
             </div>
             <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
             <div className="flex items-baseline gap-2 my-5">
-              <span className="font-heading text-6xl font-bold text-dark-bg">$250</span>
+              <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
               <span className="font-body text-sm text-dark-bg/60">/ year</span>
-              <span className="font-body text-sm text-dark-bg/40 line-through">$420</span>
+              <span className="font-body text-sm text-dark-bg/40 line-through">{c.annualOldPrice}</span>
             </div>
-            <p className="font-body text-xs text-dark-bg/70 mb-4">Save 40% · billed yearly</p>
+            <p className="font-body text-xs text-dark-bg/70 mb-4">{c.annualSavings}</p>
             <ul className="space-y-3 mb-5">
               {sharedFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -94,19 +93,14 @@ export default function PricingSection() {
                 <span className="font-body text-sm text-dark-bg font-semibold">{annualExtra}</span>
               </li>
             </ul>
-            <a
-              href="#"
-              className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors"
-            >
-              Begin annual <ArrowRight className="w-4 h-4" />
+            <a href="#" className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors">
+              {c.ctaAnnual} <ArrowRight className="w-4 h-4" />
             </a>
             <p className="mt-3 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
           </motion.div>
         </div>
 
-        <p className="mt-8 text-center font-body text-sm text-white-muted">
-          No equipment · Cancel any time
-        </p>
+        <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment · Cancel any time</p>
       </div>
     </section>
   );
