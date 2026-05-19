@@ -122,8 +122,8 @@ export default function Quiz({ onClose }) {
 
   const validate = () => {
     const e = {};
-    if (!form.full_name.trim()) e.full_name = "שם מלא הוא שדה חובה";
-    if (!form.phone.trim()) e.phone = "טלפון הוא שדה חובה";
+    if (!form.full_name.trim()) e.full_name = "Full name is required";
+    if (!form.phone.trim()) e.phone = "Phone is required";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -147,7 +147,7 @@ export default function Quiz({ onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-hidden"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <motion.div
@@ -155,11 +155,11 @@ export default function Quiz({ onClose }) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 20 }}
         transition={{ type: "spring", stiffness: 300, damping: 28 }}
-        className="relative w-full max-w-xl bg-dark-surface border border-dark-border rounded-3xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-xl bg-dark-surface border border-dark-border rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-dark-bg/80 text-white-muted hover:text-off-white transition-colors"
+          className="sticky top-4 float-right mr-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-dark-bg/80 text-white-muted hover:text-off-white transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -233,27 +233,27 @@ export default function Quiz({ onClose }) {
                   <div>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="שם מלא *"
-                        className={`w-full bg-dark-bg border ${errors.full_name ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors placeholder:text-right`} dir="rtl" />
+                      <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Full name *"
+                        className={`w-full bg-dark-bg border ${errors.full_name ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
                     </div>
-                    {errors.full_name && <p className="text-xs text-red-400 mt-1 text-right">{errors.full_name}</p>}
+                    {errors.full_name && <p className="text-xs text-red-400 mt-1">{errors.full_name}</p>}
                   </div>
                   <div>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="טלפון *" type="tel"
-                        className={`w-full bg-dark-bg border ${errors.phone ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors placeholder:text-right`} dir="rtl" />
+                      <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Phone *" type="tel"
+                        className={`w-full bg-dark-bg border ${errors.phone ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
                     </div>
-                    {errors.phone && <p className="text-xs text-red-400 mt-1 text-right">{errors.phone}</p>}
+                    {errors.phone && <p className="text-xs text-red-400 mt-1">{errors.phone}</p>}
                   </div>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="אימייל (אופציונלי)" type="email"
-                      className="w-full bg-dark-bg border border-dark-border rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors placeholder:text-right" dir="rtl" />
+                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email (optional)" type="email"
+                      className="w-full bg-dark-bg border border-dark-border rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
                   </div>
                   <button onClick={handleSubmit} disabled={submitting}
                     className="w-full flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-2">
-                    {submitting ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <><Send className="w-4 h-4" /> שלח פרטים</>}
+                    {submitting ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <><Send className="w-4 h-4" /> Submit</>}
                   </button>
                 </div>
               </motion.div>
@@ -265,8 +265,8 @@ export default function Quiz({ onClose }) {
                 <div className="w-16 h-16 bg-orange-red/10 border border-orange-red/30 rounded-full flex items-center justify-center mb-6">
                   <CheckCircle className="w-8 h-8 text-orange-red" />
                 </div>
-                <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-3">!תודה</h2>
-                <p className="font-body text-sm text-white-muted leading-relaxed mb-8">קיבלנו את הפרטים שלך ונחזור אליך בהקדם.</p>
+                <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-3">Thank you!</h2>
+                <p className="font-body text-sm text-white-muted leading-relaxed mb-8">We've received your details and will be in touch shortly.</p>
                 <a href="#pricing" onClick={onClose}
                   className="flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold px-8 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors">
                   {rec.cta} <ArrowRight className="w-4 h-4" />

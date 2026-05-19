@@ -84,7 +84,7 @@ function SocialEditor() {
 
   return (
     <div>
-      <p className="text-xs text-white-muted mb-4 font-body">ניהול קישורים לרשתות חברתיות — יוצגו בהאדר ובפוטר</p>
+      <p className="text-xs text-white-muted mb-4 font-body">Manage social media links — shown in header and footer</p>
       {links.map((l, i) => {
         const Icon = SOCIAL_ICON_MAP[l.icon] || Instagram;
         return (
@@ -264,7 +264,7 @@ function SectionEditor({ sectionKey }) {
 }
 
 // ---- LEADS TAB ----
-const STATUS_LABELS = { new: "חדש", contacted: "פנו", converted: "הומר" };
+const STATUS_LABELS = { new: "New", contacted: "Contacted", converted: "Converted" };
 const STATUS_COLORS = { new: "bg-orange-red/20 text-orange-red", contacted: "bg-blue-500/20 text-blue-400", converted: "bg-green-500/20 text-green-400" };
 
 function LeadsTab() {
@@ -288,17 +288,17 @@ function LeadsTab() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-white-muted font-body">{leads.length} לידים</p>
+        <p className="text-sm text-white-muted font-body">{leads.length} leads</p>
       </div>
       {leads.length === 0 ? (
         <div className="text-center py-20">
           <Users className="w-10 h-10 text-white-muted mx-auto mb-3" />
-          <p className="text-white-muted font-body text-sm">עדיין אין לידים</p>
+          <p className="text-white-muted font-body text-sm">No leads yet</p>
         </div>
       ) : (
         <div className="space-y-3">
           {leads.map(l => (
-            <div key={l.id} className="border border-[#2a2a2a] rounded-xl p-4 bg-[#111]" dir="rtl">
+            <div key={l.id} className="border border-[#2a2a2a] rounded-xl p-4 bg-[#111]">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="font-body text-sm font-semibold text-off-white">{l.full_name}</p>
@@ -307,7 +307,7 @@ function LeadsTab() {
                     {l.email && <span className="flex items-center gap-1 text-xs text-white-muted"><Mail className="w-3 h-3" />{l.email}</span>}
                   </div>
                   {l.quiz_recommendation && <p className="text-xs text-orange-red mt-1">{l.quiz_recommendation}</p>}
-                  <p className="text-xs text-white-dim mt-1">{new Date(l.created_date).toLocaleString("he-IL")}</p>
+                  <p className="text-xs text-white-dim mt-1">{new Date(l.created_date).toLocaleString("en-US")}</p>
                 </div>
                 <select value={l.status || "new"} onChange={e => updateStatus(l.id, e.target.value)}
                   className={`text-xs px-2 py-1 rounded-full border-0 font-body cursor-pointer focus:outline-none ${STATUS_COLORS[l.status || "new"]}`}>
@@ -361,8 +361,8 @@ function SettingsTab() {
 
   return (
     <div>
-      <p className="text-sm text-off-white font-body font-semibold mb-1">אימיילים לקבלת לידים</p>
-      <p className="text-xs text-white-muted font-body mb-4">כל ליד חדש ישלח לאימיילים הבאים</p>
+      <p className="text-sm text-off-white font-body font-semibold mb-1">Lead notification emails</p>
+      <p className="text-xs text-white-muted font-body mb-4">Every new lead will be sent to these emails</p>
       <div className="space-y-2 mb-4">
         {(settings.recipient_emails || []).map((em, i) => (
           <div key={i} className="flex items-center gap-2 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2">
@@ -375,15 +375,15 @@ function SettingsTab() {
         ))}
       </div>
       <div className="flex gap-2 mb-6">
-        <input value={newEmail} onChange={e => setNewEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && addEmail()} placeholder="הוסף אימייל..."
-          className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" dir="rtl" />
+        <input value={newEmail} onChange={e => setNewEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && addEmail()} placeholder="Add email..."
+          className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
         <button onClick={addEmail} className="px-4 py-2 bg-orange-red text-dark-bg rounded-lg text-sm font-body font-semibold hover:bg-orange-red-hover transition-colors">
           <Plus className="w-4 h-4" />
         </button>
       </div>
       <button onClick={save} disabled={saving}
         className="w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
-        {saving ? "שומר..." : "שמור הגדרות"}
+        {saving ? "Saving..." : "Save settings"}
       </button>
     </div>
   );
@@ -415,9 +415,9 @@ function AuthGate() {
 
 // ---- MAIN ----
 const TABS = [
-  { key: "content", label: "תוכן", icon: Layout },
-  { key: "leads", label: "לידים", icon: Users },
-  { key: "settings", label: "הגדרות", icon: Settings },
+  { key: "content", label: "Content", icon: Layout },
+  { key: "leads", label: "Leads", icon: Users },
+  { key: "settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminK() {
@@ -536,7 +536,7 @@ export default function AdminK() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">
-              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "לידים" : "הגדרות"}
+              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : "Settings"}
             </h1>
           </div>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">
