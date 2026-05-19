@@ -13,9 +13,9 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-md border-b border-cream-dark/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/90 backdrop-blur-md border-b border-dark-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16">
-        <a href="#" className="font-heading text-xl font-bold tracking-tight text-warm-black">
+        <a href="#" className="font-heading text-xl font-bold tracking-widest text-off-white uppercase">
           KINETIQO
         </a>
 
@@ -24,20 +24,20 @@ export default function Navbar() {
             <a
               key={l.label}
               href={l.href}
-              className="font-body text-sm text-text-muted-warm hover:text-warm-black transition-colors"
+              className="font-body text-sm text-white-muted hover:text-off-white transition-colors"
             >
               {l.label}
             </a>
           ))}
           <a
             href="#pricing"
-            className="font-body text-sm font-medium bg-warm-black text-cream px-5 py-2.5 rounded-full hover:bg-warm-black/90 transition-colors"
+            className="font-body text-sm font-medium bg-orange-red text-white px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors"
           >
             Start moving
           </a>
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
+        <button className="md:hidden text-off-white" onClick={() => setOpen(!open)}>
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -48,14 +48,14 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-cream border-t border-cream-dark/50 overflow-hidden"
+            className="md:hidden bg-dark-surface border-t border-dark-border overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
               {links.map((l) => (
                 <a
                   key={l.label}
                   href={l.href}
-                  className="font-body text-base text-text-muted-warm"
+                  className="font-body text-base text-white-muted"
                   onClick={() => setOpen(false)}
                 >
                   {l.label}
@@ -63,7 +63,7 @@ export default function Navbar() {
               ))}
               <a
                 href="#pricing"
-                className="font-body text-sm font-medium bg-warm-black text-cream px-5 py-3 rounded-full text-center"
+                className="font-body text-sm font-medium bg-orange-red text-white px-5 py-3 rounded-full text-center"
                 onClick={() => setOpen(false)}
               >
                 Start moving

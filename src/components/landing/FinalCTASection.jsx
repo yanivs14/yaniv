@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function FinalCTASection() {
   return (
-    <section className="py-24 lg:py-36 bg-cream">
+    <section className="py-24 lg:py-36 bg-dark-bg">
       <div className="max-w-4xl mx-auto px-6 lg:px-10 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -12,15 +12,15 @@ export default function FinalCTASection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="font-body text-sm text-text-muted-warm uppercase tracking-widest mb-6">
+          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-6">
             The only question
           </p>
-          <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-warm-black">
+          <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
             Are you ready<br />
             to actually<br />
-            <em className="italic text-orange-red">move?</em>
+            <span className="text-orange-red">move?</span>
           </h2>
-          <p className="mt-8 font-body text-base text-text-muted-warm max-w-md mx-auto leading-relaxed">
+          <p className="mt-8 font-body text-base text-white-muted max-w-md mx-auto leading-relaxed">
             Ten minutes. Tomorrow morning. Start the practice that gives your body back to you.
           </p>
 
@@ -33,17 +33,17 @@ export default function FinalCTASection() {
             </a>
             <a
               href="#method"
-              className="inline-flex items-center justify-center gap-2 font-body text-sm text-warm-black underline underline-offset-4 decoration-text-muted-warm/40 hover:decoration-warm-black transition-colors"
+              className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim"
             >
               Take the 60-second quiz now <ArrowRight className="w-4 h-4" />
             </a>
           </div>
 
-          <p className="mt-5 font-body text-xs text-text-muted-warm">
+          <p className="mt-5 font-body text-xs text-white-muted">
             Free · No equipment · Cancel anytime
           </p>
 
-          <p className="mt-10 font-body text-sm text-text-muted-warm italic">
+          <p className="mt-10 font-body text-sm text-white-dim">
             — Roye Gold
           </p>
         </motion.div>

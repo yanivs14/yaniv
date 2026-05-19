@@ -19,7 +19,7 @@ const stats = [
 
 export default function DegradingSection() {
   return (
-    <section className="py-20 lg:py-32 bg-cream">
+    <section className="py-20 lg:py-32 bg-dark-bg">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}
@@ -29,12 +29,12 @@ export default function DegradingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1] text-warm-black"
+              className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight"
             >
               Your body has been<br />
-              <em className="italic">silently degrading.</em>
+              <span className="text-orange-red">silently degrading.</span>
             </motion.h2>
-            <p className="mt-6 font-body text-base text-text-muted-warm max-w-md leading-relaxed">
+            <p className="mt-6 font-body text-base text-white-muted max-w-md leading-relaxed">
               Nobody taught you to rebuild it. Until now. Stiffness. Back pain. Lost range of motion. These aren't age — they're hurting your quality of life, building up daily while you sit, scroll, and adapt to less of yourself.
             </p>
 
@@ -49,7 +49,7 @@ export default function DegradingSection() {
 
           {/* Right */}
           <div className="lg:pt-12">
-            <ul className="space-y-5">
+            <ul className="space-y-5 border-t border-dark-border">
               {painPoints.map((point, i) => (
                 <motion.li
                   key={i}
@@ -57,10 +57,10 @@ export default function DegradingSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="flex items-start gap-3"
+                  className="flex items-start gap-3 pt-5 border-b border-dark-border pb-5"
                 >
-                  <span className="mt-2 w-1.5 h-1.5 bg-orange-red rounded-full flex-shrink-0" />
-                  <span className="font-body text-base text-warm-black">{point}</span>
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-orange-red rounded-full flex-shrink-0" />
+                  <span className="font-body text-base text-off-white">{point}</span>
                 </motion.li>
               ))}
             </ul>
@@ -73,12 +73,11 @@ export default function DegradingSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                  className="text-center lg:text-left"
                 >
-                  <div className="font-heading text-3xl lg:text-4xl font-bold text-orange-red">
+                  <div className="font-heading text-4xl lg:text-5xl font-bold text-orange-red">
                     {stat.value}
                   </div>
-                  <p className="mt-2 font-body text-xs text-text-muted-warm leading-snug">
+                  <p className="mt-2 font-body text-xs text-white-muted leading-snug">
                     {stat.label}
                   </p>
                 </motion.div>

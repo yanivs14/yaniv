@@ -12,7 +12,7 @@ const pillars = [
 
 export default function PillarsSection() {
   return (
-    <section className="py-20 lg:py-32 bg-beige-light">
+    <section className="py-20 lg:py-32 bg-dark-bg">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -21,14 +21,14 @@ export default function PillarsSection() {
           transition={{ duration: 0.6 }}
           className="mb-6"
         >
-          <p className="font-body text-sm text-text-muted-warm uppercase tracking-widest mb-4">
+          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">
             The Method
           </p>
-          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1] text-warm-black">
+          <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
             Four pillars,<br />
-            one <em className="italic">operating system.</em>
+            one <span className="text-orange-red">operating system.</span>
           </h2>
-          <p className="mt-6 font-body text-base text-text-muted-warm max-w-xl leading-relaxed">
+          <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">
             Not a workout split. A daily practice that touches every layer of how your body operates — from joint health to nervous system regulation to the quality of your next decade.
           </p>
         </motion.div>
@@ -49,12 +49,13 @@ export default function PillarsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="border-t border-dark-border pt-6"
             >
-              <div className="text-3xl text-orange-red mb-3">{p.icon}</div>
-              <h3 className="font-heading text-xl font-bold text-warm-black mb-2">
+              <div className="text-2xl text-orange-red mb-3">{p.icon}</div>
+              <h3 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-2">
                 {p.title}
               </h3>
-              <p className="font-body text-sm text-text-muted-warm leading-relaxed">
+              <p className="font-body text-sm text-white-muted leading-relaxed">
                 {p.desc}
               </p>
             </motion.div>

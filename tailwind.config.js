@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['var(--font-heading)'],
-        body: ['var(--font-body)'],
+        heading: ['Barlow Condensed', 'system-ui', 'sans-serif'],
+        body: ['DM Sans', 'system-ui', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -21,13 +21,15 @@ module.exports = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        cream: '#F5F0EB',
-        'cream-dark': '#EDE6DE',
-        'warm-black': '#1A1A1A',
+        'dark-bg': '#0F0F0F',
+        'dark-surface': '#161616',
+        'dark-surface-2': '#1C1C1C',
+        'dark-border': '#2A2A2A',
+        'off-white': '#F5F5F5',
+        'white-muted': '#888888',
+        'white-dim': '#555555',
         'orange-red': '#D4512B',
         'orange-red-hover': '#C04424',
-        'text-muted-warm': '#6B6560',
-        'beige-light': '#F9F5F0',
         chart: { '1': 'hsl(var(--chart-1))', '2': 'hsl(var(--chart-2))', '3': 'hsl(var(--chart-3))', '4': 'hsl(var(--chart-4))', '5': 'hsl(var(--chart-5))' },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
