@@ -6,6 +6,8 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
+import AdminK from './pages/AdminK';
+import { SiteContentProvider } from '@/lib/SiteContentContext';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -33,10 +35,13 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <SiteContentProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin-k" element={<AdminK />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </SiteContentProvider>
   );
 };
 
