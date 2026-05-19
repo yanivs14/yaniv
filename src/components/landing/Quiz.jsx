@@ -1,46 +1,46 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ChevronRight } from "lucide-react";
+import { X, ArrowRight, ChevronRight, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain } from "lucide-react";
 
 const questions = [
   {
     id: "pain",
     question: "Where do you feel the most tension or discomfort?",
     options: [
-      { label: "Lower back", icon: "🔻" },
-      { label: "Neck & shoulders", icon: "⬆️" },
-      { label: "Hips & knees", icon: "⭕" },
-      { label: "All over — general stiffness", icon: "🌐" },
+      { label: "Lower back", Icon: Activity },
+      { label: "Neck & shoulders", Icon: Layers },
+      { label: "Hips & knees", Icon: RotateCcw },
+      { label: "All over — general stiffness", Icon: Zap },
     ],
   },
   {
     id: "lifestyle",
     question: "How much of your day do you spend sitting?",
     options: [
-      { label: "Less than 4 hours", icon: "🟢" },
-      { label: "4–6 hours", icon: "🟡" },
-      { label: "6–9 hours", icon: "🟠" },
-      { label: "9+ hours", icon: "🔴" },
+      { label: "Less than 4 hours", Icon: Flame },
+      { label: "4–6 hours", Icon: Target },
+      { label: "6–9 hours", Icon: Armchair },
+      { label: "9+ hours", Icon: Clock },
     ],
   },
   {
     id: "goal",
     question: "What's your primary movement goal?",
     options: [
-      { label: "Move without pain", icon: "🧘" },
-      { label: "Regain lost flexibility", icon: "🤸" },
-      { label: "Build functional strength", icon: "💪" },
-      { label: "Stay capable for decades", icon: "🕐" },
+      { label: "Move without pain", Icon: Sprout },
+      { label: "Regain lost flexibility", Icon: RotateCcw },
+      { label: "Build functional strength", Icon: Dumbbell },
+      { label: "Stay capable for decades", Icon: Infinity },
     ],
   },
   {
     id: "experience",
     question: "What's your current movement experience?",
     options: [
-      { label: "Complete beginner", icon: "🌱" },
-      { label: "Some experience", icon: "🌿" },
-      { label: "Active but not consistent", icon: "🌳" },
-      { label: "Experienced — want to go deeper", icon: "🏔️" },
+      { label: "Complete beginner", Icon: Sprout },
+      { label: "Some experience", Icon: Flame },
+      { label: "Active but not consistent", Icon: Zap },
+      { label: "Experienced — want to go deeper", Icon: Mountain },
     ],
   },
 ];
@@ -186,7 +186,7 @@ export default function Quiz({ onClose }) {
                       onClick={() => handleSelect(opt.label)}
                       className="group flex items-center gap-4 w-full text-left px-5 py-4 rounded-xl border border-dark-border bg-dark-bg hover:border-orange-red hover:bg-orange-red/5 transition-all duration-200"
                     >
-                      <span className="text-xl flex-shrink-0">{opt.icon}</span>
+                      {(() => { const Icon = opt.Icon; return <Icon className="w-5 h-5 flex-shrink-0 text-orange-red" />; })()}
                       <span className="font-body text-sm text-off-white/80 group-hover:text-off-white transition-colors flex-1">
                         {opt.label}
                       </span>

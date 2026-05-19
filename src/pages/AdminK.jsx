@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Upload, ArrowLeft, Check } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -18,7 +18,7 @@ const SECTIONS = [
   { key: "footer", label: "Footer", icon: "▬" },
 ];
 
-function UploadButton({ onUpload, accept = "image/*", label = "Upload", isVideo = false }) {
+function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
   const [loading, setLoading] = useState(false);
   const handleFile = async (e) => {
     const file = e.target.files[0];
@@ -58,8 +58,8 @@ function MediaField({ label, value, onChange, isVideo = false }) {
       <label className="block text-xs text-white-muted mb-1.5 font-body">{label}</label>
       <div className="flex gap-2 mb-2">
         <input value={value || ""} onChange={e => onChange(e.target.value)} placeholder="Paste URL..."
-          className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
-        <UploadButton accept={isVideo ? "video/*" : "image/*"} label={isVideo ? "Upload video" : "Upload image"} onUpload={onChange} />
+          className="flex-1 min-w-0 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
+        <UploadButton accept={isVideo ? "video/*" : "image/*"} label={isVideo ? "Video" : "Image"} onUpload={onChange} />
       </div>
       {value && !isVideo && <img src={value} alt="" className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a]" />}
       {value && isVideo && <video src={value} className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a]" muted />}
@@ -213,63 +213,164 @@ function SectionEditor({ sectionKey }) {
   return null;
 }
 
+// Auth gate screen
+function AuthGate() {
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
+      <div className="text-center max-w-sm">
+        <div className="w-16 h-16 bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <Lock className="w-7 h-7 text-orange-red" />
+        </div>
+        <p className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">Admin Only</p>
+        <p className="font-body text-sm text-white-muted mb-8">You need to be signed in as an admin to access this panel.</p>
+        <button
+          onClick={() => base44.auth.redirectToLogin(window.location.href)}
+          className="w-full flex items-center justify-center gap-3 bg-off-white text-[#0a0a0a] font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors"
+        >
+          Sign in to continue
+        </button>
+        <Link to="/" className="mt-4 inline-flex items-center gap-1.5 text-sm text-white-muted hover:text-off-white transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to site
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminK() {
   const [activeSection, setActiveSection] = useState("hero");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    base44.auth.me().then(u => {
+      setUser(u);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-orange-red border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "admin") {
+    return <AuthGate />;
+  }
+
+  const activeSectionLabel = SECTIONS.find(s => s.key === activeSection)?.label;
+
+  const handleSectionClick = (key) => {
+    setActiveSection(key);
+    setSidebarOpen(false);
+  };
+
+  const SidebarContent = () => (
+    <>
+      <div className="px-6 py-6 border-b border-[#1e1e1e] flex items-center justify-between">
+        <div>
+          <p className="font-heading text-xl font-bold text-off-white uppercase tracking-widest">KINETIQO</p>
+          <p className="text-xs text-white-muted mt-0.5">Site Editor</p>
+        </div>
+        <button onClick={() => setSidebarOpen(false)} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-full bg-[#1a1a1a] text-white-muted hover:text-off-white">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      <nav className="flex-1 py-4 overflow-y-auto">
+        {SECTIONS.map(({ key, label, icon }) => (
+          <button
+            key={key}
+            onClick={() => handleSectionClick(key)}
+            className={`w-full flex items-center gap-3 px-6 py-3 text-sm transition-all ${
+              activeSection === key
+                ? "bg-orange-red/10 text-orange-red border-r-2 border-orange-red"
+                : "text-white-muted hover:text-off-white hover:bg-white/5"
+            }`}
+          >
+            <span className="w-5 text-center text-base">{icon}</span>
+            {label}
+          </button>
+        ))}
+      </nav>
+      <div className="px-6 py-5 border-t border-[#1e1e1e] space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-orange-red/20 flex items-center justify-center text-orange-red text-xs font-bold">
+            {user.full_name?.[0] || user.email?.[0] || "A"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-off-white truncate">{user.full_name || user.email}</p>
+            <p className="text-xs text-white-muted">Admin</p>
+          </div>
+          <button onClick={() => base44.auth.logout("/")} title="Sign out">
+            <LogOut className="w-4 h-4 text-white-muted hover:text-orange-red transition-colors" />
+          </button>
+        </div>
+        <Link to="/" className="flex items-center gap-2 text-sm text-white-muted hover:text-off-white transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to site
+        </Link>
+      </div>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex font-body">
-      {/* Sidebar */}
-      <div className="w-64 flex-shrink-0 bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col">
-        <div className="px-6 py-6 border-b border-[#1e1e1e]">
-          <p className="font-heading text-2xl font-bold text-off-white uppercase tracking-widest">KINETIQO</p>
-          <p className="text-xs text-white-muted mt-1">Site Editor</p>
-        </div>
-        <nav className="flex-1 py-4 overflow-y-auto">
-          {SECTIONS.map(({ key, label, icon }) => (
-            <button
-              key={key}
-              onClick={() => setActiveSection(key)}
-              className={`w-full flex items-center gap-3 px-6 py-3 text-sm transition-all ${
-                activeSection === key
-                  ? "bg-orange-red/10 text-orange-red border-r-2 border-orange-red"
-                  : "text-white-muted hover:text-off-white hover:bg-white/5"
-              }`}
-            >
-              <span className="w-5 text-center text-base">{icon}</span>
-              {label}
-            </button>
-          ))}
-        </nav>
-        <div className="px-6 py-5 border-t border-[#1e1e1e]">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-sm text-white-muted hover:text-off-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to site
-          </Link>
-        </div>
+      {/* Desktop sidebar */}
+      <div className="hidden lg:flex w-64 flex-shrink-0 bg-[#0f0f0f] border-r border-[#1e1e1e] flex-col">
+        <SidebarContent />
       </div>
 
+      {/* Mobile sidebar overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed top-0 left-0 h-full w-72 bg-[#0f0f0f] border-r border-[#1e1e1e] z-50 flex flex-col lg:hidden"
+            >
+              <SidebarContent />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Topbar */}
-        <div className="h-16 border-b border-[#1e1e1e] flex items-center justify-between px-8 flex-shrink-0">
-          <div>
-            <h1 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight">
-              {SECTIONS.find(s => s.key === activeSection)?.label}
-            </h1>
-            <p className="text-xs text-white-muted">Changes are reflected live on the site</p>
+        <div className="h-16 border-b border-[#1e1e1e] flex items-center justify-between px-4 sm:px-8 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-[#1a1a1a] text-white-muted hover:text-off-white transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="font-heading text-lg sm:text-xl font-bold text-off-white uppercase tracking-tight leading-none">
+                {activeSectionLabel}
+              </h1>
+              <p className="text-xs text-white-muted hidden sm:block">Changes are live on the site</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-orange-red/10 border border-orange-red/30">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">
             <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-            <span className="text-xs text-orange-red font-body">Live editing</span>
+            <span className="text-xs text-orange-red font-body hidden sm:block">Live editing</span>
+            <span className="text-xs text-orange-red font-body sm:hidden">Live</span>
           </div>
         </div>
 
         {/* Editor area */}
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-2xl mx-auto px-8 py-8">
+          <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSection}
