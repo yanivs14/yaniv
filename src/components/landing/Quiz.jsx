@@ -83,9 +83,9 @@ function getRecommendation(answers) {
 }
 
 const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 60 : -60, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir) => ({ x: dir > 0 ? -60 : 60, opacity: 0 }),
+  enter: { opacity: 0, y: 8 },
+  center: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
 };
 
 export default function Quiz({ onClose }) {
@@ -155,28 +155,31 @@ export default function Quiz({ onClose }) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 20 }}
         transition={{ type: "spring", stiffness: 300, damping: 28 }}
-        className="relative w-full max-w-xl bg-dark-surface border border-dark-border rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-xl bg-dark-surface border border-dark-border rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col"
       >
-        <button
-          onClick={onClose}
-          className="sticky top-4 float-right mr-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-dark-bg/80 text-white-muted hover:text-off-white transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        {/* Fixed header with close button */}
+        <div className="flex items-center justify-end px-6 pt-5 pb-0 shrink-0">
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-dark-bg/80 text-white-muted hover:text-off-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
         {phase === "quiz" && (
-          <div className="h-0.5 bg-dark-border">
+          <div className="h-0.5 bg-dark-border shrink-0">
             <motion.div className="h-full bg-orange-red" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4, ease: "easeOut" }} />
           </div>
         )}
 
-        <div className="p-8 sm:p-10 min-h-[420px] flex flex-col">
+        <div className="p-6 sm:p-8 pt-4 flex flex-col overflow-y-auto flex-1">
           <AnimatePresence mode="wait" custom={direction}>
 
             {phase === "quiz" && (
-              <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit"
-                transition={{ duration: 0.28, ease: "easeInOut" }} className="flex flex-col h-full">
-                <div className="flex items-center justify-between mb-6">
+              <motion.div key={step} variants={slideVariants} initial="enter" animate="center" exit="exit"
+                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col h-full">
+                <div className="flex items-center justify-between mb-5">
                   <p className="font-body text-xs text-white-muted uppercase tracking-widest">
                     Question {step + 1} of {questions.length}
                   </p>
@@ -212,8 +215,8 @@ export default function Quiz({ onClose }) {
             )}
 
             {phase === "form" && (
-              <motion.div key="form" initial={{ opacity: 0, x: 60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -60 }}
-                transition={{ duration: 0.28, ease: "easeInOut" }} className="flex flex-col h-full">
+              <motion.div key="form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col h-full">
                 <div className="flex items-center justify-between mb-6">
                   <button onClick={() => { setPhase("quiz"); setStep(questions.length - 1); setDirection(-1); }}
                     className="flex items-center gap-1.5 text-xs text-white-muted hover:text-orange-red transition-colors">
@@ -233,7 +236,7 @@ export default function Quiz({ onClose }) {
                   <div>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Full name *"
+                      <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Full name *" dir="ltr"
                         className={`w-full bg-dark-bg border ${errors.full_name ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
                     </div>
                     {errors.full_name && <p className="text-xs text-red-400 mt-1">{errors.full_name}</p>}
@@ -241,14 +244,14 @@ export default function Quiz({ onClose }) {
                   <div>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Phone *" type="tel"
+                      <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Phone *" type="tel" dir="ltr"
                         className={`w-full bg-dark-bg border ${errors.phone ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
                     </div>
                     {errors.phone && <p className="text-xs text-red-400 mt-1">{errors.phone}</p>}
                   </div>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email (optional)" type="email"
+                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email (optional)" type="email" dir="ltr"
                       className="w-full bg-dark-bg border border-dark-border rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
                   </div>
                   <button onClick={handleSubmit} disabled={submitting}

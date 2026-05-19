@@ -5,18 +5,49 @@ import SocialLinks from "./SocialLinks";
 export default function Footer() {
   const { content } = useSiteContent();
   const c = content.footer;
+  const navLinks = content.navbar?.links || [];
 
   return (
     <footer className="bg-dark-surface border-t border-dark-border">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="font-heading text-4xl lg:text-6xl font-bold tracking-widest text-off-white uppercase">{c.brand}</p>
-          <div className="flex flex-col items-center md:items-end gap-4">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+        {/* Top row */}
+        <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
+          {/* Brand + tagline */}
+          <div className="flex flex-col gap-3 max-w-xs">
+            <p className="font-heading text-5xl lg:text-7xl font-black tracking-widest text-off-white uppercase leading-none">
+              {c.brand}
+            </p>
+            <p className="font-body text-sm text-white-muted leading-relaxed">{c.tagline}</p>
+          </div>
+
+          {/* Nav links + social */}
+          <div className="flex flex-col gap-6 items-start md:items-end">
+            {navLinks.length > 0 && (
+              <nav className="flex flex-wrap gap-x-8 gap-y-3">
+                {navLinks.map((l) => (
+                  <a
+                    key={l.label}
+                    href={l.href}
+                    className="font-body text-sm text-white-muted hover:text-off-white transition-colors uppercase tracking-wide"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </nav>
+            )}
             <SocialLinks iconSize="w-5 h-5" />
-            <div className="text-center md:text-right">
-              <p className="font-body text-sm text-white-muted">{c.tagline}</p>
-              <p className="font-body text-xs text-white-dim mt-1">{c.copyright}</p>
-            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-dark-border mb-8" />
+
+        {/* Bottom row */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="font-body text-xs text-white-dim">{c.copyright}</p>
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-red animate-pulse" />
+            <span className="font-body text-xs text-white-muted uppercase tracking-widest">Live</span>
           </div>
         </div>
       </div>
