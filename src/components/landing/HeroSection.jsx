@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Upload, Dumbbell, X } from "lucide-react";
+import { ArrowRight, Upload } from "lucide-react";
 import Quiz from "./Quiz";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
@@ -37,17 +37,17 @@ export default function HeroSection() {
                 {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span><br />
                 {c.headline3}
               </h1>
-              <p className="mt-8 font-heading text-2xl sm:text-3xl font-semibold text-off-white max-w-md leading-snug uppercase tracking-tight">
+              <p className="mt-8 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
                 {c.subtitle}
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-4 font-body text-sm text-off-white">
-                <span className="flex items-center gap-2">
-                  <Dumbbell className="w-4 h-4 text-orange-red" />
+              <div className="mt-8 flex flex-wrap items-center gap-4 font-body text-sm text-white-muted">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-orange-red rounded-full" />
                   {c.badge1}
                 </span>
-                <span className="flex items-center gap-2">
-                  <X className="w-4 h-4 text-orange-red" />
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-orange-red rounded-full" />
                   {c.badge2}
                 </span>
               </div>
