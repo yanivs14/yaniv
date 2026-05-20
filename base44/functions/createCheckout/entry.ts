@@ -1,8 +1,8 @@
 import Stripe from "npm:stripe@14";
 
 const PRICE_IDS = {
-  monthly: "price_1TZC6OIwQuvp7vtehgm6o1Dv",
-  annual: "price_1TZC6OIwQuvp7vte70d9l07g",
+  monthly: "price_1TSPB74T8Uo6bhpdgcMdQoKk",
+  annual: "price_1TSPB74T8Uo6bhpduFNzRk8o",
 };
 
 Deno.serve(async (req) => {
