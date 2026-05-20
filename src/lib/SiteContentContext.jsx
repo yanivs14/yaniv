@@ -109,11 +109,14 @@ const DEFAULT_CONTENT = {
   navbar: {
     brand: "KINETIQO",
     links: [
-      { label: "Method", href: "#method" },
-      { label: "Results", href: "#results" },
-      { label: "Inner Circle", href: "#inner-circle" },
+      { label: "The Program", href: "#program" },
+      { label: "Who Is It For?", href: "#who" },
+      { label: "The Benefits", href: "#benefits" },
+      { label: "Roye Gold", href: "#roye" },
+      { label: "Our Members", href: "#members" },
       { label: "FAQ", href: "#faq" },
       { label: "Pricing", href: "#pricing" },
+      { label: "Inner Circle", href: "#inner-circle" },
     ],
     cta: "Start moving",
   },
@@ -247,8 +250,28 @@ export function SiteContentProvider({ children }) {
     });
   }, []);
 
+  // Reset a section to defaults and overwrite DB
+  const resetSection = useCallback(async (section) => {
+    const defaultData = DEFAULT_CONTENT[section];
+    if (!defaultData) return;
+    setContent(prev => ({ ...prev, [section]: defaultData }));
+    setDbRecords(prev => {
+      const existing = prev[section];
+      const save = async () => {
+        if (existing?.id) {
+          await base44.entities.SiteContent.update(existing.id, { data: defaultData });
+        } else {
+          const created = await base44.entities.SiteContent.create({ section_key: section, data: defaultData });
+          setDbRecords(p => ({ ...p, [section]: created }));
+        }
+      };
+      save();
+      return { ...prev, [section]: { ...existing, data: defaultData } };
+    });
+  }, []);
+
   return (
-    <SiteContentContext.Provider value={{ content, update, updateDeep, loading }}>
+    <SiteContentContext.Provider value={{ content, update, updateDeep, resetSection, loading }}>
       {children}
     </SiteContentContext.Provider>
   );

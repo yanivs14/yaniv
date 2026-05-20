@@ -54,7 +54,7 @@ export default function AboutSection() {
   const gallery = c.gallery || [];
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-surface" id="about">
+    <section className="py-20 lg:py-32 bg-dark-surface" id="roye">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
 
         {/* About: image + headline + text */}

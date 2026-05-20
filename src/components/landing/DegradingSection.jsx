@@ -7,7 +7,7 @@ export default function DegradingSection() {
   const c = content.degrading;
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-bg">
+    <section className="py-20 lg:py-32 bg-dark-bg" id="who">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}

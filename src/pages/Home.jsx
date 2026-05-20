@@ -29,9 +29,9 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <MarqueeBanner />
+      <HowItFlowsSection />
       <DegradingSection />
       <PillarsSection />
-      <HowItFlowsSection />
       <AboutSection />
       <TestimonialsSection />
       <FAQSection />

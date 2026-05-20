@@ -118,7 +118,7 @@ function SocialEditor() {
 }
 
 function SectionEditor({ sectionKey }) {
-  const { content, update, updateDeep } = useSiteContent();
+  const { content, update, updateDeep, resetSection } = useSiteContent();
   const data = content[sectionKey];
   if (!data) return null;
   const f = (key, label, multiline = false) => <Field key={key} label={label} value={data[key]} onChange={v => update(sectionKey, key, v)} multiline={multiline} />;
@@ -129,7 +129,10 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "navbar") return (
     <div>
       {f("brand", "Brand Name")} {f("cta", "CTA Button Text")}
-      <p className="text-xs text-white-muted mb-2 mt-1 font-body">Nav Links</p>
+      <div className="flex items-center justify-between mb-2 mt-1">
+        <p className="text-xs text-white-muted font-body">Nav Links</p>
+        <button onClick={() => resetSection("navbar")} className="text-xs text-orange-red hover:text-orange-red-hover transition-colors font-body">↺ Reset to defaults</button>
+      </div>
       {data.links.map((link, i) => (
         <div key={i} className="flex gap-2 mb-2">
           <input value={link.label} onChange={e => updateDeep("navbar", "links", i, "label", e.target.value)} placeholder="Label"
