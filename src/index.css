@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -48,7 +48,7 @@
     --dark-surface-2: #1C1C1C;
     --dark-border: #2A2A2A;
     --white: #F5F5F5;
-    --white-muted: #888888;
+    --white-muted: #C8C8C8;
     --white-dim: #555555;
     --orange-red: #00fff7;
     --orange-red-hover: #00ccc6;

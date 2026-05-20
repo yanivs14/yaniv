@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       fontFamily: {
         heading: ['Barlow Condensed', 'system-ui', 'sans-serif'],
-        body: ['DM Sans', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -26,7 +26,7 @@ module.exports = {
         'dark-surface-2': '#1C1C1C',
         'dark-border': '#2A2A2A',
         'off-white': '#F5F5F5',
-        'white-muted': '#888888',
+        'white-muted': '#C8C8C8',
         'white-dim': '#555555',
         'orange-red': '#00fff7',
         'orange-red-hover': '#00ccc6',
