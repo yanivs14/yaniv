@@ -6,7 +6,7 @@ import MarqueeBanner from "../components/landing/MarqueeBanner";
 import DegradingSection from "../components/landing/DegradingSection";
 import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
-import TestimonialsSection from "../components/landing/TestimonialsSection";
+import TestimonialsSection from "../components/landing/TestimonialsSection.jsx";
 import PricingSection from "../components/landing/PricingSection";
 import FinalCTASection from "../components/landing/FinalCTASection";
 import Footer from "../components/landing/Footer";

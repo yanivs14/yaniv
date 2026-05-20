@@ -24,15 +24,13 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
-          <SocialLinks />
           <a href="#pricing" className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
             {c.cta}
           </a>
         </div>
 
-        {/* Mobile right side: social icons + hamburger */}
+        {/* Mobile right side: hamburger */}
         <div className="flex md:hidden items-center gap-3">
-          <SocialLinks iconSize="w-4 h-4" />
           <button
             className="flex items-center justify-center w-11 h-11 rounded-xl bg-dark-surface border border-dark-border text-off-white hover:border-orange-red transition-colors"
             onClick={() => setOpen(!open)}
