@@ -22,13 +22,13 @@ export default function AboutSection() {
     <section className="py-12 lg:py-24 bg-dark-surface" id="roye">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-          {/* Image slider */}
+          {/* Image slider — order-2 on mobile (below text), order-1 on desktop (left) */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
+            className="order-2 lg:order-1 aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
           >
             {images.length > 0 ? (
               <>
@@ -77,6 +77,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
+            className="order-1 lg:order-2"
           >
             <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow || "About"}</p>
             <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
