@@ -60,31 +60,6 @@ export default function HeroSection() {
                   {c.ctaPrimary}
                 </a>
 
-                {/* Mobile video — peek effect */}
-                <div className="lg:hidden rounded-2xl overflow-hidden relative" style={{ maxHeight: "240px" }}>
-                  <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative">
-                    {c.videoUrl ? (
-                      <video
-                        src={c.videoUrl}
-                        poster={c.videoPoster}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={c.videoPoster}
-                        alt="Hero visual"
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                    {/* gradient fade at bottom — "peek" effect */}
-                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-dark-bg to-transparent" />
-                  </div>
-                </div>
-
                 <motion.button
                   onClick={() => setQuizOpen(true)}
                   className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group sm:self-start"
@@ -94,6 +69,27 @@ export default function HeroSection() {
                   {c.ctaSecondary}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </motion.button>
+
+                {/* Mobile video — full vertical */}
+                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative">
+                  {c.videoUrl ? (
+                    <video
+                      src={c.videoUrl}
+                      poster={c.videoPoster}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={c.videoPoster}
+                      alt="Hero visual"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
               </div>
             </motion.div>
 
