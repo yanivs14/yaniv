@@ -69,27 +69,27 @@ export default function HeroSection() {
                   {c.ctaSecondary}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </motion.button>
+              </div>
 
-                {/* Mobile video — overlaps buttons above, sits behind them */}
-                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative -mt-28 -z-10">
-                  {c.videoUrl ? (
-                    <video
-                      src={c.videoUrl}
-                      poster={c.videoPoster}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={c.videoPoster}
-                      alt="Hero visual"
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
+              {/* Mobile video — below CTA buttons */}
+              <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface mt-4">
+                {c.videoUrl ? (
+                  <video
+                    src={c.videoUrl}
+                    poster={c.videoPoster}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={c.videoPoster}
+                    alt="Hero visual"
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </div>
             </motion.div>
 
