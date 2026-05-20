@@ -23,7 +23,6 @@ const DEFAULT_CONTENT = {
     painPoints: [
       "Stiff in the morning. Tight by night.",
       "Back, hips, knees, neck — the daily friction.",
-      "You move less than your body needs.",
       "Strength isn't the problem. Foundation is.",
       "Modern life is breaking your body.",
     ],
@@ -112,6 +111,8 @@ const DEFAULT_CONTENT = {
     links: [
       { label: "Method", href: "#method" },
       { label: "Results", href: "#results" },
+      { label: "Inner Circle", href: "#inner-circle" },
+      { label: "FAQ", href: "#faq" },
       { label: "Pricing", href: "#pricing" },
     ],
     cta: "Start moving",

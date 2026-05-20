@@ -9,6 +9,19 @@ export default function Navbar() {
   const { content } = useSiteContent();
   const c = content.navbar;
 
+  const scrollTo = (e, href) => {
+    e.preventDefault();
+    setOpen(false);
+    if (!href || href === "#") return;
+    const id = href.replace("#", "");
+    const el = document.getElementById(id);
+    if (el) {
+      const offset = 72; // navbar height
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/90 backdrop-blur-md border-b border-dark-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16">
@@ -20,11 +33,11 @@ export default function Navbar() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {c.links.map((l) => (
-            <a key={l.label} href={l.href} className="font-body text-sm text-white-muted hover:text-off-white transition-colors">
+            <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)} className="font-body text-sm text-white-muted hover:text-off-white transition-colors">
               {l.label}
             </a>
           ))}
-          <a href="#pricing" className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
+          <a href="#pricing" onClick={(e) => scrollTo(e, "#pricing")} className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
             {c.cta}
           </a>
         </div>
@@ -60,7 +73,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07, duration: 0.2 }}
                   className="flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight text-off-white hover:text-orange-red transition-colors py-3 border-b border-dark-border"
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => scrollTo(e, l.href)}
                 >
                   {l.label}
                   <ChevronRight className="w-5 h-5 text-orange-red" />
@@ -72,7 +85,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: c.links.length * 0.07 + 0.05, duration: 0.2 }}
                 className="mt-4 font-body text-sm font-semibold bg-orange-red text-dark-bg px-5 py-3.5 rounded-full text-center hover:bg-orange-red-hover transition-colors"
-                onClick={() => setOpen(false)}
+                onClick={(e) => scrollTo(e, "#pricing")}
               >
                 {c.cta}
               </motion.a>
