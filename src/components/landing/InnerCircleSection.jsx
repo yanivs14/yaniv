@@ -8,7 +8,7 @@ export default function InnerCircleSection() {
   const c = content.innerCircle || {};
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-bg" id="inner-circle">
+    <section className="py-12 lg:py-24 bg-dark-bg" id="inner-circle">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 

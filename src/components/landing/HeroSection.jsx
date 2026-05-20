@@ -23,7 +23,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section className="pt-16 pb-12 lg:pt-32 lg:pb-20 bg-dark-bg">
+      <section className="pt-16 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left */}
@@ -37,7 +37,7 @@ export default function HeroSection() {
                 {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span><br />
                 {c.headline3}
               </h1>
-              <p className="mt-8 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
+              <p className="mt-6 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
                 {c.subtitle}
               </p>
 
@@ -59,6 +59,32 @@ export default function HeroSection() {
                 >
                   {c.ctaPrimary}
                 </a>
+
+                {/* Mobile video — between buttons, peek effect */}
+                <div className="lg:hidden rounded-2xl overflow-hidden relative group" style={{ maxHeight: "220px" }}>
+                  <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative group">
+                    {c.videoUrl ? (
+                      <video
+                        src={c.videoUrl}
+                        poster={c.videoPoster}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={c.videoPoster}
+                        alt="Hero visual"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    {/* gradient peek at bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-dark-bg to-transparent" />
+                  </div>
+                </div>
+
                 <motion.button
                   onClick={() => setQuizOpen(true)}
                   className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
@@ -71,12 +97,12 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Right - Video / Image */}
+            {/* Right - Video / Image (desktop only) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className="relative hidden lg:block"
             >
               <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative group">
                 {c.videoUrl ? (

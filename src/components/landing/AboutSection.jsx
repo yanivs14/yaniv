@@ -54,11 +54,11 @@ export default function AboutSection() {
   const gallery = c.gallery || [];
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-surface" id="roye">
+    <section className="py-12 lg:py-24 bg-dark-surface" id="roye">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
 
         {/* About: image + headline + text */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20 lg:mb-28">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center mb-12 lg:mb-24">
           {/* Image / Video */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}

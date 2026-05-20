@@ -25,7 +25,7 @@ export default function HowItFlowsSection() {
   };
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-surface" id="program">
+    <section className="py-12 lg:py-24 bg-dark-surface" id="program">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

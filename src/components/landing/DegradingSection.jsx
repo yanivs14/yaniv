@@ -7,7 +7,7 @@ export default function DegradingSection() {
   const c = content.degrading;
 
   return (
-    <section className="py-20 lg:py-32 bg-dark-bg" id="who">
+    <section className="py-12 lg:py-24 bg-dark-bg" id="who">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}
@@ -38,7 +38,7 @@ export default function DegradingSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-6"
+                className="font-heading text-4xl sm:text-5xl font-bold text-off-white uppercase tracking-tight mb-6"
               >
                 {c.listTitle}
               </motion.p>

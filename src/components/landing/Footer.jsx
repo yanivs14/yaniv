@@ -14,9 +14,9 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-12">
           {/* Brand + tagline */}
           <div className="flex flex-col gap-3 max-w-xs">
-            <p className="font-heading text-5xl lg:text-7xl font-black tracking-widest text-off-white uppercase leading-none">
-              {c.brand}
-            </p>
+            <a href="#" className="font-heading text-xl font-bold tracking-widest text-off-white uppercase">
+              The Movement
+            </a>
             <p className="font-body text-sm text-white-muted leading-relaxed">{c.tagline}</p>
           </div>
 
