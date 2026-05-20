@@ -15,6 +15,7 @@ const CONTENT_SECTIONS = [
   { key: "testimonials", label: "Testimonials", icon: "❝" },
   { key: "pricing", label: "Pricing", icon: "$" },
   { key: "finalCta", label: "Final CTA", icon: "✦" },
+  { key: "faq", label: "FAQ", icon: "?" },
   { key: "footer", label: "Footer", icon: "▬" },
   { key: "social", label: "Social Links", icon: "⬡" },
 ];
@@ -286,6 +287,30 @@ function SectionEditor({ sectionKey }) {
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
       {f("subtitle", "Subtitle", true)} {f("ctaPrimary", "Primary CTA")} {f("ctaSecondary", "Secondary CTA")} {f("footnote", "Footnote")} {f("signature", "Signature")}
+    </div>
+  );
+
+  if (sectionKey === "faq") return (
+    <div>
+      <p className="text-xs text-white-muted mb-4 font-body">Manage FAQ questions and answers</p>
+      {(data.items || []).map((item, i) => (
+        <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
+          <div className="flex items-start gap-2 mb-2">
+            <textarea value={item.question || ""} onChange={e => updateDeep("faq", "items", i, "question", e.target.value)} rows={2} placeholder="Question"
+              className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
+            <button onClick={() => update("faq", "items", (data.items || []).filter((_, idx) => idx !== i))}
+              className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0 mt-1">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+          <textarea value={item.answer || ""} onChange={e => updateDeep("faq", "items", i, "answer", e.target.value)} rows={3} placeholder="Answer"
+            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
+        </div>
+      ))}
+      <button onClick={() => update("faq", "items", [...(data.items || []), { question: "", answer: "" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+        <Plus className="w-4 h-4" /> Add question
+      </button>
     </div>
   );
 

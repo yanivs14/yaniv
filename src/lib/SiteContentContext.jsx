@@ -128,6 +128,16 @@ const DEFAULT_CONTENT = {
       { platform: "TikTok", url: "https://tiktok.com", icon: "tiktok" },
     ]
   },
+  faq: {
+    items: [
+      { question: "Do I need any equipment?", answer: "No equipment needed. All sessions are bodyweight-based and designed to be done anywhere — at home, in a hotel room, or outdoors." },
+      { question: "How long are the sessions?", answer: "Most sessions are 10–20 minutes. Some advanced flows go up to 30 minutes. You can always choose a session length that fits your day." },
+      { question: "I'm a complete beginner — is this for me?", answer: "Absolutely. The Foundation Track is built specifically for people starting from zero. Roye guides every cue so you always know exactly what to do." },
+      { question: "What if I have an injury or chronic pain?", answer: "Many members join because of injuries or chronic pain. The method focuses on gentle, restorative movement — but if you have a serious condition, consult your doctor first." },
+      { question: "Can I cancel anytime?", answer: "Yes. There are no long-term commitments. You can cancel your subscription at any time from your account settings, no questions asked." },
+      { question: "What platform is the content on?", answer: "All content is hosted on Skool — a simple, clean community platform. One login gives you access to the full library, the community, and all live sessions." },
+    ]
+  },
 };
 
 const SiteContentContext = createContext(null);
