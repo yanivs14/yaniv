@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Check, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
 const sharedFeatures = [
@@ -13,15 +13,15 @@ const sharedFeatures = [
 
 const annualExtra = "Unlocked: Advanced flows + restoration protocols";
 
-function MonthlyCard({ c }) {
+function MonthlyCard({ c, mobile = false }) {
   return (
-    <div className="flex-shrink-0 w-[80vw] sm:w-auto md:w-auto snap-start bg-dark-bg border border-dark-border rounded-2xl p-8">
+    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"}`}>
       <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
-      <div className="flex items-baseline gap-1 my-5">
+      <div className="flex items-baseline gap-1 my-3">
         <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
-      <ul className="space-y-3 mb-8">
+      <ul className="space-y-2 mb-5">
         {sharedFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
@@ -32,25 +32,25 @@ function MonthlyCard({ c }) {
       <a href="#" className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors">
         {c.ctaMonthly} <ArrowRight className="w-4 h-4" />
       </a>
-      <p className="mt-3 font-body text-xs text-white-muted text-center">Cancel anytime</p>
+      <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
     </div>
   );
 }
 
-function AnnualCard({ c }) {
+function AnnualCard({ c, mobile = false }) {
   return (
-    <div className="flex-shrink-0 w-[80vw] sm:w-auto md:w-auto snap-start bg-orange-red border border-orange-red rounded-2xl p-8 relative">
-      <div className="absolute top-4 right-4 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
+    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative`}>
+      <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
         Best value
       </div>
       <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
-      <div className="flex items-baseline gap-2 my-5">
+      <div className="flex items-baseline gap-2 my-3">
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
         <span className="font-body text-sm text-dark-bg/40 line-through">{c.annualOldPrice}</span>
       </div>
-      <p className="font-body text-xs text-dark-bg/70 mb-4">{c.annualSavings}</p>
-      <ul className="space-y-3 mb-5">
+      <p className="font-body text-xs text-dark-bg/70 mb-3">{c.annualSavings}</p>
+      <ul className="space-y-2 mb-4">
         {sharedFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
@@ -65,7 +65,7 @@ function AnnualCard({ c }) {
       <a href="#" className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors">
         {c.ctaAnnual} <ArrowRight className="w-4 h-4" />
       </a>
-      <p className="mt-3 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
+      <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
     </div>
   );
 }
@@ -74,9 +74,12 @@ export default function PricingSection() {
   const { content } = useSiteContent();
   const c = content.pricing;
   const scrollRef = useRef();
+  const [activeTab, setActiveTab] = useState("annual");
 
-  const scroll = (dir) => {
-    scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+  const scrollTo = (plan) => {
+    setActiveTab(plan);
+    const idx = plan === "annual" ? 0 : 1;
+    scrollRef.current?.scrollTo({ left: idx * (scrollRef.current.offsetWidth * 0.82), behavior: "smooth" });
   };
 
   return (
@@ -105,17 +108,27 @@ export default function PricingSection() {
 
         {/* Mobile slider */}
         <div className="md:hidden">
-          <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            <MonthlyCard c={c} />
-            <AnnualCard c={c} />
+          {/* Toggle */}
+          <div className="flex justify-center mb-5">
+            <div className="flex bg-dark-bg border border-dark-border rounded-full p-1 gap-1">
+              <button
+                onClick={() => scrollTo("annual")}
+                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}
+              >
+                Annual
+              </button>
+              <button
+                onClick={() => scrollTo("monthly")}
+                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}
+              >
+                Monthly
+              </button>
+            </div>
           </div>
-          <div className="flex justify-center gap-3 mt-4">
-            <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-bg flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-bg flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronRight className="w-5 h-5" />
-            </button>
+
+          <div ref={scrollRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-1" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            <AnnualCard c={c} mobile />
+            <MonthlyCard c={c} mobile />
           </div>
         </div>
 

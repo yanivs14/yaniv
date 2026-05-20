@@ -45,10 +45,6 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-body text-xs text-white-dim">{c.copyright}</p>
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-red animate-pulse" />
-            <span className="font-body text-xs text-white-muted uppercase tracking-widest">Live</span>
-          </div>
         </div>
       </div>
     </footer>
