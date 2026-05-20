@@ -4,7 +4,6 @@ import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
 import MarqueeBanner from "../components/landing/MarqueeBanner";
 import DegradingSection from "../components/landing/DegradingSection";
-import SessionDemoSection from "../components/landing/SessionDemoSection";
 import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import TestimonialsSection from "../components/landing/TestimonialsSection";
@@ -28,7 +27,6 @@ export default function Home() {
       <HeroSection />
       <MarqueeBanner />
       <DegradingSection />
-      <SessionDemoSection />
       <PillarsSection />
       <HowItFlowsSection />
       <TestimonialsSection />
