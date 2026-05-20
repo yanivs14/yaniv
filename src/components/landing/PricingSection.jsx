@@ -2,6 +2,16 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { base44 } from "@/api/base44Client";
+
+async function startCheckout(plan) {
+  if (window.self !== window.top) {
+    alert("Checkout is only available from the published app.");
+    return;
+  }
+  const res = await base44.functions.invoke("createCheckout", { plan });
+  if (res.data?.url) window.location.href = res.data.url;
+}
 
 const sharedFeatures = [
   "The full Kinetiqo OS — daily adaptive practice",
@@ -14,6 +24,13 @@ const sharedFeatures = [
 const annualExtra = "Unlocked: Advanced flows + restoration protocols";
 
 function MonthlyCard({ c, mobile = false }) {
+  const [loading, setLoading] = useState(false);
+  const handleClick = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await startCheckout("monthly");
+    setLoading(false);
+  };
   return (
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"}`}>
       <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
@@ -29,15 +46,23 @@ function MonthlyCard({ c, mobile = false }) {
           </li>
         ))}
       </ul>
-      <a href="#" className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors">
-        {c.ctaMonthly} <ArrowRight className="w-4 h-4" />
-      </a>
+      <button onClick={handleClick} disabled={loading}
+        className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
+        {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
+      </button>
       <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
     </div>
   );
 }
 
 function AnnualCard({ c, mobile = false }) {
+  const [loading, setLoading] = useState(false);
+  const handleClick = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await startCheckout("annual");
+    setLoading(false);
+  };
   return (
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative`}>
       <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
@@ -62,9 +87,10 @@ function AnnualCard({ c, mobile = false }) {
           <span className="font-body text-sm text-dark-bg font-semibold">{annualExtra}</span>
         </li>
       </ul>
-      <a href="#" className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors">
-        {c.ctaAnnual} <ArrowRight className="w-4 h-4" />
-      </a>
+      <button onClick={handleClick} disabled={loading}
+        className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
+        {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
+      </button>
       <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
     </div>
   );
