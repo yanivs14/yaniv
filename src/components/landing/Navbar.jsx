@@ -69,10 +69,10 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.28, ease: "easeOut" }}
-            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col md:hidden overflow-y-auto"
+            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col md:hidden"
           >
-            {/* Links */}
-            <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1">
+            {/* Links — scrollable */}
+            <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
               {c.links.map((l, i) => (
                 <motion.a
                   key={l.label}
