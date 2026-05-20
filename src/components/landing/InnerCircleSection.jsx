@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import BookCallModal from "@/components/landing/BookCallModal";
 
 export default function InnerCircleSection() {
   const { content } = useSiteContent();
   const c = content.innerCircle || {};
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
+    <>
     <section className="py-12 lg:py-24 bg-dark-bg" id="inner-circle">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -51,12 +54,12 @@ export default function InnerCircleSection() {
               <p className="font-body text-sm text-white-muted mb-6">
                 {c.ctaSubtext || "Book a call with one of our movement experts to see if Inner Circle is the right fit for you."}
               </p>
-              <a
-                href={c.ctaUrl || "#"}
+              <button
+                onClick={() => setModalOpen(true)}
                 className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
               >
                 {c.ctaButton || "Book a call"} <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
             </div>
           </motion.div>
 
@@ -79,5 +82,8 @@ export default function InnerCircleSection() {
         </div>
       </div>
     </section>
+
+    <BookCallModal open={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
   );
 }
