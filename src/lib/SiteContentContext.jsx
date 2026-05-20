@@ -128,6 +128,20 @@ const DEFAULT_CONTENT = {
       { platform: "TikTok", url: "https://tiktok.com", icon: "tiktok" },
     ]
   },
+  innerCircle: {
+    eyebrow: "Exclusive",
+    headline: "Inner",
+    headlineAccent: "Circle.",
+    description: "Want a personalized program and direct feedback from Roye and the Movement team?",
+    paragraph1: "Inner Circle is our highest-level coaching experience - built for individuals committed to integrating movement into everyday life, not just workouts.",
+    paragraph2: "Get tailored guidance, accountability, technique feedback, and a structured path designed around your goals, limitations, and progression.",
+    paragraph3: "This is for people who want deeper practice, higher standards, and real long-term transformation.",
+    ctaLabel: "Want to learn more?",
+    ctaSubtext: "Book a call with one of our movement experts to see if Inner Circle is the right fit for you.",
+    ctaButton: "Book a call",
+    ctaUrl: "#",
+    imageUrl: "",
+  },
   about: {
     eyebrow: "About",
     headline: "Meet Roye",

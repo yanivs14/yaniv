@@ -12,6 +12,7 @@ const CONTENT_SECTIONS = [
   { key: "session", label: "Session Demo", icon: "▶" },
   { key: "pillars", label: "Four Pillars", icon: "◈" },
   { key: "howItFlows", label: "How It Flows", icon: "→" },
+  { key: "innerCircle", label: "Inner Circle", icon: "⬤" },
   { key: "about", label: "About", icon: "◉" },
   { key: "testimonials", label: "Testimonials", icon: "❝" },
   { key: "pricing", label: "Pricing", icon: "$" },
@@ -288,6 +289,23 @@ function SectionEditor({ sectionKey }) {
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
       {f("subtitle", "Subtitle", true)} {f("ctaPrimary", "Primary CTA")} {f("ctaSecondary", "Secondary CTA")} {f("footnote", "Footnote")} {f("signature", "Signature")}
+    </div>
+  );
+
+  if (sectionKey === "innerCircle") return (
+    <div>
+      {f("eyebrow", "Eyebrow")}
+      {f("headline", "Headline")}
+      {f("headlineAccent", "Headline Accent (colored)")}
+      {f("description", "Opening line", true)}
+      {f("paragraph1", "Paragraph 1", true)}
+      {f("paragraph2", "Paragraph 2", true)}
+      {f("paragraph3", "Paragraph 3", true)}
+      {f("ctaLabel", "CTA Label")}
+      {f("ctaSubtext", "CTA Subtext", true)}
+      {f("ctaButton", "CTA Button Text")}
+      {f("ctaUrl", "CTA Link URL")}
+      <MediaField label="Section Image" value={data.imageUrl} onChange={v => update("innerCircle", "imageUrl", v)} isVideo={false} />
     </div>
   );
 

@@ -10,6 +10,7 @@ import TestimonialsSection from "../components/landing/TestimonialsSection.jsx";
 import AboutSection from "../components/landing/AboutSection.jsx";
 import FAQSection from "../components/landing/FAQSection.jsx";
 import PricingSection from "../components/landing/PricingSection";
+import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import FinalCTASection from "../components/landing/FinalCTASection";
 import Footer from "../components/landing/Footer";
 
@@ -35,6 +36,7 @@ export default function Home() {
       <TestimonialsSection />
       <FAQSection />
       <PricingSection />
+      <InnerCircleSection />
       <FinalCTASection />
       <Footer />
     </div>
