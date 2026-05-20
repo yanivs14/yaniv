@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import SocialLinks from "./SocialLinks";
@@ -50,17 +50,34 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-dark-surface border-t border-dark-border overflow-hidden"
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="md:hidden bg-dark-bg border-t border-dark-border overflow-hidden"
           >
-            <div className="px-6 py-6 flex flex-col gap-4">
-              {c.links.map((l) => (
-                <a key={l.label} href={l.href} className="font-body text-base text-white-muted hover:text-off-white transition-colors" onClick={() => setOpen(false)}>
+            <div className="px-6 pt-4 pb-6 flex flex-col gap-1">
+              {c.links.map((l, i) => (
+                <motion.a
+                  key={l.label}
+                  href={l.href}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.07, duration: 0.2 }}
+                  className="flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight text-off-white hover:text-orange-red transition-colors py-3 border-b border-dark-border"
+                  onClick={() => setOpen(false)}
+                >
                   {l.label}
-                </a>
+                  <ChevronRight className="w-5 h-5 text-orange-red" />
+                </motion.a>
               ))}
-              <a href="#pricing" className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-3 rounded-full text-center hover:bg-orange-red-hover transition-colors" onClick={() => setOpen(false)}>
+              <motion.a
+                href="#pricing"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: c.links.length * 0.07 + 0.05, duration: 0.2 }}
+                className="mt-4 font-body text-sm font-semibold bg-orange-red text-dark-bg px-5 py-3.5 rounded-full text-center hover:bg-orange-red-hover transition-colors"
+                onClick={() => setOpen(false)}
+              >
                 {c.cta}
-              </a>
+              </motion.a>
             </div>
           </motion.div>
         )}

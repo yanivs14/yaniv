@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Upload } from "lucide-react";
+import { ArrowRight, Upload, Dumbbell, RefreshCcw } from "lucide-react";
 import Quiz from "./Quiz";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
@@ -41,13 +41,13 @@ export default function HeroSection() {
                 {c.subtitle}
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-4 font-body text-sm text-white-muted">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-orange-red rounded-full" />
+              <div className="mt-8 flex flex-wrap items-center gap-3 font-body text-sm">
+                <span className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 text-off-white">
+                  <Dumbbell className="w-4 h-4 text-orange-red flex-shrink-0" />
                   {c.badge1}
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-orange-red rounded-full" />
+                <span className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 text-off-white">
+                  <RefreshCcw className="w-4 h-4 text-orange-red flex-shrink-0" />
                   {c.badge2}
                 </span>
               </div>
