@@ -349,28 +349,13 @@ function SettingsTab() {
     setSaving(false);
   };
 
-  const addEmail = async () => {
+  const addEmail = () => {
     if (!newEmail.trim()) return;
-    const updated = { ...settings, recipient_emails: [...(settings.recipient_emails || []), newEmail.trim()] };
+    setSettings(s => ({ ...s, recipient_emails: [...(s.recipient_emails || []), newEmail.trim()] }));
     setNewEmail("");
-    setSaving(true);
-    if (updated.id) {
-      const saved = await base44.entities.LeadSettings.update(updated.id, updated);
-      setSettings(saved);
-    } else {
-      const saved = await base44.entities.LeadSettings.create(updated);
-      setSettings(saved);
-    }
-    setSaving(false);
   };
 
-  const removeEmail = async (i) => {
-    const updated = { ...settings, recipient_emails: settings.recipient_emails.filter((_, idx) => idx !== i) };
-    setSettings(updated);
-    if (updated.id) {
-      await base44.entities.LeadSettings.update(updated.id, updated);
-    }
-  };
+  const removeEmail = (i) => setSettings(s => ({ ...s, recipient_emails: s.recipient_emails.filter((_, idx) => idx !== i) }));
 
   if (loading) return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" /></div>;
 

@@ -12,7 +12,10 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/90 backdrop-blur-md border-b border-dark-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16">
-        {/* Brand — hidden for now */}
+        {/* Brand */}
+        <a href="#" className="font-heading text-xl font-bold tracking-widest text-off-white uppercase">
+          {c.brand}
+        </a>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
