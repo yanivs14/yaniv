@@ -41,7 +41,7 @@ export default function HeroSection() {
                 {c.subtitle}
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3 font-body text-sm">
+              <div className="mt-4 flex flex-wrap items-center gap-3 font-body text-sm">
                 <span className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 text-off-white">
                   <Dumbbell className="w-4 h-4 text-orange-red flex-shrink-0" />
                   {c.badge1}
@@ -52,7 +52,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              <div className="mt-4 flex flex-col sm:flex-row gap-4">
                 <a
                   href="#pricing"
                   className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
