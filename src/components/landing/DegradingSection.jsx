@@ -44,7 +44,7 @@ export default function DegradingSection() {
               </motion.p>
             )}
             <ul className="space-y-5 border-t border-dark-border">
-              {c.painPoints.map((point, i) => (
+              {c.painPoints.filter(point => point?.trim()).map((point, i) => (
                 <motion.li
                   key={i}
                   initial={{ opacity: 0, x: 20 }}
