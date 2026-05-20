@@ -52,7 +52,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-col gap-4">
+              <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <a
                   href="#pricing"
                   className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors sm:self-start"
