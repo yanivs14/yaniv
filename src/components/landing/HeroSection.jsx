@@ -70,8 +70,8 @@ export default function HeroSection() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </motion.button>
 
-                {/* Mobile video — full vertical */}
-                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative">
+                {/* Mobile video — overlaps button above */}
+                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative -mt-16">
                   {c.videoUrl ? (
                     <video
                       src={c.videoUrl}
