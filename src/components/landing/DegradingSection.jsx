@@ -32,6 +32,9 @@ export default function DegradingSection() {
 
           {/* Right */}
           <div className="lg:pt-12">
+            {c.listTitle && (
+              <p className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-5">{c.listTitle}</p>
+            )}
             <ul className="space-y-5 border-t border-dark-border">
               {c.painPoints.map((point, i) => (
                 <motion.li

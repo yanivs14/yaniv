@@ -152,6 +152,7 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "degrading") return (
     <div>
       {f("headline1", "Headline 1")} {f("headlineAccent", "Headline Accent")} {f("subtitle", "Subtitle", true)} {m("imageUrl", "Section Image")}
+      {f("listTitle", "List Title (above pain points)")}
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Pain Points</p>
       {data.painPoints.map((pt, i) => (
         <input key={i} value={pt} onChange={e => { const a = [...data.painPoints]; a[i] = e.target.value; update("degrading", "painPoints", a); }}

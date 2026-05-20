@@ -93,19 +93,29 @@ export default function TestimonialsSection() {
         </motion.div>
 
         <div className="relative">
-          <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            {c.items.map((t, i) => (
-              <TestimonialCard key={i} t={t} />
-            ))}
-          </div>
-          <div className="flex sm:hidden justify-center gap-3 mt-4">
-            <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+          {c.items.length <= 3 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
+              {c.items.map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+          ) : (
+            <>
+              <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                {c.items.map((t, i) => (
+                  <TestimonialCard key={i} t={t} />
+                ))}
+              </div>
+              <div className="flex sm:hidden justify-center gap-3 mt-4">
+                <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-3 gap-8 border-t border-dark-border pt-12 mt-12">

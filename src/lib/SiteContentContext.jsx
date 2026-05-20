@@ -20,11 +20,11 @@ const DEFAULT_CONTENT = {
     headlineAccent: "silently degrading.",
     subtitle: "Nobody taught you to rebuild it. Until now. Stiffness. Back pain. Lost range of motion. These aren't age — they're hurting your quality of life, building up daily while you sit, scroll, and adapt to less of yourself.",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/b9c7805bd_generated_41015e1e.png",
+    listTitle: "Sound familiar?",
     painPoints: [
       "Stiff in the morning. Tight by night.",
       "Back, hips, knees, neck — the daily friction.",
       "Strength isn't the problem. Foundation is.",
-      "Modern life is breaking your body.",
     ],
     stats: [
       { value: "80%", label: "of adults carry chronic joint or back pain" },
