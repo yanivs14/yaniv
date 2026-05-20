@@ -257,7 +257,7 @@ function SectionEditor({ sectionKey }) {
           )}
         </div>
       ))}
-      <button onClick={() => update("testimonials", "items", [...data.items, { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
+      <button onClick={() => update("testimonials", "items", [...(data.items || []), { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
         className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2 mb-6">
         <Plus className="w-4 h-4" /> Add testimonial
       </button>

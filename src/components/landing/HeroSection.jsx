@@ -23,7 +23,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section className="pt-24 pb-12 lg:pt-32 lg:pb-20 bg-dark-bg">
+      <section className="pt-16 pb-12 lg:pt-32 lg:pb-20 bg-dark-bg">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left */}
@@ -41,13 +41,13 @@ export default function HeroSection() {
                 {c.subtitle}
               </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-3 font-body text-sm">
-                <span className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 text-off-white">
-                  <Dumbbell className="w-4 h-4 text-orange-red flex-shrink-0" />
+              <div className="mt-4 flex flex-wrap items-center gap-2 font-body text-xs">
+                <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                  <Dumbbell className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                   {c.badge1}
                 </span>
-                <span className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2 text-off-white">
-                  <RefreshCcw className="w-4 h-4 text-orange-red flex-shrink-0" />
+                <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                  <RefreshCcw className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                   {c.badge2}
                 </span>
               </div>
