@@ -14,7 +14,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16">
         {/* Brand */}
         <a href="#" className="font-heading text-xl font-bold tracking-widest text-off-white uppercase">
-          {c.brand}
+          The Movement
         </a>
 
         {/* Desktop nav */}

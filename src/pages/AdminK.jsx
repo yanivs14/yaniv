@@ -338,12 +338,17 @@ function SettingsTab() {
   }, []);
 
   const save = async () => {
+    // If there's text in the newEmail field, add it before saving
+    const finalSettings = newEmail.trim()
+      ? { ...settings, recipient_emails: [...(settings.recipient_emails || []), newEmail.trim()] }
+      : settings;
+    if (newEmail.trim()) setNewEmail("");
     setSaving(true);
-    if (settings.id) {
-      const updated = await base44.entities.LeadSettings.update(settings.id, settings);
+    if (finalSettings.id) {
+      const updated = await base44.entities.LeadSettings.update(finalSettings.id, finalSettings);
       setSettings(updated);
     } else {
-      const created = await base44.entities.LeadSettings.create(settings);
+      const created = await base44.entities.LeadSettings.create(finalSettings);
       setSettings(created);
     }
     setSaving(false);
