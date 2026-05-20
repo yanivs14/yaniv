@@ -17,7 +17,7 @@ export default function MarqueeBanner() {
         {repeated.map((item, i) => (
           <span
             key={i}
-            className="inline-flex items-center gap-2 mx-8 font-heading text-lg font-bold tracking-widest text-off-white uppercase"
+            className="inline-flex items-center gap-2 mx-8 font-heading text-xl font-black tracking-[0.15em] text-off-white uppercase"
           >
             <span className="text-orange-red text-base">{item.icon}</span>
             {item.label}
