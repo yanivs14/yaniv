@@ -8,16 +8,15 @@ import { Link } from "react-router-dom";
 const CONTENT_SECTIONS = [
   { key: "navbar", label: "Navbar", icon: "☰" },
   { key: "hero", label: "Hero", icon: "★" },
-  { key: "degrading", label: "Degrading Body", icon: "⚡" },
-  { key: "session", label: "Session Demo", icon: "▶" },
-  { key: "pillars", label: "Four Pillars", icon: "◈" },
-  { key: "howItFlows", label: "How It Flows", icon: "→" },
-  { key: "innerCircle", label: "Inner Circle", icon: "⬤" },
-  { key: "about", label: "About", icon: "◉" },
-  { key: "testimonials", label: "Testimonials", icon: "❝" },
-  { key: "pricing", label: "Pricing", icon: "$" },
-  { key: "finalCta", label: "Final CTA", icon: "✦" },
+  { key: "howItFlows", label: "The Program", icon: "→" },
+  { key: "degrading", label: "Who Is It For?", icon: "⚡" },
+  { key: "pillars", label: "The Benefits", icon: "◈" },
+  { key: "about", label: "Roye Gold", icon: "◉" },
+  { key: "testimonials", label: "Our Members", icon: "❝" },
   { key: "faq", label: "FAQ", icon: "?" },
+  { key: "pricing", label: "Pricing", icon: "$" },
+  { key: "innerCircle", label: "Inner Circle", icon: "⬤" },
+  { key: "finalCta", label: "Final CTA", icon: "✦" },
   { key: "footer", label: "Footer", icon: "▬" },
   { key: "social", label: "Social Links", icon: "⬡" },
 ];
@@ -170,13 +169,6 @@ function SectionEditor({ sectionKey }) {
             className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
         </div>
       ))}
-    </div>
-  );
-
-  if (sectionKey === "session") return (
-    <div>
-      {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headlineAccent", "Headline Accent")} {f("headline2", "Headline 2")}
-      {f("subtitle", "Subtitle", true)} {f("sessionLabel", "Session Label")} {m("imageUrl", "Thumbnail / Poster")} {m("videoUrl", "Demo Video", true)}
     </div>
   );
 
