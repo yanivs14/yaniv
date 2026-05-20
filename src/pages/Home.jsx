@@ -7,6 +7,7 @@ import DegradingSection from "../components/landing/DegradingSection";
 import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import TestimonialsSection from "../components/landing/TestimonialsSection.jsx";
+import AboutSection from "../components/landing/AboutSection.jsx";
 import FAQSection from "../components/landing/FAQSection.jsx";
 import PricingSection from "../components/landing/PricingSection";
 import FinalCTASection from "../components/landing/FinalCTASection";
@@ -30,6 +31,7 @@ export default function Home() {
       <DegradingSection />
       <PillarsSection />
       <HowItFlowsSection />
+      <AboutSection />
       <TestimonialsSection />
       <FAQSection />
       <PricingSection />

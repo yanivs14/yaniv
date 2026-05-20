@@ -128,6 +128,14 @@ const DEFAULT_CONTENT = {
       { platform: "TikTok", url: "https://tiktok.com", icon: "tiktok" },
     ]
   },
+  about: {
+    eyebrow: "About",
+    headline: "Meet Roye",
+    headlineAccent: "Gold.",
+    text: "Roye Gold is a movement coach, educator, and the creator of Kinetiqo — a daily practice built around the idea that your body deserves more than occasional effort.\n\nAfter years of working with thousands of people across the globe, Roye developed a system that combines mobility, strength, breath, and intentional control into one seamless daily method.\n\nHis mission is simple: to give people back the physical freedom they've lost — and show them it's never too late to rebuild it.\n\nKinetiqo isn't a workout. It's an operating system for your body.",
+    imageUrl: "",
+    gallery: [],
+  },
   faq: {
     items: [
       { question: "Do I need any equipment?", answer: "No equipment needed. All sessions are bodyweight-based and designed to be done anywhere — at home, in a hotel room, or outdoors." },

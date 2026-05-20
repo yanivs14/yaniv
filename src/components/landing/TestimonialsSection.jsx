@@ -60,6 +60,8 @@ export default function TestimonialsSection() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
+  const showArrows = c.items.length > 3;
+
   return (
     <section className="py-20 lg:py-32 bg-dark-bg" id="results">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -78,14 +80,16 @@ export default function TestimonialsSection() {
             </h2>
             <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>
           </div>
-          <div className="hidden sm:flex gap-2 flex-shrink-0">
-            <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+          {showArrows && (
+            <div className="hidden sm:flex gap-2 flex-shrink-0">
+              <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </motion.div>
 
         <div className="relative">
