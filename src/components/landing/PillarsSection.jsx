@@ -11,7 +11,7 @@ function getYoutubeEmbedUrl(url) {
 function PillarsBanner({ imageUrl, videoUrl, youtubeUrl }) {
   const embedUrl = getYoutubeEmbedUrl(youtubeUrl);
   return (
-    <div className="mt-12 rounded-2xl overflow-hidden aspect-[21/9] lg:aspect-[21/7] bg-dark-surface">
+    <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface">
       {embedUrl ? (
         <iframe
           src={embedUrl}
@@ -38,22 +38,32 @@ export default function PillarsSection() {
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="benefits">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-6"
-        >
-          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
-          <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            {c.headline1}<br />
-            {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
-          </h2>
-          <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
-        </motion.div>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-12">
+          {/* Left: text */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
+            <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+              {c.headline1}<br />
+              {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
+            </h2>
+            <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
+          </motion.div>
 
-        <PillarsBanner imageUrl={c.imageUrl} videoUrl={c.videoUrl} youtubeUrl={c.youtubeUrl} />
+          {/* Right: vertical video/image */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <PillarsBanner imageUrl={c.imageUrl} videoUrl={c.videoUrl} youtubeUrl={c.youtubeUrl} />
+          </motion.div>
+        </div>
 
         <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-0 border-t border-dark-border">
           {c.pillars.map((p, i) => (
