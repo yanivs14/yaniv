@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Badge } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -215,21 +215,54 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "testimonials") return (
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headlineAccent", "Headline Accent")} {f("subtitle", "Subtitle", true)}
-      <p className="text-xs text-white-muted mb-2 mt-3 font-body">Testimonials</p>
+
+      <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Testimonials</p>
       {data.items.map((t, i) => (
-        <div key={i} className="mb-4 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
+        <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
           <div className="flex gap-2 mb-2">
-            <input value={t.name} onChange={e => updateDeep("testimonials", "items", i, "name", e.target.value)} placeholder="Name"
+            <input value={t.name || ""} onChange={e => updateDeep("testimonials", "items", i, "name", e.target.value)} placeholder="Name"
               className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-            <input value={t.role} onChange={e => updateDeep("testimonials", "items", i, "role", e.target.value)} placeholder="Role"
+            <input value={t.role || ""} onChange={e => updateDeep("testimonials", "items", i, "role", e.target.value)} placeholder="Role"
               className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <button onClick={() => update("testimonials", "items", data.items.filter((_, idx) => idx !== i))}
+              className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0">
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
-          <textarea value={t.quote} onChange={e => updateDeep("testimonials", "items", i, "quote", e.target.value)} rows={2} placeholder="Quote"
+          <textarea value={t.quote || ""} onChange={e => updateDeep("testimonials", "items", i, "quote", e.target.value)} rows={2} placeholder="Quote"
             className="w-full mb-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
-          <MediaField label="Photo" value={t.img} onChange={v => updateDeep("testimonials", "items", i, "img", v)} />
+          <div className="flex gap-2 mb-2">
+            <div className="flex-1">
+              <p className="text-xs text-white-muted mb-1">Photo</p>
+              <div className="flex gap-2">
+                <input value={t.img || ""} onChange={e => updateDeep("testimonials", "items", i, "img", e.target.value)} placeholder="Image URL"
+                  className="flex-1 min-w-0 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-2 py-1.5 text-xs text-off-white font-body focus:outline-none focus:border-orange-red" />
+                <UploadButton accept="image/*" label="Upload" onUpload={v => updateDeep("testimonials", "items", i, "img", v)} />
+              </div>
+            </div>
+            <div className="flex-1">
+              <p className="text-xs text-white-muted mb-1">Video (optional)</p>
+              <div className="flex gap-2">
+                <input value={t.videoUrl || ""} onChange={e => updateDeep("testimonials", "items", i, "videoUrl", e.target.value)} placeholder="Video URL"
+                  className="flex-1 min-w-0 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-2 py-1.5 text-xs text-off-white font-body focus:outline-none focus:border-orange-red" />
+                <UploadButton accept="video/*" label="Upload" onUpload={v => updateDeep("testimonials", "items", i, "videoUrl", v)} />
+              </div>
+            </div>
+          </div>
+          {t.img && <img src={t.img} className="w-full h-24 object-cover rounded-lg mb-1" />}
+          {t.videoUrl && (
+            <div className="flex items-center gap-2 text-xs text-orange-red mt-1">
+              <Play className="w-3.5 h-3.5" /> Video attached
+            </div>
+          )}
         </div>
       ))}
-      <p className="text-xs text-white-muted mb-2 mt-3 font-body">Social Stats</p>
+      <button onClick={() => update("testimonials", "items", [...data.items, { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2 mb-6">
+        <Plus className="w-4 h-4" /> Add testimonial
+      </button>
+
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body font-semibold">Social Stats</p>
       {data.stats.map((s, i) => (
         <div key={i} className="flex gap-2 mb-2">
           <input value={s.value} onChange={e => updateDeep("testimonials", "stats", i, "value", e.target.value)}
