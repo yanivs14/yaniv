@@ -52,7 +52,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-col gap-4">
+              <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <a
                   href="#pricing"
                   className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors sm:self-start"
@@ -70,8 +70,8 @@ export default function HeroSection() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </motion.button>
 
-                {/* Mobile video — overlaps button above */}
-                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative -mt-16">
+                {/* Mobile video — overlaps buttons above, sits behind them */}
+                <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative -mt-28 -z-10">
                   {c.videoUrl ? (
                     <video
                       src={c.videoUrl}

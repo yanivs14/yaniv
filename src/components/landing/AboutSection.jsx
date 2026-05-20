@@ -1,74 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
-import { useState, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
-
-function GalleryItem({ item }) {
-  const [playing, setPlaying] = useState(false);
-  const videoRef = useRef();
-
-  if (!item.url) return null;
-
-  const isVideo = item.type === "video";
-
-  const handleClick = () => {
-    if (isVideo) {
-      setPlaying(true);
-      setTimeout(() => videoRef.current?.play(), 50);
-    }
-  };
-
-  return (
-    <div
-      className="aspect-square rounded-xl overflow-hidden relative cursor-pointer bg-dark-surface border border-dark-border"
-      onClick={handleClick}
-    >
-      {isVideo ? (
-        playing ? (
-          <video ref={videoRef} src={item.url} className="w-full h-full object-cover" controls playsInline />
-        ) : (
-          <>
-            {item.thumb ? (
-              <img src={item.thumb} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <video src={item.url} className="w-full h-full object-cover" muted />
-            )}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <div className="w-12 h-12 bg-orange-red rounded-full flex items-center justify-center">
-                <Play className="w-5 h-5 text-dark-bg fill-dark-bg ml-0.5" />
-              </div>
-            </div>
-          </>
-        )
-      ) : (
-        <img src={item.url} alt="" className="w-full h-full object-cover" />
-      )}
-    </div>
-  );
-}
 
 export default function AboutSection() {
   const { content } = useSiteContent();
   const c = content.about || {};
   const gallery = c.gallery || [];
+  const [current, setCurrent] = useState(0);
+
+  // All images: main imageUrl first, then gallery images (type=image only)
+  const images = [
+    ...(c.imageUrl ? [c.imageUrl] : []),
+    ...gallery.filter(g => g.type === "image" && g.url).map(g => g.url),
+  ];
+
+  const prev = () => setCurrent(i => (i - 1 + images.length) % images.length);
+  const next = () => setCurrent(i => (i + 1) % images.length);
 
   return (
     <section className="py-12 lg:py-24 bg-dark-surface" id="roye">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-
-        {/* About: image + headline + text */}
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center mb-12 lg:mb-24">
-          {/* Image / Video */}
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+          {/* Image slider */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border"
+            className="aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
           >
-            {c.imageUrl ? (
-              <img src={c.imageUrl} alt={c.headline || "About"} className="w-full h-full object-cover" />
+            {images.length > 0 ? (
+              <>
+                <img
+                  src={images[current]}
+                  alt="About"
+                  className="w-full h-full object-cover transition-opacity duration-300"
+                />
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prev}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 rounded-full flex items-center justify-center text-off-white hover:bg-black/80 transition-colors"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={next}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 rounded-full flex items-center justify-center text-off-white hover:bg-black/80 transition-colors"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                    {/* Dots */}
+                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
+                      {images.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setCurrent(i)}
+                          className={`w-2 h-2 rounded-full transition-colors ${i === current ? "bg-orange-red" : "bg-white/40"}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
                 No image yet
@@ -91,23 +86,6 @@ export default function AboutSection() {
             <p className="font-body text-base text-white-muted leading-relaxed whitespace-pre-line">{c.text}</p>
           </motion.div>
         </div>
-
-        {/* Gallery */}
-        {gallery.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-6">Gallery</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {gallery.map((item, i) => (
-                <GalleryItem key={i} item={item} />
-              ))}
-            </div>
-          </motion.div>
-        )}
       </div>
     </section>
   );

@@ -307,39 +307,34 @@ function SectionEditor({ sectionKey }) {
 
   if (sectionKey === "about") {
     const gallery = data.gallery || [];
+    const imageGallery = gallery.filter(g => g.type === "image");
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
         {f("headlineAccent", "Headline Accent (colored)")}
         {f("text", "Body Text (7-8 lines)", true)}
-        <MediaField label="Profile / About Image" value={data.imageUrl} onChange={v => update("about", "imageUrl", v)} isVideo={false} />
+        <MediaField label="Main Profile Image" value={data.imageUrl} onChange={v => update("about", "imageUrl", v)} isVideo={false} />
 
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Gallery</p>
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Gallery Images (slider)</p>
+        <p className="text-xs text-white-dim mb-3 font-body">These appear in the image slider alongside the main image above</p>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          {gallery.map((item, i) => (
-            <div key={i} className="relative rounded-xl overflow-hidden border border-[#2a2a2a] bg-[#111]">
-              {item.type === "video" ? (
-                <video src={item.url} className="w-full aspect-square object-cover" muted />
-              ) : (
+          {imageGallery.map((item, i) => {
+            const realIdx = gallery.indexOf(item);
+            return (
+              <div key={i} className="relative rounded-xl overflow-hidden border border-[#2a2a2a] bg-[#111]">
                 <img src={item.url} alt="" className="w-full aspect-square object-cover" />
-              )}
-              <button
-                onClick={() => update("about", "gallery", gallery.filter((_, idx) => idx !== i))}
-                className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white-muted hover:text-red-400 transition-colors"
-              >
-                <Trash2 className="w-3 h-3" />
-              </button>
-              <div className="absolute bottom-1.5 left-1.5 text-xs bg-black/60 text-white-muted px-1.5 py-0.5 rounded">
-                {item.type === "video" ? "Video" : "Image"}
+                <button
+                  onClick={() => update("about", "gallery", gallery.filter((_, idx) => idx !== realIdx))}
+                  className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/70 rounded-full flex items-center justify-center text-white-muted hover:text-red-400 transition-colors"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <div className="flex gap-2">
-          <UploadButton accept="image/*" label="Add Image" onUpload={url => update("about", "gallery", [...gallery, { url, type: "image" }])} />
-          <UploadButton accept="video/*" label="Add Video" onUpload={url => update("about", "gallery", [...gallery, { url, type: "video" }])} />
-        </div>
+        <UploadButton accept="image/*" label="Add Image" onUpload={url => update("about", "gallery", [...gallery, { url, type: "image" }])} />
       </div>
     );
   }
