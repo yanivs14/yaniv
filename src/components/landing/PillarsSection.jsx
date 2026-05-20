@@ -1,6 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useSiteContent } from "@/lib/SiteContentContext";
+
+function getYoutubeEmbedUrl(url) {
+  if (!url) return null;
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}&controls=0&modestbranding=1` : null;
+}
+
+function PillarsBanner({ imageUrl, videoUrl, youtubeUrl }) {
+  const embedUrl = getYoutubeEmbedUrl(youtubeUrl);
+  return (
+    <div className="mt-12 rounded-2xl overflow-hidden aspect-[21/9] lg:aspect-[21/7] bg-dark-surface">
+      {embedUrl ? (
+        <iframe
+          src={embedUrl}
+          className="w-full h-full"
+          frameBorder="0"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+        />
+      ) : videoUrl ? (
+        <video src={videoUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+      ) : imageUrl ? (
+        <img src={imageUrl} alt="Pillars banner" className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">No media yet</div>
+      )}
+    </div>
+  );
+}
 
 export default function PillarsSection() {
   const { content } = useSiteContent();
@@ -24,9 +53,7 @@ export default function PillarsSection() {
           <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
         </motion.div>
 
-        <div className="mt-12 rounded-2xl overflow-hidden aspect-[21/9] lg:aspect-[21/7]">
-          <img src={c.imageUrl} alt="Pillars banner" className="w-full h-full object-cover" />
-        </div>
+        <PillarsBanner imageUrl={c.imageUrl} videoUrl={c.videoUrl} youtubeUrl={c.youtubeUrl} />
 
         <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-0 border-t border-dark-border">
           {c.pillars.map((p, i) => (

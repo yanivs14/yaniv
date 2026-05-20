@@ -175,7 +175,12 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "pillars") return (
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
-      {f("subtitle", "Subtitle", true)} {m("imageUrl", "Banner Image")}
+      {f("subtitle", "Subtitle", true)}
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body font-semibold">Banner Media</p>
+      <p className="text-xs text-white-dim mb-3 font-body">YouTube URL takes priority, then uploaded video, then image</p>
+      {f("youtubeUrl", "YouTube URL (e.g. https://youtu.be/xxx)")}
+      {m("videoUrl", "Upload Video", true)}
+      {m("imageUrl", "Fallback Image")}
       <p className="text-xs text-white-muted mb-2 mt-3 font-body">Pillars</p>
       {data.pillars.map((p, i) => (
         <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
