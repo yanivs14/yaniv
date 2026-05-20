@@ -60,8 +60,6 @@ export default function TestimonialsSection() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
-  const showArrows = c.items.length > 3;
-
   return (
     <section className="py-20 lg:py-32 bg-dark-bg" id="members">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -80,8 +78,18 @@ export default function TestimonialsSection() {
             </h2>
             <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>
           </div>
-          {showArrows && (
-            <div className="hidden sm:flex gap-2 flex-shrink-0">
+
+        </motion.div>
+
+        <div className="relative">
+          {/* Mobile: always slider */}
+          <div className="sm:hidden">
+            <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+              {c.items.map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+            <div className="flex justify-center gap-3 mt-4">
               <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -89,33 +97,13 @@ export default function TestimonialsSection() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-          )}
-        </motion.div>
-
-        <div className="relative">
-          {c.items.length <= 3 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
-              {c.items.map((t, i) => (
-                <TestimonialCard key={i} t={t} />
-              ))}
-            </div>
-          ) : (
-            <>
-              <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-                {c.items.map((t, i) => (
-                  <TestimonialCard key={i} t={t} />
-                ))}
-              </div>
-              <div className="flex sm:hidden justify-center gap-3 mt-4">
-                <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </>
-          )}
+          </div>
+          {/* Desktop: grid */}
+          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
+            {c.items.map((t, i) => (
+              <TestimonialCard key={i} t={t} />
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-8 border-t border-dark-border pt-12 mt-12">
