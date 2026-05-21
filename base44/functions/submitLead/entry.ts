@@ -11,16 +11,28 @@ Deno.serve(async (req) => {
 
     const isInnerCircle = source === 'inner_circle';
 
-    // Save lead
+    // Save lead — this is the critical part, always must succeed
     const lead = await base44.asServiceRole.entities.Lead.create({
-      full_name, phone, email: email || '', source: source || 'quiz', quiz_recommendation: quiz_recommendation || ''
+      full_name,
+      phone,
+      email: email || '',
+      source: source || 'quiz',
+      quiz_recommendation: quiz_recommendation || '',
+      status: 'new'
     });
 
-    // Get notification emails
-    const settings = await base44.asServiceRole.entities.LeadSettings.list();
-    const recipientEmails = settings?.[0]?.recipient_emails || [];
+    console.log('Lead saved:', lead.id, '| source:', source);
 
-    // Send confirmation email to user
+    // Get notification emails
+    let recipientEmails = [];
+    try {
+      const settings = await base44.asServiceRole.entities.LeadSettings.list();
+      recipientEmails = settings?.[0]?.recipient_emails || [];
+    } catch (e) {
+      console.warn('Could not fetch LeadSettings:', e.message);
+    }
+
+    // Send confirmation email to user (non-blocking)
     if (email) {
       const userEmailBody = isInnerCircle ? `
 <!DOCTYPE html>
@@ -40,30 +52,7 @@ Deno.serve(async (req) => {
             <p style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:3px;margin:0 0 12px;">Inner Circle</p>
             <h1 style="color:#F5F5F5;font-size:30px;font-weight:700;margin:0 0 16px;line-height:1.2;">Thank you, ${full_name}.</h1>
             <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 24px;">
-              We've received your request to book a call with our team. One of our movement experts will reach out to you shortly to schedule your personal consultation.
-            </p>
-            <div style="background:#0F0F0F;border:1px solid #2A2A2A;border-radius:12px;padding:24px;margin-bottom:32px;">
-              <p style="color:#00fff7;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">What to Expect</p>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="padding:8px 0;border-bottom:1px solid #2A2A2A;">
-                    <span style="color:#F5F5F5;font-size:14px;">📞 &nbsp;A 1-on-1 discovery call with Roye's team</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 0;border-bottom:1px solid #2A2A2A;">
-                    <span style="color:#F5F5F5;font-size:14px;">🎯 &nbsp;Personalized program assessment</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 0;">
-                    <span style="color:#F5F5F5;font-size:14px;">🔥 &nbsp;Custom roadmap for your movement journey</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <p style="color:#555;font-size:13px;line-height:1.6;margin:0;">
-              While you wait, explore the Kinetiqo method and get familiar with the foundation of intelligent movement.
+              We've received your request to book a call with our team. One of our movement experts will reach out to you shortly.
             </p>
           </td>
         </tr>
@@ -93,12 +82,11 @@ Deno.serve(async (req) => {
           <td style="padding:40px;text-align:right;">
             <p style="color:#888;font-size:13px;text-transform:uppercase;letter-spacing:3px;margin:0 0 16px;">הודעת אישור</p>
             <h1 style="color:#F5F5F5;font-size:32px;font-weight:700;margin:0 0 16px;line-height:1.2;">תודה, ${full_name} 🙌</h1>
-            <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 32px;">קיבלנו את הפרטים שלך ונחזור אליך בהקדם.<br/>בינתיים — הגוף שלך ממתין לך.</p>
+            <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 32px;">קיבלנו את הפרטים שלך ונחזור אליך בהקדם.</p>
             <div style="background:#0F0F0F;border:1px solid #2A2A2A;border-radius:12px;padding:24px;margin-bottom:32px;">
               <p style="color:#00fff7;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px;">ההמלצה שלך</p>
               <p style="color:#F5F5F5;font-size:18px;font-weight:700;margin:0;">${quiz_recommendation || 'Foundation Track'}</p>
             </div>
-            <a href="#" style="display:inline-block;background:#00fff7;color:#0F0F0F;font-weight:700;font-size:14px;padding:14px 32px;border-radius:100px;text-decoration:none;letter-spacing:1px;">התחל לזוז →</a>
           </td>
         </tr>
         <tr>
@@ -112,21 +100,26 @@ Deno.serve(async (req) => {
 </body>
 </html>`;
 
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: email,
-        subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'תודה שהצטרפת — Kinetiqo',
-        from_name: 'Kinetiqo',
-        body: userEmailBody
-      });
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: email,
+          subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'תודה שהצטרפת — Kinetiqo',
+          from_name: 'Kinetiqo',
+          body: userEmailBody
+        });
+      } catch (emailErr) {
+        console.warn('User confirmation email failed (non-critical):', emailErr.message);
+      }
     }
 
-    // Notify admins
+    // Notify admins (non-blocking)
     for (const adminEmail of recipientEmails) {
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        to: adminEmail,
-        subject: isInnerCircle ? `Inner Circle inquiry — ${full_name}` : `ליד חדש — ${full_name}`,
-        from_name: 'Kinetiqo Leads',
-        body: `
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: adminEmail,
+          subject: isInnerCircle ? `Inner Circle inquiry — ${full_name}` : `ליד חדש — ${full_name}`,
+          from_name: 'Kinetiqo Leads',
+          body: `
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"></head>
@@ -181,7 +174,10 @@ Deno.serve(async (req) => {
   </table>
 </body>
 </html>`
-      });
+        });
+      } catch (adminEmailErr) {
+        console.warn('Admin notification email failed (non-critical):', adminEmailErr.message);
+      }
     }
 
     return Response.json({ success: true, lead_id: lead.id });
