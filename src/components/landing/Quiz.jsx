@@ -159,43 +159,45 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
           return (
             <div key={plan.key} className={`rounded-2xl border transition-all duration-200 overflow-hidden ${plan.accentColor ? "border-orange-red/60 bg-orange-red/5" : "border-dark-border bg-dark-bg"}`}>
               {/* Row */}
-              <div className="flex items-center px-4 py-3.5 gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`font-heading text-base font-bold uppercase tracking-tight ${plan.accentColor ? "text-off-white" : "text-off-white"}`}>{plan.label}</span>
-                    {plan.badge && (
-                      <span className="font-body text-[10px] font-semibold bg-orange-red text-dark-bg px-2 py-0.5 rounded-full">{plan.badge}</span>
-                    )}
-                    {plan.discount && (
-                      <span className="font-body text-[10px] font-bold text-orange-red border border-orange-red/40 px-2 py-0.5 rounded-full">{plan.discount}</span>
-                    )}
+              <div className="px-4 pt-3.5 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-heading text-base font-bold uppercase tracking-tight text-off-white">{plan.label}</span>
+                      {plan.badge && (
+                        <span className="font-body text-[10px] font-semibold bg-orange-red text-dark-bg px-2 py-0.5 rounded-full">{plan.badge}</span>
+                      )}
+                      {plan.discount && (
+                        <span className="font-body text-[10px] font-bold text-orange-red border border-orange-red/40 px-2 py-0.5 rounded-full">{plan.discount}</span>
+                      )}
+                    </div>
+                    <div className="flex items-baseline gap-1 mt-0.5">
+                      <span className={`font-heading text-2xl font-bold ${plan.accentColor ? "text-orange-red" : "text-off-white"}`}>{plan.price(c)}</span>
+                      <span className="font-body text-xs text-white-muted">{plan.period}</span>
+                    </div>
                   </div>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className={`font-heading text-2xl font-bold ${plan.accentColor ? "text-orange-red" : "text-off-white"}`}>{plan.price(c)}</span>
-                    <span className="font-body text-xs text-white-muted">{plan.period}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => setExpanded(isOpen ? null : plan.key)}
+                      className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full"
+                    >
+                      {isOpen ? "Hide" : "Compare"}
+                    </button>
+                    <button
+                      onClick={() => handleCheckout(plan.key)}
+                      disabled={checkoutLoading === plan.key}
+                      className={`flex items-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
+                    >
+                      {checkoutLoading === plan.key
+                        ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
+                        : <>Start <ArrowRight className="w-3 h-3" /></>
+                      }
+                    </button>
                   </div>
-                  {plan.subtitle && (
-                    <p className="font-body text-[11px] text-white-muted mt-1">{plan.subtitle}</p>
-                  )}
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => setExpanded(isOpen ? null : plan.key)}
-                    className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full"
-                  >
-                    {isOpen ? "Hide" : "Compare"}
-                  </button>
-                  <button
-                    onClick={() => handleCheckout(plan.key)}
-                    disabled={checkoutLoading === plan.key}
-                    className={`flex items-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
-                  >
-                    {checkoutLoading === plan.key
-                      ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-                      : <>Start <ArrowRight className="w-3 h-3" /></>
-                    }
-                  </button>
-                </div>
+                {plan.subtitle && (
+                  <p className="font-body text-[11px] text-white-muted mt-1.5">{plan.subtitle}</p>
+                )}
               </div>
 
               {/* Expandable features */}
