@@ -121,6 +121,7 @@ const plans = [
     period: "/ year",
     discount: "Save 40%",
     badge: "Best value",
+    subtitle: "Our annual members enjoy extra content and benefits.",
     features: annualFeatures,
     accentColor: true,
   },
@@ -149,13 +150,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
         </button>
       </div>
 
-      <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 mb-3 w-fit">
-        <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-        <span className="font-body text-xs text-orange-red uppercase tracking-widest">Choose your plan</span>
-      </div>
-
-      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-1">{rec.title}</h2>
-      <p className="font-body text-xs text-white-muted leading-relaxed mb-6">{rec.description}</p>
+      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-6">{rec.title}</h2>
 
       {/* Plan rows */}
       <div className="space-y-3">
@@ -179,6 +174,9 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                     <span className={`font-heading text-2xl font-bold ${plan.accentColor ? "text-orange-red" : "text-off-white"}`}>{plan.price(c)}</span>
                     <span className="font-body text-xs text-white-muted">{plan.period}</span>
                   </div>
+                  {plan.subtitle && (
+                    <p className="font-body text-[11px] text-white-muted mt-1">{plan.subtitle}</p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
