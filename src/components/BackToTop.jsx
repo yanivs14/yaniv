@@ -20,7 +20,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.7, y: 10 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-50 
+          className="fixed bottom-[72px] right-4 md:bottom-8 md:right-8 z-50 
             w-9 h-9 md:w-11 md:h-11
             bg-orange-red text-dark-bg 
             rounded-full shadow-lg shadow-orange-red/30
