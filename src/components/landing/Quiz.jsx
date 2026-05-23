@@ -253,7 +253,7 @@ export default function Quiz({ onClose }) {
     setCheckoutLoading(null);
   };
 
-  const current = questions[step];
+  const current = questions[step] || questions[0];
   const progress = (step / questions.length) * 100;
   const rec = getRecommendation(answers);
 
