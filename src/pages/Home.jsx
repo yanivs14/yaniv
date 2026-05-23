@@ -18,7 +18,9 @@ const Footer = lazy(() => import("../components/landing/Footer"));
 
 
 export default function Home() {
-  const { loading } = useSiteContent();
+  const { loading, content } = useSiteContent();
+
+  if (loading || !content) return null;
 
   return (
     <div className="bg-dark-bg min-h-screen">

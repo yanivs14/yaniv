@@ -180,7 +180,7 @@ function mergeDbRecords(records) {
 }
 
 export function SiteContentProvider({ children }) {
-  const [content, setContent] = useState(DEFAULT_CONTENT);
+  const [content, setContent] = useState(null);
   const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
   const [loading, setLoading] = useState(true);
 
@@ -194,7 +194,10 @@ export function SiteContentProvider({ children }) {
       setDbRecords(byKey);
       setContent(mergeDbRecords(records));
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      setContent(DEFAULT_CONTENT);
+      setLoading(false);
+    });
   }, []);
 
   // Update a field and persist to DB
