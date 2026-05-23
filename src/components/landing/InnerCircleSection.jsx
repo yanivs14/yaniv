@@ -69,7 +69,7 @@ export default function InnerCircleSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="order-1 lg:order-2 aspect-[4/5] rounded-2xl overflow-hidden bg-dark-surface border border-dark-border"
+            className="order-1 lg:order-2 aspect-[3/4] rounded-2xl overflow-hidden bg-dark-surface border border-dark-border"
           >
             {c.imageUrl ? (
               <img src={c.imageUrl} alt="Inner Circle" className="w-full h-full object-cover" />

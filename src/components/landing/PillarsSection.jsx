@@ -38,9 +38,9 @@ export default function PillarsSection() {
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="benefits">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Left: text + pillars grid */}
-          <div>
+          <div className="flex flex-col">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -56,7 +56,7 @@ export default function PillarsSection() {
             </motion.div>
 
             {/* Pillars grid — 2x2 on desktop, fills the left column */}
-            <div className="mt-10 grid grid-cols-2 gap-0 border-t border-dark-border">
+            <div className="mt-10 grid grid-cols-2 gap-0 border-t border-dark-border flex-1">
               {c.pillars.map((p, i) => (
                 <motion.div
                   key={i}
@@ -64,7 +64,7 @@ export default function PillarsSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="group relative pt-6 pb-8 px-6 border-dark-border overflow-hidden cursor-default border-r border-b [&:nth-child(2)]:border-r-0 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0 [&:nth-child(4)]:border-r-0"
+                  className="group relative pt-6 pb-8 px-6 border-dark-border overflow-hidden cursor-default border-r border-b [&:nth-child(2)]:border-r-0 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0 [&:nth-child(4)]:border-r-0 flex flex-col justify-center"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-red/0 to-orange-red/0 group-hover:from-orange-red/5 group-hover:to-orange-red/0 transition-all duration-500" />
                   <div className="absolute bottom-0 left-6 right-6 h-px bg-orange-red scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
