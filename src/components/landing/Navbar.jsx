@@ -5,7 +5,14 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [showFloat, setShowFloat] = useState(false);
   const { content } = useSiteContent();
+
+  useEffect(() => {
+    const onScroll = () => setShowFloat(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const c = content.navbar;
 
   // Lock body scroll when mobile menu is open
@@ -60,6 +67,23 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
+
+      {/* Floating CTA button */}
+      <AnimatePresence>
+        {showFloat && (
+          <motion.a
+            href="#pricing"
+            onClick={(e) => scrollTo(e, "#pricing")}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 font-body text-xs font-semibold bg-orange-red text-dark-bg px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-red-hover transition-colors whitespace-nowrap"
+          >
+            {c.cta}
+          </motion.a>
+        )}
+      </AnimatePresence>
 
       {/* Mobile fullscreen overlay — outside nav to avoid clipping */}
       <AnimatePresence>
