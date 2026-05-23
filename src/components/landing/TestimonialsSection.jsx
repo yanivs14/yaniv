@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { useState } from "react";
 
@@ -16,8 +16,8 @@ function TestimonialCard({ t }) {
   };
 
   return (
-    <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start">
-      <div className="aspect-[3/4] overflow-hidden relative cursor-pointer" onClick={handleMediaClick}>
+    <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start flex flex-col">
+      <div className="aspect-[3/4] overflow-hidden relative cursor-pointer flex-shrink-0" onClick={handleMediaClick}>
         {t.videoUrl ? (
           <>
             {!playing ? (
@@ -37,12 +37,9 @@ function TestimonialCard({ t }) {
           <img src={t.img} alt={t.name} className="w-full h-full object-cover" />
         )}
       </div>
-      <div className="p-5">
-        <div className="flex gap-0.5 mb-3">
-          {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-orange-red text-orange-red" />)}
-        </div>
-        <p className="font-body text-sm text-off-white/80 leading-relaxed mb-4">"{t.quote}"</p>
-        <div>
+      <div className="p-5 flex flex-col flex-1">
+        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1 mb-4">"{t.quote}"</p>
+        <div className="mt-auto">
           <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
           <p className="font-body text-xs text-white-muted">{t.role}</p>
         </div>

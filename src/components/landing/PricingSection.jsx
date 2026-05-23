@@ -37,13 +37,13 @@ function MonthlyCard({ c, mobile = false }) {
     setLoading(false);
   };
   return (
-    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"}`}>
+    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"} flex flex-col`}>
       <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
       <div className="flex items-baseline gap-1 my-3">
         <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
-      <ul className="space-y-2 mb-5">
+      <ul className="space-y-2 flex-1">
         {monthlyFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
@@ -51,11 +51,13 @@ function MonthlyCard({ c, mobile = false }) {
           </li>
         ))}
       </ul>
-      <button onClick={handleClick} disabled={loading}
-        className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
-        {loading ? "Loading..." : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
-      </button>
-      <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
+      <div className="mt-5">
+        <button onClick={handleClick} disabled={loading}
+          className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
+          {loading ? "Loading..." : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+        </button>
+        <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
+      </div>
     </div>
   );
 }
@@ -69,7 +71,7 @@ function AnnualCard({ c, mobile = false }) {
     setLoading(false);
   };
   return (
-    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative`}>
+    <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative flex flex-col`}>
       <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
         Best value
       </div>
@@ -79,7 +81,7 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
       </div>
       <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 inline-block px-3 py-1 rounded-full">{c.annualSavings}</p>
-      <ul className="space-y-2 mb-4">
+      <ul className="space-y-2 flex-1">
         {annualFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
@@ -87,11 +89,13 @@ function AnnualCard({ c, mobile = false }) {
           </li>
         ))}
       </ul>
-      <button onClick={handleClick} disabled={loading}
-        className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
-        {loading ? "Loading..." : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
-      </button>
-      <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
+      <div className="mt-4">
+        <button onClick={handleClick} disabled={loading}
+          className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
+          {loading ? "Loading..." : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+        </button>
+        <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
+      </div>
     </div>
   );
 }
@@ -127,7 +131,7 @@ export default function PricingSection() {
         </motion.div>
 
         {/* Desktop grid */}
-        <div className="hidden md:grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="hidden md:grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
           <MonthlyCard c={c} />
           <AnnualCard c={c} />
         </div>
