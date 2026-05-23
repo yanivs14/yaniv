@@ -78,7 +78,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-6 z-50 font-body text-xs font-semibold bg-orange-red text-dark-bg px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-red-hover transition-colors whitespace-nowrap md:hidden" style={{ left: '50%', transform: 'translateX(-50%)' }}
+            className="fixed bottom-6 inset-x-0 mx-auto w-fit z-50 font-body text-xs font-semibold bg-orange-red text-dark-bg px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-red-hover transition-colors whitespace-nowrap md:hidden"
           >
             {c.cta}
           </motion.a>
