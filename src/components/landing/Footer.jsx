@@ -23,7 +23,7 @@ export default function Footer() {
 
         {/* Nav links */}
         {navLinks.length > 0 && (
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+          <nav className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-y-3 sm:gap-x-8">
             {navLinks.map((l) => (
               <a
                 key={l.label}
