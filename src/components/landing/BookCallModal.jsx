@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function BookCallModal({ open, onClose }) {
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [open]);
+
   const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
