@@ -150,10 +150,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
         </button>
       </div>
 
-      <div className="inline-flex items-center gap-2 bg-transparent border border-orange-red/60 rounded-full px-4 py-1.5 mb-6">
-        <span className="w-1.5 h-1.5 bg-orange-red rounded-full" />
-        <span className="font-body text-xs text-orange-red uppercase tracking-widest font-semibold">Choose your plan</span>
-      </div>
+      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-6">{rec.title}</h2>
 
       {/* Plan rows */}
       <div className="space-y-3">
