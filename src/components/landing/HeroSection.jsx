@@ -5,29 +5,6 @@ import Quiz from "./Quiz";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 
-function PillarsGrid() {
-  const { content } = useSiteContent();
-  const pillars = content?.pillars?.pillars || [];
-  if (!pillars.length) return null;
-  return (
-    <div className="grid grid-cols-2 gap-0 border-t border-dark-border mt-6">
-      {pillars.map((p, i) => (
-        <div
-          key={i}
-          className="group relative pt-5 pb-6 px-4 border-dark-border overflow-hidden cursor-default border-r border-b [&:nth-child(2)]:border-r-0 [&:nth-child(3)]:border-b-0 [&:nth-child(4)]:border-b-0 [&:nth-child(4)]:border-r-0"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-red/0 to-orange-red/0 group-hover:from-orange-red/5 group-hover:to-orange-red/0 transition-all duration-500" />
-          <div className="relative">
-            <div className="text-xl text-orange-red mb-2 inline-block">{p.icon}</div>
-            <h3 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight mb-1 group-hover:text-orange-red transition-colors duration-300">{p.title}</h3>
-            <p className="font-body text-xs text-white-muted leading-relaxed">{p.desc}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function HeroSection() {
   const [quizOpen, setQuizOpen] = useState(false);
   const { content, update, adminMode } = useSiteContent();
@@ -96,11 +73,6 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* Pillars grid — desktop only (mobile: below video) */}
-              <div className="hidden lg:block">
-                <PillarsGrid />
-              </div>
-
               {/* Mobile video — below CTA buttons */}
               <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface mt-4">
                 {c.videoUrl ? (
@@ -121,11 +93,6 @@ export default function HeroSection() {
                     fetchpriority="high"
                   />
                 )}
-              </div>
-
-              {/* Pillars grid — mobile only (below video) */}
-              <div className="lg:hidden">
-                <PillarsGrid />
               </div>
             </motion.div>
 

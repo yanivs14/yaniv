@@ -69,13 +69,12 @@ export default function InnerCircleSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="order-1 lg:order-2 rounded-2xl overflow-hidden bg-dark-surface border border-dark-border"
-            style={{ minHeight: "520px" }}
+            className="order-1 lg:order-2 aspect-[4/5] rounded-2xl overflow-hidden bg-dark-surface border border-dark-border"
           >
             {c.imageUrl ? (
-              <img src={c.imageUrl} alt="Inner Circle" className="w-full h-full object-cover object-top" style={{ minHeight: "520px" }} />
+              <img src={c.imageUrl} alt="Inner Circle" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm" style={{ minHeight: "520px" }}>
+              <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
                 No image yet
               </div>
             )}
