@@ -26,13 +26,13 @@ export default function Home() {
     <div className="bg-dark-bg min-h-screen">
       <Navbar />
       <HeroSection />
-      <MarqueeBanner />
+      <PillarsSection />
       <HowItFlowsSection />
       <DegradingSection />
-      <PillarsSection />
+      <MarqueeBanner />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
-        <AboutSection />
         <TestimonialsSection />
+        <AboutSection />
         <FAQSection />
         <PricingSection />
         <InnerCircleSection />
