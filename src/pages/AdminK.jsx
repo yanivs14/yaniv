@@ -118,6 +118,7 @@ function SocialEditor() {
 
 function SectionEditor({ sectionKey }) {
   const { content, update, updateDeep, resetSection } = useSiteContent();
+  if (!content) return null;
   const data = content[sectionKey];
   if (!data) return null;
   const f = (key, label, multiline = false) => <Field key={key} label={label} value={data[key]} onChange={v => update(sectionKey, key, v)} multiline={multiline} />;
