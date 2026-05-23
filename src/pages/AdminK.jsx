@@ -19,6 +19,11 @@ const CONTENT_SECTIONS = [
   { key: "finalCta", label: "Final CTA", icon: "✦" },
   { key: "footer", label: "Footer", icon: "▬" },
   { key: "social", label: "Social Links", icon: "⬡" },
+  { key: "policy_privacy-policy", label: "Privacy Policy", icon: "🔒" },
+  { key: "policy_terms-of-use", label: "Terms of Use", icon: "📋" },
+  { key: "policy_refund-policy", label: "Refund Policy", icon: "↩" },
+  { key: "policy_accessibility-statement", label: "Accessibility", icon: "♿" },
+  { key: "policy_consumer-health-statement", label: "Health Statement", icon: "❤" },
 ];
 
 const SOCIAL_ICON_OPTIONS = ["instagram", "youtube", "twitter", "facebook", "linkedin", "tiktok"];
@@ -119,6 +124,11 @@ function SocialEditor() {
 function SectionEditor({ sectionKey }) {
   const { content, update, updateDeep, resetSection } = useSiteContent();
   if (!content) return null;
+
+  if (sectionKey.startsWith("policy_")) {
+    return <PolicyEditor sectionKey={sectionKey} />;
+  }
+
   const data = content[sectionKey];
   if (!data) return null;
   const f = (key, label, multiline = false) => <Field key={key} label={label} value={data[key]} onChange={v => update(sectionKey, key, v)} multiline={multiline} />;
@@ -374,6 +384,57 @@ function SectionEditor({ sectionKey }) {
   );
 
   return null;
+}
+
+function PolicyEditor({ sectionKey }) {
+  const [body, setBody] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [recordId, setRecordId] = useState(null);
+
+  useEffect(() => {
+    base44.entities.SiteContent.list().then(records => {
+      const rec = records.find(r => r.section_key === sectionKey);
+      setBody(rec?.data?.body || "");
+      setRecordId(rec?.id || null);
+    });
+  }, [sectionKey]);
+
+  const save = async () => {
+    setSaving(true);
+    const data = { body };
+    if (recordId) {
+      await base44.entities.SiteContent.update(recordId, { data });
+    } else {
+      const created = await base44.entities.SiteContent.create({ section_key: sectionKey, data });
+      setRecordId(created.id);
+    }
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const slug = sectionKey.replace("policy_", "");
+
+  return (
+    <div>
+      <p className="text-xs text-white-muted mb-1 font-body">Enter the page content below. Leave empty to hide this page from the footer.</p>
+      <a href={`/${slug}`} target="_blank" rel="noreferrer" className="text-xs text-orange-red underline underline-offset-4 mb-4 inline-block hover:text-orange-red-hover transition-colors">
+        Preview page →
+      </a>
+      <textarea
+        value={body}
+        onChange={e => setBody(e.target.value)}
+        rows={18}
+        placeholder="Enter page content here..."
+        className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl px-4 py-3 text-sm text-off-white font-body resize-none focus:outline-none focus:border-orange-red transition-colors mb-4"
+      />
+      <button onClick={save} disabled={saving}
+        className="w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
+        {saved ? "Saved ✓" : saving ? "Saving..." : "Save page"}
+      </button>
+    </div>
+  );
 }
 
 // ---- LEADS TAB ----

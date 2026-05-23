@@ -7,6 +7,8 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import AdminK from './pages/AdminK';
+import PolicyPage from './pages/PolicyPage';
+import CookieBanner from './components/CookieBanner';
 import { SiteContentProvider } from '@/lib/SiteContentContext';
 // Add page imports here
 
@@ -39,6 +41,7 @@ const AuthenticatedApp = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin-k" element={<AdminK />} />
+        <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </SiteContentProvider>
@@ -53,6 +56,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <AuthenticatedApp />
+          <CookieBanner />
         </Router>
         <Toaster />
       </QueryClientProvider>

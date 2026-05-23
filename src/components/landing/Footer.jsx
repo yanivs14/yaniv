@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import SocialLinks from "./SocialLinks";
+import { base44 } from "@/api/base44Client";
+
+const POLICY_PAGES = [
+  { slug: "privacy-policy", label: "Privacy Policy" },
+  { slug: "terms-of-use", label: "Terms of Use" },
+  { slug: "refund-policy", label: "Refund Policy" },
+  { slug: "accessibility-statement", label: "Accessibility Statement" },
+  { slug: "consumer-health-statement", label: "Consumer Health Statement" },
+];
 
 export default function Footer() {
   const { content } = useSiteContent();
   const c = content.footer;
   const navLinks = content.navbar?.links || [];
+  const [policyLinks, setPolicyLinks] = useState([]);
+
+  useEffect(() => {
+    base44.entities.SiteContent.list().then((records) => {
+      const active = POLICY_PAGES.filter(p => {
+        const rec = records.find(r => r.section_key === `policy_${p.slug}`);
+        return rec?.data?.body?.trim();
+      });
+      setPolicyLinks(active);
+    }).catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-dark-surface border-t border-dark-border">
@@ -41,6 +61,21 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="w-full h-px bg-dark-border" />
+
+        {/* Policy links */}
+        {policyLinks.length > 0 && (
+          <nav className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-y-2 sm:gap-x-6">
+            {policyLinks.map((p) => (
+              <a
+                key={p.slug}
+                href={`/${p.slug}`}
+                className="font-body text-xs text-white-dim hover:text-off-white transition-colors underline underline-offset-4"
+              >
+                {p.label}
+              </a>
+            ))}
+          </nav>
+        )}
 
         {/* Copyright */}
         <p className="font-body text-xs text-white-dim">{c.copyright}</p>

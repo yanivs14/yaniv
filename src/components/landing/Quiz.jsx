@@ -150,7 +150,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
         </button>
       </div>
 
-      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-6">{rec.title}</h2>
+      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-6">Choose your plan</h2>
 
       {/* Plan rows */}
       <div className="space-y-3">
