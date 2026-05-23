@@ -17,7 +17,7 @@ function TestimonialCard({ t }) {
 
   return (
     <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start flex flex-col">
-      <div className="aspect-[3/4] overflow-hidden relative cursor-pointer flex-shrink-0" onClick={handleMediaClick}>
+      <div className={`aspect-[3/4] overflow-hidden relative flex-shrink-0 ${!playing ? "cursor-pointer" : ""}`} onClick={!playing ? handleMediaClick : undefined}>
         {t.videoUrl ? (
           <>
             {!playing ? (
