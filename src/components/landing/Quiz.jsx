@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -113,6 +113,126 @@ const annualFeatures = [
   "Priority access to new releases",
 ];
 
+const plans = [
+  {
+    key: "annual",
+    label: "Annual",
+    price: (c) => c.annualPrice,
+    period: "/ year",
+    discount: "Save 40%",
+    badge: "Best value",
+    features: annualFeatures,
+    accentColor: true,
+  },
+  {
+    key: "monthly",
+    label: "Monthly",
+    price: (c) => c.monthlyPrice,
+    period: "/ month",
+    discount: null,
+    badge: null,
+    features: monthlyFeatures,
+    accentColor: false,
+  },
+];
+
+function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
+  const [expanded, setExpanded] = useState(null);
+
+  return (
+    <motion.div key="pricing" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
+
+      <div className="flex items-center mb-5">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-white-muted hover:text-orange-red transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back
+        </button>
+      </div>
+
+      <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 mb-3 w-fit">
+        <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
+        <span className="font-body text-xs text-orange-red uppercase tracking-widest">Choose your plan</span>
+      </div>
+
+      <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-1">{rec.title}</h2>
+      <p className="font-body text-xs text-white-muted leading-relaxed mb-6">{rec.description}</p>
+
+      {/* Plan rows */}
+      <div className="space-y-3">
+        {plans.map((plan) => {
+          const isOpen = expanded === plan.key;
+          return (
+            <div key={plan.key} className={`rounded-2xl border transition-all duration-200 overflow-hidden ${plan.accentColor ? "border-orange-red/60 bg-orange-red/5" : "border-dark-border bg-dark-bg"}`}>
+              {/* Row */}
+              <div className="flex items-center px-4 py-3.5 gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`font-heading text-base font-bold uppercase tracking-tight ${plan.accentColor ? "text-off-white" : "text-off-white"}`}>{plan.label}</span>
+                    {plan.badge && (
+                      <span className="font-body text-[10px] font-semibold bg-orange-red text-dark-bg px-2 py-0.5 rounded-full">{plan.badge}</span>
+                    )}
+                    {plan.discount && (
+                      <span className="font-body text-[10px] font-semibold text-orange-red border border-orange-red/40 px-2 py-0.5 rounded-full">{plan.discount}</span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className={`font-heading text-2xl font-bold ${plan.accentColor ? "text-orange-red" : "text-off-white"}`}>{plan.price(c)}</span>
+                    <span className="font-body text-xs text-white-muted">{plan.period}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => setExpanded(isOpen ? null : plan.key)}
+                    className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full"
+                  >
+                    {isOpen ? "Hide" : "Compare"}
+                  </button>
+                  <button
+                    onClick={() => handleCheckout(plan.key)}
+                    disabled={checkoutLoading === plan.key}
+                    className={`flex items-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
+                  >
+                    {checkoutLoading === plan.key
+                      ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
+                      : <>Start <ArrowRight className="w-3 h-3" /></>
+                    }
+                  </button>
+                </div>
+              </div>
+
+              {/* Expandable features */}
+              <AnimatePresence>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className={`px-4 pb-4 border-t ${plan.accentColor ? "border-orange-red/20" : "border-dark-border"}`}>
+                      <ul className="mt-3 space-y-2">
+                        {plan.features.map((f, i) => (
+                          <li key={i} className="flex items-start gap-2.5">
+                            <Check className={`w-3.5 h-3.5 flex-shrink-0 mt-0.5 ${plan.accentColor ? "text-orange-red" : "text-orange-red"}`} />
+                            <span className="font-body text-xs text-off-white/80">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 text-center font-body text-xs text-white-muted">No equipment · Cancel any time</p>
+    </motion.div>
+  );
+}
+
 export default function Quiz({ onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -121,19 +241,11 @@ export default function Quiz({ onClose }) {
 
   const { content } = useSiteContent();
   const c = content.pricing;
-  const scrollRef = useRef();
-  const [activeTab, setActiveTab] = useState("annual");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [direction, setDirection] = useState(1);
   const [phase, setPhase] = useState("quiz"); // quiz | pricing | success
   const [checkoutLoading, setCheckoutLoading] = useState(null);
-
-  const scrollTo = (plan) => {
-    setActiveTab(plan);
-    const idx = plan === "annual" ? 0 : 1;
-    scrollRef.current?.scrollTo({ left: idx * (scrollRef.current.offsetWidth * 0.82), behavior: "smooth" });
-  };
 
   const handleCheckout = async (plan) => {
     setCheckoutLoading(plan);
@@ -239,84 +351,13 @@ export default function Quiz({ onClose }) {
             )}
 
             {phase === "pricing" && (
-              <motion.div key="pricing" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
-                <div className="flex items-center mb-4">
-                  <button onClick={() => { setPhase("quiz"); setStep(questions.length - 1); setDirection(-1); }}
-                    className="flex items-center gap-1.5 text-xs text-white-muted hover:text-orange-red transition-colors">
-                    <ArrowLeft className="w-3.5 h-3.5" /> Back
-                  </button>
-                </div>
-
-                <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 mb-3 w-fit">
-                  <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-                  <span className="font-body text-xs text-orange-red uppercase tracking-widest">Choose your plan</span>
-                </div>
-
-                <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-1">{rec.title}</h2>
-                <p className="font-body text-xs text-white-muted leading-relaxed mb-4">{rec.description}</p>
-
-                {/* Toggle */}
-                <div className="flex justify-center mb-4">
-                  <div className="flex bg-dark-bg border border-dark-border rounded-full p-1 gap-1">
-                    <button onClick={() => scrollTo("annual")}
-                      className={`px-4 py-1.5 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
-                      Annual
-                    </button>
-                    <button onClick={() => scrollTo("monthly")}
-                      className={`px-4 py-1.5 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
-                      Monthly
-                    </button>
-                  </div>
-                </div>
-
-                {/* Slider */}
-                <div ref={scrollRef} className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 px-1" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-                  {/* Annual Card */}
-                  <div className="flex-shrink-0 w-[82%] snap-start bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
-                    <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">Best value</div>
-                    <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
-                    <div className="flex items-baseline gap-1 my-2">
-                      <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualPrice}</span>
-                      <span className="font-body text-sm text-dark-bg/60">/ year</span>
-                    </div>
-                    <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
-                    <ul className="space-y-1.5 flex-1 mb-4">
-                      {annualFeatures.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-dark-bg flex-shrink-0 mt-0.5" />
-                          <span className={`font-body text-xs text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button onClick={() => handleCheckout("annual")} disabled={checkoutLoading === "annual"}
-                      className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
-                      {checkoutLoading === "annual" ? <div className="w-4 h-4 border-2 border-off-white border-t-transparent rounded-full animate-spin" /> : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
-                    </button>
-                  </div>
-                  {/* Monthly Card */}
-                  <div className="flex-shrink-0 w-[82%] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 flex flex-col">
-                    <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
-                    <div className="flex items-baseline gap-1 my-2">
-                      <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice}</span>
-                      <span className="font-body text-sm text-white-muted">/ month</span>
-                    </div>
-                    <ul className="space-y-1.5 flex-1 mb-4">
-                      {monthlyFeatures.map((f, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
-                          <span className="font-body text-xs text-off-white/80">{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button onClick={() => handleCheckout("monthly")} disabled={checkoutLoading === "monthly"}
-                      className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
-                      {checkoutLoading === "monthly" ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
-                    </button>
-                  </div>
-                </div>
-                <p className="mt-2 text-center font-body text-xs text-white-muted">No equipment · Cancel any time</p>
-              </motion.div>
+              <PricingPhase
+                c={c}
+                rec={rec}
+                checkoutLoading={checkoutLoading}
+                handleCheckout={handleCheckout}
+                onBack={() => { setPhase("quiz"); setStep(questions.length - 1); setDirection(-1); }}
+              />
             )}
 
             {phase === "success" && (
