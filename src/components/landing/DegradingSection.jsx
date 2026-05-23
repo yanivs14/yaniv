@@ -8,30 +8,32 @@ export default function DegradingSection() {
 
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="who">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+      <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}
           <div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight"
-            >
-              {c.headline1}<br />
-              <span className="text-orange-red">{c.headlineAccent}</span>
-            </motion.h2>
-            <p className="mt-6 font-body text-base text-white-muted max-w-md leading-relaxed">
-              {c.subtitle}
-            </p>
-            <div className="mt-10 rounded-xl overflow-hidden w-full">
-              <img src={c.imageUrl} alt="Person stretching" className="w-full h-auto block" loading="lazy" />
+            <div className="px-6 lg:px-10">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight"
+              >
+                {c.headline1}<br />
+                <span className="text-orange-red">{c.headlineAccent}</span>
+              </motion.h2>
+              <p className="mt-6 font-body text-base text-white-muted max-w-md leading-relaxed">
+                {c.subtitle}
+              </p>
+            </div>
+            <div className="mt-10 lg:px-10 overflow-hidden">
+              <img src={c.imageUrl} alt="Person stretching" className="w-full h-auto block lg:rounded-xl" loading="lazy" />
             </div>
           </div>
 
           {/* Right */}
-          <div className="lg:pt-12">
+          <div className="lg:pt-12 px-6 lg:px-10">
             {c.listTitle && (
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
