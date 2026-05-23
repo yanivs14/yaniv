@@ -17,12 +17,12 @@ export default function InnerCircleSection() {
 
           {/* Text side */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="order-2 lg:order-1"
-          >
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-2 lg:order-1">
+              
             <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">
               {c.eyebrow || "Exclusive"}
             </p>
@@ -55,9 +55,9 @@ export default function InnerCircleSection() {
                 {c.ctaSubtext || "Book a call with one of our movement experts to see if Inner Circle is the right fit for you."}
               </p>
               <button
-                onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
-              >
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors">
+                  
                 {c.ctaButton || "Book a call"} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -65,25 +65,25 @@ export default function InnerCircleSection() {
 
           {/* Image side */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="order-1 lg:order-2 aspect-[3/4] rounded-2xl overflow-hidden bg-dark-surface border border-dark-border"
-          >
-            {c.imageUrl ? (
-              <img src={c.imageUrl} alt="Inner Circle" className="w-full h-full object-cover" />
-            ) : (
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="order-1 lg:order-2 aspect-[3/4] rounded-2xl overflow-hidden bg-dark-surface border border-dark-border">
+              
+            {c.imageUrl ?
+              <img src={c.imageUrl} alt="Inner Circle" className="w-full h-full object-contain" /> :
+
               <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
                 No image yet
               </div>
-            )}
+              }
           </motion.div>
         </div>
       </div>
     </section>
 
     <BookCallModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </>
-  );
+    </>);
+
 }
