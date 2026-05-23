@@ -22,7 +22,7 @@ function TestimonialCard({ t }) {
           <>
             {!playing ? (
               <>
-                <img src={t.img || t.videoUrl} alt={t.name} className="w-full h-full object-cover" />
+                <img src={t.img || t.videoUrl} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                   <div className="w-14 h-14 bg-orange-red rounded-full flex items-center justify-center">
                     <Play className="w-6 h-6 text-dark-bg fill-dark-bg ml-1" />
@@ -34,7 +34,7 @@ function TestimonialCard({ t }) {
             )}
           </>
         ) : (
-          <img src={t.img} alt={t.name} className="w-full h-full object-cover" />
+        <img src={t.img} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">

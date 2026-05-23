@@ -90,6 +90,7 @@ export default function HeroSection() {
                     src={c.videoPoster}
                     alt="Hero visual"
                     className="w-full h-full object-cover"
+                    fetchpriority="high"
                   />
                 )}
               </div>
@@ -115,13 +116,14 @@ export default function HeroSection() {
                   />
                 ) : (
                   <img
-                    src={c.videoPoster}
-                    alt="Hero visual"
-                    className="w-full h-full object-cover"
+                   src={c.videoPoster}
+                   alt="Hero visual"
+                   className="w-full h-full object-cover"
+                   fetchpriority="high"
                   />
-                )}
+                  )}
 
-                {/* Upload overlay (admin mode) */}
+                  {/* Upload overlay (admin mode) */}
                 {adminMode && (
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
                     <label className="flex items-center gap-2 cursor-pointer px-4 py-2.5 bg-orange-red text-dark-bg rounded-full font-body text-sm font-semibold hover:bg-orange-red-hover transition-colors">

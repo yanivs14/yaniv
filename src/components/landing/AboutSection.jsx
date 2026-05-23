@@ -36,6 +36,7 @@ export default function AboutSection() {
                   src={images[current]}
                   alt="About"
                   className="w-full h-full object-cover transition-opacity duration-300"
+                  loading="lazy"
                 />
                 {images.length > 1 && (
                   <>

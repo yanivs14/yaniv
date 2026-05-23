@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
@@ -6,14 +6,15 @@ import MarqueeBanner from "../components/landing/MarqueeBanner";
 import DegradingSection from "../components/landing/DegradingSection";
 import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
-import TestimonialsSection from "../components/landing/TestimonialsSection.jsx";
-import AboutSection from "../components/landing/AboutSection.jsx";
-import FAQSection from "../components/landing/FAQSection.jsx";
-import PricingSection from "../components/landing/PricingSection";
-import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
-import FinalCTASection from "../components/landing/FinalCTASection";
-import Footer from "../components/landing/Footer";
 import BackToTop from "../components/BackToTop";
+
+const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
+const AboutSection = lazy(() => import("../components/landing/AboutSection.jsx"));
+const FAQSection = lazy(() => import("../components/landing/FAQSection.jsx"));
+const PricingSection = lazy(() => import("../components/landing/PricingSection"));
+const InnerCircleSection = lazy(() => import("../components/landing/InnerCircleSection.jsx"));
+const FinalCTASection = lazy(() => import("../components/landing/FinalCTASection"));
+const Footer = lazy(() => import("../components/landing/Footer"));
 
 
 export default function Home() {
@@ -33,13 +34,15 @@ export default function Home() {
       <HowItFlowsSection />
       <DegradingSection />
       <PillarsSection />
-      <AboutSection />
-      <TestimonialsSection />
-      <FAQSection />
-      <PricingSection />
-      <InnerCircleSection />
-      <FinalCTASection />
-      <Footer />
+      <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
+        <AboutSection />
+        <TestimonialsSection />
+        <FAQSection />
+        <PricingSection />
+        <InnerCircleSection />
+        <FinalCTASection />
+        <Footer />
+      </Suspense>
       <BackToTop />
     </div>
   );
