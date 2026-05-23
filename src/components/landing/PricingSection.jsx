@@ -48,7 +48,7 @@ function MonthlyCard({ c, mobile = false }) {
       </ul>
       <button onClick={handleClick} disabled={loading}
         className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
-        {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
+        {loading ? "Loading..." : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
       </button>
       <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
     </div>
@@ -74,7 +74,7 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
         <span className="font-body text-sm text-dark-bg/40 line-through">{c.annualOldPrice}</span>
       </div>
-      <p className="font-body text-xs text-dark-bg/70 mb-3">{c.annualSavings}</p>
+      <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 inline-block px-3 py-1 rounded-full">{c.annualSavings}</p>
       <ul className="space-y-2 mb-4">
         {sharedFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
@@ -89,7 +89,7 @@ function AnnualCard({ c, mobile = false }) {
       </ul>
       <button onClick={handleClick} disabled={loading}
         className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
-        {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
+        {loading ? "Loading..." : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
       </button>
       <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
     </div>
