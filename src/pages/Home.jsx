@@ -13,6 +13,7 @@ import PricingSection from "../components/landing/PricingSection";
 import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import FinalCTASection from "../components/landing/FinalCTASection";
 import Footer from "../components/landing/Footer";
+import BackToTop from "../components/BackToTop";
 
 
 export default function Home() {
@@ -39,6 +40,7 @@ export default function Home() {
       <InnerCircleSection />
       <FinalCTASection />
       <Footer />
+      <BackToTop />
     </div>
   );
 }
