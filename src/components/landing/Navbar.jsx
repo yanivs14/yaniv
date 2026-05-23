@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
@@ -78,9 +78,9 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 font-body text-xs font-semibold bg-orange-red text-dark-bg px-6 py-2.5 rounded-full shadow-lg hover:bg-orange-red-hover transition-colors whitespace-nowrap"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 md:hidden font-body text-sm font-semibold bg-orange-red text-dark-bg px-6 py-3 rounded-full shadow-lg hover:bg-orange-red-hover transition-colors whitespace-nowrap flex items-center gap-2"
           >
-            {c.cta}
+            {c.cta} <ArrowUp className="w-3.5 h-3.5" />
           </motion.a>
         )}
       </AnimatePresence>
