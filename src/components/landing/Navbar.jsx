@@ -98,7 +98,7 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.28, ease: "easeOut" }}
-            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col md:hidden"
+            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col md:hidden overflow-hidden"
           >
             {/* Links — scrollable */}
             <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
@@ -118,19 +118,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* CTA pinned at bottom */}
-            <div className="px-6 py-6 border-t border-dark-border">
-              <motion.a
-                href="#"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: c.links.length * 0.06 + 0.05, duration: 0.2 }}
-                className="block font-body text-sm font-semibold bg-orange-red text-dark-bg px-5 py-4 rounded-full text-center hover:bg-orange-red-hover transition-colors"
-                onClick={openQuiz}
-              >
-                {c.cta}
-              </motion.a>
-            </div>
+
           </motion.div>
         )}
       </AnimatePresence>
