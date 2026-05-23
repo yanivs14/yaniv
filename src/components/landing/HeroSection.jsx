@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Upload, Dumbbell, RefreshCcw } from "lucide-react";
 import Quiz from "./Quiz";
@@ -11,6 +11,12 @@ export default function HeroSection() {
   const c = content.hero;
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setQuizOpen(true);
+    window.addEventListener("open-quiz", handler);
+    return () => window.removeEventListener("open-quiz", handler);
+  }, []);
 
   const handleVideoUpload = async (e) => {
     const file = e.target.files[0];

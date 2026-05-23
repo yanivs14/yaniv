@@ -21,6 +21,11 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  const openQuiz = (e) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent("open-quiz"));
+  };
+
   const scrollTo = (e, href) => {
     e.preventDefault();
     setOpen(false);
@@ -51,7 +56,7 @@ export default function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="#pricing" onClick={(e) => scrollTo(e, "#pricing")}
+            <a href="#" onClick={openQuiz}
               className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
               {c.cta}
             </a>
@@ -72,8 +77,8 @@ export default function Navbar() {
       <AnimatePresence>
         {showFloat && (
           <motion.a
-            href="#pricing"
-            onClick={(e) => scrollTo(e, "#pricing")}
+            href="#"
+            onClick={openQuiz}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
@@ -116,12 +121,12 @@ export default function Navbar() {
             {/* CTA pinned at bottom */}
             <div className="px-6 py-6 border-t border-dark-border">
               <motion.a
-                href="#pricing"
+                href="#"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: c.links.length * 0.06 + 0.05, duration: 0.2 }}
                 className="block font-body text-sm font-semibold bg-orange-red text-dark-bg px-5 py-4 rounded-full text-center hover:bg-orange-red-hover transition-colors"
-                onClick={(e) => scrollTo(e, "#pricing")}
+                onClick={openQuiz}
               >
                 {c.cta}
               </motion.a>
