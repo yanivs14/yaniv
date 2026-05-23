@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, User, Phone, Mail, Send, CheckCircle } from "lucide-react";
+import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { useSiteContent } from "@/lib/SiteContentContext";
 
 const questions = [
   {
@@ -88,19 +89,57 @@ const slideVariants = {
   exit: { opacity: 0, y: -8 },
 };
 
+async function startCheckout(plan) {
+  if (window.self !== window.top) {
+    alert("Checkout is only available from the published app.");
+    return;
+  }
+  const res = await base44.functions.invoke("createCheckout", { plan });
+  if (res.data?.url) window.location.href = res.data.url;
+}
+
+const monthlyFeatures = [
+  "The Movement full OS- daily adaptive practice",
+  "All 240+ guided sessions with Roye",
+  "Mobility, control, strength, longevity tracks",
+  "Community access, content and challenges",
+];
+
+const annualFeatures = [
+  "Save 40% annually",
+  "Everything in Monthly",
+  "Weekly live coaching & feedback",
+  "Exclusive member-only trainings and advanced content",
+  "Priority access to new releases",
+];
+
 export default function Quiz({ onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  const { content } = useSiteContent();
+  const c = content.pricing;
+  const scrollRef = useRef();
+  const [activeTab, setActiveTab] = useState("annual");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [direction, setDirection] = useState(1);
-  const [phase, setPhase] = useState("quiz"); // quiz | form | success
-  const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
+  const [phase, setPhase] = useState("quiz"); // quiz | pricing | success
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
+
+  const scrollTo = (plan) => {
+    setActiveTab(plan);
+    const idx = plan === "annual" ? 0 : 1;
+    scrollRef.current?.scrollTo({ left: idx * (scrollRef.current.offsetWidth * 0.82), behavior: "smooth" });
+  };
+
+  const handleCheckout = async (plan) => {
+    setCheckoutLoading(plan);
+    await startCheckout(plan);
+    setCheckoutLoading(null);
+  };
 
   const current = questions[step];
   const progress = (step / questions.length) * 100;
@@ -114,7 +153,7 @@ export default function Quiz({ onClose }) {
       if (step < questions.length - 1) {
         setStep(s => s + 1);
       } else {
-        setPhase("form");
+        setPhase("pricing");
       }
     }, 220);
   };
@@ -125,27 +164,7 @@ export default function Quiz({ onClose }) {
     setTimeout(() => setStep(s => s - 1), 0);
   };
 
-  const validate = () => {
-    const e = {};
-    if (!form.full_name.trim()) e.full_name = "Full name is required";
-    if (!form.phone.trim()) e.phone = "Phone is required";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setSubmitting(true);
-    await base44.functions.invoke("submitLead", {
-      full_name: form.full_name,
-      phone: form.phone,
-      email: form.email,
-      source: "quiz",
-      quiz_recommendation: rec.title,
-    });
-    setSubmitting(false);
-    setPhase("success");
-  };
 
   return (
     <motion.div
@@ -219,51 +238,84 @@ export default function Quiz({ onClose }) {
               </motion.div>
             )}
 
-            {phase === "form" && (
-              <motion.div key="form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col h-full">
-                <div className="flex items-center justify-between mb-6">
+            {phase === "pricing" && (
+              <motion.div key="pricing" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
+                <div className="flex items-center mb-4">
                   <button onClick={() => { setPhase("quiz"); setStep(questions.length - 1); setDirection(-1); }}
                     className="flex items-center gap-1.5 text-xs text-white-muted hover:text-orange-red transition-colors">
                     <ArrowLeft className="w-3.5 h-3.5" /> Back
                   </button>
                 </div>
 
-                <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 mb-4 w-fit">
+                <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 mb-3 w-fit">
                   <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-                  <span className="font-body text-xs text-orange-red uppercase tracking-widest">Your recommendation is ready</span>
+                  <span className="font-body text-xs text-orange-red uppercase tracking-widest">Choose your plan</span>
                 </div>
 
-                <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-2">{rec.title}</h2>
-                <p className="font-body text-sm text-white-muted leading-relaxed mb-6">{rec.description}</p>
+                <h2 className="font-heading text-2xl sm:text-3xl font-bold text-off-white uppercase tracking-tight leading-tight mb-1">{rec.title}</h2>
+                <p className="font-body text-xs text-white-muted leading-relaxed mb-4">{rec.description}</p>
 
-                <div className="space-y-3">
-                  <div>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Full name *" dir="ltr"
-                        className={`w-full bg-dark-bg border ${errors.full_name ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
-                    </div>
-                    {errors.full_name && <p className="text-xs text-red-400 mt-1">{errors.full_name}</p>}
+                {/* Toggle */}
+                <div className="flex justify-center mb-4">
+                  <div className="flex bg-dark-bg border border-dark-border rounded-full p-1 gap-1">
+                    <button onClick={() => scrollTo("annual")}
+                      className={`px-4 py-1.5 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
+                      Annual
+                    </button>
+                    <button onClick={() => scrollTo("monthly")}
+                      className={`px-4 py-1.5 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
+                      Monthly
+                    </button>
                   </div>
-                  <div>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                      <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Phone *" type="tel" dir="ltr"
-                        className={`w-full bg-dark-bg border ${errors.phone ? "border-red-500" : "border-dark-border"} rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors`} />
-                    </div>
-                    {errors.phone && <p className="text-xs text-red-400 mt-1">{errors.phone}</p>}
-                  </div>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white-muted" />
-                    <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="Email (optional)" type="email" dir="ltr"
-                      className="w-full bg-dark-bg border border-dark-border rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
-                  </div>
-                  <button onClick={handleSubmit} disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-2">
-                    {submitting ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <><Send className="w-4 h-4" /> Submit</>}
-                  </button>
                 </div>
+
+                {/* Slider */}
+                <div ref={scrollRef} className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 px-1" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                  {/* Annual Card */}
+                  <div className="flex-shrink-0 w-[82%] snap-start bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
+                    <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">Best value</div>
+                    <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
+                    <div className="flex items-baseline gap-1 my-2">
+                      <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualPrice}</span>
+                      <span className="font-body text-sm text-dark-bg/60">/ year</span>
+                    </div>
+                    <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
+                    <ul className="space-y-1.5 flex-1 mb-4">
+                      {annualFeatures.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check className="w-3.5 h-3.5 text-dark-bg flex-shrink-0 mt-0.5" />
+                          <span className={`font-body text-xs text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <button onClick={() => handleCheckout("annual")} disabled={checkoutLoading === "annual"}
+                      className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
+                      {checkoutLoading === "annual" ? <div className="w-4 h-4 border-2 border-off-white border-t-transparent rounded-full animate-spin" /> : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                  </div>
+                  {/* Monthly Card */}
+                  <div className="flex-shrink-0 w-[82%] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 flex flex-col">
+                    <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
+                    <div className="flex items-baseline gap-1 my-2">
+                      <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice}</span>
+                      <span className="font-body text-sm text-white-muted">/ month</span>
+                    </div>
+                    <ul className="space-y-1.5 flex-1 mb-4">
+                      {monthlyFeatures.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+                          <span className="font-body text-xs text-off-white/80">{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <button onClick={() => handleCheckout("monthly")} disabled={checkoutLoading === "monthly"}
+                      className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
+                      {checkoutLoading === "monthly" ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                  </div>
+                </div>
+                <p className="mt-2 text-center font-body text-xs text-white-muted">No equipment · Cancel any time</p>
               </motion.div>
             )}
 
@@ -275,10 +327,10 @@ export default function Quiz({ onClose }) {
                 </div>
                 <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-3">Thank you!</h2>
                 <p className="font-body text-sm text-white-muted leading-relaxed mb-8">We've received your details and will be in touch shortly.</p>
-                <a href="#pricing" onClick={onClose}
+                <button onClick={() => setPhase("pricing")}
                   className="flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold px-8 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors">
                   {rec.cta} <ArrowRight className="w-4 h-4" />
-                </a>
+                </button>
                 <button onClick={onClose} className="mt-4 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4">
                   Maybe later
                 </button>
