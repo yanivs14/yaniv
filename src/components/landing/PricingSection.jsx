@@ -13,15 +13,20 @@ async function startCheckout(plan) {
   if (res.data?.url) window.location.href = res.data.url;
 }
 
-const sharedFeatures = [
-  "The full Kinetiqo OS — daily adaptive practice",
+const monthlyFeatures = [
+  "The Movement full OS- daily adaptive practice",
   "All 240+ guided sessions with Roye",
   "Mobility, control, strength, longevity tracks",
-  "Streak system + identity check-ins",
-  "Live monthly sessions with Roye",
+  "Community access, content and challenges",
 ];
 
-const annualExtra = "Unlocked: Advanced flows + restoration protocols";
+const annualFeatures = [
+  "Save 40% annually",
+  "Everything in Monthly",
+  "Weekly live coaching & feedback",
+  "Exclusive member-only trainings and advanced content",
+  "Priority access to new releases",
+];
 
 function MonthlyCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
@@ -39,7 +44,7 @@ function MonthlyCard({ c, mobile = false }) {
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
       <ul className="space-y-2 mb-5">
-        {sharedFeatures.map((f, i) => (
+        {monthlyFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
             <span className="font-body text-sm text-off-white/80">{f}</span>
@@ -72,20 +77,15 @@ function AnnualCard({ c, mobile = false }) {
       <div className="flex items-baseline gap-2 my-3">
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
-        <span className="font-body text-sm text-dark-bg/40 line-through">{c.annualOldPrice}</span>
       </div>
       <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 inline-block px-3 py-1 rounded-full">{c.annualSavings}</p>
       <ul className="space-y-2 mb-4">
-        {sharedFeatures.map((f, i) => (
+        {annualFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-            <span className="font-body text-sm text-dark-bg/90">{f}</span>
+            <span className={`font-body text-sm text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
           </li>
         ))}
-        <li className="flex items-start gap-2.5">
-          <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-          <span className="font-body text-sm text-dark-bg font-semibold">{annualExtra}</span>
-        </li>
       </ul>
       <button onClick={handleClick} disabled={loading}
         className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
