@@ -54,22 +54,22 @@ export default function HeroSection() {
 
               <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  <a
-                    href="#pricing"
+                  <button
+                    onClick={() => setQuizOpen(true)}
                     className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                   >
                     {c.ctaPrimary}
-                  </a>
+                  </button>
 
-                  <motion.button
-                    onClick={() => setQuizOpen(true)}
+                  <motion.a
+                    href="#pricing"
                     className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
                     whileHover={{ x: 3 }}
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   >
                     {c.ctaSecondary}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </motion.button>
+                  </motion.a>
                 </div>
               </div>
 
