@@ -70,7 +70,7 @@ export default function PillarsSection() {
                   <div className="absolute bottom-0 left-6 right-6 h-px bg-orange-red scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                   <div className="relative">
                     <div className="text-2xl text-orange-red mb-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110 inline-block">{p.icon}</div>
-                    <h3 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-2 group-hover:text-orange-red transition-colors duration-300">{p.title}</h3>
+                    <h3 className="font-heading text-4xl font-bold text-off-white uppercase tracking-tight mb-2 group-hover:text-orange-red transition-colors duration-300">{p.title}</h3>
                     <p className="font-body text-sm text-white-muted leading-relaxed group-hover:text-off-white/70 transition-colors duration-300">{p.desc}</p>
                   </div>
                 </motion.div>
