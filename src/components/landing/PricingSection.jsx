@@ -80,7 +80,7 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
       </div>
-      <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 inline-block px-3 py-1 rounded-full">{c.annualSavings}</p>
+      <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
       <ul className="space-y-2 flex-1">
         {annualFeatures.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
