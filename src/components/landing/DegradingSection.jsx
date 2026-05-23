@@ -25,8 +25,8 @@ export default function DegradingSection() {
             <p className="mt-6 font-body text-base text-white-muted max-w-md leading-relaxed">
               {c.subtitle}
             </p>
-            <div className="mt-10 rounded-xl overflow-hidden">
-              <img src={c.imageUrl} alt="Person stretching" className="w-full object-contain" loading="lazy" />
+            <div className="mt-10 rounded-xl overflow-hidden w-full">
+              <img src={c.imageUrl} alt="Person stretching" className="w-full h-auto block" loading="lazy" />
             </div>
           </div>
 
