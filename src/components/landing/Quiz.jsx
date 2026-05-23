@@ -50,7 +50,7 @@ const questions = [
 const recommendations = {
   default: {
     title: "Start with the Foundation Track",
-    description: "Based on your answers, we recommend beginning with Kinetiqo's Foundation Track — a structured 21-day protocol designed to rebuild movement from the ground up. Daily 10-minute sessions, no equipment needed.",
+    description: "",
     cta: "Begin your foundation",
   },
   pain_lower_back: {
@@ -172,7 +172,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                       <span className="font-body text-[10px] font-semibold bg-orange-red text-dark-bg px-2 py-0.5 rounded-full">{plan.badge}</span>
                     )}
                     {plan.discount && (
-                      <span className="font-body text-[10px] font-semibold text-orange-red border border-orange-red/40 px-2 py-0.5 rounded-full">{plan.discount}</span>
+                      <span className="font-body text-[10px] font-bold text-orange-red border border-orange-red/40 px-2 py-0.5 rounded-full">{plan.discount}</span>
                     )}
                   </div>
                   <div className="flex items-baseline gap-1 mt-0.5">
