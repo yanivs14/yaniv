@@ -8,29 +8,27 @@ function TestimonialCard({ t }) {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef();
 
-  const handleMediaClick = () => {
-    if (t.videoUrl) {
-      setPlaying(true);
-      setTimeout(() => videoRef.current?.play(), 50);
-    }
+  const handlePlay = () => {
+    setPlaying(true);
+    setTimeout(() => videoRef.current?.play(), 50);
   };
 
   return (
     <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start flex flex-col">
-      <div className={`aspect-[3/4] overflow-hidden relative flex-shrink-0 ${!playing ? "cursor-pointer" : ""}`} onClick={!playing ? handleMediaClick : undefined}>
+      <div className="aspect-[3/4] overflow-hidden relative flex-shrink-0">
         {t.videoUrl ? (
           <>
             {!playing ? (
-              <>
+              <div className="w-full h-full cursor-pointer" onClick={handlePlay}>
                 <img src={t.img || t.videoUrl} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                   <div className="w-14 h-14 bg-orange-red rounded-full flex items-center justify-center">
                     <Play className="w-6 h-6 text-dark-bg fill-dark-bg ml-1" />
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
-              <video ref={videoRef} src={t.videoUrl} className="w-full h-full object-cover" controls playsInline />
+              <video ref={videoRef} src={t.videoUrl} className="w-full h-full object-cover" controls playsInline onClick={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} />
             )}
           </>
         ) : (
