@@ -35,28 +35,26 @@ export default function CookieBanner() {
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-2rem)] max-w-lg"
         >
-          <div className="bg-dark-surface border border-dark-border rounded-2xl p-5 shadow-2xl">
-            <p className="font-body text-sm text-off-white/80 leading-relaxed mb-5">
-              We use cookies to improve your browsing experience in accordance with the Computer Law (1995, Section 17).
-              By clicking "I Agree", you consent to our use of cookies.{" "}
-              <a href="/privacy-policy" className="underline underline-offset-4 text-off-white hover:text-orange-red transition-colors">
+          <div className="bg-dark-surface border border-dark-border rounded-xl px-3 py-2.5 shadow-2xl flex items-center gap-3">
+            <p className="font-body text-xs text-off-white/70 leading-snug flex-1">
+              We use cookies per our{" "}
+              <a href="/privacy-policy" className="underline underline-offset-2 text-off-white hover:text-orange-red transition-colors">
                 Privacy Policy
               </a>
               .
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={accept}
-                className="flex-1 bg-orange-red text-dark-bg font-body text-sm font-semibold py-2.5 px-5 rounded-full hover:bg-orange-red-hover transition-colors"
+                className="bg-orange-red text-dark-bg font-body text-xs font-semibold py-1.5 px-4 rounded-full hover:bg-orange-red-hover transition-colors whitespace-nowrap"
               >
                 I Agree
               </button>
               <button
                 onClick={decline}
-                className="flex items-center gap-2 border border-dark-border text-off-white font-body text-sm py-2.5 px-5 rounded-full hover:border-orange-red/50 transition-colors"
+                className="text-white-muted font-body text-xs py-1.5 px-3 rounded-full border border-dark-border hover:border-orange-red/40 transition-colors whitespace-nowrap"
               >
-                <Accessibility className="w-4 h-4 text-orange-red" />
-                No thanks
+                No
               </button>
             </div>
           </div>
