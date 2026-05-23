@@ -50,10 +50,10 @@ const DEFAULT_CONTENT = {
     subtitle: "Not a workout split. A daily practice that touches every layer of how your body operates — from joint health to nervous system regulation to the quality of your next decade.",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/b92a57523_generated_5445101a.png",
     pillars: [
-      { icon: "◎", title: "Mobility", desc: "Open every joint. Recover the full range of motion you were born with — and move without restriction, stiffness, or pain holding you back." },
-      { icon: "◈", title: "Strength", desc: "Functional, owned strength. Not gym numbers — real capability your body can actually use in daily life, sport, and everything in between." },
-      { icon: "◇", title: "Control", desc: "Precision in every transition. Build the neuromuscular awareness to move with intention, balance, and grace — not just force." },
-      { icon: "∞", title: "Longevity", desc: "A body that lasts decades. Train for capability at 60, 70, and beyond — not just the next 90 days. This is the long game." },
+      { icon: "◎", title: "Mobility", desc: "Open every joint. Recover the range you were born with." },
+      { icon: "◈", title: "Strength", desc: "Functional, owned. Strength your body actually uses." },
+      { icon: "◇", title: "Control", desc: "Precision in every transition. Move with intention." },
+      { icon: "∞", title: "Longevity", desc: "Body that lasts. Decades of capability, not a sprint." },
     ],
   },
   howItFlows: {
