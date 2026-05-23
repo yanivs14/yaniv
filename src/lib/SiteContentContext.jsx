@@ -111,9 +111,7 @@ const DEFAULT_CONTENT = {
     links: [
       { label: "The Program", href: "#program" },
       { label: "Who Is It For?", href: "#who" },
-      { label: "The Benefits", href: "#benefits" },
       { label: "Roye Gold", href: "#roye" },
-      { label: "Our Members", href: "#members" },
       { label: "FAQ", href: "#faq" },
       { label: "Pricing", href: "#pricing" },
       { label: "Inner Circle", href: "#inner-circle" },
