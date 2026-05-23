@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, User, Phone, Mail, Send, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -89,6 +89,11 @@ const slideVariants = {
 };
 
 export default function Quiz({ onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [direction, setDirection] = useState(1);
