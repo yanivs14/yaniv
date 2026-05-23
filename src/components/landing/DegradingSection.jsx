@@ -28,8 +28,8 @@ export default function DegradingSection() {
               </p>
             </div>
             <div className="mt-10 lg:px-10 overflow-hidden">
-              <div className="relative w-full" style={{ aspectRatio: '9/16' }}>
-                <img src={c.imageUrl} alt="Person stretching" className="absolute inset-0 w-full h-full object-cover lg:rounded-xl" loading="lazy" />
+              <div className="relative w-full" style={{ height: '80vh' }}>
+                <img src={c.imageUrl} alt="Person stretching" className="absolute inset-0 w-full h-full object-cover object-top lg:rounded-xl" loading="lazy" />
               </div>
             </div>
           </div>
