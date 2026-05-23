@@ -39,24 +39,10 @@ export default function PillarsSection() {
     <section className="py-12 lg:py-24 bg-dark-bg" id="benefits">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Left: text + pillars grid */}
+          {/* Left: pillars grid only */}
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
-              <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-                {c.headline1}<br />
-                {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
-              </h2>
-              <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
-            </motion.div>
-
-            {/* Pillars grid — 2x2 on desktop, fills the left column */}
-            <div className="mt-10 grid grid-cols-2 gap-0 border-t border-dark-border">
+            {/* Pillars grid — 2x2 */}
+            <div className="grid grid-cols-2 gap-0 border-t border-dark-border">
               {c.pillars.map((p, i) => (
                 <motion.div
                   key={i}
