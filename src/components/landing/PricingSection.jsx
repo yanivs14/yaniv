@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
@@ -13,22 +13,25 @@ async function startCheckout(plan) {
   if (res.data?.url) window.location.href = res.data.url;
 }
 
-const monthlyFeatures = [
-  "The Movement full OS- daily adaptive practice",
-  "All 240+ guided sessions with Roye",
-  "Mobility, control, strength, longevity tracks",
-  "Community access, content and challenges",
+const DEFAULT_MONTHLY_FEATURES = [
+  "Personalized adaptive daily practice",
+  "Full Movement training library (240+ sessions)",
+  "Strength, mobility, control & longevity tracks",
+  "Community access + challenges",
 ];
 
-const annualFeatures = [
-  "Everything in Monthly",
+const DEFAULT_ANNUAL_FEATURES = [
+  "Everything in Monthly, plus:",
   "Weekly live coaching & feedback",
-  "Exclusive member-only trainings and advanced content",
+  "Exclusive member-only trainings",
+  "Advanced content drops",
   "Priority access to new releases",
+  "Annual member perks & content",
 ];
 
 function MonthlyCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
+  const features = c.monthlyFeatures?.length ? c.monthlyFeatures : DEFAULT_MONTHLY_FEATURES;
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -42,8 +45,11 @@ function MonthlyCard({ c, mobile = false }) {
         <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
+      {c.monthlySubtitle && (
+        <p className="font-body text-sm text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>
+      )}
       <ul className="space-y-2 flex-1">
-        {monthlyFeatures.map((f, i) => (
+        {features.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
             <span className="font-body text-sm text-off-white/80">{f}</span>
@@ -53,7 +59,7 @@ function MonthlyCard({ c, mobile = false }) {
       <div className="mt-5">
         <button onClick={handleClick} disabled={loading}
           className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
-          {loading ? "Loading..." : <>{c.ctaMonthly.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+          {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
         </button>
         <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
       </div>
@@ -63,6 +69,7 @@ function MonthlyCard({ c, mobile = false }) {
 
 function AnnualCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
+  const features = c.annualFeatures?.length ? c.annualFeatures : DEFAULT_ANNUAL_FEATURES;
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -79,9 +86,12 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
       </div>
-      <p className="font-body text-xs font-bold text-dark-bg mb-3 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
+      <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
+      {c.annualSubtitle && (
+        <p className="font-body text-sm text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>
+      )}
       <ul className="space-y-2 flex-1">
-        {annualFeatures.map((f, i) => (
+        {features.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
             <span className={`font-body text-sm text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
@@ -91,7 +101,7 @@ function AnnualCard({ c, mobile = false }) {
       <div className="mt-4">
         <button onClick={handleClick} disabled={loading}
           className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
-          {loading ? "Loading..." : <>{c.ctaAnnual.replace(/^begin\s*/i, '')} <ArrowRight className="w-4 h-4" /></>}
+          {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
         </button>
         <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
       </div>
@@ -105,10 +115,27 @@ export default function PricingSection() {
   const scrollRef = useRef();
   const [activeTab, setActiveTab] = useState("annual");
 
+  // Detect scroll position to sync toggle
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const midpoint = el.scrollLeft + el.offsetWidth / 2;
+      const cardWidth = el.offsetWidth * 0.82;
+      const idx = Math.round(el.scrollLeft / (cardWidth + 16));
+      setActiveTab(idx === 0 ? "annual" : "monthly");
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
   const scrollTo = (plan) => {
     setActiveTab(plan);
     const idx = plan === "annual" ? 0 : 1;
-    scrollRef.current?.scrollTo({ left: idx * (scrollRef.current.offsetWidth * 0.82), behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    const cardWidth = el.offsetWidth * 0.82;
+    el.scrollTo({ left: idx * (cardWidth + 16), behavior: "smooth" });
   };
 
   return (

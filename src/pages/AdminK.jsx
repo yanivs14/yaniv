@@ -292,8 +292,48 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "pricing") return (
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
-      {f("subtitle", "Subtitle", true)} {f("monthlyPrice", "Monthly Price")} {f("annualPrice", "Annual Price")}
-      {f("annualOldPrice", "Annual Old Price")} {f("annualSavings", "Annual Savings Label")} {f("ctaMonthly", "Monthly CTA")} {f("ctaAnnual", "Annual CTA")}
+      {f("subtitle", "Subtitle", true)}
+
+      <p className="text-xs text-white-muted font-body font-semibold mt-4 mb-3">Monthly Plan</p>
+      {f("monthlyPrice", "Monthly Price")}
+      {f("monthlySubtitle", "Monthly Subtitle", true)}
+      {f("ctaMonthly", "Monthly CTA Button")}
+      <p className="text-xs text-white-muted font-body mb-2">Monthly Features</p>
+      {(data.monthlyFeatures || []).map((feat, i) => (
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={feat} onChange={e => { const arr = [...(data.monthlyFeatures || [])]; arr[i] = e.target.value; update("pricing", "monthlyFeatures", arr); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => update("pricing", "monthlyFeatures", (data.monthlyFeatures || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => update("pricing", "monthlyFeatures", [...(data.monthlyFeatures || []), ""])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-5">
+        <Plus className="w-4 h-4" /> Add feature
+      </button>
+
+      <p className="text-xs text-white-muted font-body font-semibold mt-2 mb-3">Annual Plan</p>
+      {f("annualPrice", "Annual Price")}
+      {f("annualSavings", "Savings Label")}
+      {f("annualSubtitle", "Annual Subtitle", true)}
+      {f("ctaAnnual", "Annual CTA Button")}
+      <p className="text-xs text-white-muted font-body mb-2">Annual Features</p>
+      {(data.annualFeatures || []).map((feat, i) => (
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={feat} onChange={e => { const arr = [...(data.annualFeatures || [])]; arr[i] = e.target.value; update("pricing", "annualFeatures", arr); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => update("pricing", "annualFeatures", (data.annualFeatures || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => update("pricing", "annualFeatures", [...(data.annualFeatures || []), ""])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors">
+        <Plus className="w-4 h-4" /> Add feature
+      </button>
     </div>
   );
 
