@@ -6,13 +6,31 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [showFloat, setShowFloat] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const { content } = useSiteContent();
 
   useEffect(() => {
-    const onScroll = () => setShowFloat(window.scrollY > 400);
+    const onScroll = () => {
+      setShowFloat(window.scrollY > 400);
+
+      // Find the active section based on scroll position
+      const sections = content.navbar.links
+        .map(l => l.href?.replace("#", ""))
+        .filter(Boolean);
+
+      let current = "";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.getBoundingClientRect().top;
+          if (top <= 120) current = id;
+        }
+      }
+      setActiveSection(current);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [content.navbar.links]);
   const c = content.navbar;
 
   // Lock body scroll when mobile menu is open
@@ -30,6 +48,11 @@ export default function Navbar() {
     e.preventDefault();
     setOpen(false);
     if (!href || href === "#") return;
+    // "program" section links to top of page (hero)
+    if (href === "#program") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {
@@ -50,12 +73,16 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
-            {c.links.map((l) => (
-              <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
-                className="font-body text-sm text-white-muted hover:text-off-white transition-colors">
-                {l.label}
-              </a>
-            ))}
+            {c.links.map((l) => {
+              const id = l.href?.replace("#", "");
+              const isActive = activeSection === id;
+              return (
+                <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
+                  className={`font-body text-sm transition-colors ${isActive ? "text-orange-red font-semibold" : "text-white-muted hover:text-off-white"}`}>
+                  {l.label}
+                </a>
+              );
+            })}
             <a href="#" onClick={openQuiz}
               className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
               {c.cta}
@@ -102,20 +129,24 @@ export default function Navbar() {
           >
             {/* Links — scrollable */}
             <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
-              {c.links.map((l, i) => (
-                <motion.a
-                  key={l.label}
-                  href={l.href}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06, duration: 0.2 }}
-                  className="flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight text-off-white hover:text-orange-red transition-colors py-4 border-b border-dark-border"
-                  onClick={(e) => scrollTo(e, l.href)}
-                >
-                  {l.label}
-                  <ChevronRight className="w-5 h-5 text-orange-red flex-shrink-0" />
-                </motion.a>
-              ))}
+              {c.links.map((l, i) => {
+                const id = l.href?.replace("#", "");
+                const isActive = activeSection === id;
+                return (
+                  <motion.a
+                    key={l.label}
+                    href={l.href}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.06, duration: 0.2 }}
+                    className={`flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight transition-colors py-4 border-b border-dark-border ${isActive ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
+                    onClick={(e) => scrollTo(e, l.href)}
+                  >
+                    {l.label}
+                    <ChevronRight className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-orange-red" : "text-orange-red"}`} />
+                  </motion.a>
+                );
+              })}
             </div>
 
 

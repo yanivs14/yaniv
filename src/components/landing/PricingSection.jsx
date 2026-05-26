@@ -21,7 +21,6 @@ const monthlyFeatures = [
 ];
 
 const annualFeatures = [
-  "Save 40% annually",
   "Everything in Monthly",
   "Weekly live coaching & feedback",
   "Exclusive member-only trainings and advanced content",
@@ -38,7 +37,7 @@ function MonthlyCard({ c, mobile = false }) {
   };
   return (
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"} flex flex-col`}>
-      <p className="font-body text-sm text-white-muted mb-1">Kinetiqo Monthly</p>
+      <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
       <div className="flex items-baseline gap-1 my-3">
         <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
         <span className="font-body text-sm text-white-muted">/ month</span>
@@ -75,7 +74,7 @@ function AnnualCard({ c, mobile = false }) {
       <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
         Best value
       </div>
-      <p className="font-body text-sm text-dark-bg/70 mb-1">Kinetiqo Annual</p>
+      <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
       <div className="flex items-baseline gap-2 my-3">
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
