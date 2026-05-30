@@ -28,57 +28,60 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-dark-surface border-t border-dark-border">
-      <div className="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center text-center gap-10">
+    <footer className="bg-dark-bg border-t border-dark-border">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 lg:py-20">
+        {/* Top row */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 mb-14">
+          {/* Brand + tagline */}
+          <div className="max-w-sm">
+            <a href="#" className="font-heading text-2xl font-bold tracking-widest text-off-white uppercase">
+              {c.brand || "The Movement"}
+            </a>
+            {c.tagline && (
+              <p className="font-body text-sm text-white-muted leading-relaxed mt-3">{c.tagline}</p>
+            )}
+          </div>
 
-        {/* Brand */}
-        <a href="#" className="font-heading text-2xl font-bold tracking-widest text-off-white uppercase">
-          {c.brand || "The Movement"}
-        </a>
+          {/* Nav links */}
+          {navLinks.length > 0 && (
+            <nav className="flex flex-wrap gap-x-8 gap-y-3">
+              {navLinks.map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  className="font-body text-sm text-white-muted hover:text-orange-red transition-colors uppercase tracking-wide"
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+          )}
 
-        {/* Tagline */}
-        {c.tagline && (
-          <p className="font-body text-sm text-white-muted leading-relaxed max-w-sm">{c.tagline}</p>
-        )}
-
-        {/* Nav links */}
-        {navLinks.length > 0 && (
-          <nav className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-y-3 sm:gap-x-8">
-            {navLinks.map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                className="font-body text-sm text-white-muted hover:text-off-white transition-colors uppercase tracking-wide"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-        )}
-
-        {/* Social */}
-        <SocialLinks iconSize="w-5 h-5" />
+          {/* Social */}
+          <SocialLinks iconSize="w-5 h-5" />
+        </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-dark-border" />
+        <div className="w-full h-px bg-dark-border mb-8" />
 
-        {/* Policy links */}
-        {policyLinks.length > 0 && (
-          <nav className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-y-2 sm:gap-x-6">
-            {policyLinks.map((p) => (
-              <a
-                key={p.slug}
-                href={`/${p.slug}`}
-                className="font-body text-xs text-white-dim hover:text-off-white transition-colors underline underline-offset-4"
-              >
-                {p.label}
-              </a>
-            ))}
-          </nav>
-        )}
+        {/* Bottom row */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <p className="font-body text-xs text-white-dim">{c.copyright}</p>
 
-        {/* Copyright */}
-        <p className="font-body text-xs text-white-dim">{c.copyright}</p>
+          {policyLinks.length > 0 && (
+            <nav className="flex flex-wrap gap-x-5 gap-y-2">
+              {policyLinks.map((p) => (
+                <a
+                  key={p.slug}
+                  href={`/${p.slug}`}
+                  className="font-body text-xs text-white-dim hover:text-white-muted transition-colors"
+                >
+                  {p.label}
+                </a>
+              ))}
+            </nav>
+          )}
+        </div>
       </div>
     </footer>
   );
