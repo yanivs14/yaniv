@@ -33,9 +33,9 @@ export default function Home() {
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
         <AboutSection />
-        <FAQSection />
         <PricingSection />
         <InnerCircleSection />
+        <FAQSection />
         <FinalCTASection />
         <Footer />
       </Suspense>
