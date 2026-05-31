@@ -16,52 +16,52 @@ export default function FAQSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">FAQ</p>
+          className="mb-12">
+          
+          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4"></p>
           <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
             Got <span className="text-orange-red">questions?</span>
           </h2>
         </motion.div>
 
         <div className="space-y-3">
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: i * 0.07 }}
-              className="border border-dark-border rounded-2xl overflow-hidden bg-dark-surface"
-            >
+          {items.map((item, i) =>
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3, delay: i * 0.07 }}
+            className="border border-dark-border rounded-2xl overflow-hidden bg-dark-surface">
+            
               <button
-                onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between px-6 py-5 text-left"
-              >
+              onClick={() => setOpen(open === i ? null : i)}
+              className="w-full flex items-center justify-between px-6 py-5 text-left">
+              
                 <span className="font-body text-sm font-semibold text-off-white pr-4">{item.question}</span>
                 <span className="flex-shrink-0 w-7 h-7 rounded-full border border-dark-border flex items-center justify-center">
-                  {open === i
-                    ? <Minus className="w-3.5 h-3.5 text-orange-red" />
-                    : <Plus className="w-3.5 h-3.5 text-white-muted" />}
+                  {open === i ?
+                <Minus className="w-3.5 h-3.5 text-orange-red" /> :
+                <Plus className="w-3.5 h-3.5 text-white-muted" />}
                 </span>
               </button>
               <AnimatePresence>
-                {open === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="overflow-hidden"
-                  >
+                {open === i &&
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="overflow-hidden">
+                
                     <p className="px-6 pb-5 font-body text-sm text-white-muted leading-relaxed">{item.answer}</p>
                   </motion.div>
-                )}
+              }
               </AnimatePresence>
             </motion.div>
-          ))}
+          )}
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 }
