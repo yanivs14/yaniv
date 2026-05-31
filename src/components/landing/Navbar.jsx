@@ -13,12 +13,18 @@ export default function Navbar() {
     const onScroll = () => {
       setShowFloat(window.scrollY > 400);
 
+      // "The Program" (#program) = hero at top of page
+      if (window.scrollY < 200) {
+        setActiveSection("program");
+        return;
+      }
+
       // Find the active section based on scroll position
       const sections = content.navbar.links
         .map(l => l.href?.replace("#", ""))
-        .filter(Boolean);
+        .filter(id => Boolean(id) && id !== "program");
 
-      let current = "";
+      let current = "program";
       for (const id of sections) {
         const el = document.getElementById(id);
         if (el) {
