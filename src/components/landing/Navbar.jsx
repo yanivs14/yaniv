@@ -116,7 +116,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 font-body text-sm font-semibold bg-orange-red text-dark-bg px-8 py-3.5 rounded-full shadow-xl hover:bg-orange-red-hover transition-colors md:hidden whitespace-nowrap"
+            className="fixed bottom-8 left-0 right-0 mx-auto w-fit z-50 font-body text-sm font-semibold bg-orange-red text-dark-bg px-8 py-3.5 rounded-full shadow-xl hover:bg-orange-red-hover transition-colors md:hidden whitespace-nowrap"
           >
             {c.cta}
           </motion.a>
