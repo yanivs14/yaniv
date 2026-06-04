@@ -13,8 +13,9 @@ function formatDate(isoString) {
 }
 
 export default function BookCallModal({ open, onClose }) {
-  // step: "form" | "success"
+  // step: "form" | "schedule" | "success"
   const [step, setStep] = useState("form");
+  const [schedulingUrl, setSchedulingUrl] = useState(null);
   const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ export default function BookCallModal({ open, onClose }) {
 
   const handleClose = () => {
     setStep("form");
+    setSchedulingUrl(null);
     setForm({ full_name: "", email: "", phone: "" });
     setErrors({});
     onClose();
@@ -41,40 +43,43 @@ export default function BookCallModal({ open, onClose }) {
     return e;
   };
 
-  // Step 1 → save lead + open Calendly directly
+  // Step 1 → save lead + fetch Calendly URL, move to schedule step
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      // Save lead
-      await base44.functions.invoke("submitLead", {
-        full_name: form.full_name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        source: "inner_circle",
-        quiz_recommendation: "Inner Circle Inquiry"
-      });
-
-      // Fetch Calendly scheduling URL and open with prefilled details
-      const res = await base44.functions.invoke("getCalendlySlots", {});
-      const eventTypes = res.data?.eventTypes || [];
-      const schedulingUrl = eventTypes[0]?.scheduling_url;
-
-      if (schedulingUrl) {
-        const params = new URLSearchParams({
-          name: form.full_name.trim(),
+      const [, slotsRes] = await Promise.all([
+        base44.functions.invoke("submitLead", {
+          full_name: form.full_name.trim(),
           email: form.email.trim(),
-        });
-        window.open(`${schedulingUrl}?${params.toString()}`, "_blank");
-      }
+          phone: form.phone.trim(),
+          source: "inner_circle",
+          quiz_recommendation: "Inner Circle Inquiry"
+        }),
+        base44.functions.invoke("getCalendlySlots", {})
+      ]);
 
-      setStep("success");
+      const eventTypes = slotsRes.data?.eventTypes || [];
+      const url = eventTypes[0]?.scheduling_url || null;
+      setSchedulingUrl(url);
+      setStep("schedule");
     } catch {
       setErrors({ submit: "Something went wrong. Please try again." });
     }
     setLoading(false);
+  };
+
+  // Step 2 → open Calendly in new tab
+  const handleOpenCalendly = () => {
+    if (!schedulingUrl) return;
+    const params = new URLSearchParams({
+      name: form.full_name.trim(),
+      email: form.email.trim(),
+    });
+    window.open(`${schedulingUrl}?${params.toString()}`, "_blank");
+    setStep("success");
   };
 
   const field = (key, label, type = "text", placeholder = "") => (
@@ -150,7 +155,34 @@ export default function BookCallModal({ open, onClose }) {
               </div>
             )}
 
-            {/* STEP 2: Success */}
+            {/* STEP 2: Schedule on Calendly */}
+            {step === "schedule" && (
+              <div className="p-7 sm:p-8 text-center">
+                <div className="w-16 h-16 bg-orange-red/15 rounded-full flex items-center justify-center mx-auto mb-5">
+                  <CheckCircle className="w-8 h-8 text-orange-red" />
+                </div>
+                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
+                <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
+                  Details Saved!
+                </h2>
+                <p className="font-body text-sm text-white-muted mb-8">
+                  Your details have been received, <span className="text-off-white font-semibold">{form.full_name}</span>.<br />
+                  Now pick a time that works for you.
+                </p>
+                <button
+                  onClick={handleOpenCalendly}
+                  disabled={!schedulingUrl}
+                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-50"
+                >
+                  Schedule My Call <ArrowRight className="w-4 h-4" />
+                </button>
+                {!schedulingUrl && (
+                  <p className="mt-3 font-body text-xs text-white-muted">No Calendly slots available right now.</p>
+                )}
+              </div>
+            )}
+
+            {/* STEP 3: Success */}
             {step === "success" && (
               <div className="p-7 sm:p-8 text-center">
                 <motion.div
