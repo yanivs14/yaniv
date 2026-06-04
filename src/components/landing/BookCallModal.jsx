@@ -14,9 +14,10 @@ function formatDate(isoString) {
 }
 
 export default function BookCallModal({ open, onClose }) {
-  // step: "slot" | "form" | "success"
-  const [step, setStep] = useState("slot");
+  // step: "form" | "slot" | "success"
+  const [step, setStep] = useState("form");
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [leadId, setLeadId] = useState(null);
   const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -29,24 +30,12 @@ export default function BookCallModal({ open, onClose }) {
   }, [open]);
 
   const handleClose = () => {
-    setStep("slot");
+    setStep("form");
     setSelectedSlot(null);
+    setLeadId(null);
     setForm({ full_name: "", email: "", phone: "" });
     setErrors({});
     onClose();
-  };
-
-  const handleSlotSelected = (slot) => {
-    setSelectedSlot(slot);
-  };
-
-  const handleContinue = () => {
-    if (!selectedSlot) {
-      setErrors({ slot: "Please select a time slot to continue." });
-      return;
-    }
-    setErrors({});
-    setStep("form");
   };
 
   const validate = () => {
@@ -57,22 +46,50 @@ export default function BookCallModal({ open, onClose }) {
     return e;
   };
 
-  const handleSubmit = async (e) => {
+  // Step 1 → save lead immediately, move to slot selection
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      await base44.functions.invoke("submitLead", {
+      const res = await base44.functions.invoke("submitLead", {
         full_name: form.full_name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
         source: "inner_circle",
-        quiz_recommendation: `Inner Circle Inquiry — ${formatDate(selectedSlot.start_time)} ${formatTime(selectedSlot.start_time)}`
+        quiz_recommendation: "Inner Circle Inquiry — awaiting slot selection"
       });
-      setStep("success");
+      setLeadId(res.data?.lead_id || null);
+      setStep("slot");
     } catch {
       setErrors({ submit: "Something went wrong. Please try again." });
+    }
+    setLoading(false);
+  };
+
+  // Step 2 → update lead with slot, show success
+  const handleSlotConfirm = async () => {
+    if (!selectedSlot) {
+      setErrors({ slot: "Please select a time slot to confirm." });
+      return;
+    }
+    setLoading(true);
+    try {
+      // Update the lead with slot info if we have a lead id
+      if (leadId) {
+        await base44.functions.invoke("submitLead", {
+          full_name: form.full_name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          source: "inner_circle",
+          quiz_recommendation: `Inner Circle — ${formatDate(selectedSlot.start_time)} at ${formatTime(selectedSlot.start_time)}`
+        });
+      }
+      setStep("success");
+    } catch {
+      // Even if update fails, show success since lead was already saved
+      setStep("success");
     }
     setLoading(false);
   };
@@ -117,66 +134,18 @@ export default function BookCallModal({ open, onClose }) {
               <X className="w-4 h-4" />
             </button>
 
-            {/* STEP 1: Pick slot */}
-            {step === "slot" && (
+            {/* STEP 1: Fill form */}
+            {step === "form" && (
               <div className="p-7 sm:p-8">
                 <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
                 <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
                   Book a Call
                 </h2>
-                <p className="font-body text-sm text-white-muted mb-4">
-                  Choose a time that works for you.
+                <p className="font-body text-sm text-white-muted mb-6">
+                  Leave your details and we'll reach out to schedule your personal consultation.
                 </p>
 
-                <CalendlySlots onSlotSelected={handleSlotSelected} />
-
-                {selectedSlot && (
-                  <div className="mt-4 p-3 rounded-xl border border-orange-red/40 bg-orange-red/5">
-                    <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-0.5">Selected</p>
-                    <p className="font-body text-sm text-off-white font-semibold">
-                      {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
-                      {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
-                    </p>
-                  </div>
-                )}
-
-                {errors.slot && <p className="mt-3 text-xs text-red-400 font-body">{errors.slot}</p>}
-
-                <button
-                  onClick={handleContinue}
-                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors mt-6 disabled:opacity-40"
-                  disabled={!selectedSlot}
-                >
-                  Continue <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {/* STEP 2: Fill form */}
-            {step === "form" && (
-              <div className="p-7 sm:p-8">
-                <button
-                  onClick={() => setStep("slot")}
-                  className="flex items-center gap-1 font-body text-xs text-white-muted hover:text-off-white transition-colors mb-5"
-                >
-                  <ChevronLeft className="w-3 h-3" /> Back
-                </button>
-
-                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
-                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
-                  Your Details
-                </h2>
-
-                {/* Selected slot summary */}
-                <div className="mb-5 p-3 rounded-xl border border-dark-border bg-dark-bg">
-                  <p className="font-body text-xs text-white-muted uppercase tracking-widest mb-0.5">Booking for</p>
-                  <p className="font-body text-sm text-off-white font-semibold">
-                    {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
-                    {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
-                  </p>
-                </div>
-
-                <form onSubmit={handleSubmit} noValidate>
+                <form onSubmit={handleFormSubmit} noValidate>
                   {field("full_name", "Full Name", "text", "John Doe")}
                   {field("email", "Email Address", "email", "john@example.com")}
                   {field("phone", "Phone Number", "tel", "+1 234 567 890")}
@@ -189,12 +158,65 @@ export default function BookCallModal({ open, onClose }) {
                     className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-2"
                   >
                     {loading ? (
-                      <><div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> Submitting...</>
+                      <><div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> Saving...</>
                     ) : (
-                      <>Submit Request <ArrowRight className="w-4 h-4" /></>
+                      <>Continue <ArrowRight className="w-4 h-4" /></>
                     )}
                   </button>
                 </form>
+              </div>
+            )}
+
+            {/* STEP 2: Pick slot */}
+            {step === "slot" && (
+              <div className="p-7 sm:p-8">
+                <button
+                  onClick={() => setStep("form")}
+                  className="flex items-center gap-1 font-body text-xs text-white-muted hover:text-off-white transition-colors mb-5"
+                >
+                  <ChevronLeft className="w-3 h-3" /> Back
+                </button>
+
+                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
+                  Pick a Time
+                </h2>
+                <p className="font-body text-sm text-white-muted mb-2">
+                  Choose a slot that works for you.
+                </p>
+
+                <CalendlySlots onSlotSelected={(slot) => { setSelectedSlot(slot); setErrors(er => ({ ...er, slot: undefined })); }} />
+
+                {selectedSlot && (
+                  <div className="mt-4 p-3 rounded-xl border border-orange-red/40 bg-orange-red/5">
+                    <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-0.5">Selected</p>
+                    <p className="font-body text-sm text-off-white font-semibold">
+                      {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
+                      {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
+                    </p>
+                  </div>
+                )}
+
+                {errors.slot && <p className="mt-2 text-xs text-red-400 font-body">{errors.slot}</p>}
+
+                <button
+                  onClick={handleSlotConfirm}
+                  disabled={!selectedSlot || loading}
+                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-40 mt-6"
+                >
+                  {loading ? (
+                    <><div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> Confirming...</>
+                  ) : (
+                    <>Confirm Booking <ArrowRight className="w-4 h-4" /></>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setStep("success")}
+                  className="w-full text-center font-body text-xs text-white-dim hover:text-white-muted transition-colors mt-3 underline underline-offset-2"
+                >
+                  Skip — I'll coordinate via WhatsApp
+                </button>
               </div>
             )}
 
@@ -215,12 +237,18 @@ export default function BookCallModal({ open, onClose }) {
                 <p className="font-body text-sm text-white-muted mb-2">
                   Thank you, <span className="text-off-white font-semibold">{form.full_name}</span>.
                 </p>
-                <p className="font-body text-sm text-white-muted mb-6">
-                  We'll confirm your slot for{" "}
-                  <span className="text-off-white font-semibold">
-                    {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
-                  </span>.
-                </p>
+                {selectedSlot ? (
+                  <p className="font-body text-sm text-white-muted mb-6">
+                    We'll confirm your slot for{" "}
+                    <span className="text-off-white font-semibold">
+                      {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
+                    </span>.
+                  </p>
+                ) : (
+                  <p className="font-body text-sm text-white-muted mb-6">
+                    We've saved your details and will be in touch soon to schedule your call.
+                  </p>
+                )}
                 <button
                   onClick={handleClose}
                   className="inline-flex items-center gap-2 bg-dark-bg border border-dark-border text-off-white font-body text-sm font-semibold px-6 py-3 rounded-full hover:border-orange-red transition-colors"
