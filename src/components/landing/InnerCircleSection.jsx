@@ -78,7 +78,7 @@ export default function InnerCircleSection() {
                   onClick={() => setModalOpen(true)}
                   className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                 >
-                  {c.ctaButton || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
+                  {c.ctaButton || "Apply for Inner Circle"}
                 </button>
                 {c.ctaFootnote && (
                   <p className="font-body text-xs text-white-dim mt-3">{c.ctaFootnote}</p>
