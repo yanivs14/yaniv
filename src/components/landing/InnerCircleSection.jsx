@@ -28,9 +28,8 @@ export default function InnerCircleSection() {
               <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">
                 {c.eyebrow || "Our Highest Level of Coaching"}
               </p>
-              <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
-                {c.headline || "Inner"}<br />
-                <span className="text-orange-red">{c.headlineAccent || "Circle."}</span>
+              <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] uppercase tracking-tight mb-6">
+                <span className="text-off-white">{c.headline || "Inner"} </span><span className="text-orange-red">{c.headlineAccent || "Circle."}</span>
               </h2>
 
               <p className="font-body text-base text-white-muted leading-relaxed mb-5">
