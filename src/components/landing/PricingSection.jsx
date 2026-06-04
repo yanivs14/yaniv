@@ -158,8 +158,8 @@ export default function PricingSection() {
 
         {/* Desktop grid */}
         <div className="hidden md:grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-          <MonthlyCard c={c} />
           <AnnualCard c={c} />
+          <MonthlyCard c={c} />
         </div>
 
         {/* Mobile slider */}
