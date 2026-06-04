@@ -90,21 +90,27 @@ export default function CalendlySlots({ onSlotSelected }) {
           ))}
         </div>
       ) : (
-        // Time grid — 2 per row
+        // Time dropdown
         <div>
           <p className="font-body text-xs text-white-dim uppercase tracking-widest mb-2">{selectedDate}</p>
-          <div className="grid grid-cols-2 gap-2">
-            {grouped[selectedDate].map((slot, i) => (
-              <button
-                key={i}
-                onClick={() => onSlotSelected(slot)}
-                className="inline-flex items-center gap-1.5 border border-dark-border bg-dark-surface hover:border-orange-red hover:text-orange-red text-white-muted font-body text-xs px-3 py-2.5 rounded-xl transition-colors group w-full"
-              >
-                <Clock className="w-3 h-3 flex-shrink-0" />
-                <span>{formatTime(slot.start_time)}</span>
-                {slot.duration && <span className="text-white-dim ml-auto">· {slot.duration}m</span>}
-              </button>
-            ))}
+          <div className="relative">
+            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-red pointer-events-none" />
+            <select
+              defaultValue=""
+              onChange={e => {
+                const slot = grouped[selectedDate][parseInt(e.target.value)];
+                onSlotSelected(slot);
+              }}
+              className="w-full bg-dark-bg border border-dark-border hover:border-orange-red focus:border-orange-red focus:outline-none text-off-white font-body text-sm pl-9 pr-4 py-3 rounded-xl transition-colors appearance-none cursor-pointer"
+            >
+              <option value="" disabled>Select a time...</option>
+              {grouped[selectedDate].map((slot, i) => (
+                <option key={i} value={i}>
+                  {formatTime(slot.start_time)}{slot.duration ? ` · ${slot.duration}m` : ""}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white-muted">▾</div>
           </div>
         </div>
       )}

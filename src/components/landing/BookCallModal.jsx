@@ -211,12 +211,7 @@ export default function BookCallModal({ open, onClose }) {
                   )}
                 </button>
 
-                <button
-                  onClick={() => setStep("success")}
-                  className="w-full text-center font-body text-xs text-white-dim hover:text-white-muted transition-colors mt-3 underline underline-offset-2"
-                >
-                  Skip — I'll coordinate via WhatsApp
-                </button>
+
               </div>
             )}
 
