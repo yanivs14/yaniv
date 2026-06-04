@@ -14,20 +14,20 @@ async function startCheckout(plan) {
 }
 
 const DEFAULT_MONTHLY_FEATURES = [
-  "Personalized adaptive daily practice",
-  "Full Movement training library (240+ sessions)",
-  "Strength, mobility, control & longevity tracks",
-  "Community access + challenges",
-];
+"Personalized adaptive daily practice",
+"Full Movement training library (240+ sessions)",
+"Strength, mobility, control & longevity tracks",
+"Community access + challenges"];
+
 
 const DEFAULT_ANNUAL_FEATURES = [
-  "Everything in Monthly, plus:",
-  "Weekly live coaching & feedback",
-  "Exclusive member-only trainings",
-  "Advanced content drops",
-  "Priority access to new releases",
-  "Annual member perks & content",
-];
+"Everything in Monthly, plus:",
+"Weekly live coaching & feedback",
+"Exclusive member-only trainings",
+"Advanced content drops",
+"Priority access to new releases",
+"Annual member perks & content"];
+
 
 function MonthlyCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
@@ -45,26 +45,26 @@ function MonthlyCard({ c, mobile = false }) {
         <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
-      {c.monthlySubtitle && (
-        <p className="font-body text-sm text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>
-      )}
+      {c.monthlySubtitle &&
+      <p className="font-body text-sm text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>
+      }
       <ul className="space-y-2 flex-1">
-        {features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5">
+        {features.map((f, i) =>
+        <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
             <span className="font-body text-sm text-off-white/80">{f}</span>
           </li>
-        ))}
+        )}
       </ul>
       <div className="mt-5">
         <button onClick={handleClick} disabled={loading}
-          className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
+        className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
           {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
         </button>
         <p className="mt-2 font-body text-xs text-white-muted text-center">Cancel anytime</p>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 function AnnualCard({ c, mobile = false }) {
@@ -87,26 +87,26 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-body text-sm text-dark-bg/60">/ year</span>
       </div>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
-      {c.annualSubtitle && (
-        <p className="font-body text-sm text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>
-      )}
+      {c.annualSubtitle &&
+      <p className="font-body text-sm text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>
+      }
       <ul className="space-y-2 flex-1">
-        {features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5">
+        {features.map((f, i) =>
+        <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
             <span className={`font-body text-sm text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
           </li>
-        ))}
+        )}
       </ul>
       <div className="mt-4">
         <button onClick={handleClick} disabled={loading}
-          className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
+        className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
           {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
         </button>
         <p className="mt-2 font-body text-xs text-dark-bg/60 text-center">Cancel anytime</p>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function PricingSection() {
@@ -146,8 +146,8 @@ export default function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+          className="text-center mb-14">
+          
           <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
             {c.headline1}<br />
@@ -169,14 +169,14 @@ export default function PricingSection() {
             <div className="flex bg-dark-bg border border-dark-border rounded-full p-1 gap-1">
               <button
                 onClick={() => scrollTo("annual")}
-                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}
-              >
+                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
+                
                 Annual
               </button>
               <button
                 onClick={() => scrollTo("monthly")}
-                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}
-              >
+                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
+                
                 Monthly
               </button>
             </div>
@@ -188,8 +188,8 @@ export default function PricingSection() {
           </div>
         </div>
 
-        <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment · Cancel any time</p>
+        <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment required  · Cancel any time</p>
       </div>
-    </section>
-  );
+    </section>);
+
 }
