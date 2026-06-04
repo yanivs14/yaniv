@@ -554,20 +554,20 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
           <button onClick={() => setShowNotes(n => !n)}
             className="flex items-center gap-1.5 text-xs text-white-muted hover:text-off-white transition-colors">
             <MessageSquare className="w-3.5 h-3.5" />
-            {lead.notes ? "הערות" : "הוסף הערה"}
+            {lead.notes ? "Notes" : "Add Note"}
             {showNotes ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
           <div className="flex-1" />
           {!confirmDelete ? (
             <button onClick={() => setConfirmDelete(true)}
               className="flex items-center gap-1 text-xs text-white-dim hover:text-red-400 transition-colors">
-              <Trash2 className="w-3.5 h-3.5" /> מחק
+              <Trash2 className="w-3.5 h-3.5" /> Delete
             </button>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-white-muted">בטוח?</span>
-              <button onClick={() => onDelete(lead.id)} className="text-xs text-red-400 font-semibold hover:text-red-300 transition-colors">כן</button>
-              <button onClick={() => setConfirmDelete(false)} className="text-xs text-white-muted hover:text-off-white transition-colors">לא</button>
+              <span className="text-xs text-white-muted">Sure?</span>
+              <button onClick={() => onDelete(lead.id)} className="text-xs text-red-400 font-semibold hover:text-red-300 transition-colors">Yes</button>
+              <button onClick={() => setConfirmDelete(false)} className="text-xs text-white-muted hover:text-off-white transition-colors">No</button>
             </div>
           )}
         </div>
@@ -580,13 +580,12 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
-            placeholder="הוסף הערה..."
-            dir="rtl"
+            placeholder="Add a note..."
             className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body resize-none focus:outline-none focus:border-orange-red transition-colors mb-2"
           />
           <button onClick={saveNotes} disabled={savingNotes}
             className="text-xs bg-orange-red text-dark-bg font-semibold px-4 py-1.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
-            {savingNotes ? "שומר..." : "שמור הערה"}
+            {savingNotes ? "Saving..." : "Save Note"}
           </button>
         </div>
       )}
@@ -628,7 +627,7 @@ function LeadsTab() {
         {leads.length > 0 && (
           <button onClick={() => exportLeadsToExcel(leads)}
             className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors">
-            <Download className="w-3.5 h-3.5" /> ייצוא לאקסל
+            <Download className="w-3.5 h-3.5" /> Export to Excel
           </button>
         )}
       </div>
