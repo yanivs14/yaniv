@@ -68,30 +68,36 @@ export default function BookCallModal({ open, onClose }) {
     setLoading(false);
   };
 
-  // Step 2 → update lead with slot, show success
+  // Step 2 → send confirmation email + open Calendly with prefilled details
   const handleSlotConfirm = async () => {
     if (!selectedSlot) {
       setErrors({ slot: "Please select a time slot to confirm." });
       return;
     }
     setLoading(true);
+
+    // Send confirmation email (non-blocking on failure)
     try {
-      // Update the lead with slot info if we have a lead id
-      if (leadId) {
-        await base44.functions.invoke("submitLead", {
-          full_name: form.full_name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          source: "inner_circle",
-          quiz_recommendation: `Inner Circle — ${formatDate(selectedSlot.start_time)} at ${formatTime(selectedSlot.start_time)}`
-        });
-      }
-      setStep("success");
-    } catch {
-      // Even if update fails, show success since lead was already saved
-      setStep("success");
+      await base44.functions.invoke("sendBookingConfirmation", {
+        full_name: form.full_name.trim(),
+        email: form.email.trim(),
+        slot_date: formatDate(selectedSlot.start_time),
+        slot_time: formatTime(selectedSlot.start_time),
+        duration: selectedSlot.duration || null
+      });
+    } catch (err) {
+      console.warn("Confirmation email failed:", err);
     }
+
+    // Open Calendly with prefilled user details
+    const params = new URLSearchParams({
+      name: form.full_name.trim(),
+      email: form.email.trim(),
+    });
+    window.open(`${selectedSlot.scheduling_url}?${params.toString()}`, "_blank");
+
     setLoading(false);
+    setStep("success");
   };
 
   const field = (key, label, type = "text", placeholder = "") => (
@@ -227,18 +233,28 @@ export default function BookCallModal({ open, onClose }) {
                   <CheckCircle className="w-8 h-8 text-orange-red" />
                 </motion.div>
                 <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
-                  Request Received!
+                  Call Scheduled!
                 </h2>
                 <p className="font-body text-sm text-white-muted mb-2">
                   Thank you, <span className="text-off-white font-semibold">{form.full_name}</span>.
                 </p>
                 {selectedSlot ? (
-                  <p className="font-body text-sm text-white-muted mb-6">
-                    We'll confirm your slot for{" "}
-                    <span className="text-off-white font-semibold">
-                      {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
-                    </span>.
-                  </p>
+                  <>
+                    <p className="font-body text-sm text-white-muted mb-3">
+                      A confirmation email has been sent to{" "}
+                      <span className="text-off-white font-semibold">{form.email}</span>.
+                    </p>
+                    <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4 text-left">
+                      <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-1">Your slot</p>
+                      <p className="font-body text-sm text-off-white font-semibold">
+                        {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
+                        {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
+                      </p>
+                    </div>
+                    <p className="font-body text-xs text-white-dim mb-6">
+                      Complete your booking in the Calendly tab that just opened.
+                    </p>
+                  </>
                 ) : (
                   <p className="font-body text-sm text-white-muted mb-6">
                     We've saved your details and will be in touch soon to schedule your call.
