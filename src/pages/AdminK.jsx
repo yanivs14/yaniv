@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play, Download, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -481,12 +481,125 @@ function PolicyEditor({ sectionKey }) {
 const STATUS_LABELS = { new: "New", contacted: "Contacted", converted: "Converted" };
 const STATUS_COLORS = { new: "bg-orange-red/20 text-orange-red", contacted: "bg-blue-500/20 text-blue-400", converted: "bg-green-500/20 text-green-400" };
 
+function formatIsraelTime(dateStr) {
+  return new Date(dateStr).toLocaleString("he-IL", {
+    timeZone: "Asia/Jerusalem",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit"
+  });
+}
+
+function exportLeadsToExcel(leads) {
+  // Build CSV with BOM for Hebrew support in Excel
+  const BOM = "\uFEFF";
+  const headers = ["שם מלא", "טלפון", "אימייל", "מקור", "המלצה", "סטטוס", "הערות", "תאריך"];
+  const rows = leads.map(l => [
+    l.full_name || "",
+    l.phone || "",
+    l.email || "",
+    l.source || "",
+    l.quiz_recommendation || "",
+    STATUS_LABELS[l.status] || l.status || "",
+    (l.notes || "").replace(/\n/g, " "),
+    formatIsraelTime(l.created_date)
+  ]);
+  const csv = BOM + [headers, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `leads_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
+  const [showNotes, setShowNotes] = useState(false);
+  const [notes, setNotes] = useState(lead.notes || "");
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const saveNotes = async () => {
+    setSavingNotes(true);
+    await base44.entities.Lead.update(lead.id, { notes });
+    onNotesChange(lead.id, notes);
+    setSavingNotes(false);
+  };
+
+  return (
+    <div className="border border-[#2a2a2a] rounded-xl bg-[#111] overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-body text-sm font-semibold text-off-white">{lead.full_name}</p>
+            <div className="flex flex-wrap gap-3 mt-1">
+              <span className="flex items-center gap-1 text-xs text-white-muted"><Phone className="w-3 h-3" />{lead.phone}</span>
+              {lead.email && <span className="flex items-center gap-1 text-xs text-white-muted"><Mail className="w-3 h-3" />{lead.email}</span>}
+            </div>
+            {lead.quiz_recommendation && <p className="text-xs text-orange-red mt-1">{lead.quiz_recommendation}</p>}
+            <p className="text-xs text-white-dim mt-1">{formatIsraelTime(lead.created_date)}</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <select value={lead.status || "new"} onChange={e => onStatusChange(lead.id, e.target.value)}
+              className={`text-xs px-2 py-1 rounded-full border-0 font-body cursor-pointer focus:outline-none ${STATUS_COLORS[lead.status || "new"]}`}>
+              {Object.entries(STATUS_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {/* Notes toggle + delete */}
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1e1e1e]">
+          <button onClick={() => setShowNotes(n => !n)}
+            className="flex items-center gap-1.5 text-xs text-white-muted hover:text-off-white transition-colors">
+            <MessageSquare className="w-3.5 h-3.5" />
+            {lead.notes ? "הערות" : "הוסף הערה"}
+            {showNotes ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          </button>
+          <div className="flex-1" />
+          {!confirmDelete ? (
+            <button onClick={() => setConfirmDelete(true)}
+              className="flex items-center gap-1 text-xs text-white-dim hover:text-red-400 transition-colors">
+              <Trash2 className="w-3.5 h-3.5" /> מחק
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-white-muted">בטוח?</span>
+              <button onClick={() => onDelete(lead.id)} className="text-xs text-red-400 font-semibold hover:text-red-300 transition-colors">כן</button>
+              <button onClick={() => setConfirmDelete(false)} className="text-xs text-white-muted hover:text-off-white transition-colors">לא</button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Notes panel */}
+      {showNotes && (
+        <div className="px-4 pb-4 border-t border-[#1e1e1e] pt-3">
+          <textarea
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            rows={3}
+            placeholder="הוסף הערה..."
+            dir="rtl"
+            className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body resize-none focus:outline-none focus:border-orange-red transition-colors mb-2"
+          />
+          <button onClick={saveNotes} disabled={savingNotes}
+            className="text-xs bg-orange-red text-dark-bg font-semibold px-4 py-1.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
+            {savingNotes ? "שומר..." : "שמור הערה"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LeadsTab() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Lead.list("-created_date", 100).then(data => {
+    base44.entities.Lead.list("-created_date", 200).then(data => {
       setLeads(data);
       setLoading(false);
     });
@@ -497,12 +610,27 @@ function LeadsTab() {
     setLeads(l => l.map(x => x.id === id ? { ...x, status } : x));
   };
 
+  const deleteLead = async (id) => {
+    await base44.entities.Lead.delete(id);
+    setLeads(l => l.filter(x => x.id !== id));
+  };
+
+  const updateNotes = (id, notes) => {
+    setLeads(l => l.map(x => x.id === id ? { ...x, notes } : x));
+  };
+
   if (loading) return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-white-muted font-body">{leads.length} leads</p>
+        {leads.length > 0 && (
+          <button onClick={() => exportLeadsToExcel(leads)}
+            className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors">
+            <Download className="w-3.5 h-3.5" /> ייצוא לאקסל
+          </button>
+        )}
       </div>
       {leads.length === 0 ? (
         <div className="text-center py-20">
@@ -512,23 +640,13 @@ function LeadsTab() {
       ) : (
         <div className="space-y-3">
           {leads.map(l => (
-            <div key={l.id} className="border border-[#2a2a2a] rounded-xl p-4 bg-[#111]">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="font-body text-sm font-semibold text-off-white">{l.full_name}</p>
-                  <div className="flex flex-wrap gap-3 mt-1">
-                    <span className="flex items-center gap-1 text-xs text-white-muted"><Phone className="w-3 h-3" />{l.phone}</span>
-                    {l.email && <span className="flex items-center gap-1 text-xs text-white-muted"><Mail className="w-3 h-3" />{l.email}</span>}
-                  </div>
-                  {l.quiz_recommendation && <p className="text-xs text-orange-red mt-1">{l.quiz_recommendation}</p>}
-                  <p className="text-xs text-white-dim mt-1">{new Date(l.created_date).toLocaleString("en-US")}</p>
-                </div>
-                <select value={l.status || "new"} onChange={e => updateStatus(l.id, e.target.value)}
-                  className={`text-xs px-2 py-1 rounded-full border-0 font-body cursor-pointer focus:outline-none ${STATUS_COLORS[l.status || "new"]}`}>
-                  {Object.entries(STATUS_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}
-                </select>
-              </div>
-            </div>
+            <LeadCard
+              key={l.id}
+              lead={l}
+              onStatusChange={updateStatus}
+              onDelete={deleteLead}
+              onNotesChange={updateNotes}
+            />
           ))}
         </div>
       )}

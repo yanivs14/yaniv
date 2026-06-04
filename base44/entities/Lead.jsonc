@@ -30,6 +30,10 @@
         "converted"
       ],
       "default": "new"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes about this lead"
     }
   },
   "required": [
