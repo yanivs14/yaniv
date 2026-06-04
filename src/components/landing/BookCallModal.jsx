@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import CalendlySlots from "@/components/landing/CalendlySlots";
 
 export default function BookCallModal({ open, onClose }) {
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function BookCallModal({ open, onClose }) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25 }}
             onClick={e => e.stopPropagation()}
-            className="relative w-full max-w-md bg-dark-surface border border-dark-border rounded-2xl overflow-hidden"
+            className="relative w-full max-w-lg bg-dark-surface border border-dark-border rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
           >
             {/* Close */}
             <button
@@ -98,11 +99,13 @@ export default function BookCallModal({ open, onClose }) {
                 <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
                   Book a Call
                 </h2>
-                <p className="font-body text-sm text-white-muted mb-7">
+                <p className="font-body text-sm text-white-muted mb-5">
                   Leave your details and we'll reach out to schedule your personal consultation.
                 </p>
 
-                <form onSubmit={handleSubmit} noValidate>
+                <CalendlySlots />
+
+                <form onSubmit={handleSubmit} noValidate className="mt-6">
                   {field("full_name", "Full Name", "text", "John Doe")}
                   {field("email", "Email Address", "email", "john@example.com")}
                   {field("phone", "Phone Number", "tel", "+1 234 567 890")}

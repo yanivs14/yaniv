@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import BookCallModal from "@/components/landing/BookCallModal";
-import CalendlySlots from "@/components/landing/CalendlySlots";
+
 
 export default function InnerCircleSection() {
   const { content } = useSiteContent();
@@ -61,7 +61,6 @@ export default function InnerCircleSection() {
                   
                 {c.ctaButton || "Book a call"} <ArrowRight className="w-4 h-4" />
               </button>
-              <CalendlySlots />
             </div>
           </motion.div>
 
