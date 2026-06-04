@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, CheckCircle } from "lucide-react";
+import { X, ArrowRight, CheckCircle, ChevronLeft } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import CalendlySlots from "@/components/landing/CalendlySlots";
 
+function formatTime(isoString) {
+  const d = new Date(isoString);
+  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+}
+function formatDate(isoString) {
+  const d = new Date(isoString);
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
 export default function BookCallModal({ open, onClose }) {
+  // step: "slot" | "form" | "success"
+  const [step, setStep] = useState("slot");
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -12,10 +28,26 @@ export default function BookCallModal({ open, onClose }) {
     }
   }, [open]);
 
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const handleClose = () => {
+    setStep("slot");
+    setSelectedSlot(null);
+    setForm({ full_name: "", email: "", phone: "" });
+    setErrors({});
+    onClose();
+  };
+
+  const handleSlotSelected = (slot) => {
+    setSelectedSlot(slot);
+  };
+
+  const handleContinue = () => {
+    if (!selectedSlot) {
+      setErrors({ slot: "Please select a time slot to continue." });
+      return;
+    }
+    setErrors({});
+    setStep("form");
+  };
 
   const validate = () => {
     const e = {};
@@ -36,20 +68,13 @@ export default function BookCallModal({ open, onClose }) {
         email: form.email.trim(),
         phone: form.phone.trim(),
         source: "inner_circle",
-        quiz_recommendation: "Inner Circle Inquiry"
+        quiz_recommendation: `Inner Circle Inquiry — ${formatDate(selectedSlot.start_time)} ${formatTime(selectedSlot.start_time)}`
       });
-      setSuccess(true);
-    } catch (err) {
+      setStep("success");
+    } catch {
       setErrors({ submit: "Something went wrong. Please try again." });
     }
     setLoading(false);
-  };
-
-  const handleClose = () => {
-    setForm({ full_name: "", email: "", phone: "" });
-    setErrors({});
-    setSuccess(false);
-    onClose();
   };
 
   const field = (key, label, type = "text", placeholder = "") => (
@@ -92,20 +117,66 @@ export default function BookCallModal({ open, onClose }) {
               <X className="w-4 h-4" />
             </button>
 
-            {!success ? (
+            {/* STEP 1: Pick slot */}
+            {step === "slot" && (
               <div className="p-7 sm:p-8">
-                {/* Header */}
                 <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
                 <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
                   Book a Call
                 </h2>
-                <p className="font-body text-sm text-white-muted mb-5">
-                  Leave your details and we'll reach out to schedule your personal consultation.
+                <p className="font-body text-sm text-white-muted mb-4">
+                  Choose a time that works for you.
                 </p>
 
-                <CalendlySlots />
+                <CalendlySlots onSlotSelected={handleSlotSelected} />
 
-                <form onSubmit={handleSubmit} noValidate className="mt-6">
+                {selectedSlot && (
+                  <div className="mt-4 p-3 rounded-xl border border-orange-red/40 bg-orange-red/5">
+                    <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-0.5">Selected</p>
+                    <p className="font-body text-sm text-off-white font-semibold">
+                      {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
+                      {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
+                    </p>
+                  </div>
+                )}
+
+                {errors.slot && <p className="mt-3 text-xs text-red-400 font-body">{errors.slot}</p>}
+
+                <button
+                  onClick={handleContinue}
+                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors mt-6 disabled:opacity-40"
+                  disabled={!selectedSlot}
+                >
+                  Continue <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {/* STEP 2: Fill form */}
+            {step === "form" && (
+              <div className="p-7 sm:p-8">
+                <button
+                  onClick={() => setStep("slot")}
+                  className="flex items-center gap-1 font-body text-xs text-white-muted hover:text-off-white transition-colors mb-5"
+                >
+                  <ChevronLeft className="w-3 h-3" /> Back
+                </button>
+
+                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
+                  Your Details
+                </h2>
+
+                {/* Selected slot summary */}
+                <div className="mb-5 p-3 rounded-xl border border-dark-border bg-dark-bg">
+                  <p className="font-body text-xs text-white-muted uppercase tracking-widest mb-0.5">Booking for</p>
+                  <p className="font-body text-sm text-off-white font-semibold">
+                    {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
+                    {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} noValidate>
                   {field("full_name", "Full Name", "text", "John Doe")}
                   {field("email", "Email Address", "email", "john@example.com")}
                   {field("phone", "Phone Number", "tel", "+1 234 567 890")}
@@ -125,7 +196,10 @@ export default function BookCallModal({ open, onClose }) {
                   </button>
                 </form>
               </div>
-            ) : (
+            )}
+
+            {/* STEP 3: Success */}
+            {step === "success" && (
               <div className="p-7 sm:p-8 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
@@ -138,8 +212,14 @@ export default function BookCallModal({ open, onClose }) {
                 <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
                   Request Received!
                 </h2>
+                <p className="font-body text-sm text-white-muted mb-2">
+                  Thank you, <span className="text-off-white font-semibold">{form.full_name}</span>.
+                </p>
                 <p className="font-body text-sm text-white-muted mb-6">
-                  Thank you, <span className="text-off-white font-semibold">{form.full_name}</span>. We'll be in touch shortly to schedule your call.
+                  We'll confirm your slot for{" "}
+                  <span className="text-off-white font-semibold">
+                    {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
+                  </span>.
                 </p>
                 <button
                   onClick={handleClose}
