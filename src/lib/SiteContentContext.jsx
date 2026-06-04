@@ -196,7 +196,9 @@ function mergeDbRecords(records) {
   const merged = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
   for (const rec of records) {
     if (rec.section_key && rec.data) {
-      merged[rec.section_key] = rec.data;
+      // Handle legacy nested structure: { data: {...}, section_key: "..." }
+      const payload = rec.data.data && rec.data.section_key ? rec.data.data : rec.data;
+      merged[rec.section_key] = payload;
     }
   }
   return merged;
