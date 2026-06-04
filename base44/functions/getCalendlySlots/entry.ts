@@ -65,10 +65,10 @@ Deno.serve(async (req) => {
       allSlots.push(...slots);
     }
 
-    // Sort by time and return first 12
+    // Sort by time
     allSlots.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
 
-    return Response.json({ slots: allSlots.slice(0, 12), eventTypes });
+    return Response.json({ slots: allSlots, eventTypes });
   } catch (error) {
     console.error("Calendly error:", error);
     return Response.json({ error: error.message }, { status: 500 });
