@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, CheckCircle, ChevronLeft } from "lucide-react";
+import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import CalendlySlots from "@/components/landing/CalendlySlots";
 
 function formatTime(isoString) {
   const d = new Date(isoString);
@@ -14,10 +13,8 @@ function formatDate(isoString) {
 }
 
 export default function BookCallModal({ open, onClose }) {
-  // step: "form" | "slot" | "success"
+  // step: "form" | "success"
   const [step, setStep] = useState("form");
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [leadId, setLeadId] = useState(null);
   const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -31,8 +28,6 @@ export default function BookCallModal({ open, onClose }) {
 
   const handleClose = () => {
     setStep("form");
-    setSelectedSlot(null);
-    setLeadId(null);
     setForm({ full_name: "", email: "", phone: "" });
     setErrors({});
     onClose();
@@ -46,58 +41,40 @@ export default function BookCallModal({ open, onClose }) {
     return e;
   };
 
-  // Step 1 → save lead immediately, move to slot selection
+  // Step 1 → save lead + open Calendly directly
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("submitLead", {
+      // Save lead
+      await base44.functions.invoke("submitLead", {
         full_name: form.full_name.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
         source: "inner_circle",
-        quiz_recommendation: "Inner Circle Inquiry — awaiting slot selection"
+        quiz_recommendation: "Inner Circle Inquiry"
       });
-      setLeadId(res.data?.lead_id || null);
-      setStep("slot");
+
+      // Fetch Calendly scheduling URL and open with prefilled details
+      const res = await base44.functions.invoke("getCalendlySlots", {});
+      const eventTypes = res.data?.eventTypes || [];
+      const schedulingUrl = eventTypes[0]?.scheduling_url;
+
+      if (schedulingUrl) {
+        const params = new URLSearchParams({
+          name: form.full_name.trim(),
+          email: form.email.trim(),
+        });
+        window.open(`${schedulingUrl}?${params.toString()}`, "_blank");
+      }
+
+      setStep("success");
     } catch {
       setErrors({ submit: "Something went wrong. Please try again." });
     }
     setLoading(false);
-  };
-
-  // Step 2 → send confirmation email + open Calendly with prefilled details
-  const handleSlotConfirm = async () => {
-    if (!selectedSlot) {
-      setErrors({ slot: "Please select a time slot to confirm." });
-      return;
-    }
-    setLoading(true);
-
-    // Send confirmation email (non-blocking on failure)
-    try {
-      await base44.functions.invoke("sendBookingConfirmation", {
-        full_name: form.full_name.trim(),
-        email: form.email.trim(),
-        slot_date: formatDate(selectedSlot.start_time),
-        slot_time: formatTime(selectedSlot.start_time),
-        duration: selectedSlot.duration || null
-      });
-    } catch (err) {
-      console.warn("Confirmation email failed:", err);
-    }
-
-    // Open Calendly with prefilled user details
-    const params = new URLSearchParams({
-      name: form.full_name.trim(),
-      email: form.email.trim(),
-    });
-    window.open(`${selectedSlot.scheduling_url}?${params.toString()}`, "_blank");
-
-    setLoading(false);
-    setStep("success");
   };
 
   const field = (key, label, type = "text", placeholder = "") => (
@@ -173,55 +150,7 @@ export default function BookCallModal({ open, onClose }) {
               </div>
             )}
 
-            {/* STEP 2: Pick slot */}
-            {step === "slot" && (
-              <div className="p-7 sm:p-8">
-                <button
-                  onClick={() => setStep("form")}
-                  className="flex items-center gap-1 font-body text-xs text-white-muted hover:text-off-white transition-colors mb-5"
-                >
-                  <ChevronLeft className="w-3 h-3" /> Back
-                </button>
-
-                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
-                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-1">
-                  Pick a Time
-                </h2>
-                <p className="font-body text-sm text-white-muted mb-2">
-                  Choose a slot that works for you.
-                </p>
-
-                <CalendlySlots onSlotSelected={(slot) => { setSelectedSlot(slot); setErrors(er => ({ ...er, slot: undefined })); }} />
-
-                {selectedSlot && (
-                  <div className="mt-4 p-3 rounded-xl border border-orange-red/40 bg-orange-red/5">
-                    <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-0.5">Selected</p>
-                    <p className="font-body text-sm text-off-white font-semibold">
-                      {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
-                      {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
-                    </p>
-                  </div>
-                )}
-
-                {errors.slot && <p className="mt-2 text-xs text-red-400 font-body">{errors.slot}</p>}
-
-                <button
-                  onClick={handleSlotConfirm}
-                  disabled={!selectedSlot || loading}
-                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-40 mt-6"
-                >
-                  {loading ? (
-                    <><div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" /> Confirming...</>
-                  ) : (
-                    <>Confirm Booking <ArrowRight className="w-4 h-4" /></>
-                  )}
-                </button>
-
-
-              </div>
-            )}
-
-            {/* STEP 3: Success */}
+            {/* STEP 2: Success */}
             {step === "success" && (
               <div className="p-7 sm:p-8 text-center">
                 <motion.div
@@ -233,33 +162,14 @@ export default function BookCallModal({ open, onClose }) {
                   <CheckCircle className="w-8 h-8 text-orange-red" />
                 </motion.div>
                 <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
-                  Call Scheduled!
+                  Details Received!
                 </h2>
-                <p className="font-body text-sm text-white-muted mb-2">
+                <p className="font-body text-sm text-white-muted mb-3">
                   Thank you, <span className="text-off-white font-semibold">{form.full_name}</span>.
                 </p>
-                {selectedSlot ? (
-                  <>
-                    <p className="font-body text-sm text-white-muted mb-3">
-                      A confirmation email has been sent to{" "}
-                      <span className="text-off-white font-semibold">{form.email}</span>.
-                    </p>
-                    <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4 text-left">
-                      <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-1">Your slot</p>
-                      <p className="font-body text-sm text-off-white font-semibold">
-                        {formatDate(selectedSlot.start_time)} · {formatTime(selectedSlot.start_time)}
-                        {selectedSlot.duration && <span className="text-white-muted font-normal"> · {selectedSlot.duration}m</span>}
-                      </p>
-                    </div>
-                    <p className="font-body text-xs text-white-dim mb-6">
-                      Complete your booking in the Calendly tab that just opened.
-                    </p>
-                  </>
-                ) : (
-                  <p className="font-body text-sm text-white-muted mb-6">
-                    We've saved your details and will be in touch soon to schedule your call.
-                  </p>
-                )}
+                <p className="font-body text-sm text-white-muted mb-6">
+                  Complete your booking in the Calendly tab that just opened. We'll see you on the call!
+                </p>
                 <button
                   onClick={handleClose}
                   className="inline-flex items-center gap-2 bg-dark-bg border border-dark-border text-off-white font-body text-sm font-semibold px-6 py-3 rounded-full hover:border-orange-red transition-colors"
