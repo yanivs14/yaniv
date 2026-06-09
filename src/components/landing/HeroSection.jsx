@@ -47,17 +47,6 @@ export default function HeroSection() {
                 {c.subtitle}
               </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2 font-body text-xs">
-                <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
-                  <Dumbbell className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
-                  {c.badge1}
-                </span>
-                <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
-                  <RefreshCcw className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
-                  {c.badge2}
-                </span>
-              </div>
-
               <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <button
@@ -76,6 +65,17 @@ export default function HeroSection() {
                     {c.ctaSecondary}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   </motion.a>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 font-body text-xs">
+                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                    <Dumbbell className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
+                    {c.badge1}
+                  </span>
+                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                    <RefreshCcw className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
+                    {c.badge2}
+                  </span>
                 </div>
               </div>
 
