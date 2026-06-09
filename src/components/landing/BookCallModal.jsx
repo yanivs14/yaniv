@@ -130,7 +130,7 @@ export default function BookCallModal({ open, onClose }) {
                   Book a Call
                 </h2>
                 <p className="font-body text-sm text-white-muted mb-6">
-                  Leave your details and we'll reach out to schedule your personal consultation.
+                  Please fill out your details and book a personal consultation.
                 </p>
 
                 <form onSubmit={handleFormSubmit} noValidate>

@@ -43,9 +43,6 @@ export default function HeroSection() {
                 {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span><br />
                 {c.headline3}
               </h1>
-              <p className="mt-6 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
-                {c.subtitle}
-              </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-2 font-body text-xs">
                 <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
@@ -57,6 +54,10 @@ export default function HeroSection() {
                   {c.badge2}
                 </span>
               </div>
+
+              <p className="mt-4 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
+                {c.subtitle}
+              </p>
 
               <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
