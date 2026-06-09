@@ -40,8 +40,8 @@ export default function HeroSection() {
               
               <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] text-off-white uppercase tracking-tight my-5">
                 {c.headline1}<br />
-                {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span><br />
-                {c.headline3}
+                {c.headline2} {c.headlineAccent}<br />
+                to <span className="text-orange-red">move.</span>
               </h1>
               <p className="mt-6 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
                 {c.subtitle}
@@ -59,24 +59,20 @@ export default function HeroSection() {
               </div>
 
               <div className="mt-4 flex flex-col gap-4 relative z-10">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  <button
-                    onClick={() => setQuizOpen(true)}
-                    className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors">
-                    
-                    {c.ctaPrimary}
-                  </button>
+                <button
+                  onClick={() => setQuizOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors w-full sm:w-auto">
+                  {c.ctaPrimary}
+                </button>
 
-                  <motion.a
-                    href="#pricing"
-                    className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
-                    whileHover={{ x: 3 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}>
-                    
-                    {c.ctaSecondary}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </motion.a>
-                </div>
+                <motion.a
+                  href="#pricing"
+                  className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors group"
+                  whileHover={{ x: 3 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}>
+                  Ready to start? Subscribe here
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </motion.a>
               </div>
 
               {/* Mobile video — below CTA buttons */}

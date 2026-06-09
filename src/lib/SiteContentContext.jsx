@@ -6,7 +6,6 @@ const DEFAULT_CONTENT = {
     headline1: "Your body",
     headline2: "was",
     headlineAccent: "built",
-    headline3: "to move.",
     subtitle: "We pay attention to movement only after we lose it. A guided, daily method to rebuild your physical foundation.",
     badge1: "No equipment",
     badge2: "Cancel anytime",
