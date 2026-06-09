@@ -38,10 +38,9 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}>
               
-              <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] text-off-white uppercase tracking-tight my-4">
+              <h1 className="font-heading text-6xl sm:text-7xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] text-off-white uppercase tracking-tight my-4">
                 {c.headline1}<br />
-                {c.headline2}<br />
-                <span className="text-orange-red">{c.headlineAccent}</span>
+                {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
               </h1>
               <p className="mt-6 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
                 {c.subtitle}
