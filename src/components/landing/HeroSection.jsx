@@ -41,7 +41,11 @@ export default function HeroSection() {
               <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
                 {c.headline1}<br />
                 {c.headline2} {c.headlineAccent}<br />
-                <span className="text-orange-red">{c.headline3}</span>
+                {c.headline3.split(" ").map((word, i) => (
+                  i === c.headline3.split(" ").length - 1
+                    ? <span key={i} className="text-orange-red">{word}</span>
+                    : <span key={i}>{word} </span>
+                ))}
               </h1>
 
               <p className="mt-4 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
