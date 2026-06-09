@@ -161,9 +161,8 @@ export default function BookCallModal({ open, onClose }) {
                 <div className="w-16 h-16 bg-orange-red/15 rounded-full flex items-center justify-center mx-auto mb-5">
                   <CheckCircle className="w-8 h-8 text-orange-red" />
                 </div>
-                <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">Inner Circle</p>
-                <h2 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
-                  Details Saved!
+                <h2 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-2">
+                  Thanks for your interest in Inner Circle!
                 </h2>
                 <p className="font-body text-sm text-white-muted mb-8">
                   Your details have been received, <span className="text-off-white font-semibold">{form.full_name}</span>.<br />
@@ -174,7 +173,7 @@ export default function BookCallModal({ open, onClose }) {
                   disabled={!schedulingUrl}
                   className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-50"
                 >
-                  Schedule My Call <ArrowRight className="w-4 h-4" />
+                  Schedule a Call <ArrowRight className="w-4 h-4" />
                 </button>
                 {!schedulingUrl && (
                   <p className="mt-3 font-body text-xs text-white-muted">No Calendly slots available right now.</p>
