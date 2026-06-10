@@ -109,7 +109,9 @@ export const COUNTRIES = [
 export function DialCodePicker({ value, onChange, error }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [dropdownStyle, setDropdownStyle] = useState({});
   const ref = useRef(null);
+  const btnRef = useRef(null);
   const searchRef = useRef(null);
 
   const selected = COUNTRIES.find(c => c.code === value);
@@ -124,11 +126,27 @@ export function DialCodePicker({ value, onChange, error }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  useEffect(() => { if (open && searchRef.current) searchRef.current.focus(); }, [open]);
+  useEffect(() => {
+    if (open) {
+      if (searchRef.current) searchRef.current.focus();
+      // Position dropdown using fixed coords to escape overflow:hidden parents
+      if (btnRef.current) {
+        const rect = btnRef.current.getBoundingClientRect();
+        setDropdownStyle({
+          position: "fixed",
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: Math.max(rect.width, 260),
+          zIndex: 9999,
+        });
+      }
+    }
+  }, [open]);
 
   return (
     <div className="relative" ref={ref}>
       <button
+        ref={btnRef}
         type="button"
         onClick={() => { setOpen(!open); setSearch(""); }}
         className={`h-full flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
@@ -140,7 +158,10 @@ export function DialCodePicker({ value, onChange, error }) {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1 z-50 w-64 bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden">
+        <div
+          style={dropdownStyle}
+          className="bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden"
+        >
           <div className="p-2 border-b border-dark-border flex items-center gap-2">
             <Search className="w-3.5 h-3.5 text-white-dim flex-shrink-0 ml-1" />
             <input
@@ -166,7 +187,7 @@ export function DialCodePicker({ value, onChange, error }) {
                   }`}
                 >
                   <span>{c.name}</span>
-                  <span className="text-white-muted">{c.dial}</span>
+                  <span className="text-white-muted ml-3">{c.dial}</span>
                 </button>
               ))
             )}
