@@ -198,14 +198,14 @@ export default function InnerCircle() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: i * 0.07 }}
-                    className="bg-dark-surface border border-dark-border rounded-2xl p-6 flex flex-col gap-4 hover:border-orange-red/40 transition-colors"
+                    className="bg-dark-surface border border-dark-border rounded-2xl p-4 flex flex-col gap-2 hover:border-orange-red/40 transition-colors"
                   >
-                    <div className="w-10 h-10 bg-orange-red/10 rounded-xl flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-orange-red" />
+                    <div className="w-8 h-8 bg-orange-red/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4 text-orange-red" />
                     </div>
                     <div>
-                      <p className="font-body text-sm font-bold text-off-white mb-1">{title}</p>
-                      <p className="font-body text-sm text-white-muted leading-relaxed">{desc}</p>
+                      <p className="font-body text-xs font-bold text-off-white mb-1 leading-tight">{title}</p>
+                      <p className="font-body text-xs text-white-muted leading-snug">{desc}</p>
                     </div>
                   </motion.div>
                 ))}
