@@ -72,7 +72,7 @@ export default function HeroSection() {
                   </motion.a>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 font-body text-xs">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 font-body text-xs">
                   <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
                     <Dumbbell className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                     {c.badge1}
