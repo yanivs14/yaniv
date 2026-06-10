@@ -127,9 +127,9 @@ const DEFAULT_CONTENT = {
     links: [
       { label: "The Program", href: "#program" },
       { label: "Who Is It For?", href: "#who" },
-      { label: "Roye Gold", href: "#roye" },
       { label: "Pricing", href: "#pricing" },
       { label: "Inner Circle", href: "#inner-circle" },
+      { label: "Roye Gold", href: "#roye" },
       { label: "FAQ", href: "#faq" },
     ],
     cta: "Start moving",
