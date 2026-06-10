@@ -129,9 +129,13 @@ export function DialCodePicker({ value, onChange, error }) {
   const updatePosition = () => {
     if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
+      const dropdownHeight = 280; // approx height of dropdown
+      const isMobile = window.innerWidth < 640;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const openAbove = isMobile || spaceBelow < dropdownHeight;
       setDropdownStyle({
         position: "fixed",
-        top: rect.bottom + 4,
+        top: openAbove ? rect.top - dropdownHeight - 4 : rect.bottom + 4,
         left: rect.left,
         width: Math.max(rect.width, 260),
         zIndex: 9999,
