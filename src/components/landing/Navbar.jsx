@@ -37,14 +37,15 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [content?.navbar?.links]);
-  if (!content) return null;
-  const c = content.navbar;
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  if (!content) return null;
+  const c = content.navbar;
 
   const openQuiz = (e) => {
     e.preventDefault();
