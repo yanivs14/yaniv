@@ -10,6 +10,7 @@ import AdminK from './pages/AdminK';
 import PolicyPage from './pages/PolicyPage';
 import CookieBanner from './components/CookieBanner';
 import { SiteContentProvider } from '@/lib/SiteContentContext';
+import InnerCircle from './pages/InnerCircle';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -41,6 +42,7 @@ const AuthenticatedApp = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin-k" element={<AdminK />} />
+        <Route path="/inner-circle" element={<InnerCircle />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
