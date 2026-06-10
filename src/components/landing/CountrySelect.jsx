@@ -125,7 +125,7 @@ export function DialCodePicker({ value, onChange, error }) {
       <button
         type="button"
         onClick={handleOpen}
-        className={`self-stretch flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
+        className={`flex items-center gap-1 px-3 py-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
           error ? "border-red-500" : "border-dark-border"
         } ${open ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
       >
