@@ -105,67 +105,53 @@ export const COUNTRIES = [
   { code: "ZW", name: "Zimbabwe", dial: "+263" },
 ];
 
-export default function CountrySelect({ value, onChange, error }) {
+/** Compact dial-code picker shown inline next to the phone input */
+export function DialCodePicker({ value, onChange, error }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const ref = useRef(null);
   const searchRef = useRef(null);
 
   const selected = COUNTRIES.find(c => c.code === value);
-
   const filtered = COUNTRIES.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
     c.dial.includes(search)
   );
 
   useEffect(() => {
-    const handler = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  useEffect(() => {
-    if (open && searchRef.current) searchRef.current.focus();
-  }, [open]);
+  useEffect(() => { if (open && searchRef.current) searchRef.current.focus(); }, [open]);
 
   return (
-    <div className="mb-4" ref={ref}>
-      <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">
-        Country
-      </label>
+    <div className="relative" ref={ref}>
       <button
         type="button"
         onClick={() => { setOpen(!open); setSearch(""); }}
-        className={`w-full bg-dark-bg border rounded-xl px-4 py-3 font-body text-sm text-left flex items-center justify-between transition-colors focus:outline-none ${
-          error ? "border-red-500" : open ? "border-orange-red" : "border-dark-border hover:border-orange-red/50"
-        }`}
+        className={`h-full flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
+          error ? "border-red-500" : "border-dark-border"
+        } ${open ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
       >
-        {selected ? (
-          <span className="text-off-white">{selected.name} <span className="text-white-muted">({selected.dial})</span></span>
-        ) : (
-          <span className="text-white-dim">Select your country...</span>
-        )}
-        <ChevronDown className={`w-4 h-4 text-white-muted transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} />
+        <span>{selected ? selected.dial : "+"}</span>
+        <ChevronDown className={`w-3 h-3 text-white-muted transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
-      {error && <p className="mt-1 text-xs text-red-400 font-body">{error}</p>}
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full max-w-[calc(100%-3.5rem)] bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden">
-          {/* Search */}
+        <div className="absolute left-0 top-full mt-1 z-50 w-64 bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden">
           <div className="p-2 border-b border-dark-border flex items-center gap-2">
-            <Search className="w-4 h-4 text-white-dim flex-shrink-0 ml-1" />
+            <Search className="w-3.5 h-3.5 text-white-dim flex-shrink-0 ml-1" />
             <input
               ref={searchRef}
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search country or dial code..."
-              className="flex-1 bg-transparent text-sm font-body text-off-white placeholder-white-dim focus:outline-none"
+              placeholder="Search country or +code..."
+              className="flex-1 bg-transparent text-xs font-body text-off-white placeholder-white-dim focus:outline-none"
             />
           </div>
-          {/* List */}
           <div className="max-h-52 overflow-y-auto">
             {filtered.length === 0 ? (
               <p className="px-4 py-3 text-sm font-body text-white-muted">No results</p>
@@ -175,12 +161,12 @@ export default function CountrySelect({ value, onChange, error }) {
                   key={c.code}
                   type="button"
                   onClick={() => { onChange(c.code); setOpen(false); setSearch(""); }}
-                  className={`w-full text-left px-4 py-2.5 font-body text-sm flex items-center justify-between hover:bg-dark-bg transition-colors ${
+                  className={`w-full text-left px-4 py-2 font-body text-xs flex items-center justify-between hover:bg-dark-bg transition-colors ${
                     value === c.code ? "text-orange-red" : "text-off-white"
                   }`}
                 >
                   <span>{c.name}</span>
-                  <span className="text-white-muted text-xs">{c.dial}</span>
+                  <span className="text-white-muted">{c.dial}</span>
                 </button>
               ))
             )}

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import CountrySelect, { COUNTRIES } from "./CountrySelect";
+import { DialCodePicker, COUNTRIES } from "./CountrySelect";
 
 export default function BookCallModal({ open, onClose }) {
   const [step, setStep] = useState("form");
   const [schedulingUrl, setSchedulingUrl] = useState(null);
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "", country: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", phone: "", dialCode: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,7 @@ export default function BookCallModal({ open, onClose }) {
   const handleClose = () => {
     setStep("form");
     setSchedulingUrl(null);
-    setForm({ full_name: "", email: "", phone: "", country: "" });
+    setForm({ full_name: "", email: "", phone: "", dialCode: "" });
     setErrors({});
     onClose();
   };
@@ -30,8 +30,8 @@ export default function BookCallModal({ open, onClose }) {
     const e = {};
     if (!form.full_name.trim()) e.full_name = "Full name is required";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Valid email is required";
+    if (!form.dialCode) e.phone = "Please select a country code";
     if (!form.phone.trim()) e.phone = "Phone number is required";
-    if (!form.country) e.country = "Please select your country";
     return e;
   };
 
@@ -40,8 +40,8 @@ export default function BookCallModal({ open, onClose }) {
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
-    const countryName = COUNTRIES.find(c => c.code === form.country)?.name || form.country;
-    const dialCode = COUNTRIES.find(c => c.code === form.country)?.dial || "";
+    const dialCode = COUNTRIES.find(c => c.code === form.dialCode)?.dial || "";
+    const countryName = COUNTRIES.find(c => c.code === form.dialCode)?.name || "";
     try {
       const [, slotsRes] = await Promise.all([
         base44.functions.invoke("submitLead", {
@@ -128,12 +128,26 @@ export default function BookCallModal({ open, onClose }) {
                 <form onSubmit={handleFormSubmit} noValidate>
                   {field("full_name", "Full Name", "text", "John Doe")}
                   {field("email", "Email Address", "email", "john@example.com")}
-                  <CountrySelect
-                    value={form.country}
-                    onChange={code => { setForm(f => ({ ...f, country: code })); setErrors(er => ({ ...er, country: undefined })); }}
-                    error={errors.country}
-                  />
-                  {field("phone", "Phone Number", "tel", "123 456 7890")}
+                  <div className="mb-4">
+                    <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">
+                      Phone Number <span className="text-orange-red">*</span>
+                    </label>
+                    <div className={`flex items-stretch bg-dark-bg border rounded-xl overflow-hidden transition-colors ${errors.phone ? "border-red-500" : "border-dark-border focus-within:border-orange-red"}`}>
+                      <DialCodePicker
+                        value={form.dialCode}
+                        onChange={code => { setForm(f => ({ ...f, dialCode: code })); setErrors(er => ({ ...er, phone: undefined })); }}
+                        error={errors.phone}
+                      />
+                      <input
+                        type="tel"
+                        value={form.phone}
+                        onChange={e => { setForm(f => ({ ...f, phone: e.target.value })); setErrors(er => ({ ...er, phone: undefined })); }}
+                        placeholder="123 456 7890"
+                        className="flex-1 bg-transparent px-3 py-3 font-body text-sm text-off-white placeholder-white-dim focus:outline-none"
+                      />
+                    </div>
+                    {errors.phone && <p className="mt-1 text-xs text-red-400 font-body">{errors.phone}</p>}
+                  </div>
 
                   {errors.submit && <p className="mb-3 text-sm text-red-400 font-body">{errors.submit}</p>}
 
