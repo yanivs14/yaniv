@@ -36,7 +36,8 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [content.navbar.links]);
+  }, [content?.navbar?.links]);
+  if (!content) return null;
   const c = content.navbar;
 
   // Lock body scroll when mobile menu is open

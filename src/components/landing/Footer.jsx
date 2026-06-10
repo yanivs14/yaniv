@@ -13,8 +13,6 @@ const POLICY_PAGES = [
 
 export default function Footer() {
   const { content } = useSiteContent();
-  const c = content.footer;
-  const navLinks = content.navbar?.links || [];
   const [policyLinks, setPolicyLinks] = useState([]);
 
   useEffect(() => {
@@ -26,6 +24,10 @@ export default function Footer() {
       setPolicyLinks(active);
     }).catch(() => {});
   }, []);
+
+  if (!content) return null;
+  const c = content.footer;
+  const navLinks = content.navbar?.links || [];
 
   return (
     <footer className="bg-dark-surface border-t border-dark-border">
