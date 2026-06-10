@@ -2,21 +2,12 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-
-function formatTime(isoString) {
-  const d = new Date(isoString);
-  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-}
-function formatDate(isoString) {
-  const d = new Date(isoString);
-  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-}
+import CountrySelect, { COUNTRIES } from "./CountrySelect";
 
 export default function BookCallModal({ open, onClose }) {
-  // step: "form" | "schedule" | "success"
   const [step, setStep] = useState("form");
   const [schedulingUrl, setSchedulingUrl] = useState(null);
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", phone: "", country: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +21,7 @@ export default function BookCallModal({ open, onClose }) {
   const handleClose = () => {
     setStep("form");
     setSchedulingUrl(null);
-    setForm({ full_name: "", email: "", phone: "" });
+    setForm({ full_name: "", email: "", phone: "", country: "" });
     setErrors({});
     onClose();
   };
@@ -40,23 +31,25 @@ export default function BookCallModal({ open, onClose }) {
     if (!form.full_name.trim()) e.full_name = "Full name is required";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Valid email is required";
     if (!form.phone.trim()) e.phone = "Phone number is required";
+    if (!form.country) e.country = "Please select your country";
     return e;
   };
 
-  // Step 1 → save lead + fetch Calendly URL, move to schedule step
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
+    const countryName = COUNTRIES.find(c => c.code === form.country)?.name || form.country;
+    const dialCode = COUNTRIES.find(c => c.code === form.country)?.dial || "";
     try {
       const [, slotsRes] = await Promise.all([
         base44.functions.invoke("submitLead", {
           full_name: form.full_name.trim(),
           email: form.email.trim(),
-          phone: form.phone.trim(),
+          phone: `${dialCode} ${form.phone.trim()}`,
           source: "inner_circle",
-          quiz_recommendation: "Inner Circle Inquiry"
+          quiz_recommendation: `Inner Circle Inquiry — ${countryName}`
         }),
         base44.functions.invoke("getCalendlySlots", {})
       ]);
@@ -71,7 +64,6 @@ export default function BookCallModal({ open, onClose }) {
     setLoading(false);
   };
 
-  // Step 2 → open Calendly in new tab
   const handleOpenCalendly = () => {
     if (!schedulingUrl) return;
     const params = new URLSearchParams({
@@ -136,7 +128,12 @@ export default function BookCallModal({ open, onClose }) {
                 <form onSubmit={handleFormSubmit} noValidate>
                   {field("full_name", "Full Name", "text", "John Doe")}
                   {field("email", "Email Address", "email", "john@example.com")}
-                  {field("phone", "Phone Number", "tel", "+1 234 567 890")}
+                  <CountrySelect
+                    value={form.country}
+                    onChange={code => { setForm(f => ({ ...f, country: code })); setErrors(er => ({ ...er, country: undefined })); }}
+                    error={errors.country}
+                  />
+                  {field("phone", "Phone Number", "tel", "123 456 7890")}
 
                   {errors.submit && <p className="mb-3 text-sm text-red-400 font-body">{errors.submit}</p>}
 
