@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 
 export const COUNTRIES = [
   { code: "AF", name: "Afghanistan", dial: "+93" },
@@ -109,10 +109,6 @@ export const COUNTRIES = [
 export function DialCodePicker({ value, onChange, error }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [dropdownStyle, setDropdownStyle] = useState({});
-  const ref = useRef(null);
-  const btnRef = useRef(null);
-  const searchRef = useRef(null);
 
   const selected = COUNTRIES.find(c => c.code === value);
   const filtered = COUNTRIES.filter(c =>
@@ -120,91 +116,75 @@ export function DialCodePicker({ value, onChange, error }) {
     c.dial.includes(search)
   );
 
-  useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const updatePosition = () => {
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      setDropdownStyle({
-        position: "fixed",
-        top: rect.bottom + 4,
-        left: rect.left,
-        width: Math.max(rect.width, 260),
-        zIndex: 9999,
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (open) {
-      // Small delay so iOS keyboard doesn't shift layout before we measure
-      const t = setTimeout(updatePosition, 50);
-      window.addEventListener("resize", updatePosition);
-      window.addEventListener("scroll", updatePosition, true);
-      return () => {
-        clearTimeout(t);
-        window.removeEventListener("resize", updatePosition);
-        window.removeEventListener("scroll", updatePosition, true);
-      };
-    }
-  }, [open]);
+  const handleOpen = () => { setOpen(true); setSearch(""); };
+  const handleClose = () => { setOpen(false); setSearch(""); };
+  const handleSelect = (code) => { onChange(code); handleClose(); };
 
   return (
-    <div className="relative" ref={ref}>
+    <>
       <button
-        ref={btnRef}
         type="button"
-        onClick={() => { setOpen(!open); setSearch(""); }}
+        onClick={handleOpen}
         className={`h-full flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
           error ? "border-red-500" : "border-dark-border"
         } ${open ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
       >
         <span>{selected ? selected.dial : "+"}</span>
-        <ChevronDown className={`w-3 h-3 text-white-muted transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className="w-3 h-3 text-white-muted" />
       </button>
 
       {open && (
         <div
-          style={dropdownStyle}
-          className="bg-dark-surface border border-dark-border rounded-xl shadow-2xl overflow-hidden"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={handleClose}
         >
-          <div className="p-2 border-b border-dark-border flex items-center gap-2">
-            <Search className="w-3.5 h-3.5 text-white-dim flex-shrink-0 ml-1" />
-            <input
-              ref={searchRef}
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search country or +code..."
-              className="flex-1 bg-transparent font-body text-off-white placeholder-white-dim focus:outline-none"
-              style={{ fontSize: "16px" }}
-            />
-          </div>
-          <div className="max-h-52 overflow-y-auto">
-            {filtered.length === 0 ? (
-              <p className="px-4 py-3 text-sm font-body text-white-muted">No results</p>
-            ) : (
-              filtered.map(c => (
-                <button
-                  key={c.code}
-                  type="button"
-                  onClick={() => { onChange(c.code); setOpen(false); setSearch(""); }}
-                  className={`w-full text-left px-4 py-2 font-body text-xs flex items-center justify-between hover:bg-dark-bg transition-colors ${
-                    value === c.code ? "text-orange-red" : "text-off-white"
-                  }`}
-                >
-                  <span>{c.name}</span>
-                  <span className="text-white-muted ml-3">{c.dial}</span>
-                </button>
-              ))
-            )}
+          <div
+            className="w-full max-w-sm bg-dark-surface border border-dark-border rounded-2xl overflow-hidden shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-dark-border">
+              <span className="font-body text-sm font-semibold text-off-white">Select Country</span>
+              <button type="button" onClick={handleClose} className="text-white-muted hover:text-off-white transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {/* Search */}
+            <div className="px-4 py-2 border-b border-dark-border flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-white-dim flex-shrink-0" />
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search country or +code..."
+                className="flex-1 bg-transparent font-body text-off-white placeholder-white-dim focus:outline-none"
+                style={{ fontSize: "16px" }}
+                autoFocus
+              />
+            </div>
+            {/* List */}
+            <div className="max-h-72 overflow-y-auto">
+              {filtered.length === 0 ? (
+                <p className="px-4 py-4 text-sm font-body text-white-muted text-center">No results</p>
+              ) : (
+                filtered.map(c => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => handleSelect(c.code)}
+                    className={`w-full text-left px-4 py-3 font-body text-sm flex items-center justify-between hover:bg-dark-bg transition-colors border-b border-dark-border/40 ${
+                      value === c.code ? "text-orange-red" : "text-off-white"
+                    }`}
+                  >
+                    <span>{c.name}</span>
+                    <span className="text-white-muted ml-3 text-xs">{c.dial}</span>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
