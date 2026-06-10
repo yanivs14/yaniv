@@ -132,7 +132,7 @@ export default function BookCallModal({ open, onClose }) {
                     <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">
                       Phone Number <span className="text-orange-red">*</span>
                     </label>
-                    <div className={`flex items-stretch bg-dark-bg border rounded-xl overflow-hidden transition-colors ${errors.phone ? "border-red-500" : "border-dark-border focus-within:border-orange-red"}`}>
+                    <div className={`flex items-center bg-dark-bg border rounded-xl overflow-hidden transition-colors ${errors.phone ? "border-red-500" : "border-dark-border focus-within:border-orange-red"}`}>
                       <DialCodePicker
                         value={form.dialCode}
                         onChange={code => { setForm(f => ({ ...f, dialCode: code })); setErrors(er => ({ ...er, phone: undefined })); }}

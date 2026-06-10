@@ -125,7 +125,7 @@ export function DialCodePicker({ value, onChange, error }) {
       <button
         type="button"
         onClick={handleOpen}
-        className={`h-full flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
+        className={`self-stretch flex items-center gap-1 px-3 bg-dark-bg border-r font-body text-sm transition-colors focus:outline-none whitespace-nowrap ${
           error ? "border-red-500" : "border-dark-border"
         } ${open ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
       >
@@ -150,15 +150,15 @@ export function DialCodePicker({ value, onChange, error }) {
               </button>
             </div>
             {/* Search */}
-            <div className="px-4 py-2 border-b border-dark-border flex items-center gap-2">
+            <div className="px-4 border-b border-dark-border flex items-center gap-2" style={{ height: 44 }}>
               <Search className="w-3.5 h-3.5 text-white-dim flex-shrink-0" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search country or +code..."
-                className="flex-1 bg-transparent font-body text-off-white placeholder-white-dim focus:outline-none"
-                style={{ fontSize: "16px" }}
+                className="flex-1 bg-transparent font-body text-off-white placeholder-white-dim focus:outline-none leading-none"
+                style={{ fontSize: "16px", paddingTop: 0, paddingBottom: 0, lineHeight: "44px" }}
                 autoFocus
               />
             </div>
