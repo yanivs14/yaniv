@@ -190,7 +190,7 @@ export default function InnerCircle() {
                 </h2>
               </motion.div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
                 {FEATURES.map(({ icon: Icon, title, desc }, i) => (
                   <motion.div
                     key={title}
