@@ -29,7 +29,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section className="pt-16 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg">
+      <section className="pt-20 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left */}
