@@ -126,19 +126,30 @@ export function DialCodePicker({ value, onChange, error }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const updatePosition = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: Math.max(rect.width, 260),
+        zIndex: 9999,
+      });
+    }
+  };
+
   useEffect(() => {
     if (open) {
-      if (searchRef.current) searchRef.current.focus();
-      if (btnRef.current) {
-        const rect = btnRef.current.getBoundingClientRect();
-        setDropdownStyle({
-          position: "fixed",
-          top: rect.bottom + 4,
-          left: rect.left,
-          width: Math.max(rect.width, 260),
-          zIndex: 9999,
-        });
-      }
+      // Small delay so iOS keyboard doesn't shift layout before we measure
+      const t = setTimeout(updatePosition, 50);
+      window.addEventListener("resize", updatePosition);
+      window.addEventListener("scroll", updatePosition, true);
+      return () => {
+        clearTimeout(t);
+        window.removeEventListener("resize", updatePosition);
+        window.removeEventListener("scroll", updatePosition, true);
+      };
     }
   }, [open]);
 
