@@ -126,11 +126,23 @@ export function DialCodePicker({ value, onChange, error }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const isMobile = () => window.innerWidth < 640;
+
   useEffect(() => {
     if (open) {
       if (searchRef.current) searchRef.current.focus();
-      // Position dropdown using fixed coords to escape overflow:hidden parents
-      if (btnRef.current) {
+      if (isMobile()) {
+        // Center popup on mobile
+        setDropdownStyle({
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "85vw",
+          maxWidth: 340,
+          zIndex: 9999,
+        });
+      } else if (btnRef.current) {
         const rect = btnRef.current.getBoundingClientRect();
         setDropdownStyle({
           position: "fixed",
