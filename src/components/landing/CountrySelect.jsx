@@ -182,7 +182,8 @@ export function DialCodePicker({ value, onChange, error }) {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search country or +code..."
-              className="flex-1 bg-transparent text-xs font-body text-off-white placeholder-white-dim focus:outline-none"
+              className="flex-1 bg-transparent font-body text-off-white placeholder-white-dim focus:outline-none"
+              style={{ fontSize: "16px" }}
             />
           </div>
           <div className="max-h-52 overflow-y-auto">
