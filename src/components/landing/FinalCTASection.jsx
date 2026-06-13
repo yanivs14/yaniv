@@ -28,14 +28,11 @@ export default function FinalCTASection() {
             <p className="mt-8 font-body text-base text-white-muted max-w-md mx-auto leading-relaxed">{c.subtitle}</p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="#pricing" className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors">
-                {c.ctaPrimary}
-              </a>
               <button
                 onClick={() => setQuizOpen(true)}
-                className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim"
+                className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
               >
-                {c.ctaSecondary} <ArrowRight className="w-4 h-4" />
+                {c.ctaSecondary}
               </button>
             </div>
 

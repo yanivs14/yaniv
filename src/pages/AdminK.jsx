@@ -340,7 +340,7 @@ function SectionEditor({ sectionKey }) {
   if (sectionKey === "finalCta") return (
     <div>
       {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
-      {f("subtitle", "Subtitle", true)} {f("ctaPrimary", "Primary CTA")} {f("ctaSecondary", "Secondary CTA")} {f("footnote", "Footnote")} {f("signature", "Signature")}
+      {f("subtitle", "Subtitle", true)} {f("ctaSecondary", "CTA Button (quiz)")} {f("footnote", "Footnote")} {f("signature", "Signature")}
     </div>
   );
 

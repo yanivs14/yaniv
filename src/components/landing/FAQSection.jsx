@@ -20,7 +20,7 @@ export default function FAQSection() {
           
           <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4"></p>
           <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            Got <span className="text-orange-red">questions?</span>
+            Any <span className="text-orange-red">questions?</span>
           </h2>
         </motion.div>
 
