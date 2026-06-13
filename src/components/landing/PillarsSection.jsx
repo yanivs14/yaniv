@@ -49,8 +49,21 @@ export default function PillarsSection() {
             >
               <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
               <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-                {c.headline1}<br />
-                {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
+                {(() => {
+                  const text = c.headline1 || "";
+                  const lower = text.toLowerCase();
+                  const idx = lower.indexOf("benefits");
+                  if (idx === -1) return <>{text}{c.headlineAccent && <><br /><span className="text-orange-red">{c.headlineAccent}</span></>}{c.headline2 && <><br />{c.headline2}</>}</>;
+                  return (
+                    <>
+                      {text.slice(0, idx)}
+                      <span className="text-orange-red">{text.slice(idx, idx + 8)}</span>
+                      {text.slice(idx + 8)}
+                      {c.headlineAccent && <><br /><span className="text-orange-red">{c.headlineAccent}</span></>}
+                      {c.headline2 && <><br />{c.headline2}</>}
+                    </>
+                  );
+                })()}
               </h2>
               <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
             </motion.div>

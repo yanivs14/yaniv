@@ -27,10 +27,8 @@ export default function DegradingSection() {
                 {c.subtitle}
               </p>
             </div>
-            <div className="mt-10 lg:px-10 overflow-hidden">
-              <div className="relative w-full" style={{ height: '90vh' }}>
-                <img src={c.imageUrl} alt="Person stretching" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} className="lg:rounded-xl" loading="lazy" />
-              </div>
+            <div className="mt-10 lg:px-10 overflow-hidden px-6">
+              <img src={c.imageUrl} alt="Person stretching" className="w-full h-auto rounded-2xl" loading="lazy" />
             </div>
           </div>
 
@@ -44,7 +42,18 @@ export default function DegradingSection() {
                 transition={{ duration: 0.5 }}
                 className="font-heading text-4xl sm:text-5xl font-bold text-off-white uppercase tracking-tight mb-6"
               >
-                {c.listTitle}
+                {(() => {
+                  const lower = (c.listTitle || "").toLowerCase();
+                  const idx = lower.indexOf("this is for you");
+                  if (idx === -1) return c.listTitle;
+                  return (
+                    <>
+                      {c.listTitle.slice(0, idx)}
+                      <span className="text-orange-red">{c.listTitle.slice(idx, idx + 15)}</span>
+                      {c.listTitle.slice(idx + 15)}
+                    </>
+                  );
+                })()}
               </motion.p>
             )}
             <ul className="space-y-5 border-t border-dark-border">
