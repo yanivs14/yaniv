@@ -28,7 +28,7 @@ export default function DegradingSection() {
               </p>
             </div>
             <div className="mt-10 lg:px-10 overflow-hidden">
-              <div className="relative w-full" style={{ height: '90vh' }}>
+              <div className="relative w-full" style={{ height: 'clamp(300px, 55vw, 90vh)' }}>
                 <img src={c.imageUrl} alt="Person stretching" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} className="lg:rounded-xl" loading="lazy" />
               </div>
             </div>
@@ -44,7 +44,17 @@ export default function DegradingSection() {
                 transition={{ duration: 0.5 }}
                 className="font-heading text-4xl sm:text-5xl font-bold text-off-white uppercase tracking-tight mb-6"
               >
-                {c.listTitle}
+                {(() => {
+                  const text = c.listTitle;
+                  const phrase = "this is for you";
+                  const idx = text.toLowerCase().indexOf(phrase);
+                  if (idx === -1) return text;
+                  return (
+                    <>
+                      {text.slice(0, idx)}<span className="text-orange-red">{text.slice(idx)}</span>
+                    </>
+                  );
+                })()}
               </motion.p>
             )}
             <ul className="space-y-5 border-t border-dark-border">
