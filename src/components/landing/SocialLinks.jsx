@@ -1,5 +1,5 @@
 import React from "react";
-import { Instagram, Youtube, Twitter, Facebook, Linkedin } from "lucide-react";
+import { Instagram, Youtube, Twitter, Facebook, Linkedin, Mail } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
 const TikTokIcon = ({ className }) => (
@@ -15,6 +15,7 @@ const ICON_MAP = {
   facebook: Facebook,
   linkedin: Linkedin,
   tiktok: TikTokIcon,
+  email: Mail,
 };
 
 export default function SocialLinks({ className = "", showLabels = false, iconSize = "w-5 h-5" }) {
@@ -30,8 +31,8 @@ export default function SocialLinks({ className = "", showLabels = false, iconSi
         return (
           <a
             key={i}
-            href={l.url}
-            target="_blank"
+            href={l.icon?.toLowerCase() === "email" ? `mailto:${l.url}` : l.url}
+            target={l.icon?.toLowerCase() === "email" ? "_self" : "_blank"}
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-white-muted hover:text-orange-red transition-colors"
             aria-label={l.platform}

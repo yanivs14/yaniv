@@ -26,8 +26,8 @@ const CONTENT_SECTIONS = [
   { key: "policy_consumer-health-statement", label: "Health Statement", icon: "❤" },
 ];
 
-const SOCIAL_ICON_OPTIONS = ["instagram", "youtube", "twitter", "facebook", "linkedin", "tiktok"];
-const SOCIAL_ICON_MAP = { instagram: Instagram, youtube: Youtube, twitter: Twitter, facebook: Facebook, linkedin: Linkedin, tiktok: Music };
+const SOCIAL_ICON_OPTIONS = ["instagram", "youtube", "twitter", "facebook", "linkedin", "tiktok", "email"];
+const SOCIAL_ICON_MAP = { instagram: Instagram, youtube: Youtube, twitter: Twitter, facebook: Facebook, linkedin: Linkedin, tiktok: Music, email: Mail };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
   const [loading, setLoading] = useState(false);
