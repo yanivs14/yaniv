@@ -19,24 +19,17 @@ export default function Navbar() {
         return;
       }
 
-      // Find the active section based on scroll position
-      const sections = content.navbar.links
-        .map(l => l.href?.startsWith("#") ? l.href.replace("#", "") : null)
-        .filter(id => Boolean(id) && id !== "program");
-
+      // Find the active section by querying all sections with an id in the DOM
+      const allSections = Array.from(document.querySelectorAll("section[id]"));
       let current = "program";
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.getBoundingClientRect().top;
-          if (top <= 120) current = id;
-        }
+      for (const el of allSections) {
+        if (el.getBoundingClientRect().top <= 120) current = el.id;
       }
       setActiveSection(current);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [content?.navbar?.links]);
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
