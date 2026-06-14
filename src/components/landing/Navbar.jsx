@@ -21,13 +21,8 @@ export default function Navbar() {
 
       // Find the active section based on scroll position
       const sections = content.navbar.links
-        .map(l => {
-          if (l.href?.startsWith("#")) return l.href.replace("#", "");
-          // For page links, derive section id from the last path segment
-          const slug = l.href?.replace(/^\//, "").split("?")[0];
-          return slug || null;
-        })
-        .filter(id => Boolean(id) && id !== "program" && document.getElementById(id));
+        .map(l => l.href?.startsWith("#") ? l.href.replace("#", "") : null)
+        .filter(id => Boolean(id) && id !== "program");
 
       let current = "program";
       for (const id of sections) {
@@ -87,10 +82,8 @@ export default function Navbar() {
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {c.links.map((l) => {
-              const id = l.href?.startsWith("#")
-                ? l.href.replace("#", "")
-                : l.href?.replace(/^\//, "").split("?")[0];
-              const isActive = activeSection === id;
+              const id = l.href?.startsWith("#") ? l.href.replace("#", "") : null;
+              const isActive = id !== null && activeSection === id;
               return (
                 <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
                   className={`font-body text-sm transition-colors ${isActive ? "text-orange-red font-semibold" : "text-white-muted hover:text-off-white"}`}>
@@ -145,8 +138,8 @@ export default function Navbar() {
             {/* Links — scrollable */}
             <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
               {c.links.map((l, i) => {
-                const id = l.href?.replace("#", "");
-                const isActive = activeSection === id;
+                const id = l.href?.startsWith("#") ? l.href.replace("#", "") : null;
+                const isActive = id !== null && activeSection === id;
                 return (
                   <motion.a
                     key={l.label}
