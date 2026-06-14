@@ -82,11 +82,10 @@ export default function Navbar() {
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {c.links.map((l) => {
-              const isAnchor = l.href?.startsWith("#");
-              const id = isAnchor ? l.href?.replace("#", "") : null;
-              const isActive = isAnchor && activeSection === id;
+              const id = l.href?.replace("#", "");
+              const isActive = activeSection === id;
               return (
-                <a key={l.label} href={l.href} onClick={isAnchor ? (e) => scrollTo(e, l.href) : undefined}
+                <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
                   className={`font-body text-sm transition-colors ${isActive ? "text-orange-red font-semibold" : "text-white-muted hover:text-off-white"}`}>
                   {l.label}
                 </a>
