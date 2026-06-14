@@ -21,9 +21,13 @@ export default function Navbar() {
 
       // Find the active section based on scroll position
       const sections = content.navbar.links
-        .map(l => l.href)
-        .filter(href => href?.startsWith("#") && href !== "#program")
-        .map(href => href.replace("#", ""));
+        .map(l => {
+          if (l.href?.startsWith("#")) return l.href.replace("#", "");
+          // For page links, derive section id from the last path segment
+          const slug = l.href?.replace(/^\//, "").split("?")[0];
+          return slug || null;
+        })
+        .filter(id => Boolean(id) && id !== "program" && document.getElementById(id));
 
       let current = "program";
       for (const id of sections) {
@@ -83,9 +87,10 @@ export default function Navbar() {
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             {c.links.map((l) => {
-              const isAnchor = l.href?.startsWith("#");
-              const id = isAnchor ? l.href.replace("#", "") : null;
-              const isActive = isAnchor && activeSection === id;
+              const id = l.href?.startsWith("#")
+                ? l.href.replace("#", "")
+                : l.href?.replace(/^\//, "").split("?")[0];
+              const isActive = activeSection === id;
               return (
                 <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
                   className={`font-body text-sm transition-colors ${isActive ? "text-orange-red font-semibold" : "text-white-muted hover:text-off-white"}`}>
