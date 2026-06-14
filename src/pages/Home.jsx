@@ -6,13 +6,13 @@ import MarqueeBanner from "../components/landing/MarqueeBanner";
 import DegradingSection from "../components/landing/DegradingSection";
 import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
+import PricingSection from "../components/landing/PricingSection";
+import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import BackToTop from "../components/BackToTop";
 
 const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/landing/AboutSection.jsx"));
 const FAQSection = lazy(() => import("../components/landing/FAQSection.jsx"));
-const PricingSection = lazy(() => import("../components/landing/PricingSection"));
-const InnerCircleSection = lazy(() => import("../components/landing/InnerCircleSection.jsx"));
 const FinalCTASection = lazy(() => import("../components/landing/FinalCTASection"));
 const Footer = lazy(() => import("../components/landing/Footer"));
 
@@ -33,8 +33,10 @@ export default function Home() {
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
         <AboutSection />
-        <PricingSection />
-        <InnerCircleSection />
+      </Suspense>
+      <PricingSection />
+      <InnerCircleSection />
+      <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <FAQSection />
         <FinalCTASection />
         <Footer />
