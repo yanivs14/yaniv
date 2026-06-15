@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle } from "lucide-react";
+import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle, Mail, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
@@ -244,8 +244,11 @@ export default function Quiz({ onClose }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [direction, setDirection] = useState(1);
-  const [phase, setPhase] = useState("quiz"); // quiz | pricing | success
+  const [phase, setPhase] = useState("quiz"); // quiz | email | pricing | success
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
 
   const handleCheckout = async (plan) => {
     setCheckoutLoading(plan);
@@ -257,6 +260,27 @@ export default function Quiz({ onClose }) {
   const progress = (step / questions.length) * 100;
   const rec = getRecommendation(answers);
 
+  const handleEmailSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    setEmailError("");
+    setEmailLoading(true);
+    try {
+      await base44.entities.Lead.create({
+        full_name: "Quiz Lead",
+        phone: "-",
+        email: email.trim(),
+        source: "quiz",
+        quiz_recommendation: getRecommendation(answers).title,
+      });
+    } catch (_) {}
+    setEmailLoading(false);
+    setPhase("pricing");
+  };
+
   const handleSelect = (label) => {
     const newAnswers = { ...answers, [current.id]: label };
     setAnswers(newAnswers);
@@ -265,7 +289,7 @@ export default function Quiz({ onClose }) {
       if (step < questions.length - 1) {
         setStep(s => s + 1);
       } else {
-        setPhase("pricing");
+        setPhase("email");
       }
     }, 220);
   };
@@ -350,13 +374,62 @@ export default function Quiz({ onClose }) {
               </motion.div>
             )}
 
+            {phase === "email" && (
+              <motion.div key="email" variants={slideVariants} initial="enter" animate="center" exit="exit"
+                transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
+
+                {/* Top icon */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-16 h-16 rounded-2xl bg-orange-red/10 border border-orange-red/20 flex items-center justify-center">
+                    <Sparkles className="w-7 h-7 text-orange-red" />
+                  </div>
+                </div>
+
+                <p className="font-body text-xs text-orange-red uppercase tracking-widest text-center mb-2">Your results are ready</p>
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-2">
+                  Join Our Program
+                </h2>
+                <p className="font-body text-sm text-white-muted text-center leading-relaxed mb-8">
+                  Enter your email to unlock your personalised plan and get exclusive access to The Movement System.
+                </p>
+
+                <form onSubmit={handleEmailSubmit} noValidate className="flex flex-col gap-3">
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white-dim pointer-events-none" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => { setEmail(e.target.value); setEmailError(""); }}
+                      placeholder="your@email.com"
+                      className={`w-full bg-dark-bg border rounded-2xl pl-11 pr-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${emailError ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
+                    />
+                  </div>
+                  {emailError && <p className="text-xs text-red-400 font-body -mt-1">{emailError}</p>}
+
+                  <button type="submit" disabled={emailLoading}
+                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
+                    {emailLoading
+                      ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
+                      : <>See My Plan <ArrowRight className="w-4 h-4" /></>}
+                  </button>
+
+                  <button type="button" onClick={() => setPhase("pricing")}
+                    className="text-center font-body text-xs text-white-dim hover:text-white-muted transition-colors mt-1">
+                    Skip for now
+                  </button>
+                </form>
+
+                <p className="mt-5 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe at any time.</p>
+              </motion.div>
+            )}
+
             {phase === "pricing" && (
               <PricingPhase
                 c={c}
                 rec={rec}
                 checkoutLoading={checkoutLoading}
                 handleCheckout={handleCheckout}
-                onBack={() => { setPhase("quiz"); setStep(questions.length - 1); setDirection(-1); }}
+                onBack={() => setPhase("email")}
               />
             )}
 
