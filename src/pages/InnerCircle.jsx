@@ -33,12 +33,20 @@ export default function InnerCircle() {
           <section className="relative min-h-screen flex flex-col justify-end pt-28 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
             {/* Background media */}
             {c.hero.mediaUrl && c.hero.mediaType === "image" && (
-              <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" />
+              <>
+                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+                <div className="absolute inset-0 bg-[#0a0a0a]/60 pointer-events-none" />
+              </>
             )}
             {c.hero.mediaUrl && c.hero.mediaType === "video" && (
-              <video src={c.hero.mediaUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" />
+              <>
+                <video src={c.hero.mediaUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+                <div className="absolute inset-0 bg-[#0a0a0a]/60 pointer-events-none" />
+              </>
             )}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#111] pointer-events-none" />
+            {!c.hero.mediaUrl && (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#111] pointer-events-none" />
+            )}
 
             <div className="relative max-w-7xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
               <div className="lg:max-w-[55%]">
