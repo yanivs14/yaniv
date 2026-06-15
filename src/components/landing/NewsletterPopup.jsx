@@ -13,12 +13,10 @@ export default function NewsletterPopup() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(STORAGE_KEY)) return;
+    if (localStorage.getItem(STORAGE_KEY)) return;
 
-    // Trigger after 3 seconds
     const timer = setTimeout(() => setVisible(true), 3000);
 
-    // OR trigger when 3rd section enters viewport
     const sections = document.querySelectorAll("section, [data-section]");
     const target = sections[2];
     let observer;
@@ -37,7 +35,7 @@ export default function NewsletterPopup() {
   }, []);
 
   const dismiss = () => {
-    sessionStorage.setItem(STORAGE_KEY, "1");
+    localStorage.setItem(STORAGE_KEY, "1");
     setVisible(false);
   };
 

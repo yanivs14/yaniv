@@ -25,7 +25,7 @@ export default function SocialLinks({ className = "", showLabels = false, iconSi
   if (!links.length) return null;
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-5 ${className}`}>
       {links.map((l, i) => {
         const Icon = ICON_MAP[l.icon?.toLowerCase()] || Instagram;
         return (
