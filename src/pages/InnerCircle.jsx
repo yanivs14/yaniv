@@ -193,8 +193,21 @@ export default function InnerCircle() {
           </section>
 
           {/* ── WHAT YOU GET ── */}
-          <section className="bg-[#0a0a0a] py-20 lg:py-28 border-t border-[#1e1e1e] overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 lg:px-16 mb-10">
+          <section className="relative bg-[#0a0a0a] py-20 lg:py-28 border-t border-[#1e1e1e] overflow-hidden">
+            {/* Background media */}
+            {c.whatYouGet.mediaUrl && c.whatYouGet.mediaType === "image" && (
+              <>
+                <img src={c.whatYouGet.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" />
+                <div className="absolute inset-0 bg-[#0a0a0a]/70 pointer-events-none" />
+              </>
+            )}
+            {c.whatYouGet.mediaUrl && c.whatYouGet.mediaType === "video" && (
+              <>
+                <video src={c.whatYouGet.mediaUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+                <div className="absolute inset-0 bg-[#0a0a0a]/70 pointer-events-none" />
+              </>
+            )}
+            <div className="relative max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
@@ -213,12 +226,12 @@ export default function InnerCircle() {
             </div>
 
             {/* Mobile: horizontal slider */}
-            <div className="lg:hidden">
+            <div className="relative lg:hidden">
               <WhatYouGetSlider items={c.whatYouGet.items || []} accent={P} />
             </div>
 
             {/* Desktop: 2-col grid with icons */}
-            <div className="hidden lg:grid lg:grid-cols-2 gap-4 max-w-7xl mx-auto px-16">
+            <div className="relative hidden lg:grid lg:grid-cols-2 gap-4 max-w-7xl mx-auto px-16">
               {(c.whatYouGet.items || []).map((item, i) => (
                 <DesktopCard key={i} item={item} accent={P} index={i} />
               ))}

@@ -31,6 +31,8 @@ export const IC_DEFAULTS = {
     headline: "What you",
     headlineAccent: "get.",
     ctaText: "Apply now",
+    mediaType: "none",
+    mediaUrl: "",
     items: [
       { label: "Everything included in the Monthly / Annual membership", tag: "Foundation" },
       { label: "Personalized movement plan tailored to your body, goals, and progress", tag: "Custom" },

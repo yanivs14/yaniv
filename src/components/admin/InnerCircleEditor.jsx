@@ -221,6 +221,31 @@ export default function InnerCircleEditor() {
       <F label="Headline Accent (colored)" value={data.whatYouGet.headlineAccent} onChange={v => set("whatYouGet.headlineAccent", v)} />
       <F label="CTA Button Text" value={data.whatYouGet.ctaText} onChange={v => set("whatYouGet.ctaText", v)} />
 
+      <p className="text-xs text-white-muted mb-2 font-body">Background Media</p>
+      <div className="flex gap-2 mb-2">
+        <select value={data.whatYouGet.mediaType || "none"} onChange={e => set("whatYouGet.mediaType", e.target.value)}
+          className="bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+          <option value="none">No background</option>
+          <option value="image">Image</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      {data.whatYouGet.mediaType !== "none" && (
+        <div className="flex gap-2 mb-4">
+          <input value={data.whatYouGet.mediaUrl || ""} onChange={e => set("whatYouGet.mediaUrl", e.target.value)} placeholder="Paste URL or upload..."
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <UploadButton accept={data.whatYouGet.mediaType === "video" ? "video/*" : "image/*"}
+            label={data.whatYouGet.mediaType === "video" ? "Video" : "Image"}
+            onUpload={v => set("whatYouGet.mediaUrl", v)} />
+        </div>
+      )}
+      {data.whatYouGet.mediaUrl && data.whatYouGet.mediaType === "image" && (
+        <img src={data.whatYouGet.mediaUrl} alt="" className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a] mb-4" />
+      )}
+      {data.whatYouGet.mediaUrl && data.whatYouGet.mediaType === "video" && (
+        <video src={data.whatYouGet.mediaUrl} className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a] mb-4" muted />
+      )}
+
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Checklist items — Tag controls the icon shown</p>
       {(data.whatYouGet.items || []).map((item, i) => (
         <div key={i} className="mb-2 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
