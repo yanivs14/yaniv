@@ -30,7 +30,7 @@ export default function InnerCircle() {
         <main className="flex-1">
 
           {/* ── HERO ── */}
-          <section className="relative min-h-screen flex flex-col justify-end pt-28 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
+          <section className="relative min-h-screen flex flex-col justify-end pt-16 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
             {/* Background media */}
             {c.hero.mediaUrl && c.hero.mediaType === "image" && (
               <>
@@ -49,7 +49,7 @@ export default function InnerCircle() {
             )}
 
             <div className="relative max-w-7xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
-              <div className="lg:max-w-[55%]">
+              <div className="lg:max-w-[55%] mt-auto">
                 <motion.p
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
                   className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6"
@@ -79,10 +79,10 @@ export default function InnerCircle() {
                 </motion.div>
               </div>
 
-              {/* Right — keyword stack */}
+              {/* Right — keyword stack (hidden on mobile) */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col items-end gap-2 lg:pb-2"
+                className="hidden lg:flex flex-col items-end gap-2 lg:pb-2"
               >
                 {(c.hero.keywords || []).map((kw, i) => (
                   <div key={kw} className="flex items-center gap-3 group">
