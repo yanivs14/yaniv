@@ -75,7 +75,7 @@ export default function InnerCircle() {
           <section className="relative min-h-screen flex flex-col justify-end pt-16 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
             {c.hero.mediaUrl && c.hero.mediaType === "image" && (
               <>
-                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ objectPosition: "center 30%" }} />
+                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ objectPosition: "center center" }} />
                 <div className="absolute inset-0 bg-[#0a0a0a]/50 pointer-events-none" />
               </>
             )}
