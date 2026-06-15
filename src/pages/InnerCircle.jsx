@@ -6,8 +6,8 @@ import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
 
 // Purple accent — used ONLY in this page
-const P = "#CB9DF0";
-const PH = "#b07fd4"; // hover
+const P = "#FF2DF1";
+const PH = "#cc24c1"; // hover
 
 const FEATURES = [
   {
