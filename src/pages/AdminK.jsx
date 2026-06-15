@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play, Download, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -653,6 +653,76 @@ function LeadsTab() {
   );
 }
 
+// ---- NEWSLETTER TAB ----
+function NewsletterTab() {
+  const [subscribers, setSubscribers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    base44.entities.NewsletterSubscriber.list("-created_date", 500).then(data => {
+      setSubscribers(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const deleteSubscriber = async (id) => {
+    await base44.entities.NewsletterSubscriber.delete(id);
+    setSubscribers(s => s.filter(x => x.id !== id));
+  };
+
+  const exportCSV = () => {
+    const BOM = "\uFEFF";
+    const rows = [["Email", "Source", "Date"], ...subscribers.map(s => [
+      s.email,
+      s.source || "",
+      new Date(s.created_date).toLocaleString("he-IL", { timeZone: "Asia/Jerusalem" })
+    ])];
+    const csv = BOM + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `newsletter_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  if (loading) return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" /></div>;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-sm text-white-muted font-body">{subscribers.length} subscribers</p>
+        {subscribers.length > 0 && (
+          <button onClick={exportCSV}
+            className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors">
+            <Download className="w-3.5 h-3.5" /> Export CSV
+          </button>
+        )}
+      </div>
+      {subscribers.length === 0 ? (
+        <div className="text-center py-20">
+          <Bell className="w-10 h-10 text-white-muted mx-auto mb-3" />
+          <p className="text-white-muted font-body text-sm">No subscribers yet</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {subscribers.map(s => (
+            <div key={s.id} className="flex items-center gap-3 border border-[#2a2a2a] rounded-xl bg-[#111] px-4 py-3">
+              <Mail className="w-4 h-4 text-orange-red flex-shrink-0" />
+              <span className="flex-1 font-body text-sm text-off-white truncate">{s.email}</span>
+              <span className="text-xs text-white-dim font-body">{new Date(s.created_date).toLocaleDateString("he-IL")}</span>
+              <button onClick={() => deleteSubscriber(s.id)} className="text-white-muted hover:text-red-400 transition-colors p-1">
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ---- SETTINGS TAB ----
 function SettingsTab() {
   const [settings, setSettings] = useState(null);
@@ -753,6 +823,7 @@ function AuthGate() {
 const TABS = [
   { key: "content", label: "Content", icon: Layout },
   { key: "leads", label: "Leads", icon: Users },
+  { key: "newsletter", label: "Newsletter", icon: Bell },
   { key: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -895,6 +966,11 @@ export default function AdminK() {
           {activeTab === "leads" && (
             <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
               <LeadsTab />
+            </div>
+          )}
+          {activeTab === "newsletter" && (
+            <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
+              <NewsletterTab />
             </div>
           )}
           {activeTab === "settings" && (

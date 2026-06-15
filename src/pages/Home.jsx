@@ -9,6 +9,7 @@ import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import PricingSection from "../components/landing/PricingSection";
 import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import BackToTop from "../components/BackToTop";
+import NewsletterPopup from "../components/landing/NewsletterPopup";
 
 const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/landing/AboutSection.jsx"));
@@ -42,6 +43,7 @@ export default function Home() {
         <Footer />
       </Suspense>
       <BackToTop />
+      <NewsletterPopup />
     </div>
   );
 }
