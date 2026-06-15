@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, CheckCircle } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
+
+// Purple accent — used ONLY in this page
+const P = "#9929EA";
+const PH = "#7a1fc0"; // hover
 
 const FEATURES = [
   {
@@ -24,12 +28,12 @@ const FEATURES = [
 ];
 
 const WHAT_YOU_GET = [
-  "Everything included in the Monthly / Annual membership",
-  "Personalized movement plan tailored to your body, goals, and progress",
-  "Weekly live Zoom feedback session",
-  "Ongoing plan adjustments as you improve",
-  "Direct support throughout your journey",
-  "Limited availability for serious members only",
+  { label: "Everything included in the Monthly / Annual membership", tag: "Foundation" },
+  { label: "Personalized movement plan tailored to your body, goals, and progress", tag: "Custom" },
+  { label: "Weekly live Zoom feedback session", tag: "Live" },
+  { label: "Ongoing plan adjustments as you improve", tag: "Adaptive" },
+  { label: "Direct support throughout your journey", tag: "Support" },
+  { label: "Limited availability for serious members only", tag: "Exclusive" },
 ];
 
 const PROCESS = [
@@ -50,6 +54,8 @@ const PROCESS = [
   },
 ];
 
+const MARQUEE_ITEMS = ["The Most Personal Coaching Experience", "Limited Availability", "Personalized Plan", "Weekly Live Sessions", "Direct Support"];
+
 export default function InnerCircle() {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -60,13 +66,11 @@ export default function InnerCircle() {
 
         <main className="flex-1">
 
-          {/* ── HERO — full viewport, dark, large headline left + keyword list right ── */}
+          {/* ── HERO ── */}
           <section className="relative min-h-screen flex flex-col justify-end pt-28 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
-            {/* subtle noise overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#111] pointer-events-none" />
 
             <div className="relative max-w-7xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
-              {/* Left */}
               <div className="lg:max-w-[55%]">
                 <motion.p
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
@@ -79,7 +83,7 @@ export default function InnerCircle() {
                   className="font-heading text-[clamp(5rem,13vw,11rem)] font-bold leading-[0.85] uppercase tracking-tight text-off-white"
                 >
                   Inner<br />
-                  <span className="text-orange-red">Circle.</span>
+                  <span style={{ color: P }}>Circle.</span>
                 </motion.h1>
 
                 <motion.div
@@ -88,7 +92,8 @@ export default function InnerCircle() {
                 >
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-orange-red text-[#0a0a0a] font-body text-sm font-bold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
+                    style={{ backgroundColor: P }}
+                    className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90"
                   >
                     Apply for Inner Circle <ArrowUpRight className="w-4 h-4" />
                   </button>
@@ -103,7 +108,7 @@ export default function InnerCircle() {
               >
                 {["Personalized", "Live Feedback", "Limited Spots", "Direct Support"].map((kw, i) => (
                   <div key={kw} className="flex items-center gap-3 group">
-                    <ArrowUpRight className="w-4 h-4 text-orange-red opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: P }} />
                     <span
                       className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight"
                       style={{ color: i === 0 ? "#F5F5F5" : "#2a2a2a" }}
@@ -115,19 +120,18 @@ export default function InnerCircle() {
               </motion.div>
             </div>
 
-            {/* bottom separator */}
             <div className="absolute bottom-0 left-0 right-0 h-px bg-[#1e1e1e]" />
           </section>
 
           {/* ── MARQUEE ── */}
           <div className="bg-[#0f0f0f] border-b border-[#1e1e1e] py-5 overflow-hidden">
             <div className="flex animate-marquee whitespace-nowrap">
-              {[...Array(3)].map((_, k) => (
+              {[...Array(4)].map((_, k) => (
                 <span key={k} className="flex items-center">
-                  {["The Most Personal Coaching Experience", "Limited Availability", "Personalized Plan", "Weekly Live Sessions", "Direct Support"].map((t, i) => (
+                  {MARQUEE_ITEMS.map((t, i) => (
                     <span key={i} className="flex items-center">
-                      <span className="font-heading text-sm uppercase tracking-widest text-[#333] px-8">{t}</span>
-                      <span className="w-1 h-1 rounded-full bg-orange-red flex-shrink-0" />
+                      <span className="font-heading text-sm uppercase tracking-widest text-[#888] px-8">{t}</span>
+                      <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: P }} />
                     </span>
                   ))}
                 </span>
@@ -135,10 +139,9 @@ export default function InnerCircle() {
             </div>
           </div>
 
-          {/* ── WHAT IS IT — light bg, two columns ── */}
+          {/* ── WHAT IS IT — light bg ── */}
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
-              {/* Left text */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
@@ -154,18 +157,17 @@ export default function InnerCircle() {
                 </p>
               </motion.div>
 
-              {/* Right — numbered features */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
                 className="space-y-0 divide-y divide-[#ddd]"
               >
-                {FEATURES.map(({ num, title, desc }, i) => (
+                {FEATURES.map(({ num, title, desc }) => (
                   <div key={num} className="py-7 flex gap-6 group">
                     <span className="font-heading text-sm text-[#bbb] font-bold flex-shrink-0 mt-0.5">{num}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <p className="font-heading text-xl font-bold uppercase text-[#0a0a0a] tracking-tight">{title}</p>
-                        <ArrowUpRight className="w-4 h-4 text-[#bbb] group-hover:text-orange-red transition-colors flex-shrink-0" />
+                        <ArrowUpRight className="w-4 h-4 text-[#bbb] transition-colors flex-shrink-0 group-hover:text-[#9929EA]" />
                       </div>
                       <p className="text-sm text-[#666] leading-relaxed">{desc}</p>
                     </div>
@@ -175,7 +177,7 @@ export default function InnerCircle() {
             </div>
           </section>
 
-          {/* ── WHAT YOU GET — dark, large headline + checklist ── */}
+          {/* ── WHAT YOU GET — dark ── */}
           <section className="bg-[#0a0a0a] py-20 lg:py-28 px-6 lg:px-16 border-t border-[#1e1e1e]">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
@@ -183,33 +185,44 @@ export default function InnerCircle() {
               >
                 <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">The Full Package</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-off-white leading-[0.9] mb-8">
-                  What you<br /><span className="text-orange-red">get.</span>
+                  What you<br /><span style={{ color: P }}>get.</span>
                 </h2>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="inline-flex items-center gap-2 border border-[#2a2a2a] text-off-white text-sm font-semibold px-6 py-3 rounded-full hover:border-orange-red hover:text-orange-red transition-colors"
+                  className="inline-flex items-center gap-2 border text-off-white text-sm font-semibold px-6 py-3 rounded-full transition-colors hover:opacity-90"
+                  style={{ borderColor: P, color: P }}
                 >
                   Apply now <ArrowUpRight className="w-4 h-4" />
                 </button>
               </motion.div>
 
-              <div className="space-y-0 divide-y divide-[#1e1e1e]">
-                {WHAT_YOU_GET.map((item, i) => (
+              {/* Upgraded checklist */}
+              <div className="space-y-3">
+                {WHAT_YOU_GET.map(({ label, tag }, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.07 }}
-                    className="flex items-start gap-4 py-5"
+                    className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 hover:border-[#9929EA]/40 transition-colors"
                   >
-                    <CheckCircle className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-white-muted leading-relaxed">{item}</span>
+                    {/* check circle */}
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${P}22` }}>
+                      <Check className="w-3.5 h-3.5" style={{ color: P }} />
+                    </div>
+                    <span className="flex-1 text-sm text-[#c8c8c8] leading-relaxed">{label}</span>
+                    <span
+                      className="text-[10px] font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: `${P}18`, color: P }}
+                    >
+                      {tag}
+                    </span>
                   </motion.div>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* ── PROCESS — light bg, numbered horizontal ── */}
+          {/* ── PROCESS — light bg ── */}
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto">
               <motion.div
@@ -242,7 +255,7 @@ export default function InnerCircle() {
             </div>
           </section>
 
-          {/* ── FINAL CTA — dark, full width ── */}
+          {/* ── FINAL CTA — dark ── */}
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
               <motion.div
@@ -250,7 +263,7 @@ export default function InnerCircle() {
               >
                 <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">Ready?</p>
                 <h2 className="font-heading text-6xl sm:text-7xl lg:text-[8rem] font-bold uppercase tracking-tight text-off-white leading-[0.85]">
-                  This is<br />your <span className="text-orange-red">move.</span>
+                  This is<br />your <span style={{ color: P }}>move.</span>
                 </h2>
               </motion.div>
 
@@ -264,7 +277,8 @@ export default function InnerCircle() {
                 <div>
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-orange-red text-[#0a0a0a] font-body text-sm font-bold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
+                    style={{ backgroundColor: P }}
+                    className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity"
                   >
                     Apply for Inner Circle <ArrowUpRight className="w-5 h-5" />
                   </button>
