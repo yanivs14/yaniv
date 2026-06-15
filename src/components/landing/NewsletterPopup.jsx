@@ -68,7 +68,7 @@ export default function NewsletterPopup() {
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="fixed inset-0 z-40 flex items-center justify-center p-4"
         >
-          <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-5 shadow-2xl w-full max-w-sm relative">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-6 shadow-2xl w-full max-w-sm sm:max-w-sm relative mx-4 sm:mx-0" style={{width: 'min(90vw, 24rem)'}}>
             <button
               onClick={dismiss}
               className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-white-muted hover:text-off-white transition-colors"
@@ -78,8 +78,8 @@ export default function NewsletterPopup() {
 
             {!submitted ? (
               <>
-                <p className="font-body text-[10px] text-orange-red uppercase tracking-widest mb-1">Free tips & updates</p>
-                <p className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-3">
+                <p className="font-body text-[10px] text-orange-red uppercase tracking-widest mb-1 text-center">Free tips & updates</p>
+                <p className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-4 text-center">
                   Join The Movement
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
@@ -101,7 +101,7 @@ export default function NewsletterPopup() {
                       : <>Subscribe <ArrowRight className="w-3.5 h-3.5" /></>}
                   </button>
                 </form>
-                <p className="mt-2 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe anytime.</p>
+                <p className="mt-3 text-center font-body text-xs text-white-dim">No spam. Unsubscribe anytime.</p>
               </>
             ) : (
               <div className="text-center py-2">
