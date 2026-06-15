@@ -175,7 +175,7 @@ export default function InnerCircle() {
             </div>
           </section>
 
-          {/* ── WHAT YOU GET — dark, large headline + styled list ── */}
+          {/* ── WHAT YOU GET — dark, large headline + checklist ── */}
           <section className="bg-[#0a0a0a] py-20 lg:py-28 px-6 lg:px-16 border-t border-[#1e1e1e]">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
@@ -193,20 +193,16 @@ export default function InnerCircle() {
                 </button>
               </motion.div>
 
-              <div className="space-y-3">
+              <div className="space-y-0 divide-y divide-[#1e1e1e]">
                 {WHAT_YOU_GET.map((item, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.07 }}
-                    className="group relative flex items-start gap-4 bg-[#111] border border-[#1e1e1e] hover:border-orange-red/40 rounded-2xl px-5 py-4 transition-colors"
+                    className="flex items-start gap-4 py-5"
                   >
-                    {/* numbered badge */}
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-red/10 border border-orange-red/20 flex items-center justify-center font-heading text-[10px] font-bold text-orange-red mt-0.5">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-sm text-white-muted leading-relaxed group-hover:text-off-white transition-colors">{item}</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-[#333] group-hover:text-orange-red transition-colors flex-shrink-0 ml-auto mt-0.5 self-start" />
+                    <CheckCircle className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-white-muted leading-relaxed">{item}</span>
                   </motion.div>
                 ))}
               </div>
