@@ -3,7 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
-const STORAGE_KEY = "newsletter_dismissed";
+const STORAGE_KEY = "newsletter_dismissed_until";
+
+function isDismissed() {
+  const until = localStorage.getItem(STORAGE_KEY);
+  if (!until) return false;
+  return Date.now() < parseInt(until, 10);
+}
+
+function dismissForMonth() {
+  const oneMonth = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  localStorage.setItem(STORAGE_KEY, String(oneMonth));
+}
 
 export default function NewsletterPopup() {
   const [visible, setVisible] = useState(false);
@@ -13,7 +24,7 @@ export default function NewsletterPopup() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY)) return;
+    if (isDismissed()) return;
 
     const timer = setTimeout(() => setVisible(true), 3000);
 
@@ -35,7 +46,7 @@ export default function NewsletterPopup() {
   }, []);
 
   const dismiss = () => {
-    localStorage.setItem(STORAGE_KEY, "1");
+    dismissForMonth();
     setVisible(false);
   };
 
