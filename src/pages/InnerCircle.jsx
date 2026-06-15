@@ -34,8 +34,8 @@ export default function InnerCircle() {
             {/* Background media */}
             {c.hero.mediaUrl && c.hero.mediaType === "image" && (
               <>
-                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
-                <div className="absolute inset-0 bg-[#0a0a0a]/60 pointer-events-none" />
+                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover object-center lg:object-center pointer-events-none" style={{ objectPosition: "center 30%" }} />
+                <div className="absolute inset-0 bg-[#0a0a0a]/50 pointer-events-none" />
               </>
             )}
             {c.hero.mediaUrl && c.hero.mediaType === "video" && (
