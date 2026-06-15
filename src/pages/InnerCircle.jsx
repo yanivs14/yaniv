@@ -1,10 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Check } from "lucide-react";
+import {
+  ArrowUpRight, Star, Zap, Video, RefreshCw, MessageCircle,
+  Lock, Target, Dumbbell, Heart, Brain, Shield, Trophy,
+  Flame, Clock, Users, CheckCircle, Sparkles
+} from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
-import { loadICContent, IC_DEFAULTS } from "@/lib/innerCircleContent";
+import { loadICContent } from "@/lib/innerCircleContent";
+import WhatYouGetSlider from "@/components/inner-circle/WhatYouGetSlider";
+
+const TAG_ICONS = {
+  Foundation: Star, Custom: Target, Live: Video, Adaptive: RefreshCw,
+  Support: MessageCircle, Exclusive: Lock, Strength: Dumbbell, Health: Heart,
+  Mindset: Brain, Safety: Shield, Results: Trophy, Energy: Flame,
+  Schedule: Clock, Community: Users, Verified: CheckCircle, Premium: Sparkles, Power: Zap,
+};
+
+function getTagIcon(tag) {
+  if (!tag) return CheckCircle;
+  if (TAG_ICONS[tag]) return TAG_ICONS[tag];
+  const lower = tag.toLowerCase();
+  for (const [k, Icon] of Object.entries(TAG_ICONS)) {
+    if (lower.includes(k.toLowerCase())) return Icon;
+  }
+  return CheckCircle;
+}
+
+function DesktopCard({ item, accent, index }) {
+  const Icon = getTagIcon(item.tag);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.07 }}
+      className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 hover:border-white/10 transition-colors"
+    >
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accent}22` }}>
+        <Icon style={{ color: accent, width: 18, height: 18 }} />
+      </div>
+      <span className="flex-1 text-sm text-[#c8c8c8] leading-relaxed">{item.label}</span>
+      <span className="text-[10px] font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex-shrink-0"
+        style={{ backgroundColor: `${accent}18`, color: accent }}>
+        {item.tag}
+      </span>
+    </motion.div>
+  );
+}
 
 export default function InnerCircle() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -31,10 +73,9 @@ export default function InnerCircle() {
 
           {/* ── HERO ── */}
           <section className="relative min-h-screen flex flex-col justify-end pt-16 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
-            {/* Background media */}
             {c.hero.mediaUrl && c.hero.mediaType === "image" && (
               <>
-                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover object-center lg:object-center pointer-events-none" style={{ objectPosition: "center 30%" }} />
+                <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" style={{ objectPosition: "center 30%" }} />
                 <div className="absolute inset-0 bg-[#0a0a0a]/50 pointer-events-none" />
               </>
             )}
@@ -79,7 +120,7 @@ export default function InnerCircle() {
                 </motion.div>
               </div>
 
-              {/* Right — keyword stack (hidden on mobile) */}
+              {/* Right — keyword stack (desktop only) */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
                 className="hidden lg:flex flex-col items-end gap-2 lg:pb-2"
@@ -117,7 +158,7 @@ export default function InnerCircle() {
             </div>
           </div>
 
-          {/* ── WHAT IS IT — light bg ── */}
+          {/* ── WHAT IS IT ── */}
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
@@ -141,7 +182,7 @@ export default function InnerCircle() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <p className="font-heading text-xl font-bold uppercase text-[#0a0a0a] tracking-tight">{title}</p>
-                        <ArrowUpRight className="w-4 h-4 text-[#bbb] transition-colors flex-shrink-0 group-hover:opacity-60" style={{ color: P }} />
+                        <ArrowUpRight className="w-4 h-4 flex-shrink-0 group-hover:opacity-60" style={{ color: P }} />
                       </div>
                       <p className="text-sm text-[#666] leading-relaxed">{desc}</p>
                     </div>
@@ -151,9 +192,9 @@ export default function InnerCircle() {
             </div>
           </section>
 
-          {/* ── WHAT YOU GET — dark ── */}
-          <section className="bg-[#0a0a0a] py-20 lg:py-28 px-6 lg:px-16 border-t border-[#1e1e1e]">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
+          {/* ── WHAT YOU GET ── */}
+          <section className="bg-[#0a0a0a] py-20 lg:py-28 border-t border-[#1e1e1e] overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
@@ -163,39 +204,28 @@ export default function InnerCircle() {
                 </h2>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="inline-flex items-center gap-2 border text-off-white text-sm font-semibold px-6 py-3 rounded-full transition-colors hover:opacity-90"
+                  className="inline-flex items-center gap-2 border text-sm font-semibold px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
                   style={{ borderColor: P, color: P }}
                 >
                   {c.whatYouGet.ctaText} <ArrowUpRight className="w-4 h-4" />
                 </button>
               </motion.div>
+            </div>
 
-              <div className="space-y-3">
-                {(c.whatYouGet.items || []).map(({ label, tag }, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.07 }}
-                    className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 transition-colors"
-                    style={{ "--hover-border": P + "66" }}
-                  >
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${P}22` }}>
-                      <Check className="w-3.5 h-3.5" style={{ color: P }} />
-                    </div>
-                    <span className="flex-1 text-sm text-[#c8c8c8] leading-relaxed">{label}</span>
-                    <span
-                      className="text-[10px] font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: `${P}18`, color: P }}
-                    >
-                      {tag}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
+            {/* Mobile: horizontal slider */}
+            <div className="lg:hidden">
+              <WhatYouGetSlider items={c.whatYouGet.items || []} accent={P} />
+            </div>
+
+            {/* Desktop: 2-col grid with icons */}
+            <div className="hidden lg:grid lg:grid-cols-2 gap-4 max-w-7xl mx-auto px-16">
+              {(c.whatYouGet.items || []).map((item, i) => (
+                <DesktopCard key={i} item={item} accent={P} index={i} />
+              ))}
             </div>
           </section>
 
-          {/* ── PROCESS — light bg ── */}
+          {/* ── PROCESS ── */}
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto">
               <motion.div
@@ -228,7 +258,7 @@ export default function InnerCircle() {
             </div>
           </section>
 
-          {/* ── FINAL CTA — dark ── */}
+          {/* ── FINAL CTA ── */}
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
               <motion.div

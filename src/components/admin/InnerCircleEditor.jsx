@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, Upload, Save } from "lucide-react";
+
+const ICON_TAGS = ["Foundation", "Custom", "Live", "Adaptive", "Support", "Exclusive", "Strength", "Health", "Mindset", "Safety", "Results", "Energy", "Schedule", "Community", "Verified", "Premium", "Power"];
 import { base44 } from "@/api/base44Client";
 import { loadICContent, saveICContent, IC_DEFAULTS } from "@/lib/innerCircleContent";
 
@@ -219,7 +221,7 @@ export default function InnerCircleEditor() {
       <F label="Headline Accent (colored)" value={data.whatYouGet.headlineAccent} onChange={v => set("whatYouGet.headlineAccent", v)} />
       <F label="CTA Button Text" value={data.whatYouGet.ctaText} onChange={v => set("whatYouGet.ctaText", v)} />
 
-      <p className="text-xs text-white-muted mb-2 mt-1 font-body">Checklist items</p>
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body">Checklist items — Tag controls the icon shown</p>
       {(data.whatYouGet.items || []).map((item, i) => (
         <div key={i} className="mb-2 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
           <div className="flex gap-2 mb-2">
@@ -230,8 +232,10 @@ export default function InnerCircleEditor() {
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
-          <input value={item.tag} onChange={e => setArr("whatYouGet.items", i, "tag", e.target.value)} placeholder="Tag badge"
-            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <select value={item.tag} onChange={e => setArr("whatYouGet.items", i, "tag", e.target.value)}
+            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+            {ICON_TAGS.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
         </div>
       ))}
       <button onClick={() => set("whatYouGet.items", [...(data.whatYouGet.items || []), { label: "", tag: "" }])}
