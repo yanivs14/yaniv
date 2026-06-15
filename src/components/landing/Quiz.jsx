@@ -380,31 +380,12 @@ export default function Quiz({ onClose }) {
               <motion.div key="email" variants={slideVariants} initial="enter" animate="center" exit="exit"
                 transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
 
-                {/* Top icon */}
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-orange-red/10 border border-orange-red/20 flex items-center justify-center">
-                    <Sparkles className="w-7 h-7 text-orange-red" />
-                  </div>
-                </div>
-
                 <p className="font-body text-xs text-orange-red uppercase tracking-widest text-center mb-2">Your results are ready</p>
                 <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-6">
-                  Join Our Program
+                  Get Your Personalized Program
                 </h2>
 
                 <form onSubmit={handleEmailSubmit} noValidate className="flex flex-col gap-3">
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white-dim pointer-events-none" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => { setEmail(e.target.value); setEmailError(""); }}
-                      placeholder="Email *"
-                      className={`w-full bg-dark-bg border rounded-2xl pl-11 pr-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${emailError ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
-                    />
-                  </div>
-                  {emailError && <p className="text-xs text-red-400 font-body -mt-1">{emailError}</p>}
-
                   <input
                     type="text"
                     value={fullName}
@@ -412,6 +393,17 @@ export default function Quiz({ onClose }) {
                     placeholder="Full name (optional)"
                     className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
                   />
+
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => { setEmail(e.target.value); setEmailError(""); }}
+                      placeholder="Email *"
+                      className={`w-full bg-dark-bg border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${emailError ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
+                    />
+                  </div>
+                  {emailError && <p className="text-xs text-red-400 font-body -mt-1">{emailError}</p>}
 
                   <input
                     type="tel"
