@@ -1,0 +1,35 @@
+{
+  "name": "InnerCircleContent",
+  "type": "object",
+  "properties": {
+    "section_key": {
+      "type": "string",
+      "description": "Unique key for the section"
+    },
+    "data": {
+      "type": "object",
+      "description": "Section content data"
+    }
+  },
+  "required": [
+    "section_key"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,63 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Check } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
-
-// Purple accent — used ONLY in this page
-const P = "#FF2DF1";
-const PH = "#cc24c1"; // hover
-
-const FEATURES = [
-  {
-    num: "01",
-    title: "Personalized Movement Plan",
-    desc: "A plan built entirely around your body, goals, and current capacity — not a template.",
-  },
-  {
-    num: "02",
-    title: "Weekly Live Zoom Feedback",
-    desc: "Face-to-face feedback, form corrections, and real-time guidance every single week.",
-  },
-  {
-    num: "03",
-    title: "Ongoing Plan Adjustments",
-    desc: "Your program evolves with you. As you progress, so does your training.",
-  },
-];
-
-const WHAT_YOU_GET = [
-  { label: "Everything included in the Monthly / Annual membership", tag: "Foundation" },
-  { label: "Personalized movement plan tailored to your body, goals, and progress", tag: "Custom" },
-  { label: "Weekly live Zoom feedback session", tag: "Live" },
-  { label: "Ongoing plan adjustments as you improve", tag: "Adaptive" },
-  { label: "Direct support throughout your journey", tag: "Support" },
-  { label: "Limited availability for serious members only", tag: "Exclusive" },
-];
-
-const PROCESS = [
-  {
-    step: "01",
-    title: "Apply",
-    desc: "Fill out a short form telling us about your goals and where you're at right now.",
-  },
-  {
-    step: "02",
-    title: "Consultation Call",
-    desc: "We hop on a private call to understand your situation and see if Inner Circle is the right fit.",
-  },
-  {
-    step: "03",
-    title: "Your Plan Begins",
-    desc: "We build your personalized plan and get to work. Your transformation starts here.",
-  },
-];
-
-const MARQUEE_ITEMS = ["The Most Personal Coaching Experience", "Limited Availability", "Personalized Plan", "Weekly Live Sessions", "Direct Support"];
+import { loadICContent, IC_DEFAULTS } from "@/lib/innerCircleContent";
 
 export default function InnerCircle() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [c, setC] = useState(null);
+
+  useEffect(() => {
+    loadICContent().then(setC);
+  }, []);
+
+  if (!c) return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-[#FF2DF1] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+
+  const P = c.accentColor || "#FF2DF1";
 
   return (
     <>
@@ -68,6 +31,13 @@ export default function InnerCircle() {
 
           {/* ── HERO ── */}
           <section className="relative min-h-screen flex flex-col justify-end pt-28 pb-12 px-6 lg:px-16 overflow-hidden bg-[#0a0a0a]">
+            {/* Background media */}
+            {c.hero.mediaUrl && c.hero.mediaType === "image" && (
+              <img src={c.hero.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" />
+            )}
+            {c.hero.mediaUrl && c.hero.mediaType === "video" && (
+              <video src={c.hero.mediaUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" />
+            )}
             <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#0f0f0f] to-[#111] pointer-events-none" />
 
             <div className="relative max-w-7xl mx-auto w-full flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
@@ -76,14 +46,14 @@ export default function InnerCircle() {
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
                   className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6"
                 >
-                  Our Highest Level of Coaching
+                  {c.hero.eyebrow}
                 </motion.p>
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
                   className="font-heading text-[clamp(5rem,13vw,11rem)] font-bold leading-[0.85] uppercase tracking-tight text-off-white"
                 >
-                  Inner<br />
-                  <span style={{ color: P }}>Circle.</span>
+                  {c.hero.title1}<br />
+                  <span style={{ color: P }}>{c.hero.title2}</span>
                 </motion.h1>
 
                 <motion.div
@@ -95,9 +65,9 @@ export default function InnerCircle() {
                     style={{ backgroundColor: P }}
                     className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90"
                   >
-                    Apply for Inner Circle <ArrowUpRight className="w-4 h-4" />
+                    {c.hero.ctaText} <ArrowUpRight className="w-4 h-4" />
                   </button>
-                  <p className="font-body text-xs text-[#555] self-center">Application starts with a private consultation.</p>
+                  <p className="font-body text-xs text-[#555] self-center">{c.hero.ctaSubtext}</p>
                 </motion.div>
               </div>
 
@@ -106,7 +76,7 @@ export default function InnerCircle() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.3 }}
                 className="flex flex-col items-end gap-2 lg:pb-2"
               >
-                {["Personalized", "Live Feedback", "Limited Spots", "Direct Support"].map((kw, i) => (
+                {(c.hero.keywords || []).map((kw, i) => (
                   <div key={kw} className="flex items-center gap-3 group">
                     <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: P }} />
                     <span
@@ -128,7 +98,7 @@ export default function InnerCircle() {
             <div className="flex animate-marquee whitespace-nowrap">
               {[...Array(4)].map((_, k) => (
                 <span key={k} className="flex items-center">
-                  {MARQUEE_ITEMS.map((t, i) => (
+                  {(c.marquee.items || []).map((t, i) => (
                     <span key={i} className="flex items-center">
                       <span className="font-heading text-sm uppercase tracking-widest text-[#888] px-8">{t}</span>
                       <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: P }} />
@@ -145,29 +115,25 @@ export default function InnerCircle() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
-                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">What Is It</p>
-                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8">
-                  Not a program.<br />A partnership.
+                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">{c.whatIsIt.eyebrow}</p>
+                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8 whitespace-pre-line">
+                  {c.whatIsIt.headline}
                 </h2>
-                <p className="text-base text-[#444] leading-relaxed mb-5">
-                  Inner Circle is our most premium, highest-touch coaching experience. It includes everything in the Monthly / Annual membership, plus a personalized plan, weekly live feedback, ongoing adjustments, and direct support — offered only in limited capacity.
-                </p>
-                <p className="text-base text-[#666] leading-relaxed">
-                  This is for the person who wants a coach invested in their progress, adjusting the plan in real time, and showing up for them every week.
-                </p>
+                <p className="text-base text-[#444] leading-relaxed mb-5">{c.whatIsIt.body1}</p>
+                <p className="text-base text-[#666] leading-relaxed">{c.whatIsIt.body2}</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
                 className="space-y-0 divide-y divide-[#ddd]"
               >
-                {FEATURES.map(({ num, title, desc }) => (
+                {(c.whatIsIt.features || []).map(({ num, title, desc }) => (
                   <div key={num} className="py-7 flex gap-6 group">
                     <span className="font-heading text-sm text-[#bbb] font-bold flex-shrink-0 mt-0.5">{num}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <p className="font-heading text-xl font-bold uppercase text-[#0a0a0a] tracking-tight">{title}</p>
-                        <ArrowUpRight className="w-4 h-4 text-[#bbb] transition-colors flex-shrink-0 group-hover:text-[#9929EA]" />
+                        <ArrowUpRight className="w-4 h-4 text-[#bbb] transition-colors flex-shrink-0 group-hover:opacity-60" style={{ color: P }} />
                       </div>
                       <p className="text-sm text-[#666] leading-relaxed">{desc}</p>
                     </div>
@@ -183,29 +149,28 @@ export default function InnerCircle() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
-                <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">The Full Package</p>
+                <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">{c.whatYouGet.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-off-white leading-[0.9] mb-8">
-                  What you<br /><span style={{ color: P }}>get.</span>
+                  {c.whatYouGet.headline}<br /><span style={{ color: P }}>{c.whatYouGet.headlineAccent}</span>
                 </h2>
                 <button
                   onClick={() => setModalOpen(true)}
                   className="inline-flex items-center gap-2 border text-off-white text-sm font-semibold px-6 py-3 rounded-full transition-colors hover:opacity-90"
                   style={{ borderColor: P, color: P }}
                 >
-                  Apply now <ArrowUpRight className="w-4 h-4" />
+                  {c.whatYouGet.ctaText} <ArrowUpRight className="w-4 h-4" />
                 </button>
               </motion.div>
 
-              {/* Upgraded checklist */}
               <div className="space-y-3">
-                {WHAT_YOU_GET.map(({ label, tag }, i) => (
+                {(c.whatYouGet.items || []).map(({ label, tag }, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: 15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.07 }}
-                    className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 hover:border-[#9929EA]/40 transition-colors"
+                    className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 transition-colors"
+                    style={{ "--hover-border": P + "66" }}
                   >
-                    {/* check circle */}
                     <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${P}22` }}>
                       <Check className="w-3.5 h-3.5" style={{ color: P }} />
                     </div>
@@ -229,14 +194,14 @@ export default function InnerCircle() {
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
                 className="mb-14"
               >
-                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">How It Works</p>
-                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
-                  Three steps.<br />One transformation.
+                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.process.eyebrow}</p>
+                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] whitespace-pre-line">
+                  {c.process.headline}
                 </h2>
               </motion.div>
 
               <div className="grid sm:grid-cols-3 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-[#ddd]">
-                {PROCESS.map(({ step, title, desc }, i) => (
+                {(c.process.steps || []).map(({ step, title, desc }, i) => (
                   <motion.div
                     key={step}
                     initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
@@ -261,9 +226,9 @@ export default function InnerCircle() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
               >
-                <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">Ready?</p>
-                <h2 className="font-heading text-6xl sm:text-7xl lg:text-[8rem] font-bold uppercase tracking-tight text-off-white leading-[0.85]">
-                  This is<br />your <span style={{ color: P }}>move.</span>
+                <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">{c.finalCta.eyebrow}</p>
+                <h2 className="font-heading text-6xl sm:text-7xl lg:text-[8rem] font-bold uppercase tracking-tight text-off-white leading-[0.85] whitespace-pre-line">
+                  {c.finalCta.headline} <span style={{ color: P }}>{c.finalCta.headlineAccent}</span>
                 </h2>
               </motion.div>
 
@@ -271,18 +236,16 @@ export default function InnerCircle() {
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
                 className="lg:max-w-sm flex flex-col gap-6"
               >
-                <p className="text-sm text-white-muted leading-relaxed">
-                  Inner Circle is designed for members looking for our most personal and premium coaching experience. Spots are limited and application is required.
-                </p>
+                <p className="text-sm text-white-muted leading-relaxed">{c.finalCta.body}</p>
                 <div>
                   <button
                     onClick={() => setModalOpen(true)}
                     style={{ backgroundColor: P }}
                     className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity"
                   >
-                    Apply for Inner Circle <ArrowUpRight className="w-5 h-5" />
+                    {c.finalCta.ctaText} <ArrowUpRight className="w-5 h-5" />
                   </button>
-                  <p className="text-xs text-[#555] mt-3">Application starts with a private consultation.</p>
+                  <p className="text-xs text-[#555] mt-3">{c.finalCta.ctaSubtext}</p>
                 </div>
               </motion.div>
             </div>
