@@ -247,6 +247,8 @@ export default function Quiz({ onClose }) {
   const [phase, setPhase] = useState("quiz"); // quiz | email | pricing | success
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [emailError, setEmailError] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
 
@@ -270,8 +272,8 @@ export default function Quiz({ onClose }) {
     setEmailLoading(true);
     try {
       await base44.entities.Lead.create({
-        full_name: "Quiz Lead",
-        phone: "-",
+        full_name: fullName.trim() || "Quiz Lead",
+        phone: phone.trim() || "-",
         email: email.trim(),
         source: "quiz",
         quiz_recommendation: getRecommendation(answers).title,
@@ -386,12 +388,9 @@ export default function Quiz({ onClose }) {
                 </div>
 
                 <p className="font-body text-xs text-orange-red uppercase tracking-widest text-center mb-2">Your results are ready</p>
-                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-2">
+                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-6">
                   Join Our Program
                 </h2>
-                <p className="font-body text-sm text-white-muted text-center leading-relaxed mb-8">
-                  Enter your email to unlock your personalised plan and get exclusive access to The Movement System.
-                </p>
 
                 <form onSubmit={handleEmailSubmit} noValidate className="flex flex-col gap-3">
                   <div className="relative">
@@ -400,26 +399,37 @@ export default function Quiz({ onClose }) {
                       type="email"
                       value={email}
                       onChange={e => { setEmail(e.target.value); setEmailError(""); }}
-                      placeholder="your@email.com"
+                      placeholder="Email *"
                       className={`w-full bg-dark-bg border rounded-2xl pl-11 pr-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${emailError ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
                     />
                   </div>
                   {emailError && <p className="text-xs text-red-400 font-body -mt-1">{emailError}</p>}
 
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={e => setFullName(e.target.value)}
+                    placeholder="Full name (optional)"
+                    className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
+                  />
+
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    placeholder="Phone (optional)"
+                    className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
+                  />
+
                   <button type="submit" disabled={emailLoading}
-                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
+                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-1">
                     {emailLoading
                       ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
                       : <>See My Plan <ArrowRight className="w-4 h-4" /></>}
                   </button>
-
-                  <button type="button" onClick={() => setPhase("pricing")}
-                    className="text-center font-body text-xs text-white-dim hover:text-white-muted transition-colors mt-1">
-                    Skip for now
-                  </button>
                 </form>
 
-                <p className="mt-5 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe at any time.</p>
+                <p className="mt-4 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe at any time.</p>
               </motion.div>
             )}
 
