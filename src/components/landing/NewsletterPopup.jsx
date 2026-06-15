@@ -66,9 +66,9 @@ export default function NewsletterPopup() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.97 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-sm"
+          className="fixed inset-0 z-40 flex items-center justify-center p-4"
         >
-          <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-5 shadow-2xl">
+          <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-5 shadow-2xl w-full max-w-sm relative">
             <button
               onClick={dismiss}
               className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-white-muted hover:text-off-white transition-colors"
