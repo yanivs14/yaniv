@@ -381,7 +381,7 @@ export default function Quiz({ onClose }) {
                 transition={{ duration: 0.22, ease: "easeOut" }} className="flex flex-col">
 
                 <p className="font-body text-xs text-orange-red uppercase tracking-widest text-center mb-2">Your results are ready</p>
-                <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-6">
+                <h2 className="font-heading text-2xl sm:text-4xl font-bold text-off-white uppercase tracking-tight leading-tight text-center mb-6">
                   Get Your Personalized Program
                 </h2>
 
