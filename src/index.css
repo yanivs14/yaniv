@@ -12,20 +12,20 @@
     --card-foreground: 0 0% 95%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
-    --primary: 178 100% 50%;
+    --primary: 270 96% 22%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 13%;
     --secondary-foreground: 0 0% 90%;
     --muted: 0 0% 14%;
     --muted-foreground: 0 0% 55%;
-    --accent: 178 100% 50%;
+    --accent: 270 96% 22%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 16%;
     --input: 0 0% 16%;
-    --ring: 178 100% 50%;
-    --chart-1: 178 100% 50%;
+    --ring: 270 96% 22%;
+    --chart-1: 270 96% 22%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -33,12 +33,12 @@
     --radius: 0.25rem;
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 178 100% 50%;
+    --sidebar-primary: 270 96% 22%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 13%;
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 178 100% 50%;
+    --sidebar-ring: 270 96% 22%;
 
     --font-heading: 'Barlow Condensed', system-ui, sans-serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
@@ -50,8 +50,8 @@
     --white: #F5F5F5;
     --white-muted: #C8C8C8;
     --white-dim: #555555;
-    --orange-red: #00fff7;
-    --orange-red-hover: #00ccc6;
+    --orange-red: #3B0270;
+    --orange-red-hover: #2d0155;
   }
 }
 
