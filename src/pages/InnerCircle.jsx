@@ -47,17 +47,17 @@ function BentoCard({ item, accent, index, className = "" }) {
       whileHover={{ scale: 1.025, transition: { duration: 0.2 } }}>
       {/* Hover overlay */}
       <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ background: `linear-gradient(135deg, ${accent}33 0%, ${accent}11 100%)` }} />
+      style={{ background: `linear-gradient(135deg, ${accent}33 0%, ${accent}11 100%)` }} />
       <p className="relative font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight transition-colors duration-300"
-        style={{ color: textColor }}>
+      style={{ color: textColor }}>
         {item.label}
       </p>
       <p className="relative font-heading text-xs font-bold uppercase tracking-widest transition-colors duration-300"
-        style={{ color: tagColor }}>
+      style={{ color: tagColor }}>
         {item.tag}
       </p>
-    </motion.div>
-  );
+    </motion.div>);
+
 }
 
 export default function InnerCircle() {
@@ -124,7 +124,7 @@ export default function InnerCircle() {
                   <button
                     onClick={() => setModalOpen(true)}
                     style={{ backgroundColor: P }}
-                    className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90">
+                    className="inline-flex items-center gap-2 font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90 bg-[#000000] text-[#000000]">
                     
                     {c.hero.ctaText} <ArrowUpRight className="w-4 h-4" />
                   </button>
@@ -139,15 +139,15 @@ export default function InnerCircle() {
                 
                 {(c.hero.keywords || []).map((kw, i) =>
                 <motion.div
-                 key={kw}
-                 initial={{ opacity: 0, x: 20 }}
-                 animate={{ opacity: 1, x: 0 }}
-                 transition={{ duration: 0.5, delay: 0.3 + i * 0.08 }}
-                 className="flex items-center gap-3 group">
+                  key={kw}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 + i * 0.08 }}
+                  className="flex items-center gap-3 group">
                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: P }} />
                    <span
-                   className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight"
-                   style={{ color: "#F5F5F5" }}>
+                    className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight"
+                    style={{ color: "#F5F5F5" }}>
                      {kw}
                    </span>
                  </motion.div>
@@ -249,20 +249,20 @@ export default function InnerCircle() {
                   <div className="flex flex-col gap-4">
                     {/* Row 1: 3 unequal cols */}
                     <div className="grid gap-4" style={{ gridTemplateColumns: "2fr 3fr 2fr" }}>
-                      {row1.map((item, i) => (
-                        <BentoCard key={i} item={item} accent={P} index={i} className="min-h-[220px]" />
-                      ))}
+                      {row1.map((item, i) =>
+                      <BentoCard key={i} item={item} accent={P} index={i} className="min-h-[220px]" />
+                      )}
                     </div>
                     {/* Row 2: 4 equal cols */}
-                    {row2.length > 0 && (
-                      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${row2.length}, 1fr)` }}>
-                        {row2.map((item, i) => (
-                          <BentoCard key={i + 3} item={item} accent={P} index={i + 3} className="min-h-[200px]" />
-                        ))}
+                    {row2.length > 0 &&
+                    <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${row2.length}, 1fr)` }}>
+                        {row2.map((item, i) =>
+                      <BentoCard key={i + 3} item={item} accent={P} index={i + 3} className="min-h-[200px]" />
+                      )}
                       </div>
-                    )}
-                  </div>
-                );
+                    }
+                  </div>);
+
               })()}
             </div>
           </section>
