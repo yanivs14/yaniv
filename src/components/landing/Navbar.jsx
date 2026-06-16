@@ -25,6 +25,8 @@ export default function Navbar() {
       for (const el of allSections) {
         if (el.getBoundingClientRect().top <= 120) current = el.id;
       }
+      // "benefits" section belongs to "The Program" nav item
+      if (current === "benefits") current = "program";
       setActiveSection(current);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
