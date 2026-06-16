@@ -30,25 +30,20 @@ function getTagIcon(tag) {
 }
 
 function BentoCard({ item, accent, index, className = "" }) {
-  // Alternating pattern: even = dark card, odd = accent card
-  const isAccentCard = index % 2 === 1;
-  const bgColor = isAccentCard ? accent : "#111111";
-  const borderColor = isAccentCard ? "transparent" : "#2a2a2a";
-  const textColor = isAccentCard ? "#0a0a0a" : "#f5f5f5";
-  const tagColor = isAccentCard ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.35)";
-  const hoverBg = isAccentCard ? "rgba(255,255,255,0.12)" : accent;
-  const hoverText = isAccentCard ? "#0a0a0a" : "#0a0a0a";
+  const bgColor = "#ffffff";
+  const textColor = "#0a0a0a";
+  const tagColor = "rgba(0,0,0,0.4)";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
       className={`relative rounded-3xl p-7 flex flex-col justify-between cursor-default group transition-all duration-300 overflow-hidden ${className}`}
-      style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}
+      style={{ backgroundColor: bgColor }}
       whileHover={{ scale: 1.025, transition: { duration: 0.2 } }}>
       {/* Hover overlay */}
       <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ background: `linear-gradient(135deg, ${accent}22 0%, ${accent}08 100%)` }} />
+        style={{ background: `linear-gradient(135deg, ${accent}33 0%, ${accent}11 100%)` }} />
       <p className="relative font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight transition-colors duration-300"
         style={{ color: textColor }}>
         {item.label}
