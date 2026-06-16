@@ -101,6 +101,34 @@ export default function InnerCircleEditor() {
         </button>
       </div>
 
+      {/* ── NAVBAR ── */}
+      <SectionTitle>Inner Circle Navbar</SectionTitle>
+      <F label="CTA Button Text" value={data.navbar?.ctaText} onChange={v => set("navbar.ctaText", v)} />
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body">Nav Links (anchor links to page sections)</p>
+      {(data.navbar?.links || []).map((link, i) => (
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={link.label} onChange={e => {
+            const arr = JSON.parse(JSON.stringify(data.navbar?.links || []));
+            arr[i].label = e.target.value;
+            set("navbar.links", arr);
+          }} placeholder="Label" className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <input value={link.href} onChange={e => {
+            const arr = JSON.parse(JSON.stringify(data.navbar?.links || []));
+            arr[i].href = e.target.value;
+            set("navbar.links", arr);
+          }} placeholder="#section-id" className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => set("navbar.links", (data.navbar?.links || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => set("navbar.links", [...(data.navbar?.links || []), { label: "", href: "#" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-4">
+        <Plus className="w-4 h-4" /> Add nav link
+      </button>
+      <p className="text-xs text-white-dim font-body mb-4">Available section IDs: #ic-what · #ic-benefits · #ic-process · #ic-faq</p>
+
       {/* ── Accent Color ── */}
       <SectionTitle>Accent Color</SectionTitle>
       <div className="mb-4 flex items-center gap-3">

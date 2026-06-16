@@ -9,7 +9,7 @@ import {
   Lock, Target, Dumbbell, Heart, Brain, Shield, Trophy,
   Flame, Clock, Users, CheckCircle, Sparkles } from
 "lucide-react";
-import Navbar from "@/components/landing/Navbar";
+import ICNavbar from "@/components/inner-circle/ICNavbar";
 import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
 import { loadICContent } from "@/lib/innerCircleContent";
@@ -79,7 +79,12 @@ export default function InnerCircle() {
   return (
     <>
       <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-body">
-        <Navbar />
+        <ICNavbar
+          links={c.navbar?.links || []}
+          cta={c.navbar?.ctaText || "Apply for Inner Circle"}
+          accentColor={P}
+          onCtaClick={() => setModalOpen(true)}
+        />
 
         <main className="flex-1">
 
@@ -175,7 +180,7 @@ export default function InnerCircle() {
           </div>
 
           {/* ── WHAT IS IT ── */}
-          <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
+          <section id="ic-what" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
                 variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
@@ -208,7 +213,7 @@ export default function InnerCircle() {
           </section>
 
           {/* ── WHAT YOU GET ── */}
-          <section className="relative bg-[#f5f4f0] py-20 lg:py-28 overflow-hidden">
+          <section id="ic-benefits" className="relative bg-[#f5f4f0] py-20 lg:py-28 overflow-hidden">
             <div className="relative max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
@@ -268,7 +273,7 @@ export default function InnerCircle() {
           </section>
 
           {/* ── PROCESS ── */}
-          <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
+          <section id="ic-process" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto">
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
@@ -300,7 +305,9 @@ export default function InnerCircle() {
           </section>
 
           {/* ── FAQ ── */}
-          <ICFAQSection c={c.faq} accent={P} />
+          <div id="ic-faq">
+            <ICFAQSection c={c.faq} accent={P} />
+          </div>
 
           {/* ── FINAL CTA ── */}
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">

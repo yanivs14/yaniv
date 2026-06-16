@@ -2,6 +2,15 @@ import { base44 } from "@/api/base44Client";
 
 export const IC_DEFAULTS = {
   accentColor: "#FF2DF1",
+  navbar: {
+    links: [
+      { label: "What Is It", href: "#ic-what" },
+      { label: "What You Get", href: "#ic-benefits" },
+      { label: "How It Works", href: "#ic-process" },
+      { label: "FAQ", href: "#ic-faq" },
+    ],
+    ctaText: "Apply for Inner Circle",
+  },
   hero: {
     eyebrow: "Our Highest Level of Coaching",
     title1: "Inner",
@@ -110,7 +119,11 @@ function deepMerge(defaults, override) {
   for (const key of Object.keys(override || {})) {
     if (Array.isArray(override[key])) {
       result[key] = override[key];
-    } else if (typeof override[key] === "object" && override[key] !== null && typeof defaults[key] === "object" && defaults[key] !== null) {
+    } else if (
+      typeof override[key] === "object" && override[key] !== null &&
+      typeof defaults[key] === "object" && defaults[key] !== null &&
+      !Array.isArray(defaults[key])
+    ) {
       result[key] = deepMerge(defaults[key], override[key]);
     } else if (override[key] !== undefined) {
       result[key] = override[key];
