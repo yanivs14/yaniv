@@ -215,9 +215,19 @@ export default function InnerCircleEditor() {
 
       {/* ── WHAT IS IT ── */}
       <SectionTitle>What Is It Section</SectionTitle>
-      <F label="Eyebrow" value={data.whatIsIt.eyebrow} onChange={v => set("whatIsIt.eyebrow", v)} />
+      <div className="flex gap-2 items-end mb-4">
+        <div className="flex-1">
+          <F label="Eyebrow" value={data.whatIsIt.eyebrow} onChange={v => set("whatIsIt.eyebrow", v)} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Eyebrow color</label>
+          <input type="color" value={data.whatIsIt.eyebrowColor || "#888888"}
+            onChange={e => set("whatIsIt.eyebrowColor", e.target.value)}
+            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
+        </div>
+      </div>
       <div className="mb-4 flex gap-2 items-center">
-        <label className="block text-xs text-white-muted font-body flex-1">Color for "partnership"</label>
+        <label className="block text-xs text-white-muted font-body flex-1">Color for "partnership."</label>
         <input type="color" value={data.whatIsIt.headlineAccentColor || data.accentColor || "#FF2DF1"}
           onChange={e => set("whatIsIt.headlineAccentColor", e.target.value)}
           className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
@@ -328,9 +338,19 @@ export default function InnerCircleEditor() {
 
       {/* ── PROCESS ── */}
       <SectionTitle>Process Section</SectionTitle>
-      <F label="Eyebrow" value={data.process.eyebrow} onChange={v => set("process.eyebrow", v)} />
+      <div className="flex gap-2 items-end mb-4">
+        <div className="flex-1">
+          <F label="Eyebrow" value={data.process.eyebrow} onChange={v => set("process.eyebrow", v)} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Eyebrow color</label>
+          <input type="color" value={data.process.eyebrowColor || "#888888"}
+            onChange={e => set("process.eyebrowColor", e.target.value)}
+            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
+        </div>
+      </div>
       <div className="mb-4 flex gap-2 items-center">
-        <label className="block text-xs text-white-muted font-body flex-1">Color for "transformation"</label>
+        <label className="block text-xs text-white-muted font-body flex-1">Color for "transformation."</label>
         <input type="color" value={data.process.headlineAccentColor || data.accentColor || "#FF2DF1"}
           onChange={e => set("process.headlineAccentColor", e.target.value)}
           className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
@@ -360,13 +380,49 @@ export default function InnerCircleEditor() {
 
       {/* ── FAQ ── */}
       <SectionTitle>FAQ Section</SectionTitle>
-      <F label="Eyebrow" value={data.faq.eyebrow} onChange={v => set("faq.eyebrow", v)} />
+      <div className="flex gap-2 items-end mb-4">
+        <div className="flex-1">
+          <F label="Eyebrow" value={data.faq.eyebrow} onChange={v => set("faq.eyebrow", v)} />
+        </div>
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Eyebrow color</label>
+          <input type="color" value={data.faq.eyebrowColor || "#888888"}
+            onChange={e => set("faq.eyebrowColor", e.target.value)}
+            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
+        </div>
+      </div>
       <div className="mb-4 flex gap-2 items-center">
         <label className="block text-xs text-white-muted font-body flex-1">Color for "questions?"</label>
         <input type="color" value={data.faq.headlineAccentColor || data.accentColor || "#FF2DF1"}
           onChange={e => set("faq.headlineAccentColor", e.target.value)}
           className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
       </div>
+
+      {/* Gallery */}
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body font-semibold uppercase tracking-wider">Gallery (appears beside FAQ on desktop)</p>
+      {(data.faq.gallery || []).map((img, i) => (
+        <div key={i} className="flex gap-2 mb-2 items-center">
+          {img.url && <img src={img.url} alt="" className="w-12 h-12 object-cover rounded-lg border border-[#2a2a2a] flex-shrink-0" />}
+          <input value={img.url || ""} onChange={e => {
+            const arr = JSON.parse(JSON.stringify(data.faq.gallery || []));
+            arr[i].url = e.target.value;
+            set("faq.gallery", arr);
+          }} placeholder="Image URL" className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <UploadButton accept="image/*" label="Upload" onUpload={v => {
+            const arr = JSON.parse(JSON.stringify(data.faq.gallery || []));
+            arr[i].url = v;
+            set("faq.gallery", arr);
+          }} />
+          <button onClick={() => set("faq.gallery", (data.faq.gallery || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => set("faq.gallery", [...(data.faq.gallery || []), { url: "", alt: "" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-4">
+        <Plus className="w-4 h-4" /> Add image
+      </button>
 
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Questions & Answers</p>
       {(data.faq.items || []).map((item, i) => (

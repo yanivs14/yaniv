@@ -16,6 +16,7 @@ import { loadICContent } from "@/lib/innerCircleContent";
 import WhatYouGetSlider from "@/components/inner-circle/WhatYouGetSlider";
 import ICFAQSection from "@/components/inner-circle/ICFAQSection";
 import ICMediaBlock from "@/components/inner-circle/ICMediaBlock";
+import ICGallery from "@/components/inner-circle/ICGallery";
 
 const TAG_ICONS = {
   Foundation: Star, Custom: Target, Live: Video, Adaptive: RefreshCw,
@@ -169,10 +170,10 @@ export default function InnerCircle() {
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
                 variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
-                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">{c.whatIsIt.eyebrow}</p>
+                <p className="text-xs uppercase tracking-[0.2em] mb-6" style={{ color: c.whatIsIt.eyebrowColor || "#888" }}>{c.whatIsIt.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8">
                   Not a program.<br />
-                  A <span style={{ color: c.whatIsIt.headlineAccentColor || P }}>partnership</span>.
+                  A <span style={{ color: c.whatIsIt.headlineAccentColor || P }}>partnership</span><span style={{ color: c.whatIsIt.headlineAccentColor || P }}>.</span>
                 </h2>
                 <p className="text-base text-[#444] leading-relaxed mb-5">{c.whatIsIt.body1}</p>
                 <p className="text-base text-[#666] leading-relaxed">{c.whatIsIt.body2}</p>
@@ -272,10 +273,10 @@ export default function InnerCircle() {
                 variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
                 className="mb-14">
                 
-                <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.process.eyebrow}</p>
+                <p className="text-xs uppercase tracking-[0.2em] mb-4" style={{ color: c.process.eyebrowColor || "#888" }}>{c.process.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
                   Three steps.<br />
-                  One <span style={{ color: c.process.headlineAccentColor || P }}>transformation</span>.
+                  One <span style={{ color: c.process.headlineAccentColor || P }}>transformation</span><span style={{ color: c.process.headlineAccentColor || P }}>.</span>
                 </h2>
               </motion.div>
 

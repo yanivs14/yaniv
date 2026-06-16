@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
+import ICGallery from "@/components/inner-circle/ICGallery";
 
 export default function ICFAQSection({ c, accent }) {
   const [openIdx, setOpenIdx] = useState(null);
 
   if (!c) return null;
+
+  const gallery = c.gallery || [];
 
   return (
     <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
@@ -13,14 +16,16 @@ export default function ICFAQSection({ c, accent }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="mb-14">
-          <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.eyebrow}</p>
+          <p className="text-xs uppercase tracking-[0.2em] mb-4" style={{ color: c.eyebrowColor || "#888" }}>{c.eyebrow}</p>
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
             Got<br />
             <span style={{ color: c.headlineAccentColor || accent }}>questions?</span>
           </h2>
         </motion.div>
 
-        <div className="divide-y divide-[#ddd]">
+        <div className={gallery.length > 0 ? "grid lg:grid-cols-2 gap-12 lg:gap-16 items-start" : ""}>
+          {/* FAQ accordion */}
+          <div className="divide-y divide-[#ddd]">
           {(c.items || []).map((item, i) => (
             <motion.div
               key={i}
@@ -54,6 +59,14 @@ export default function ICFAQSection({ c, accent }) {
               </AnimatePresence>
             </motion.div>
           ))}
+          </div>
+
+          {/* Gallery — right side, only if images exist */}
+          {gallery.length > 0 && (
+            <div className="lg:sticky lg:top-24">
+              <ICGallery images={gallery} />
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -26,6 +26,7 @@ export const IC_DEFAULTS = {
   },
   whatIsIt: {
     eyebrow: "What Is It",
+    eyebrowColor: "",
     headline: "Not a program.\nA partnership.",
     headlineLine1: "Not a program.",
     headlineLine2: "A partnership.",
@@ -58,6 +59,7 @@ export const IC_DEFAULTS = {
   },
   process: {
     eyebrow: "How It Works",
+    eyebrowColor: "",
     headline: "Three steps.\nOne transformation.",
     headlineLine1: "Three steps.",
     headlineLine2: "One transformation.",
@@ -70,10 +72,12 @@ export const IC_DEFAULTS = {
   },
   faq: {
     eyebrow: "FAQ",
+    eyebrowColor: "",
     headline: "Got\nquestions?",
     headlineLine1: "Got",
     headlineLine2: "questions?",
     headlineAccentColor: "",
+    gallery: [],
     items: [
       { q: "Who is Inner Circle for?", a: "Inner Circle is for serious movers who want the highest level of personal coaching — people ready to invest in a premium, fully personalized experience with direct support from Roye." },
       { q: "How is Inner Circle different from the regular membership?", a: "The regular membership gives you access to all programs. Inner Circle adds a personalized movement plan built for your body, weekly live Zoom sessions with Roye, ongoing plan adjustments, and direct communication throughout." },
