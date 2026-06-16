@@ -16,11 +16,27 @@
     },
     "source": {
       "type": "string",
-      "description": "Form source (e.g. quiz)"
+      "description": "Form source (e.g. quiz, inner_circle)"
+    },
+    "quiz_section": {
+      "type": "string",
+      "description": "Which quiz/section on site (e.g. hero, finalCta)"
     },
     "quiz_recommendation": {
       "type": "string",
       "description": "Quiz result title"
+    },
+    "quiz_answers": {
+      "type": "object",
+      "description": "Full quiz answers object"
+    },
+    "browser_language": {
+      "type": "string",
+      "description": "Browser language (e.g. he-IL)"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country from IP geolocation"
     },
     "status": {
       "type": "string",

@@ -483,10 +483,11 @@ const STATUS_LABELS = { new: "New", contacted: "Contacted", converted: "Converte
 const STATUS_COLORS = { new: "bg-orange-red/20 text-orange-red", contacted: "bg-blue-500/20 text-blue-400", converted: "bg-green-500/20 text-green-400" };
 
 function formatIsraelTime(dateStr) {
-  return new Date(dateStr).toLocaleString("he-IL", {
+  return new Date(dateStr).toLocaleString("en-GB", {
     timeZone: "Asia/Jerusalem",
     day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit"
+    hour: "2-digit", minute: "2-digit",
+    hour12: false
   });
 }
 
@@ -516,8 +517,16 @@ function exportLeadsToExcel(leads) {
   URL.revokeObjectURL(url);
 }
 
+const QUIZ_QUESTION_LABELS = {
+  pain: "Where do you feel the most tension?",
+  lifestyle: "How much of your day do you spend sitting?",
+  goal: "What's your primary movement goal?",
+  experience: "What's your current movement experience?",
+};
+
 function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
   const [showNotes, setShowNotes] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
   const [notes, setNotes] = useState(lead.notes || "");
   const [savingNotes, setSavingNotes] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -529,6 +538,9 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
     setSavingNotes(false);
   };
 
+  const quizAnswers = lead.quiz_answers || {};
+  const hasQuizData = Object.keys(quizAnswers).length > 0;
+
   return (
     <div className="border border-[#2a2a2a] rounded-xl bg-[#111] overflow-hidden">
       <div className="p-4">
@@ -536,11 +548,28 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
           <div className="flex-1 min-w-0">
             <p className="font-body text-sm font-semibold text-off-white">{lead.full_name}</p>
             <div className="flex flex-wrap gap-3 mt-1">
-              <span className="flex items-center gap-1 text-xs text-white-muted"><Phone className="w-3 h-3" />{lead.phone}</span>
+              <span className="flex items-center gap-1 text-xs text-white-muted"><Phone className="w-3 h-3" />{lead.phone || "—"}</span>
               {lead.email && <span className="flex items-center gap-1 text-xs text-white-muted"><Mail className="w-3 h-3" />{lead.email}</span>}
             </div>
-            {lead.quiz_recommendation && <p className="text-xs text-orange-red mt-1">{lead.quiz_recommendation}</p>}
-            <p className="text-xs text-white-dim mt-1">{formatIsraelTime(lead.created_date)}</p>
+
+            {/* Source + section */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {lead.quiz_recommendation && (
+                <span className="text-xs text-orange-red font-medium">{lead.quiz_recommendation}</span>
+              )}
+              {lead.quiz_section && (
+                <span className="text-[10px] bg-[#1a1a1a] border border-[#2a2a2a] text-white-muted px-2 py-0.5 rounded-full">
+                  Section: {lead.quiz_section}
+                </span>
+              )}
+            </div>
+
+            {/* Meta: time, country, language */}
+            <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
+              <span className="text-xs text-white-dim">{formatIsraelTime(lead.created_date)}</span>
+              {lead.country && <span className="text-xs text-white-dim">🌍 {lead.country}</span>}
+              {lead.browser_language && <span className="text-xs text-white-dim">🗣 {lead.browser_language}</span>}
+            </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <select value={lead.status || "new"} onChange={e => onStatusChange(lead.id, e.target.value)}
@@ -550,14 +579,22 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
           </div>
         </div>
 
-        {/* Notes toggle + delete */}
-        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#1e1e1e]">
+        {/* Action bar */}
+        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-[#1e1e1e] flex-wrap">
           <button onClick={() => setShowNotes(n => !n)}
             className="flex items-center gap-1.5 text-xs text-white-muted hover:text-off-white transition-colors">
             <MessageSquare className="w-3.5 h-3.5" />
             {lead.notes ? "Notes" : "Add Note"}
             {showNotes ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
           </button>
+          {hasQuizData && (
+            <button onClick={() => setShowQuiz(q => !q)}
+              className="flex items-center gap-1.5 text-xs text-white-muted hover:text-orange-red transition-colors">
+              <Circle className="w-3.5 h-3.5" />
+              Quiz answers
+              {showQuiz ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+          )}
           <div className="flex-1" />
           {!confirmDelete ? (
             <button onClick={() => setConfirmDelete(true)}
@@ -573,6 +610,21 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
           )}
         </div>
       </div>
+
+      {/* Quiz answers panel */}
+      {showQuiz && hasQuizData && (
+        <div className="px-4 pb-4 border-t border-[#1e1e1e] pt-3 bg-[#0d0d0d]">
+          <p className="text-[10px] text-white-dim uppercase tracking-widest mb-3">Quiz Answers</p>
+          <div className="space-y-2">
+            {Object.entries(quizAnswers).map(([key, val]) => (
+              <div key={key} className="flex gap-3">
+                <span className="text-xs text-white-muted min-w-0 flex-1">{QUIZ_QUESTION_LABELS[key] || key}</span>
+                <span className="text-xs text-off-white font-medium text-right">{val}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Notes panel */}
       {showNotes && (

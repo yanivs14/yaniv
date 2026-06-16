@@ -5,9 +5,10 @@ const fadeUp = { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transi
 const fadeLeft = { hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } };
 const stagger = (delay = 0) => ({ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] } } });
 import {
-  MoveUpRight, Star, Zap, Video, RefreshCw, MessageCircle,
+  FileText, Phone, Repeat, ArrowUpRight,
+  Star, Zap, Video, RefreshCw, MessageCircle,
   Lock, Target, Dumbbell, Heart, Brain, Shield, Trophy,
-  Flame, Clock, Users, CheckCircle, Sparkles, ArrowUpRight } from
+  Flame, Clock, Users, CheckCircle, Sparkles } from
 "lucide-react";
 import ICNavbar from "@/components/inner-circle/ICNavbar";
 import Footer from "@/components/landing/Footer";
@@ -189,7 +190,10 @@ export default function InnerCircle() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <p className="font-heading text-xl font-bold uppercase text-[#0a0a0a] tracking-tight">{title}</p>
-                        <MoveUpRight className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />
+                        {i === 0 && <FileText className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />}
+                        {i === 1 && <Phone className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />}
+                        {i === 2 && <Repeat className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />}
+                        {i > 2 && <ArrowUpRight className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />}
                       </div>
                       <p className="text-sm text-[#666] leading-relaxed">{desc}</p>
                     </div>
@@ -289,7 +293,10 @@ export default function InnerCircle() {
                   
                     <div className="flex items-center justify-between mb-6">
                       <span className="font-heading text-sm font-bold text-[#bbb]">{step}</span>
-                      <MoveUpRight className="w-4 h-4 text-[#ccc]" />
+                      {i === 0 && <FileText className="w-4 h-4 text-[#ccc]" />}
+                      {i === 1 && <Phone className="w-4 h-4 text-[#ccc]" />}
+                      {i === 2 && <Repeat className="w-4 h-4 text-[#ccc]" />}
+                      {i > 2 && <ArrowUpRight className="w-4 h-4 text-[#ccc]" />}
                     </div>
                     <p className="font-heading text-2xl font-bold uppercase text-[#0a0a0a] tracking-tight mb-3">{title}</p>
                     <p className="text-sm text-[#666] leading-relaxed">{desc}</p>

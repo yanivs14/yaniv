@@ -271,12 +271,24 @@ export default function Quiz({ onClose }) {
     setEmailError("");
     setEmailLoading(true);
     try {
+      // Get country from IP
+      let country = "";
+      try {
+        const geoRes = await fetch("https://ipapi.co/json/");
+        const geo = await geoRes.json();
+        country = geo.country_name || geo.country || "";
+      } catch (_) {}
+
       await base44.entities.Lead.create({
         full_name: fullName.trim() || "Quiz Lead",
         phone: phone.trim() || "-",
         email: email.trim(),
         source: "quiz",
+        quiz_section: "hero",
         quiz_recommendation: getRecommendation(answers).title,
+        quiz_answers: answers,
+        browser_language: navigator.language || "",
+        country,
       });
     } catch (_) {}
     setEmailLoading(false);
