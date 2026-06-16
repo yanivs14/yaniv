@@ -398,8 +398,8 @@ export default function InnerCircleEditor() {
           className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
       </div>
 
-      {/* Gallery */}
-      <p className="text-xs text-white-muted mb-2 mt-1 font-body font-semibold uppercase tracking-wider">Gallery (appears beside FAQ on desktop)</p>
+      <SectionTitle>FAQ Gallery (מוצג מימין ל-FAQ)</SectionTitle>
+      <p className="text-xs text-white-muted mb-3 font-body">הוסף תמונות שיופיעו בגלריית פסיפס ליד שאלות ותשובות</p>
       {(data.faq.gallery || []).map((img, i) => (
         <div key={i} className="flex gap-2 mb-2 items-center">
           {img.url && <img src={img.url} alt="" className="w-12 h-12 object-cover rounded-lg border border-[#2a2a2a] flex-shrink-0" />}
