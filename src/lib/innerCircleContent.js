@@ -82,6 +82,7 @@ const SECTION_KEY = "inner_circle_page";
 let _cache = null;
 
 export async function loadICContent() {
+  _cache = null;
   const records = await base44.entities.InnerCircleContent.filter({ section_key: SECTION_KEY });
   if (records.length > 0) {
     _cache = { id: records[0].id, ...deepMerge(IC_DEFAULTS, records[0].data || {}) };
