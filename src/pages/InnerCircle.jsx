@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+const fadeUp = { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } };
+const fadeLeft = { hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } };
+const stagger = (delay = 0) => ({ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] } } });
 import {
   ArrowUpRight, Star, Zap, Video, RefreshCw, MessageCircle,
   Lock, Target, Dumbbell, Heart, Brain, Shield, Trophy,
@@ -101,7 +105,7 @@ export default function InnerCircle() {
               <div className="lg:max-w-[55%] mt-auto">
                 <motion.p
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                  className="text-xs uppercase tracking-[0.2em] mb-6 text-[#ffffff]">
+                  className="text-xs uppercase tracking-[0.2em] mb-6 text-white text-left">
                   
                   {c.hero.eyebrow}
                 </motion.p>
@@ -124,7 +128,7 @@ export default function InnerCircle() {
                     
                     {c.hero.ctaText} <ArrowUpRight className="w-4 h-4" />
                   </button>
-                  <p className="font-body text-xs text-[#555] self-center">{c.hero.ctaSubtext}</p>
+                  <p className="font-body text-xs text-[#ffffff99] self-center text-left">{c.hero.ctaSubtext}</p>
                 </motion.div>
               </div>
 
@@ -134,15 +138,19 @@ export default function InnerCircle() {
                 className="hidden lg:flex flex-col items-end gap-2 lg:pb-2">
                 
                 {(c.hero.keywords || []).map((kw, i) =>
-                <div key={kw} className="flex items-center gap-3 group">
-                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: P }} />
-                    <span
-                    className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight"
-                    style={{ color: i === 0 ? "#F5F5F5" : "#2a2a2a" }}>
-                    
-                      {kw}
-                    </span>
-                  </div>
+                <motion.div
+                 key={kw}
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 transition={{ duration: 0.5, delay: 0.3 + i * 0.08 }}
+                 className="flex items-center gap-3 group">
+                   <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: P }} />
+                   <span
+                   className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-tight"
+                   style={{ color: "#F5F5F5" }}>
+                     {kw}
+                   </span>
+                 </motion.div>
                 )}
               </motion.div>
             </div>
@@ -170,8 +178,7 @@ export default function InnerCircle() {
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                
+                variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">{c.whatIsIt.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8 whitespace-pre-line">
                   {c.whatIsIt.headline}
@@ -180,23 +187,23 @@ export default function InnerCircle() {
                 <p className="text-base text-[#666] leading-relaxed">{c.whatIsIt.body2}</p>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
-                className="space-y-0 divide-y divide-[#ddd]">
-                
-                {(c.whatIsIt.features || []).map(({ num, title, desc }) =>
-                <div key={num} className="py-7 flex gap-6 group">
+              <div className="space-y-0 divide-y divide-[#ddd]">
+                {(c.whatIsIt.features || []).map(({ num, title, desc }, i) =>
+                <motion.div
+                  key={num}
+                  variants={stagger(i * 0.07)} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }}
+                  className="py-7 flex gap-6 group">
                     <span className="font-heading text-sm text-[#bbb] font-bold flex-shrink-0 mt-0.5">{num}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <p className="font-heading text-xl font-bold uppercase text-[#0a0a0a] tracking-tight">{title}</p>
-                        <ArrowUpRight className="w-4 h-4 flex-shrink-0 group-hover:opacity-60" style={{ color: P }} />
+                        <ArrowUpRight className="w-4 h-4 flex-shrink-0 group-hover:opacity-60 transition-opacity" style={{ color: P }} />
                       </div>
                       <p className="text-sm text-[#666] leading-relaxed">{desc}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
-              </motion.div>
+              </div>
             </div>
           </section>
 
@@ -204,7 +211,7 @@ export default function InnerCircle() {
           <section className="relative bg-[#f5f4f0] py-20 lg:py-28 overflow-hidden">
             <div className="relative max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+                variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
                 className="flex items-end justify-between gap-6">
                 <div>
                   <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
@@ -264,7 +271,7 @@ export default function InnerCircle() {
           <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+                variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
                 className="mb-14">
                 
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.process.eyebrow}</p>
@@ -277,8 +284,7 @@ export default function InnerCircle() {
                 {(c.process.steps || []).map(({ step, title, desc }, i) =>
                 <motion.div
                   key={step}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  variants={stagger(i * 0.1)} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }}
                   className="py-10 sm:py-0 sm:px-10 first:pl-0 last:pr-0">
                   
                     <div className="flex items-center justify-between mb-6">
@@ -300,8 +306,7 @@ export default function InnerCircle() {
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                
+                variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
                 <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">{c.finalCta.eyebrow}</p>
                 <h2 className="font-heading text-6xl sm:text-7xl lg:text-[8rem] font-bold uppercase tracking-tight text-off-white leading-[0.85] whitespace-pre-line">
                   {c.finalCta.headline} <span style={{ color: P }}>{c.finalCta.headlineAccent}</span>
@@ -309,7 +314,7 @@ export default function InnerCircle() {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+                variants={stagger(0.15)} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
                 className="lg:max-w-sm flex flex-col gap-6">
                 
                 <p className="text-sm text-white-muted leading-relaxed">{c.finalCta.body}</p>
