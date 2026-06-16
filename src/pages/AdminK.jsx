@@ -562,6 +562,11 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
                   Section: {lead.quiz_section}
                 </span>
               )}
+              {lead.selected_plan && (
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${lead.selected_plan === "annual" ? "bg-orange-red/10 border-orange-red/40 text-orange-red" : "bg-[#1a1a1a] border-[#2a2a2a] text-white-muted"}`}>
+                  {lead.selected_plan === "annual" ? "⭐ Annual" : "Monthly"}
+                </span>
+              )}
             </div>
 
             {/* Meta: time, country, language */}
