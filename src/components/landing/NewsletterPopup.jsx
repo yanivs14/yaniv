@@ -75,7 +75,8 @@ export default function NewsletterPopup() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.97 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
-          className="fixed inset-0 z-40 flex items-center justify-center p-4"
+          className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}
         >
           <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-6 shadow-2xl w-full max-w-sm sm:max-w-sm relative mx-4 sm:mx-0" style={{width: 'min(90vw, 24rem)'}}>
             <button
