@@ -116,7 +116,11 @@ export default function Footer() {
         <SocialLinks iconSize="w-5 h-5" />
 
         {/* Newsletter */}
-        <FooterNewsletter />
+        <div className="flex flex-col items-center gap-3">
+          <p className="font-body text-xs text-white-dim uppercase tracking-widest">Free tips & updates</p>
+          <p className="font-heading text-2xl font-bold uppercase tracking-tight text-off-white">Join The Movement</p>
+          <FooterNewsletter />
+        </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-dark-border" />
