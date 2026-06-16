@@ -171,11 +171,8 @@ export default function InnerCircle() {
                 variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">{c.whatIsIt.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8">
-                  {(c.whatIsIt.headlineLine1 || "Not a program.")}
-                  <br />
-                  <span style={{ color: c.whatIsIt.headlineAccentColor || P }}>
-                    {(c.whatIsIt.headlineLine2 || "A partnership.")}
-                  </span>
+                  Not a program.<br />
+                  A <span style={{ color: c.whatIsIt.headlineAccentColor || P }}>partnership</span>.
                 </h2>
                 <p className="text-base text-[#444] leading-relaxed mb-5">{c.whatIsIt.body1}</p>
                 <p className="text-base text-[#666] leading-relaxed">{c.whatIsIt.body2}</p>
@@ -277,11 +274,8 @@ export default function InnerCircle() {
                 
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.process.eyebrow}</p>
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
-                  {(c.process.headlineLine1 || "Three steps.")}
-                  <br />
-                  <span style={{ color: c.process.headlineAccentColor || P }}>
-                    {(c.process.headlineLine2 || "One transformation.")}
-                  </span>
+                  Three steps.<br />
+                  One <span style={{ color: c.process.headlineAccentColor || P }}>transformation</span>.
                 </h2>
               </motion.div>
 

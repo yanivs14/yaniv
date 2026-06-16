@@ -27,18 +27,18 @@ function Card({ item, accent }) {
   const Icon = getIcon(item.tag);
   return (
     <div
-      className="flex-shrink-0 w-[78vw] max-w-[300px] rounded-3xl p-6 flex flex-col gap-4 border border-white/10 select-none"
-      style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))" }}
+      className="flex-shrink-0 w-[78vw] max-w-[300px] rounded-3xl p-6 flex flex-col gap-5 select-none"
+      style={{ backgroundColor: "#f0ede6", border: "1px solid #e0dbd0" }}
     >
       <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ backgroundColor: `${accent}22` }}>
         <Icon className="w-6 h-6" style={{ color: accent }} />
       </div>
       <span className="text-[10px] font-heading font-bold uppercase tracking-widest px-3 py-1 rounded-full w-fit"
-        style={{ backgroundColor: `${accent}18`, color: accent }}>
+        style={{ backgroundColor: `${accent}20`, color: accent }}>
         {item.tag}
       </span>
-      <p className="font-body text-sm text-[#c8c8c8] leading-relaxed">{item.label}</p>
+      <p className="font-body text-sm text-[#555] leading-relaxed">{item.label}</p>
     </div>
   );
 }

@@ -216,17 +216,11 @@ export default function InnerCircleEditor() {
       {/* ── WHAT IS IT ── */}
       <SectionTitle>What Is It Section</SectionTitle>
       <F label="Eyebrow" value={data.whatIsIt.eyebrow} onChange={v => set("whatIsIt.eyebrow", v)} />
-      <F label="Headline Line 1 (black)" value={data.whatIsIt.headlineLine1} onChange={v => set("whatIsIt.headlineLine1", v)} placeholder="Not a program." />
-      <div className="mb-4 flex gap-2 items-end">
-        <div className="flex-1">
-          <F label="Headline Line 2 (accent color)" value={data.whatIsIt.headlineLine2} onChange={v => set("whatIsIt.headlineLine2", v)} placeholder="A partnership." />
-        </div>
-        <div className="mb-4">
-          <label className="block text-xs text-white-muted mb-1.5 font-body">Color</label>
-          <input type="color" value={data.whatIsIt.headlineAccentColor || data.accentColor || "#FF2DF1"}
-            onChange={e => set("whatIsIt.headlineAccentColor", e.target.value)}
-            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
-        </div>
+      <div className="mb-4 flex gap-2 items-center">
+        <label className="block text-xs text-white-muted font-body flex-1">Color for "partnership"</label>
+        <input type="color" value={data.whatIsIt.headlineAccentColor || data.accentColor || "#FF2DF1"}
+          onChange={e => set("whatIsIt.headlineAccentColor", e.target.value)}
+          className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
       </div>
       <F label="Body Paragraph 1" value={data.whatIsIt.body1} onChange={v => set("whatIsIt.body1", v)} multiline />
       <F label="Body Paragraph 2" value={data.whatIsIt.body2} onChange={v => set("whatIsIt.body2", v)} multiline />
@@ -335,17 +329,11 @@ export default function InnerCircleEditor() {
       {/* ── PROCESS ── */}
       <SectionTitle>Process Section</SectionTitle>
       <F label="Eyebrow" value={data.process.eyebrow} onChange={v => set("process.eyebrow", v)} />
-      <F label="Headline Line 1 (black)" value={data.process.headlineLine1} onChange={v => set("process.headlineLine1", v)} placeholder="Three steps." />
-      <div className="mb-4 flex gap-2 items-end">
-        <div className="flex-1">
-          <F label="Headline Line 2 (accent color)" value={data.process.headlineLine2} onChange={v => set("process.headlineLine2", v)} placeholder="One transformation." />
-        </div>
-        <div className="mb-4">
-          <label className="block text-xs text-white-muted mb-1.5 font-body">Color</label>
-          <input type="color" value={data.process.headlineAccentColor || data.accentColor || "#FF2DF1"}
-            onChange={e => set("process.headlineAccentColor", e.target.value)}
-            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
-        </div>
+      <div className="mb-4 flex gap-2 items-center">
+        <label className="block text-xs text-white-muted font-body flex-1">Color for "transformation"</label>
+        <input type="color" value={data.process.headlineAccentColor || data.accentColor || "#FF2DF1"}
+          onChange={e => set("process.headlineAccentColor", e.target.value)}
+          className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
       </div>
 
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Steps</p>
@@ -373,17 +361,11 @@ export default function InnerCircleEditor() {
       {/* ── FAQ ── */}
       <SectionTitle>FAQ Section</SectionTitle>
       <F label="Eyebrow" value={data.faq.eyebrow} onChange={v => set("faq.eyebrow", v)} />
-      <F label="Headline Line 1 (black)" value={data.faq.headlineLine1} onChange={v => set("faq.headlineLine1", v)} placeholder="Got" />
-      <div className="mb-4 flex gap-2 items-end">
-        <div className="flex-1">
-          <F label="Headline Line 2 (accent color)" value={data.faq.headlineLine2} onChange={v => set("faq.headlineLine2", v)} placeholder="questions?" />
-        </div>
-        <div className="mb-4">
-          <label className="block text-xs text-white-muted mb-1.5 font-body">Color</label>
-          <input type="color" value={data.faq.headlineAccentColor || data.accentColor || "#FF2DF1"}
-            onChange={e => set("faq.headlineAccentColor", e.target.value)}
-            className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
-        </div>
+      <div className="mb-4 flex gap-2 items-center">
+        <label className="block text-xs text-white-muted font-body flex-1">Color for "questions?"</label>
+        <input type="color" value={data.faq.headlineAccentColor || data.accentColor || "#FF2DF1"}
+          onChange={e => set("faq.headlineAccentColor", e.target.value)}
+          className="w-10 h-10 rounded-lg border border-[#2a2a2a] cursor-pointer bg-transparent p-0.5" />
       </div>
 
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Questions & Answers</p>

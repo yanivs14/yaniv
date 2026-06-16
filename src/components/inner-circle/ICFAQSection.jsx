@@ -15,11 +15,8 @@ export default function ICFAQSection({ c, accent }) {
           className="mb-14">
           <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.eyebrow}</p>
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
-            {c.headlineLine1 || "Got"}
-            <br />
-            <span style={{ color: c.headlineAccentColor || accent }}>
-              {c.headlineLine2 || "questions?"}
-            </span>
+            Got<br />
+            <span style={{ color: c.headlineAccentColor || accent }}>questions?</span>
           </h2>
         </motion.div>
 

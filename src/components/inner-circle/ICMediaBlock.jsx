@@ -77,16 +77,7 @@ export default function ICMediaBlock({ mediaUrl, mediaType, accent = "#FF2DF1" }
           </>
         )}
 
-        {/* Image — play button for lightbox feel (optional, just aesthetic) */}
-        {mediaType === "image" && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
-            style={{ background: "rgba(10,10,10,0.2)" }}>
-            <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center shadow-2xl"
-              style={{ backgroundColor: accent }}>
-              <Play className="w-7 h-7 lg:w-9 lg:h-9 fill-[#0a0a0a] text-[#0a0a0a] ml-1" />
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
