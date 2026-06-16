@@ -29,10 +29,13 @@ export default function FinalCTASection() {
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => setQuizOpen(true)}
+                onClick={() => {
+                  const el = document.getElementById("pricing");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
               >
-                {c.ctaSecondary}
+                Ready to start? Subscribe here
               </button>
             </div>
 
