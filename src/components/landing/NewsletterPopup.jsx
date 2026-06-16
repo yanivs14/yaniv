@@ -26,14 +26,21 @@ export default function NewsletterPopup() {
   useEffect(() => {
     if (isDismissed()) return;
 
-    const timer = setTimeout(() => setVisible(true), 3000);
+    let shown = false;
+    const show = () => {
+      if (shown) return;
+      shown = true;
+      setVisible(true);
+    };
+
+    const timer = setTimeout(show, 3000);
 
     const sections = document.querySelectorAll("section, [data-section]");
     const target = sections[2];
     let observer;
     if (target) {
       observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) { clearTimeout(timer); setVisible(true); observer.disconnect(); } },
+        ([entry]) => { if (entry.isIntersecting) { clearTimeout(timer); show(); observer.disconnect(); } },
         { threshold: 0.3 }
       );
       observer.observe(target);
