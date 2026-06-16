@@ -201,26 +201,13 @@ export default function InnerCircle() {
           </section>
 
           {/* ── WHAT YOU GET ── */}
-          <section className="relative bg-[#0a0a0a] py-20 lg:py-28 border-t border-[#1e1e1e] overflow-hidden">
-            {/* Background media */}
-            {c.whatYouGet.mediaUrl && c.whatYouGet.mediaType === "image" &&
-            <>
-                <img src={c.whatYouGet.mediaUrl} alt="" className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" />
-                <div className="absolute inset-0 bg-[#0a0a0a]/70 pointer-events-none" />
-              </>
-            }
-            {c.whatYouGet.mediaUrl && c.whatYouGet.mediaType === "video" &&
-            <>
-                <video src={c.whatYouGet.mediaUrl} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
-                <div className="absolute inset-0 bg-[#0a0a0a]/70 pointer-events-none" />
-              </>
-            }
+          <section className="relative bg-[#f5f4f0] py-20 lg:py-28 overflow-hidden">
             <div className="relative max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
                 className="flex items-end justify-between gap-6">
                 <div>
-                  <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.9]">
+                  <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
                     {c.whatYouGet.headline}
                   </h2>
                   <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight leading-[0.9]" style={{ color: P }}>
@@ -229,7 +216,7 @@ export default function InnerCircle() {
                 </div>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="flex-shrink-0 inline-flex items-center gap-2 text-off-white font-heading text-lg font-bold hover:opacity-70 transition-opacity pb-2">
+                  className="flex-shrink-0 inline-flex items-center gap-2 text-[#0a0a0a] font-heading text-lg font-bold hover:opacity-60 transition-opacity pb-2">
                   {c.whatYouGet.ctaText} <ArrowUpRight className="w-5 h-5" />
                 </button>
               </motion.div>
