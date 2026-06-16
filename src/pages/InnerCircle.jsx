@@ -29,24 +29,32 @@ function getTagIcon(tag) {
   return CheckCircle;
 }
 
-function DesktopCard({ item, accent, index }) {
-  const Icon = getTagIcon(item.tag);
+function BentoCard({ item, accent, index, className = "", bg = "dark" }) {
+  const isAccent = bg === "accent";
+  const isDark = bg === "dark";
+  // dark = near-black solid, light = near-black with visible border, accent = accent fill
+  const bgStyle = isAccent
+    ? { backgroundColor: accent }
+    : isDark
+    ? { backgroundColor: "#0a0a0a", border: "1px solid #222" }
+    : { backgroundColor: "#141414", border: "1px solid #555" };
+  const textColor = isAccent ? "#0a0a0a" : "#f5f5f5";
+  const tagColor = isAccent ? "#0a0a0a" : accent;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.07 }}
-      className="group flex items-center gap-4 bg-[#111] border border-[#1e1e1e] rounded-2xl px-5 py-4 hover:border-white/10 transition-colors">
-      
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accent}22` }}>
-        <Icon style={{ color: accent, width: 18, height: 18 }} />
-      </div>
-      <span className="flex-1 text-sm text-[#c8c8c8] leading-relaxed">{item.label}</span>
-      <span className="text-[10px] font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex-shrink-0"
-      style={{ backgroundColor: `${accent}18`, color: accent }}>
+      transition={{ duration: 0.4, delay: index * 0.06 }}
+      className={`rounded-3xl p-7 flex flex-col justify-between ${className}`}
+      style={bgStyle}>
+      <p className="font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight" style={{ color: textColor }}>
+        {item.label} —
+      </p>
+      <p className="font-heading text-xs font-bold uppercase tracking-widest" style={{ color: tagColor }}>
         {item.tag}
-      </span>
-    </motion.div>);
-
+      </p>
+    </motion.div>
+  );
 }
 
 export default function InnerCircle() {
@@ -210,18 +218,20 @@ export default function InnerCircle() {
             }
             <div className="relative max-w-7xl mx-auto px-6 lg:px-16 mb-10">
               <motion.div
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                
-                <p className="text-xs text-[#555] uppercase tracking-[0.2em] mb-6">{c.whatYouGet.eyebrow}</p>
-                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-off-white leading-[0.9] mb-8">
-                  {c.whatYouGet.headline}<br /><span style={{ color: P }}>{c.whatYouGet.headlineAccent}</span>
-                </h2>
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+                className="flex items-end justify-between gap-6">
+                <div>
+                  <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.9]">
+                    {c.whatYouGet.headline}
+                  </h2>
+                  <p className="font-heading text-xl sm:text-2xl font-bold uppercase tracking-tight mt-2" style={{ color: P }}>
+                    {c.whatYouGet.headlineAccent || c.whatYouGet.eyebrow}
+                  </p>
+                </div>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="inline-flex items-center gap-2 border text-sm font-semibold px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
-                  style={{ borderColor: P, color: P }}>
-                  
-                  {c.whatYouGet.ctaText} <ArrowUpRight className="w-4 h-4" />
+                  className="flex-shrink-0 inline-flex items-center gap-2 text-off-white font-heading text-lg font-bold hover:opacity-70 transition-opacity pb-2">
+                  {c.whatYouGet.ctaText} <ArrowUpRight className="w-5 h-5" />
                 </button>
               </motion.div>
             </div>
@@ -231,11 +241,36 @@ export default function InnerCircle() {
               <WhatYouGetSlider items={c.whatYouGet.items || []} accent={P} />
             </div>
 
-            {/* Desktop: 2-col grid with icons */}
-            <div className="relative hidden lg:grid lg:grid-cols-2 gap-4 max-w-7xl mx-auto px-16">
-              {(c.whatYouGet.items || []).map((item, i) =>
-              <DesktopCard key={i} item={item} accent={P} index={i} />
-              )}
+            {/* Desktop: Bento Grid */}
+            <div className="relative hidden lg:block max-w-7xl mx-auto px-16">
+              {(() => {
+                const items = c.whatYouGet.items || [];
+                // Row 1: item[0] light-border, item[1] dark, item[2] accent
+                // Row 2: item[3] accent tall, item[4] light-border, item[5] accent, item[6] light-border
+                // Row1 bgs: light(border), dark, accent | Row2 bgs: accent, light, accent, light
+                const row1bgs = ["light", "dark", "accent"];
+                const row2bgs = ["accent", "light", "accent", "light"];
+                const row1 = items.slice(0, 3);
+                const row2 = items.slice(3, 7);
+                return (
+                  <div className="flex flex-col gap-4">
+                    {/* Row 1: 3 unequal cols */}
+                    <div className="grid gap-4" style={{ gridTemplateColumns: "2fr 3fr 2fr" }}>
+                      {row1.map((item, i) => (
+                        <BentoCard key={i} item={item} accent={P} index={i} bg={row1bgs[i] || "dark"} className="min-h-[220px]" />
+                      ))}
+                    </div>
+                    {/* Row 2: 4 equal cols */}
+                    {row2.length > 0 && (
+                      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${row2.length}, 1fr)` }}>
+                        {row2.map((item, i) => (
+                          <BentoCard key={i + 3} item={item} accent={P} index={i + 3} bg={row2bgs[i] || "dark"} className="min-h-[200px]" />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </section>
 
