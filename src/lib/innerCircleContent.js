@@ -27,6 +27,9 @@ export const IC_DEFAULTS = {
   whatIsIt: {
     eyebrow: "What Is It",
     headline: "Not a program.\nA partnership.",
+    headlineLine1: "Not a program.",
+    headlineLine2: "A partnership.",
+    headlineAccentColor: "",
     body1: "Inner Circle is our most premium, highest-touch coaching experience. It includes everything in the Monthly / Annual membership, plus a personalized plan, weekly live feedback, ongoing adjustments, and direct support — offered only in limited capacity.",
     body2: "This is for the person who wants a coach invested in their progress, adjusting the plan in real time, and showing up for them every week.",
     mediaUrl: "",
@@ -56,6 +59,9 @@ export const IC_DEFAULTS = {
   process: {
     eyebrow: "How It Works",
     headline: "Three steps.\nOne transformation.",
+    headlineLine1: "Three steps.",
+    headlineLine2: "One transformation.",
+    headlineAccentColor: "",
     steps: [
       { step: "01", title: "Apply", desc: "Fill out a short form telling us about your goals and where you're at right now." },
       { step: "02", title: "Consultation Call", desc: "We hop on a private call to understand your situation and see if Inner Circle is the right fit." },
@@ -65,6 +71,9 @@ export const IC_DEFAULTS = {
   faq: {
     eyebrow: "FAQ",
     headline: "Got\nquestions?",
+    headlineLine1: "Got",
+    headlineLine2: "questions?",
+    headlineAccentColor: "",
     items: [
       { q: "Who is Inner Circle for?", a: "Inner Circle is for serious movers who want the highest level of personal coaching — people ready to invest in a premium, fully personalized experience with direct support from Roye." },
       { q: "How is Inner Circle different from the regular membership?", a: "The regular membership gives you access to all programs. Inner Circle adds a personalized movement plan built for your body, weekly live Zoom sessions with Roye, ongoing plan adjustments, and direct communication throughout." },

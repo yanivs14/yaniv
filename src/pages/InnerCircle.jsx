@@ -164,30 +164,18 @@ export default function InnerCircle() {
             <div className="absolute bottom-0 left-0 right-0 h-px bg-[#1e1e1e]" />
           </section>
 
-          {/* ── MARQUEE ── */}
-          <div className="bg-[#0f0f0f] border-b border-[#1e1e1e] py-5 overflow-hidden">
-            <div className="flex animate-marquee whitespace-nowrap">
-              {[...Array(4)].map((_, k) =>
-              <span key={k} className="flex items-center">
-                  {(c.marquee.items || []).map((t, i) =>
-                <span key={i} className="flex items-center">
-                      <span className="font-heading text-sm uppercase tracking-widest text-[#888] px-8">{t}</span>
-                      <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: P }} />
-                    </span>
-                )}
-                </span>
-              )}
-            </div>
-          </div>
-
           {/* ── WHAT IS IT ── */}
           <section id="ic-what" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
               <motion.div
                 variants={fadeLeft} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}>
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-6">{c.whatIsIt.eyebrow}</p>
-                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8 whitespace-pre-line">
-                  {c.whatIsIt.headline}
+                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] mb-8">
+                  {(c.whatIsIt.headlineLine1 || "Not a program.")}
+                  <br />
+                  <span style={{ color: c.whatIsIt.headlineAccentColor || P }}>
+                    {(c.whatIsIt.headlineLine2 || "A partnership.")}
+                  </span>
                 </h2>
                 <p className="text-base text-[#444] leading-relaxed mb-5">{c.whatIsIt.body1}</p>
                 <p className="text-base text-[#666] leading-relaxed">{c.whatIsIt.body2}</p>
@@ -288,8 +276,12 @@ export default function InnerCircle() {
                 className="mb-14">
                 
                 <p className="text-xs text-[#888] uppercase tracking-[0.2em] mb-4">{c.process.eyebrow}</p>
-                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9] whitespace-pre-line">
-                  {c.process.headline}
+                <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.9]">
+                  {(c.process.headlineLine1 || "Three steps.")}
+                  <br />
+                  <span style={{ color: c.process.headlineAccentColor || P }}>
+                    {(c.process.headlineLine2 || "One transformation.")}
+                  </span>
                 </h2>
               </motion.div>
 
