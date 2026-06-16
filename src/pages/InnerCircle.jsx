@@ -15,6 +15,7 @@ import BookCallModal from "@/components/landing/BookCallModal";
 import { loadICContent } from "@/lib/innerCircleContent";
 import WhatYouGetSlider from "@/components/inner-circle/WhatYouGetSlider";
 import ICFAQSection from "@/components/inner-circle/ICFAQSection";
+import ICMediaBlock from "@/components/inner-circle/ICMediaBlock";
 
 const TAG_ICONS = {
   Foundation: Star, Custom: Target, Live: Video, Adaptive: RefreshCw,
@@ -211,6 +212,13 @@ export default function InnerCircle() {
               </div>
             </div>
           </section>
+
+          {/* ── WHAT IS IT MEDIA ── */}
+          {c.whatIsIt.mediaUrl && c.whatIsIt.mediaType !== "none" && (
+            <div className="bg-[#f5f4f0]">
+              <ICMediaBlock mediaUrl={c.whatIsIt.mediaUrl} mediaType={c.whatIsIt.mediaType} accent={P} />
+            </div>
+          )}
 
           {/* ── WHAT YOU GET ── */}
           <section id="ic-benefits" className="relative bg-[#f5f4f0] py-20 lg:py-28 overflow-hidden">

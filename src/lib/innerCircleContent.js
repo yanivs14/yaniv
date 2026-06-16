@@ -29,6 +29,8 @@ export const IC_DEFAULTS = {
     headline: "Not a program.\nA partnership.",
     body1: "Inner Circle is our most premium, highest-touch coaching experience. It includes everything in the Monthly / Annual membership, plus a personalized plan, weekly live feedback, ongoing adjustments, and direct support — offered only in limited capacity.",
     body2: "This is for the person who wants a coach invested in their progress, adjusting the plan in real time, and showing up for them every week.",
+    mediaUrl: "",
+    mediaType: "none",
     features: [
       { num: "01", title: "Personalized Movement Plan", desc: "A plan built entirely around your body, goals, and current capacity — not a template." },
       { num: "02", title: "Weekly Live Zoom Feedback", desc: "Face-to-face feedback, form corrections, and real-time guidance every single week." },

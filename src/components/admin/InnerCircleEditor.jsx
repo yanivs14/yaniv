@@ -220,6 +220,31 @@ export default function InnerCircleEditor() {
       <F label="Body Paragraph 1" value={data.whatIsIt.body1} onChange={v => set("whatIsIt.body1", v)} multiline />
       <F label="Body Paragraph 2" value={data.whatIsIt.body2} onChange={v => set("whatIsIt.body2", v)} multiline />
 
+      <p className="text-xs text-white-muted mb-2 font-body">Media Block (video/image shown below the section)</p>
+      <div className="flex gap-2 mb-2">
+        <select value={data.whatIsIt.mediaType || "none"} onChange={e => set("whatIsIt.mediaType", e.target.value)}
+          className="bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+          <option value="none">No media</option>
+          <option value="image">Image</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      {data.whatIsIt.mediaType !== "none" && (
+        <div className="flex gap-2 mb-4">
+          <input value={data.whatIsIt.mediaUrl || ""} onChange={e => set("whatIsIt.mediaUrl", e.target.value)} placeholder="Paste URL or upload..."
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <UploadButton accept={data.whatIsIt.mediaType === "video" ? "video/*" : "image/*"}
+            label={data.whatIsIt.mediaType === "video" ? "Video" : "Image"}
+            onUpload={v => set("whatIsIt.mediaUrl", v)} />
+        </div>
+      )}
+      {data.whatIsIt.mediaUrl && data.whatIsIt.mediaType === "image" && (
+        <img src={data.whatIsIt.mediaUrl} alt="" className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a] mb-4" />
+      )}
+      {data.whatIsIt.mediaUrl && data.whatIsIt.mediaType === "video" && (
+        <video src={data.whatIsIt.mediaUrl} className="w-full h-32 object-cover rounded-lg border border-[#2a2a2a] mb-4" muted />
+      )}
+
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Features (numbered list)</p>
       {(data.whatIsIt.features || []).map((feat, i) => (
         <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
