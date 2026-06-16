@@ -26,18 +26,24 @@ export default function Home() {
   return (
     <div className="bg-dark-bg min-h-screen">
       <Navbar />
+      {/* #program */}
       <HeroSection />
       <PillarsSection />
       <HowItFlowsSection />
-      <DegradingSection />
       <MarqueeBanner />
+      {/* #who */}
+      <DegradingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
+        {/* #roye */}
         <AboutSection />
       </Suspense>
+      {/* #pricing */}
       <PricingSection />
+      {/* #inner-circle */}
       <InnerCircleSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
+        {/* #faq */}
         <FAQSection />
         <FinalCTASection />
         <Footer />
