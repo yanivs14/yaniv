@@ -10,6 +10,7 @@ import Footer from "@/components/landing/Footer";
 import BookCallModal from "@/components/landing/BookCallModal";
 import { loadICContent } from "@/lib/innerCircleContent";
 import WhatYouGetSlider from "@/components/inner-circle/WhatYouGetSlider";
+import ICFAQSection from "@/components/inner-circle/ICFAQSection";
 
 const TAG_ICONS = {
   Foundation: Star, Custom: Target, Live: Video, Adaptive: RefreshCw,
@@ -270,6 +271,9 @@ export default function InnerCircle() {
               </div>
             </div>
           </section>
+
+          {/* ── FAQ ── */}
+          <ICFAQSection c={c.faq} accent={P} />
 
           {/* ── FINAL CTA ── */}
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">

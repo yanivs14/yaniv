@@ -51,6 +51,22 @@ export const IC_DEFAULTS = {
       { step: "03", title: "Your Plan Begins", desc: "We build your personalized plan and get to work. Your transformation starts here." },
     ],
   },
+  faq: {
+    eyebrow: "FAQ",
+    headline: "Got\nquestions?",
+    items: [
+      { q: "Who is Inner Circle for?", a: "Inner Circle is for serious movers who want the highest level of personal coaching — people ready to invest in a premium, fully personalized experience with direct support from Roye." },
+      { q: "How is Inner Circle different from the regular membership?", a: "The regular membership gives you access to all programs. Inner Circle adds a personalized movement plan built for your body, weekly live Zoom sessions with Roye, ongoing plan adjustments, and direct communication throughout." },
+      { q: "How many spots are available?", a: "Inner Circle operates at strictly limited capacity to ensure every member gets genuine attention. Spots are opened periodically and require an application." },
+      { q: "What does the application process look like?", a: "You submit a short application, then schedule a private consultation call with Roye to discuss your goals and assess fit. If it's a match, your personalized plan begins." },
+      { q: "How often are the live sessions?", a: "Members receive one weekly live Zoom session with Roye for form feedback, movement corrections, and guidance. These are real, face-to-face sessions — not pre-recorded." },
+      { q: "Can I join if I'm a complete beginner?", a: "Yes. Inner Circle is built around your current level, whatever that is. Roye builds your plan from where you are and progresses it with you over time." },
+      { q: "What happens if I need to pause or cancel?", a: "We understand life happens. Reach out directly and we'll work something out. Inner Circle is a relationship, not just a subscription." },
+      { q: "Do I still get access to the regular program library?", a: "Absolutely. Inner Circle includes everything in the Monthly / Annual membership, plus all the premium add-ons on top of that." },
+      { q: "How much does Inner Circle cost?", a: "Pricing is discussed during the private consultation call, as it depends on your goals and the scope of support. Apply to find out if it's the right fit." },
+      { q: "How do I get started?", a: "Click the Apply button, fill out a short form, and we'll be in touch to schedule your consultation call. The sooner you apply, the sooner your transformation begins." },
+    ],
+  },
   finalCta: {
     eyebrow: "Ready?",
     headline: "This is\nyour",

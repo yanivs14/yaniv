@@ -295,6 +295,31 @@ export default function InnerCircleEditor() {
         <Plus className="w-4 h-4" /> Add step
       </button>
 
+      {/* ── FAQ ── */}
+      <SectionTitle>FAQ Section</SectionTitle>
+      <F label="Eyebrow" value={data.faq.eyebrow} onChange={v => set("faq.eyebrow", v)} />
+      <F label="Headline (use \\n for line break)" value={data.faq.headline} onChange={v => set("faq.headline", v)} multiline />
+
+      <p className="text-xs text-white-muted mb-2 mt-1 font-body">Questions & Answers</p>
+      {(data.faq.items || []).map((item, i) => (
+        <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
+          <div className="flex gap-2 mb-2">
+            <input value={item.q} onChange={e => setArr("faq.items", i, "q", e.target.value)} placeholder="Question"
+              className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <button onClick={() => set("faq.items", (data.faq.items || []).filter((_, idx) => idx !== i))}
+              className="text-white-muted hover:text-red-400 transition-colors p-1">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+          <textarea value={item.a} onChange={e => setArr("faq.items", i, "a", e.target.value)} rows={2} placeholder="Answer"
+            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
+        </div>
+      ))}
+      <button onClick={() => set("faq.items", [...(data.faq.items || []), { q: "", a: "" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-4">
+        <Plus className="w-4 h-4" /> Add question
+      </button>
+
       {/* ── FINAL CTA ── */}
       <SectionTitle>Final CTA Section</SectionTitle>
       <F label="Eyebrow" value={data.finalCta.eyebrow} onChange={v => set("finalCta.eyebrow", v)} />
