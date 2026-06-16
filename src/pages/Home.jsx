@@ -35,14 +35,14 @@ export default function Home() {
       <DegradingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
-        {/* #roye */}
-        <AboutSection />
       </Suspense>
       {/* #pricing */}
       <PricingSection />
       {/* #inner-circle */}
       <InnerCircleSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
+        {/* #roye */}
+        <AboutSection />
         {/* #faq */}
         <FAQSection />
         <FinalCTASection />
