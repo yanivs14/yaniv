@@ -29,28 +29,32 @@ function getTagIcon(tag) {
   return CheckCircle;
 }
 
-function BentoCard({ item, accent, index, className = "", bg = "dark" }) {
-  const isAccent = bg === "accent";
-  const isDark = bg === "dark";
-  // dark = near-black solid, light = near-black with visible border, accent = accent fill
-  const bgStyle = isAccent
-    ? { backgroundColor: accent }
-    : isDark
-    ? { backgroundColor: "#0a0a0a", border: "1px solid #222" }
-    : { backgroundColor: "#141414", border: "1px solid #555" };
-  const textColor = isAccent ? "#0a0a0a" : "#f5f5f5";
-  const tagColor = isAccent ? "#0a0a0a" : accent;
+function BentoCard({ item, accent, index, className = "" }) {
+  // Alternating pattern: even = dark card, odd = accent card
+  const isAccentCard = index % 2 === 1;
+  const bgColor = isAccentCard ? accent : "#111111";
+  const borderColor = isAccentCard ? "transparent" : "#2a2a2a";
+  const textColor = isAccentCard ? "#0a0a0a" : "#f5f5f5";
+  const tagColor = isAccentCard ? "rgba(0,0,0,0.45)" : "rgba(255,255,255,0.35)";
+  const hoverBg = isAccentCard ? "rgba(255,255,255,0.12)" : accent;
+  const hoverText = isAccentCard ? "#0a0a0a" : "#0a0a0a";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
-      className={`rounded-3xl p-7 flex flex-col justify-between ${className}`}
-      style={bgStyle}>
-      <p className="font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight" style={{ color: textColor }}>
-        {item.label} —
+      className={`relative rounded-3xl p-7 flex flex-col justify-between cursor-default group transition-all duration-300 overflow-hidden ${className}`}
+      style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}
+      whileHover={{ scale: 1.025, transition: { duration: 0.2 } }}>
+      {/* Hover overlay */}
+      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ background: `linear-gradient(135deg, ${accent}22 0%, ${accent}08 100%)` }} />
+      <p className="relative font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight transition-colors duration-300"
+        style={{ color: textColor }}>
+        {item.label}
       </p>
-      <p className="font-heading text-xs font-bold uppercase tracking-widest" style={{ color: tagColor }}>
+      <p className="relative font-heading text-xs font-bold uppercase tracking-widest transition-colors duration-300"
+        style={{ color: tagColor }}>
         {item.tag}
       </p>
     </motion.div>
@@ -224,9 +228,9 @@ export default function InnerCircle() {
                   <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.9]">
                     {c.whatYouGet.headline}
                   </h2>
-                  <p className="font-heading text-xl sm:text-2xl font-bold uppercase tracking-tight mt-2" style={{ color: P }}>
+                  <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight leading-[0.9]" style={{ color: P }}>
                     {c.whatYouGet.headlineAccent || c.whatYouGet.eyebrow}
-                  </p>
+                  </h2>
                 </div>
                 <button
                   onClick={() => setModalOpen(true)}
@@ -257,14 +261,14 @@ export default function InnerCircle() {
                     {/* Row 1: 3 unequal cols */}
                     <div className="grid gap-4" style={{ gridTemplateColumns: "2fr 3fr 2fr" }}>
                       {row1.map((item, i) => (
-                        <BentoCard key={i} item={item} accent={P} index={i} bg={row1bgs[i] || "dark"} className="min-h-[220px]" />
+                        <BentoCard key={i} item={item} accent={P} index={i} className="min-h-[220px]" />
                       ))}
                     </div>
                     {/* Row 2: 4 equal cols */}
                     {row2.length > 0 && (
                       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${row2.length}, 1fr)` }}>
                         {row2.map((item, i) => (
-                          <BentoCard key={i + 3} item={item} accent={P} index={i + 3} bg={row2bgs[i] || "dark"} className="min-h-[200px]" />
+                          <BentoCard key={i + 3} item={item} accent={P} index={i + 3} className="min-h-[200px]" />
                         ))}
                       </div>
                     )}
