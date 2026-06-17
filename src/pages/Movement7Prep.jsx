@@ -121,14 +121,6 @@ export default function Movement7Prep() {
         {/* ── HERO ── */}
         <section className="px-6 py-14 lg:py-20 flex flex-col items-center text-center">
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-6">
-            <motion.p
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-              className="text-xs uppercase tracking-[0.25em] font-body"
-              style={{ color: accent }}
-            >
-              The Movement
-            </motion.p>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
               className="font-heading text-[clamp(3rem,10vw,7rem)] font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.88]"
