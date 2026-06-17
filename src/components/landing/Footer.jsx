@@ -92,6 +92,13 @@ export default function Footer() {
           {c.brand || "The Movement"}
         </a>
 
+        {/* Newsletter — directly under brand */}
+        <div className="flex flex-col items-center gap-3">
+          <p className="font-body text-xs text-white-dim uppercase tracking-widest">Free tips & updates</p>
+          <p className="font-heading text-2xl font-bold uppercase tracking-tight text-off-white">Join The Movement</p>
+          <FooterNewsletter />
+        </div>
+
         {/* Tagline */}
         {c.tagline && (
           <p className="font-body text-sm text-white-muted leading-relaxed max-w-sm">{c.tagline}</p>
@@ -114,13 +121,6 @@ export default function Footer() {
 
         {/* Social */}
         <SocialLinks iconSize="w-5 h-5" />
-
-        {/* Newsletter */}
-        <div className="flex flex-col items-center gap-3">
-          <p className="font-body text-xs text-white-dim uppercase tracking-widest">Free tips & updates</p>
-          <p className="font-heading text-2xl font-bold uppercase tracking-tight text-off-white">Join The Movement</p>
-          <FooterNewsletter />
-        </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-dark-border" />
