@@ -30,6 +30,10 @@ const DEFAULTS = {
   communityBody: "Inside Roye's Skool community, 800+ members get the full movement library, weekly live coaching, and ongoing programming — this challenge is the warm-up.",
   communityCtaText: "Join The Community",
   communityCtaUrl: "https://www.skool.com",
+  heroCta1Text: "START THE CHALLENGE →",
+  heroCta1Url: "",
+  afterDaysCtaText: "START NOW →",
+  afterDaysCtaUrl: "",
 };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -135,6 +139,8 @@ export default function PrepPageEditor() {
       <F label="Description" value={data.description} onChange={v => set("description", v)} multiline />
       <F label="Who it's for" value={data.whoFor} onChange={v => set("whoFor", v)} />
       <F label="What you'll gain" value={data.whatGain} onChange={v => set("whatGain", v)} />
+      <F label="Hero CTA — Button Text" value={data.heroCta1Text} onChange={v => set("heroCta1Text", v)} placeholder="START THE CHALLENGE →" />
+      <F label="Hero CTA — Button Link" value={data.heroCta1Url} onChange={v => set("heroCta1Url", v)} placeholder="https://..." />
 
       {/* ── DAYS ── */}
       <SectionTitle>Program Days</SectionTitle>
@@ -162,6 +168,11 @@ export default function PrepPageEditor() {
         className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-2">
         <Plus className="w-4 h-4" /> Add day
       </button>
+
+      {/* ── AFTER DAYS CTA ── */}
+      <SectionTitle>CTA After 7 Days List</SectionTitle>
+      <F label="Button Text" value={data.afterDaysCtaText} onChange={v => set("afterDaysCtaText", v)} placeholder="START NOW →" />
+      <F label="Button Link" value={data.afterDaysCtaUrl} onChange={v => set("afterDaysCtaUrl", v)} placeholder="https://..." />
 
       {/* ── TODAY BLOCK ── */}
       <SectionTitle>Today's Block (Day 1 Highlight)</SectionTitle>

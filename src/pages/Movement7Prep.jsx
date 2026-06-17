@@ -31,6 +31,10 @@ const DEFAULTS = {
   communityBody: "Inside Roye's Skool community, 800+ members get the full movement library, weekly live coaching, and ongoing programming — this challenge is the warm-up.",
   communityCtaText: "Join The Community",
   communityCtaUrl: "https://www.skool.com",
+  heroCta1Text: "START THE CHALLENGE →",
+  heroCta1Url: "",
+  afterDaysCtaText: "START NOW →",
+  afterDaysCtaUrl: "",
 };
 
 function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
@@ -149,6 +153,21 @@ export default function Movement7Prep() {
                 <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whatGain}</p>
               </div>
             </motion.div>
+
+            {/* Hero CTA */}
+            {content.heroCta1Text && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <a
+                  href={content.heroCta1Url || "#"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                  style={{ backgroundColor: accent }}
+                >
+                  {content.heroCta1Text} <ArrowRight className="w-4 h-4" />
+                </a>
+              </motion.div>
+            )}
           </div>
         </section>
 
@@ -203,6 +222,22 @@ export default function Movement7Prep() {
             >
               Do all 7 days in a row, or rest in between — just don't rest more than 1 day at a time.
             </motion.p>
+
+            {/* After Days CTA */}
+            {content.afterDaysCtaText && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}
+                className="mt-8 flex justify-center"
+              >
+                <a
+                  href={content.afterDaysCtaUrl || "#"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                  style={{ backgroundColor: accent }}
+                >
+                  {content.afterDaysCtaText} <ArrowRight className="w-4 h-4" />
+                </a>
+              </motion.div>
+            )}
           </div>
         </section>
 
