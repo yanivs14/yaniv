@@ -17,8 +17,8 @@ const PLANS = [
     label: "Annual",
     price: "$250",
     period: "/ year",
-    note: "Save ~40% vs monthly",
-    badge: "BEST VALUE",
+    note: "Save 40% — pay once, train all year",
+    badge: "🔥 BEST VALUE — SAVE 40%",
     features: ["Full 7-Day program", "All video content", "Community access", "Monthly updates"],
   },
 ];
@@ -91,7 +91,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
                   >
                     {plan.badge && (
                       <span
-                        className="absolute top-3 right-3 font-heading text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-[#0a0a0a]"
+                        className="absolute top-3 right-3 font-heading text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full text-[#0a0a0a]"
                         style={{ backgroundColor: accent }}
                       >
                         {plan.badge}
