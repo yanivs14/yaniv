@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { gsap } from "gsap";
 
-export default function DayRow({ d, accent, joinUrl }) {
+export default function DayRow({ d, accent, onJoin }) {
   const rowRef = useRef(null);
   const btnRef = useRef(null);
   const labelRef = useRef(null);
@@ -57,17 +57,14 @@ export default function DayRow({ d, accent, joinUrl }) {
             TODAY
           </span>
         ) : (
-          <a
+          <button
             ref={btnRef}
-            href={joinUrl || "#"}
-            target={joinUrl ? "_blank" : undefined}
-            rel="noopener noreferrer"
-            onClick={e => !joinUrl && e.preventDefault()}
-            className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap inline-block"
+            onClick={onJoin}
+            className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
             style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
           >
             Join Now
-          </a>
+          </button>
         )}
       </div>
     </div>
