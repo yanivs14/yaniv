@@ -3,9 +3,6 @@ import Stripe from "npm:stripe@14";
 const PRICE_IDS = {
   monthly: "price_1TSPB74T8Uo6bhpdgcMdQoKk",
   annual: "price_1TSPB74T8Uo6bhpduFNzRk8o",
-  // 7-Day Movement Prep
-  prep_monthly: "price_1TjKfZ4T8Uo6bhpdGD4MKCBW",
-  prep_annual: "price_1TjKfZ4T8Uo6bhpdHWYJf0dw",
 };
 
 Deno.serve(async (req) => {
