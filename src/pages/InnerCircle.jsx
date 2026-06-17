@@ -276,7 +276,7 @@ export default function InnerCircle() {
           </section>
 
           {/* ── VALUE / INCLUDED / CREDIBILITY ── */}
-          <ICValueSection accent={P} onApply={() => setModalOpen(true)} />
+          <ICValueSection accent={P} onApply={() => setModalOpen(true)} valueMedia={c.valueSection} />
 
           {/* ── PROCESS ── */}
           <section id="ic-process" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">

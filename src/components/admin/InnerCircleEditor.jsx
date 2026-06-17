@@ -444,6 +444,33 @@ export default function InnerCircleEditor() {
         <Plus className="w-4 h-4" /> Add question
       </button>
 
+      {/* ── VALUE SECTION MEDIA ── */}
+      <SectionTitle>Move Better Section — Media (Right Side)</SectionTitle>
+      <p className="text-xs text-white-muted mb-3 font-body">תמונה או וידאו שיוצגו בצד הימני של הסקשן "Move Better. Feel Better."</p>
+      <div className="flex gap-2 mb-2">
+        <select value={data.valueSection?.mediaType || "none"} onChange={e => set("valueSection.mediaType", e.target.value)}
+          className="bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+          <option value="none">No media</option>
+          <option value="image">Image</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      {data.valueSection?.mediaType !== "none" && (
+        <div className="flex gap-2 mb-4">
+          <input value={data.valueSection?.mediaUrl || ""} onChange={e => set("valueSection.mediaUrl", e.target.value)} placeholder="Paste URL or upload..."
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <UploadButton accept={data.valueSection?.mediaType === "video" ? "video/*" : "image/*"}
+            label={data.valueSection?.mediaType === "video" ? "Video" : "Image"}
+            onUpload={v => set("valueSection.mediaUrl", v)} />
+        </div>
+      )}
+      {data.valueSection?.mediaUrl && data.valueSection?.mediaType === "image" && (
+        <img src={data.valueSection.mediaUrl} alt="" className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a] mb-4" />
+      )}
+      {data.valueSection?.mediaUrl && data.valueSection?.mediaType === "video" && (
+        <video src={data.valueSection.mediaUrl} className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a] mb-4" muted />
+      )}
+
       {/* ── FINAL CTA ── */}
       <SectionTitle>Final CTA Section</SectionTitle>
       <F label="Eyebrow" value={data.finalCta.eyebrow} onChange={v => set("finalCta.eyebrow", v)} />

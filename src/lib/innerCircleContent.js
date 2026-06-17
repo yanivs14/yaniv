@@ -91,6 +91,10 @@ export const IC_DEFAULTS = {
       { q: "How do I get started?", a: "Click the Apply button, fill out a short form, and we'll be in touch to schedule your consultation call. The sooner you apply, the sooner your transformation begins." },
     ],
   },
+  valueSection: {
+    mediaUrl: "",
+    mediaType: "none",
+  },
   finalCta: {
     eyebrow: "Ready?",
     headline: "This is\nyour",
