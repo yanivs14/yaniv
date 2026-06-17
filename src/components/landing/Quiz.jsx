@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import GdprConsent from "./GdprConsent";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle, Mail, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -251,6 +252,7 @@ export default function Quiz({ onClose }) {
   const [phone, setPhone] = useState("");
   const [emailError, setEmailError] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
+  const [gdpr, setGdpr] = useState(false);
 
   const handleCheckout = async (plan) => {
     setCheckoutLoading(plan);
@@ -266,6 +268,10 @@ export default function Quiz({ onClose }) {
     e.preventDefault();
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setEmailError("Please enter a valid email address");
+      return;
+    }
+    if (!gdpr) {
+      setEmailError("Please accept the privacy policy to continue");
       return;
     }
     setEmailError("");
@@ -426,13 +432,8 @@ export default function Quiz({ onClose }) {
                   />
 
                   {/* GDPR Consent */}
-                  <div className="flex items-start gap-2 mt-1">
-                    <input type="checkbox" id="quiz-gdpr" required className="mt-0.5 flex-shrink-0 accent-orange-red" />
-                    <label htmlFor="quiz-gdpr" className="font-body text-[10px] text-white-dim leading-relaxed">
-                      I agree to the processing of my personal data in accordance with the{" "}
-                      <a href="/privacy-policy" target="_blank" className="underline hover:text-white-muted transition-colors">Privacy Policy</a>.
-                      You may unsubscribe at any time.
-                    </label>
+                  <div className="mt-1">
+                    <GdprConsent id="quiz-gdpr" checked={gdpr} onChange={setGdpr} />
                   </div>
 
                   <button type="submit" disabled={emailLoading}

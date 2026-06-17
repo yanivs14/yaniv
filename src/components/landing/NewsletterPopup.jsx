@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import GdprConsent from "./GdprConsent";
 
 const STORAGE_KEY = "newsletter_dismissed_until";
 
@@ -22,6 +23,8 @@ export default function NewsletterPopup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [gdpr, setGdpr] = useState(false);
+  const [gdprError, setGdprError] = useState("");
 
   useEffect(() => {
     if (isDismissed()) return;
@@ -61,6 +64,10 @@ export default function NewsletterPopup() {
     e.preventDefault();
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email");
+      return;
+    }
+    if (!gdpr) {
+      setGdprError("Please accept the privacy policy to continue");
       return;
     }
     setLoading(true);
@@ -108,6 +115,10 @@ export default function NewsletterPopup() {
                     className={`w-full bg-dark-bg border rounded-xl px-4 py-3 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${error ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
                   />
                   {error && <p className="text-xs text-red-400 font-body">{error}</p>}
+                  <div>
+                    <GdprConsent id="newsletter-gdpr" checked={gdpr} onChange={v => { setGdpr(v); setGdprError(""); }} />
+                    {gdprError && <p className="mt-1 text-xs text-red-400 font-body">{gdprError}</p>}
+                  </div>
                   <button
                     type="submit"
                     disabled={loading}

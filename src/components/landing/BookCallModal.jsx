@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { DialCodePicker, COUNTRIES } from "./CountrySelect";
+import GdprConsent from "./GdprConsent";
 
 export default function BookCallModal({ open, onClose }) {
   const [step, setStep] = useState("form");
   const [schedulingUrl, setSchedulingUrl] = useState(null);
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", dialCode: "" });
+  const [gdpr, setGdpr] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +30,7 @@ export default function BookCallModal({ open, onClose }) {
 
   const validate = () => {
     const e = {};
+    if (!gdpr) e.gdpr = "Please accept the privacy policy to continue";
     if (!form.full_name.trim()) e.full_name = "Full name is required";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Valid email is required";
     if (!form.dialCode) e.phone = "Please select a country code";
@@ -150,13 +153,9 @@ export default function BookCallModal({ open, onClose }) {
                   </div>
 
                   {/* GDPR Consent */}
-                  <div className="flex items-start gap-2 mb-4">
-                    <input type="checkbox" id="book-gdpr" required className="mt-0.5 flex-shrink-0 accent-orange-red" />
-                    <label htmlFor="book-gdpr" className="font-body text-[10px] text-white-dim leading-relaxed">
-                      I agree to the processing of my personal data in accordance with the{" "}
-                      <a href="/privacy-policy" target="_blank" className="underline hover:text-white-muted transition-colors">Privacy Policy</a>.
-                      You may unsubscribe at any time.
-                    </label>
+                  <div className="mb-4">
+                    <GdprConsent id="book-gdpr" checked={gdpr} onChange={setGdpr} />
+                    {errors.gdpr && <p className="mt-1 text-xs text-red-400 font-body">{errors.gdpr}</p>}
                   </div>
 
                   {errors.submit && <p className="mb-3 text-sm text-red-400 font-body">{errors.submit}</p>}
