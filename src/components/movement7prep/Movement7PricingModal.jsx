@@ -10,7 +10,7 @@ const PLANS = [
     price: "$250",
     period: "/ year",
     note: "SAVE 40% · Billed Yearly",
-    badge: "🔥 BEST VALUE — SAVE 40%",
+    badge: "BEST VALUE — SAVE 40%",
     features: [
       "Everything in Monthly, plus:",
       "Weekly live coaching & feedback",
@@ -38,6 +38,13 @@ const PLANS = [
 export default function Movement7PricingModal({ open, onClose, accent = "#00fff7" }) {
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState("");
+
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [open]);
 
   const handleSelect = async (plan) => {
     if (window.self !== window.top) {
