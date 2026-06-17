@@ -18,10 +18,19 @@ const DAYS = [
 
 const DEFAULTS = {
   title: "7-Day Movement Preparation",
+  description: "A structured 7-day program to give you a soft landing into movement and help you understand the foundations everything else is built on.",
+  whoFor: "Beginners to advanced. No experience needed.",
+  whatGain: "Better mobility, strength, coordination, and confidence in how your body moves.",
+  days: DAYS,
+  todayNote: "10 minutes. That's the only job today.",
   mediaUrl: "",
   mediaType: "none",
   ctaText: "START DAY 1 →",
   ctaUrl: "",
+  communityHeadline: "This is just the entry point.",
+  communityBody: "Inside Roye's Skool community, 800+ members get the full movement library, weekly live coaching, and ongoing programming — this challenge is the warm-up.",
+  communityCtaText: "Join The Community",
+  communityCtaUrl: "https://www.skool.com",
 };
 
 function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
@@ -123,7 +132,7 @@ export default function Movement7Prep() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="font-body text-base sm:text-lg text-[#C8C8C8] leading-relaxed max-w-xl"
             >
-              A structured 7-day program to give you a soft landing into movement and help you understand the foundations everything else is built on.
+              {content.description}
             </motion.p>
 
             {/* Who / What */}
@@ -133,11 +142,11 @@ export default function Movement7Prep() {
             >
               <div className="flex-1 max-w-xs bg-[#161616] border border-[#2a2a2a] rounded-2xl px-6 py-5 text-left">
                 <p className="text-xs uppercase tracking-widest mb-2 font-body" style={{ color: accent }}>Who it's for</p>
-                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">Beginners to advanced. No experience needed.</p>
+                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whoFor}</p>
               </div>
               <div className="flex-1 max-w-xs bg-[#161616] border border-[#2a2a2a] rounded-2xl px-6 py-5 text-left">
                 <p className="text-xs uppercase tracking-widest mb-2 font-body" style={{ color: accent }}>What you'll gain</p>
-                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">Better mobility, strength, coordination, and confidence in how your body moves.</p>
+                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whatGain}</p>
               </div>
             </motion.div>
           </div>
@@ -158,7 +167,7 @@ export default function Movement7Prep() {
 
             {/* Days list */}
             <div className="mt-6 border-t border-[#1e1e1e]">
-              {DAYS.map((d, i) => (
+              {(content.days || DAYS).map((d, i) => (
                 <motion.div
                   key={d.day}
                   initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -208,7 +217,7 @@ export default function Movement7Prep() {
               <h2 className="font-heading text-4xl sm:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
                 Day 1 — Hang / Spinal Wave
               </h2>
-              <p className="font-body text-base text-[#888]">10 minutes. That's the only job today.</p>
+              <p className="font-body text-base text-[#888]">{content.todayNote}</p>
 
               {/* Media */}
               {content.mediaUrl && content.mediaType !== "none" && (
@@ -250,20 +259,20 @@ export default function Movement7Prep() {
               <div className="flex flex-col gap-4 max-w-lg">
                 <p className="text-xs uppercase tracking-[0.2em] font-body" style={{ color: accent }}>Want more than 7 days?</p>
                 <h2 className="font-heading text-4xl sm:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.9]">
-                  This is just<br />the entry point.
+                  {content.communityHeadline}
                 </h2>
                 <p className="font-body text-sm text-[#888] leading-relaxed">
-                  Inside Roye's Skool community, 800+ members get the full movement library, weekly live coaching, and ongoing programming — this challenge is the warm-up.
+                  {content.communityBody}
                 </p>
               </div>
               <a
-                href="https://www.skool.com"
+                href={content.communityCtaUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-shrink-0 inline-flex items-center gap-2 font-heading text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-full border transition-colors hover:bg-[#00fff7] hover:text-[#0a0a0a] hover:border-[#00fff7] text-[#F5F5F5] whitespace-nowrap"
                 style={{ borderColor: "#2a2a2a" }}
               >
-                Join The Community <ArrowRight className="w-4 h-4" />
+                {content.communityCtaText} <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>
           </div>

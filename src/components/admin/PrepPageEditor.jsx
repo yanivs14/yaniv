@@ -1,17 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Upload, Save } from "lucide-react";
+import { Upload, Save, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const PAGE_KEY = "movement7prep";
 
+const DEFAULT_DAYS = [
+  { day: 1, title: "Hang / Spinal Wave" },
+  { day: 2, title: "Joint Prep / Push" },
+  { day: 3, title: "Hang / Pull" },
+  { day: 4, title: "Juggling / Diagonal Stretch" },
+  { day: 5, title: "Joint Prep / Handstand" },
+  { day: 6, title: "Hang / Flow" },
+  { day: 7, title: "Joint Prep / Legs" },
+];
+
 const DEFAULTS = {
-  title: "7-Day Movement Prep",
-  subtitle: "Your body is ready. Are you?",
-  description: "A focused 7-day program designed to prepare your body for real movement — improving mobility, activating key muscle groups, and building the foundation you need before you begin.",
+  title: "7-Day Movement Preparation",
+  description: "A structured 7-day program to give you a soft landing into movement and help you understand the foundations everything else is built on.",
+  whoFor: "Beginners to advanced. No experience needed.",
+  whatGain: "Better mobility, strength, coordination, and confidence in how your body moves.",
+  days: DEFAULT_DAYS,
+  todayDay: 1,
+  todayNote: "10 minutes. That's the only job today.",
   mediaUrl: "",
   mediaType: "none",
-  ctaText: "Get Started",
+  ctaText: "START DAY 1 →",
   ctaUrl: "",
+  communityHeadline: "This is just the entry point.",
+  communityBody: "Inside Roye's Skool community, 800+ members get the full movement library, weekly live coaching, and ongoing programming — this challenge is the warm-up.",
+  communityCtaText: "Join The Community",
+  communityCtaUrl: "https://www.skool.com",
 };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -46,6 +64,10 @@ function F({ label, value, onChange, multiline = false, placeholder = "" }) {
       )}
     </div>
   );
+}
+
+function SectionTitle({ children }) {
+  return <p className="text-xs text-white-muted font-body font-semibold uppercase tracking-wider mb-3 mt-6 border-t border-[#1e1e1e] pt-4">{children}</p>;
 }
 
 export default function PrepPageEditor() {
@@ -91,6 +113,7 @@ export default function PrepPageEditor() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="text-xs text-white-muted font-body">Edit the /MOVEMENT7PREP landing page</p>
@@ -106,12 +129,47 @@ export default function PrepPageEditor() {
         </button>
       </div>
 
-      <F label="Page Title" value={data.title} onChange={v => set("title", v)} placeholder="7-Day Movement Prep" />
-      <F label="Subtitle (accent color)" value={data.subtitle} onChange={v => set("subtitle", v)} placeholder="Your body is ready. Are you?" />
-      <F label="Description" value={data.description} onChange={v => set("description", v)} multiline placeholder="Short description of what this page is about..." />
+      {/* ── HERO ── */}
+      <SectionTitle>Hero Section</SectionTitle>
+      <F label="Page Title" value={data.title} onChange={v => set("title", v)} placeholder="7-Day Movement Preparation" />
+      <F label="Description" value={data.description} onChange={v => set("description", v)} multiline />
+      <F label="Who it's for" value={data.whoFor} onChange={v => set("whoFor", v)} />
+      <F label="What you'll gain" value={data.whatGain} onChange={v => set("whatGain", v)} />
 
+      {/* ── DAYS ── */}
+      <SectionTitle>Program Days</SectionTitle>
+      <p className="text-xs text-white-dim font-body mb-3">Each row = one day. Edit titles or reorder as needed.</p>
+      {(data.days || []).map((d, i) => (
+        <div key={i} className="flex gap-2 mb-2 items-center">
+          <span className="text-xs text-white-dim font-body w-12 flex-shrink-0 text-center">Day {d.day}</span>
+          <input
+            value={d.title}
+            onChange={e => {
+              const arr = [...(data.days || [])];
+              arr[i] = { ...arr[i], title: e.target.value };
+              set("days", arr);
+            }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors"
+          />
+          <button onClick={() => set("days", (data.days || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={() => set("days", [...(data.days || []), { day: (data.days || []).length + 1, title: "" }])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-2">
+        <Plus className="w-4 h-4" /> Add day
+      </button>
+
+      {/* ── TODAY BLOCK ── */}
+      <SectionTitle>Today's Block (Day 1 Highlight)</SectionTitle>
+      <F label="Today Note" value={data.todayNote} onChange={v => set("todayNote", v)} placeholder="10 minutes. That's the only job today." />
+
+      {/* Media */}
       <div className="mb-4">
-        <label className="block text-xs text-white-muted mb-1.5 font-body">Media Type</label>
+        <label className="block text-xs text-white-muted mb-1.5 font-body">Media Type (video shown in Today's block)</label>
         <select value={data.mediaType || "none"} onChange={e => set("mediaType", e.target.value)}
           className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
           <option value="none">No media</option>
@@ -119,12 +177,8 @@ export default function PrepPageEditor() {
           <option value="video">Video</option>
         </select>
       </div>
-
       {data.mediaType !== "none" && (
         <div className="mb-4">
-          <label className="block text-xs text-white-muted mb-1.5 font-body">
-            {data.mediaType === "video" ? "Video URL or Upload" : "Image URL or Upload"}
-          </label>
           <div className="flex gap-2 mb-2">
             <input value={data.mediaUrl || ""} onChange={e => set("mediaUrl", e.target.value)}
               placeholder="Paste URL or upload..."
@@ -141,15 +195,20 @@ export default function PrepPageEditor() {
           {data.mediaUrl && data.mediaType === "video" && (
             <video src={data.mediaUrl} className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" muted playsInline />
           )}
-          {data.mediaType === "video" && (
-            <p className="text-xs text-white-dim mt-2 font-body">הוידאו יופעל רק עם לחיצה על כפתור פליי — לא יתחיל אוטומטית</p>
-          )}
         </div>
       )}
 
-      <F label="CTA Button Text" value={data.ctaText} onChange={v => set("ctaText", v)} placeholder="Get Started" />
-      <F label="CTA Button Link (optional)" value={data.ctaUrl} onChange={v => set("ctaUrl", v)} placeholder="https://..." />
+      <F label="CTA Button Text" value={data.ctaText} onChange={v => set("ctaText", v)} placeholder="START DAY 1 →" />
+      <F label="CTA Button Link" value={data.ctaUrl} onChange={v => set("ctaUrl", v)} placeholder="https://..." />
 
+      {/* ── COMMUNITY SECTION ── */}
+      <SectionTitle>Want More / Community Section</SectionTitle>
+      <F label="Headline" value={data.communityHeadline} onChange={v => set("communityHeadline", v)} />
+      <F label="Body Text" value={data.communityBody} onChange={v => set("communityBody", v)} multiline />
+      <F label="Button Text" value={data.communityCtaText} onChange={v => set("communityCtaText", v)} placeholder="Join The Community" />
+      <F label="Button Link" value={data.communityCtaUrl} onChange={v => set("communityCtaUrl", v)} placeholder="https://www.skool.com/..." />
+
+      {/* Bottom Save */}
       <div className="mt-8 pt-6 border-t border-[#1e1e1e]">
         <button onClick={save} disabled={saving}
           className="w-full flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60">
