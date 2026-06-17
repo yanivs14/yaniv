@@ -149,6 +149,16 @@ export default function BookCallModal({ open, onClose }) {
                     {errors.phone && <p className="mt-1 text-xs text-red-400 font-body">{errors.phone}</p>}
                   </div>
 
+                  {/* GDPR Consent */}
+                  <div className="flex items-start gap-2 mb-4">
+                    <input type="checkbox" id="book-gdpr" required className="mt-0.5 flex-shrink-0 accent-orange-red" />
+                    <label htmlFor="book-gdpr" className="font-body text-[10px] text-white-dim leading-relaxed">
+                      I agree to the processing of my personal data in accordance with the{" "}
+                      <a href="/privacy-policy" target="_blank" className="underline hover:text-white-muted transition-colors">Privacy Policy</a>.
+                      You may unsubscribe at any time.
+                    </label>
+                  </div>
+
                   {errors.submit && <p className="mb-3 text-sm text-red-400 font-body">{errors.submit}</p>}
 
                   <button

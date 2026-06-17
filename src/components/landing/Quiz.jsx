@@ -425,6 +425,16 @@ export default function Quiz({ onClose }) {
                     className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
                   />
 
+                  {/* GDPR Consent */}
+                  <div className="flex items-start gap-2 mt-1">
+                    <input type="checkbox" id="quiz-gdpr" required className="mt-0.5 flex-shrink-0 accent-orange-red" />
+                    <label htmlFor="quiz-gdpr" className="font-body text-[10px] text-white-dim leading-relaxed">
+                      I agree to the processing of my personal data in accordance with the{" "}
+                      <a href="/privacy-policy" target="_blank" className="underline hover:text-white-muted transition-colors">Privacy Policy</a>.
+                      You may unsubscribe at any time.
+                    </label>
+                  </div>
+
                   <button type="submit" disabled={emailLoading}
                     className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-1">
                     {emailLoading
@@ -433,7 +443,7 @@ export default function Quiz({ onClose }) {
                   </button>
                 </form>
 
-                <p className="mt-4 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe at any time.</p>
+                <p className="mt-3 text-center font-body text-[10px] text-white-dim">No spam. Unsubscribe at any time.</p>
               </motion.div>
             )}
 
