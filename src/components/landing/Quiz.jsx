@@ -287,7 +287,7 @@ export default function Quiz({ onClose }) {
         country = geo.country_name || geo.country || "";
       } catch (_) {}
 
-      await base44.entities.Lead.create({
+      await base44.functions.invoke("submitLead", {
         full_name: fullName.trim() || "Quiz Lead",
         phone: phone.trim() || "-",
         email: email.trim(),
