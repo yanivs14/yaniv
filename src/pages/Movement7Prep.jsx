@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Play, ArrowRight, ChevronDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
+import DayRow from "@/components/movement7prep/DayRow";
 
 const PAGE_KEY = "movement7prep";
 
@@ -221,26 +222,8 @@ export default function Movement7Prep() {
                   key={d.day}
                   initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className={`flex items-center justify-between py-4 border-b border-[#1e1e1e] group ${d.day === 1 ? "bg-[#0d1a1a] -mx-4 px-4 rounded-xl" : ""}`}
                 >
-                  <div className="flex items-center gap-5">
-                    <span
-                      className="font-heading text-xs font-bold w-14 flex-shrink-0"
-                      style={{ color: d.day === 1 ? accent : "#333" }}
-                    >
-                      DAY {d.day}
-                    </span>
-                    <span
-                      className={`font-heading text-xl font-bold uppercase tracking-tight ${d.day === 1 ? "text-[#F5F5F5]" : "text-[#666]"}`}
-                    >
-                      {d.title}
-                    </span>
-                  </div>
-                  {d.day === 1 && (
-                    <span className="text-xs font-body font-bold px-3 py-1 rounded-full" style={{ backgroundColor: accent, color: "#0a0a0a" }}>
-                      TODAY
-                    </span>
-                  )}
+                  <DayRow d={d} i={i} accent={accent} joinUrl={content.heroCta1Url} />
                 </motion.div>
               ))}
             </div>
