@@ -101,45 +101,44 @@ export default function ICValueSection({ accent, onApply, valueMedia }) {
       {/* ── WHAT CHANGES ── */}
       <section className="bg-[#0a0a0a] py-20 lg:py-28 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="grid lg:grid-cols-2 gap-8 mb-16">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}>
-              <p className="text-xs uppercase tracking-[0.2em] mb-3" style={{ color: accent }}>Transformation</p>
-              <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.85]">
-                What <span style={{ color: accent }}>changes?</span>
-              </h2>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}>
-              <p className="text-xs uppercase tracking-[0.2em] mb-3 text-[#444]">Why People Join</p>
-              <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.85]">
-                I want to <span style={{ color: accent }}>…</span>
-              </h2>
-            </motion.div>
-          </div>
-
-          {/* Content */}
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Changes list */}
-            <div className="border-t border-[#1e1e1e]">
-              {changes.map((item, i) => (
-                <motion.div key={i} {...stagger(i)}
-                  className="flex items-center gap-5 py-5 border-b border-[#1e1e1e] group">
-                  <span className="font-heading text-xs font-bold text-[#333] flex-shrink-0 w-6">0{i + 1}</span>
-                  <span className="font-heading text-xl font-bold uppercase tracking-tight text-off-white flex-1">{item}</span>
-                  <Check className="w-4 h-4 flex-shrink-0 opacity-60" style={{ color: accent }} />
-                </motion.div>
-              ))}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-start">
+            {/* Left column: header + list */}
+            <div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} className="mb-10">
+                <p className="text-xs uppercase tracking-[0.2em] mb-3" style={{ color: accent }}>Transformation</p>
+                <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.85]">
+                  What <span style={{ color: accent }}>changes?</span>
+                </h2>
+              </motion.div>
+              <div className="border-t border-[#1e1e1e]">
+                {changes.map((item, i) => (
+                  <motion.div key={i} {...stagger(i)}
+                    className="flex items-center gap-5 py-5 border-b border-[#1e1e1e] group">
+                    <span className="font-heading text-xs font-bold text-[#333] flex-shrink-0 w-6">0{i + 1}</span>
+                    <span className="font-heading text-xl font-bold uppercase tracking-tight text-off-white flex-1">{item}</span>
+                    <Check className="w-4 h-4 flex-shrink-0 opacity-60" style={{ color: accent }} />
+                  </motion.div>
+                ))}
+              </div>
             </div>
 
-            {/* Reasons */}
-            <div className="border-t border-[#1e1e1e]">
-              {reasons.map((r, i) => (
-                <motion.div key={i} {...stagger(i)}
-                  className="flex items-center justify-between gap-4 py-5 border-b border-[#1e1e1e] group cursor-default hover:bg-[#0d0d0d] px-2 -mx-2 transition-colors duration-150 rounded-lg">
-                  <span className="font-heading text-xl font-bold uppercase tracking-tight text-off-white">{r}</span>
-                  <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-50 transition-opacity flex-shrink-0" style={{ color: accent }} />
-                </motion.div>
-              ))}
+            {/* Right column: header + list */}
+            <div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }} className="mb-10">
+                <p className="text-xs uppercase tracking-[0.2em] mb-3 text-[#444]">Why People Join</p>
+                <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold uppercase tracking-tight text-off-white leading-[0.85]">
+                  I want to <span style={{ color: accent }}>…</span>
+                </h2>
+              </motion.div>
+              <div className="border-t border-[#1e1e1e]">
+                {reasons.map((r, i) => (
+                  <motion.div key={i} {...stagger(i)}
+                    className="flex items-center justify-between gap-4 py-5 border-b border-[#1e1e1e] group cursor-default hover:bg-[#0d0d0d] px-2 -mx-2 transition-colors duration-150 rounded-lg">
+                    <span className="font-heading text-xl font-bold uppercase tracking-tight text-off-white">{r}</span>
+                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-50 transition-opacity flex-shrink-0" style={{ color: accent }} />
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
