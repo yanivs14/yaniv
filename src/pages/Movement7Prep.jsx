@@ -119,7 +119,7 @@ export default function Movement7Prep() {
       <main className="flex-1">
 
         {/* ── HERO ── */}
-        <section className="px-6 py-20 lg:py-28 flex flex-col items-center text-center">
+        <section className="px-6 py-14 lg:py-20 flex flex-col items-center text-center">
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-6">
             <motion.p
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
@@ -188,31 +188,17 @@ export default function Movement7Prep() {
               ))}
             </motion.div>
 
-            {/* Hero CTA */}
-            {content.heroCta1Text && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <button
-                  onClick={() => setPricingOpen(true)}
-                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
-                  style={{ backgroundColor: accent }}
-                >
-                  {content.heroCta1Text} <ArrowRight className="w-4 h-4" />
-                </button>
-              </motion.div>
-            )}
+
           </div>
         </section>
 
         {/* ── TODAY: DAY 1 ── */}
-        <section className="px-6 pb-20 lg:pb-28">
+        <section className="px-6 pb-12 lg:pb-16">
           <div className="max-w-3xl mx-auto w-full">
             <motion.div
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
-              className="bg-[#161616] border border-[#2a2a2a] rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center gap-6"
+              className="bg-[#161616] border border-[#2a2a2a] rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center gap-5"
             >
-              <p className="text-xs uppercase tracking-[0.2em] font-body" style={{ color: accent }}>Today</p>
               <h2 className="font-heading text-4xl sm:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
                 Day 1 — Hang / Spinal Wave
               </h2>
