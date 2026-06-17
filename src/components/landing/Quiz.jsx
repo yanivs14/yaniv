@@ -381,8 +381,7 @@ export default function Quiz({ onClose }) {
                     const Icon = opt.Icon;
                     const selected = answers[current.id] === opt.label;
                     return (
-                      <motion.button key={opt.label} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.06, duration: 0.22 }}
+                      <button key={`${step}-${opt.label}`}
                         onClick={() => handleSelect(opt.label)}
                         className={`group flex items-center gap-4 w-full text-left px-5 py-4 rounded-xl border transition-all duration-200 ${selected ? "border-orange-red bg-orange-red/10" : "border-dark-border bg-dark-bg hover:border-orange-red hover:bg-orange-red/5"}`}
                       >
@@ -391,7 +390,7 @@ export default function Quiz({ onClose }) {
                           {opt.label}
                         </span>
                         <ChevronRight className={`w-4 h-4 ${selected ? "text-orange-red" : "text-white-dim group-hover:text-orange-red"} transition-colors`} />
-                      </motion.button>
+                      </button>
                     );
                   })}
                 </div>
