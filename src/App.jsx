@@ -11,6 +11,7 @@ import PolicyPage from './pages/PolicyPage';
 import CookieBanner from './components/CookieBanner';
 import { SiteContentProvider } from '@/lib/SiteContentContext';
 import InnerCircle from './pages/InnerCircle';
+import Movement7Prep from './pages/Movement7Prep';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -43,6 +44,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/admin-k" element={<AdminK />} />
         <Route path="/inner-circle" element={<InnerCircle />} />
+        <Route path="/MOVEMENT7PREP" element={<Movement7Prep />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
