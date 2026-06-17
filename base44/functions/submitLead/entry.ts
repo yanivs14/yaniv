@@ -37,28 +37,43 @@ Deno.serve(async (req) => {
       const userEmailBody = isInnerCircle ? `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0F0F0F;font-family:'DM Sans',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F;padding:40px 20px;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Movement</title>
+</head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:24px 16px;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#161616;border-radius:16px;border:1px solid #2A2A2A;overflow:hidden;">
+      <table cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#111111;border-radius:16px;border:1px solid #222;overflow:hidden;">
+        <!-- Header -->
         <tr>
-          <td style="background:#0F0F0F;padding:32px 40px;border-bottom:1px solid #2A2A2A;">
-            <span style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:28px;font-weight:900;color:#00fff7;letter-spacing:4px;text-transform:uppercase;">KINETIQO</span>
+          <td style="padding:28px 32px;border-bottom:1px solid #222;">
+            <p style="margin:0;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:3px;">Inner Circle</p>
+            <p style="margin:6px 0 0;font-size:22px;font-weight:900;color:#00fff7;letter-spacing:2px;text-transform:uppercase;">The Movement</p>
           </td>
         </tr>
+        <!-- Body -->
         <tr>
-          <td style="padding:40px;">
-            <p style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:3px;margin:0 0 12px;">Inner Circle</p>
-            <h1 style="color:#F5F5F5;font-size:30px;font-weight:700;margin:0 0 16px;line-height:1.2;">Thank you, ${full_name}.</h1>
-            <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 24px;">
-              We've received your request to book a call with our team. One of our movement experts will reach out to you shortly.
+          <td style="padding:32px;">
+            <h1 style="margin:0 0 12px;font-size:26px;font-weight:700;color:#F5F5F5;line-height:1.2;">Thank you, ${full_name}.</h1>
+            <p style="margin:0 0 24px;font-size:15px;color:#888;line-height:1.7;">
+              We've received your request. One of our movement experts will reach out to you shortly to schedule a call.
             </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #222;border-radius:12px;">
+              <tr>
+                <td style="padding:20px 24px;">
+                  <p style="margin:0 0 6px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:2px;">What's next</p>
+                  <p style="margin:0;font-size:15px;color:#F5F5F5;font-weight:600;">Look out for our call — we'll be in touch soon.</p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
+        <!-- Footer -->
         <tr>
-          <td style="padding:24px 40px;border-top:1px solid #2A2A2A;">
-            <p style="color:#555;font-size:12px;margin:0;">© 2026 Kinetiqo by Roye Gold · Movement, restored.</p>
+          <td style="padding:20px 32px;border-top:1px solid #222;">
+            <p style="margin:0;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
           </td>
         </tr>
       </table>
@@ -68,30 +83,43 @@ Deno.serve(async (req) => {
 </html>` : `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0F0F0F;font-family:'DM Sans',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F;padding:40px 20px;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Movement</title>
+</head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:24px 16px;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#161616;border-radius:16px;border:1px solid #2A2A2A;overflow:hidden;">
+      <table cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#111111;border-radius:16px;border:1px solid #222;overflow:hidden;">
+        <!-- Header -->
         <tr>
-          <td style="background:#0F0F0F;padding:32px 40px;border-bottom:1px solid #2A2A2A;">
-            <span style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:28px;font-weight:900;color:#00fff7;letter-spacing:4px;text-transform:uppercase;">KINETIQO</span>
+          <td style="padding:28px 32px;border-bottom:1px solid #222;">
+            <p style="margin:0;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:3px;">Confirmation</p>
+            <p style="margin:6px 0 0;font-size:22px;font-weight:900;color:#00fff7;letter-spacing:2px;text-transform:uppercase;">The Movement</p>
           </td>
         </tr>
+        <!-- Body -->
         <tr>
-          <td style="padding:40px;">
-            <p style="color:#888;font-size:13px;text-transform:uppercase;letter-spacing:3px;margin:0 0 16px;">Confirmation</p>
-            <h1 style="color:#F5F5F5;font-size:32px;font-weight:700;margin:0 0 16px;line-height:1.2;">Thank you, ${full_name}!</h1>
-            <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 32px;">We've received your details and will get back to you shortly.</p>
-            <div style="background:#0F0F0F;border:1px solid #2A2A2A;border-radius:12px;padding:24px;margin-bottom:32px;">
-              <p style="color:#00fff7;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px;">Your Recommendation</p>
-              <p style="color:#F5F5F5;font-size:18px;font-weight:700;margin:0;">${quiz_recommendation || 'Foundation Track'}</p>
-            </div>
+          <td style="padding:32px;">
+            <h1 style="margin:0 0 12px;font-size:26px;font-weight:700;color:#F5F5F5;line-height:1.2;">Thank you, ${full_name}!</h1>
+            <p style="margin:0 0 28px;font-size:15px;color:#888;line-height:1.7;">
+              We've received your details and will get back to you shortly.
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #222;border-radius:12px;">
+              <tr>
+                <td style="padding:20px 24px;">
+                  <p style="margin:0 0 6px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:2px;">Your Recommendation</p>
+                  <p style="margin:0;font-size:17px;font-weight:700;color:#F5F5F5;line-height:1.3;">${quiz_recommendation || 'Start with the Foundation Track'}</p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
+        <!-- Footer -->
         <tr>
-          <td style="padding:24px 40px;border-top:1px solid #2A2A2A;">
-            <p style="color:#555;font-size:12px;margin:0;">© 2026 Kinetiqo by Roye Gold · Movement, restored.</p>
+          <td style="padding:20px 32px;border-top:1px solid #222;">
+            <p style="margin:0;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
           </td>
         </tr>
       </table>
