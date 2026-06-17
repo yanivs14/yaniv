@@ -107,13 +107,20 @@ export default function Movement7Prep() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") === "success") {
       const sessionId = params.get("session_id") || "";
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'purchase_complete',
-        currency: 'USD',
-        transaction_id: sessionId,
-        value: 0,
-      });
+      base44.functions.invoke("getCheckoutSession", { session_id: sessionId })
+        .then(res => {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: 'purchase_complete',
+            currency: res.data?.currency || 'USD',
+            transaction_id: res.data?.transaction_id || sessionId,
+            value: res.data?.value || 0,
+          });
+        })
+        .catch(() => {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event: 'purchase_complete', currency: 'USD', transaction_id: sessionId, value: 0 });
+        });
     }
   }, []);
 

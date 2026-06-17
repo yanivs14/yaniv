@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
@@ -25,13 +26,20 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") === "success") {
       const sessionId = params.get("session_id") || "";
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'purchase_complete',
-        currency: 'USD',
-        transaction_id: sessionId,
-        value: 0,
-      });
+      base44.functions.invoke("getCheckoutSession", { session_id: sessionId })
+        .then(res => {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: 'purchase_complete',
+            currency: res.data?.currency || 'USD',
+            transaction_id: res.data?.transaction_id || sessionId,
+            value: res.data?.value || 0,
+          });
+        })
+        .catch(() => {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event: 'purchase_complete', currency: 'USD', transaction_id: sessionId, value: 0 });
+        });
     }
   }, []);
 
