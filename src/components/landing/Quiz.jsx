@@ -251,8 +251,6 @@ export default function Quiz({ onClose }) {
   const [phone, setPhone] = useState("");
   const [emailError, setEmailError] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
-  const [gdprChecked, setGdprChecked] = useState(false);
-  const [gdprError, setGdprError] = useState(false);
 
   const handleCheckout = async (plan) => {
     setCheckoutLoading(plan);
@@ -266,7 +264,6 @@ export default function Quiz({ onClose }) {
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (!gdprChecked) { setGdprError(true); return; }
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setEmailError("Please enter a valid email address");
       return;
@@ -427,22 +424,6 @@ export default function Quiz({ onClose }) {
                     placeholder="Phone (optional)"
                     className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
                   />
-
-                  {/* GDPR Consent */}
-                  <label className="flex items-start gap-2.5 cursor-pointer mt-1">
-                    <input
-                      type="checkbox"
-                      checked={gdprChecked}
-                      onChange={e => { setGdprChecked(e.target.checked); setGdprError(false); }}
-                      className="mt-0.5 flex-shrink-0 accent-orange-red w-4 h-4 cursor-pointer"
-                    />
-                    <span className="font-body text-[11px] text-white-dim leading-relaxed">
-                      I agree to the collection and use of my data in accordance with the{" "}
-                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-orange-red underline underline-offset-2 hover:opacity-80">Privacy Policy</a>.
-                      You may unsubscribe at any time.
-                    </span>
-                  </label>
-                  {gdprError && <p className="text-xs text-red-400 font-body -mt-1">Please accept the privacy policy to continue.</p>}
 
                   <button type="submit" disabled={emailLoading}
                     className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-1">

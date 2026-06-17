@@ -34,7 +34,7 @@ export default function DayRow({ d, accent, joinUrl }) {
       style={{ minHeight: "60px" }}
     >
       <span
-        className="font-heading text-xs font-bold flex-shrink-0 w-10 mr-2"
+        className="font-heading text-xs font-bold flex-shrink-0 w-10 mr-3"
         style={{ color: isDay1 ? accent : "#333" }}
       >
         DAY {d.day}
@@ -42,7 +42,7 @@ export default function DayRow({ d, accent, joinUrl }) {
 
       <span
         ref={labelRef}
-        className="font-heading text-lg sm:text-xl font-bold uppercase tracking-tight flex-1 min-w-0"
+        className="font-heading text-lg sm:text-xl font-bold uppercase tracking-tight flex-1 min-w-0 truncate"
         style={{ color: isDay1 ? "#F5F5F5" : "#666" }}
       >
         {d.title}
