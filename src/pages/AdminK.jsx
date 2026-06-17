@@ -495,17 +495,33 @@ function formatIsraelTime(dateStr) {
 function exportLeadsToExcel(leads) {
   // Build CSV with BOM for Hebrew support in Excel
   const BOM = "\uFEFF";
-  const headers = ["שם מלא", "טלפון", "אימייל", "מקור", "המלצה", "סטטוס", "הערות", "תאריך"];
-  const rows = leads.map(l => [
-    l.full_name || "",
-    l.phone || "",
-    l.email || "",
-    l.source || "",
-    l.quiz_recommendation || "",
-    STATUS_LABELS[l.status] || l.status || "",
-    (l.notes || "").replace(/\n/g, " "),
-    formatIsraelTime(l.created_date)
-  ]);
+  const QUIZ_LABELS = {
+    pain: "Tension / Pain Area",
+    lifestyle: "Hours Sitting Per Day",
+    goal: "Primary Goal",
+    experience: "Movement Experience",
+  };
+  const headers = ["שם מלא", "טלפון", "אימייל", "מקור", "סקציה", "המלצה", "מדינה", "שפה", "Tension/Pain", "Hours Sitting", "Primary Goal", "Experience", "סטטוס", "הערות", "תאריך"];
+  const rows = leads.map(l => {
+    const qa = l.quiz_answers || {};
+    return [
+      l.full_name || "",
+      l.phone || "",
+      l.email || "",
+      l.source || "",
+      l.quiz_section || "",
+      l.quiz_recommendation || "",
+      l.country || "",
+      l.browser_language || "",
+      qa.pain || "",
+      qa.lifestyle || "",
+      qa.goal || "",
+      qa.experience || "",
+      STATUS_LABELS[l.status] || l.status || "",
+      (l.notes || "").replace(/\n/g, " "),
+      formatIsraelTime(l.created_date)
+    ];
+  });
   const csv = BOM + [headers, ...rows]
     .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
     .join("\n");

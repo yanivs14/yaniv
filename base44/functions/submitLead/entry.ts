@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { full_name, phone, email, source, quiz_recommendation } = await req.json();
+    const { full_name, phone, email, source, quiz_section, quiz_recommendation, quiz_answers, browser_language, country } = await req.json();
 
     if (!full_name || !phone) {
       return Response.json({ error: 'Full name and phone are required' }, { status: 400 });
@@ -17,7 +17,11 @@ Deno.serve(async (req) => {
       phone,
       email: email || '',
       source: source || 'quiz',
+      quiz_section: quiz_section || '',
       quiz_recommendation: quiz_recommendation || '',
+      quiz_answers: quiz_answers || {},
+      browser_language: browser_language || '',
+      country: country || '',
       status: 'new'
     });
 
@@ -140,63 +144,122 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Build quiz answers rows
+    const quizLabels = {
+      pain: "Where do you feel the most tension?",
+      lifestyle: "How much of your day do you spend sitting?",
+      goal: "What's your primary movement goal?",
+      experience: "What's your current movement experience?"
+    };
+    const quizRows = quiz_answers && Object.keys(quiz_answers).length > 0
+      ? Object.entries(quiz_answers).map(([k, v]) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+            <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">${quizLabels[k] || k}</span>
+            <span style="color:#00fff7;font-size:14px;font-weight:600;">${v}</span>
+          </td>
+        </tr>`).join('')
+      : '';
+
     // Notify admins (non-blocking)
     for (const adminEmail of recipientEmails) {
       try {
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: adminEmail,
-          subject: isInnerCircle ? `Inner Circle inquiry — ${full_name}` : `New Lead — ${full_name}`,
+          subject: isInnerCircle ? `🔵 Inner Circle — ${full_name}` : `🟢 New Lead — ${full_name}`,
           from_name: 'The Movement - Roye Gold',
-          body: `
-<!DOCTYPE html>
+          body: `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#0F0F0F;font-family:'DM Sans',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F;padding:40px 20px;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:20px 16px;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#161616;border-radius:16px;border:1px solid #2A2A2A;overflow:hidden;">
+      <table cellpadding="0" cellspacing="0" style="width:100%;max-width:580px;background:#111;border-radius:16px;border:1px solid #222;overflow:hidden;">
+
+        <!-- Header -->
         <tr>
-          <td style="background:#0F0F0F;padding:24px 40px;border-bottom:1px solid #2A2A2A;">
-            <span style="font-family:'Barlow Condensed',Arial,sans-serif;font-size:24px;font-weight:900;color:#00fff7;letter-spacing:4px;text-transform:uppercase;">KINETIQO</span>
-            &nbsp;&nbsp;<span style="background:#00fff7;color:#0F0F0F;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;">${isInnerCircle ? 'Inner Circle' : 'New Lead'}</span>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:40px;">
-            <p style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:3px;margin:0 0 24px;">Lead Details</p>
+          <td style="padding:24px 28px;border-bottom:1px solid #222;">
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
-                  <span style="color:#555;font-size:12px;display:block;margin-bottom:4px;">FULL NAME</span>
-                  <span style="color:#F5F5F5;font-size:16px;font-weight:600;">${full_name}</span>
+                <td>
+                  <p style="margin:0;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:3px;">The Movement</p>
+                  <p style="margin:4px 0 0;font-size:20px;font-weight:900;color:#00fff7;letter-spacing:1px;text-transform:uppercase;">${isInnerCircle ? 'Inner Circle Inquiry' : 'New Lead'}</p>
                 </td>
-              </tr>
-              <tr>
-                <td style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
-                  <span style="color:#555;font-size:12px;display:block;margin-bottom:4px;">PHONE</span>
-                  <span style="color:#00fff7;font-size:16px;font-weight:600;">${phone}</span>
-                </td>
-              </tr>
-              ${email ? `<tr>
-                <td style="padding:12px 0;border-bottom:1px solid #2A2A2A;">
-                  <span style="color:#555;font-size:12px;display:block;margin-bottom:4px;">EMAIL</span>
-                  <span style="color:#F5F5F5;font-size:16px;">${email}</span>
-                </td>
-              </tr>` : ''}
-              <tr>
-                <td style="padding:12px 0;">
-                  <span style="color:#555;font-size:12px;display:block;margin-bottom:4px;">SOURCE</span>
-                  <span style="color:#F5F5F5;font-size:15px;">${source || 'quiz'}</span>
+                <td align="right">
+                  <span style="display:inline-block;background:${isInnerCircle ? '#00fff7' : '#22c55e'};color:#0a0a0a;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;white-space:nowrap;">${isInnerCircle ? 'Inner Circle' : 'Quiz Lead'}</span>
                 </td>
               </tr>
             </table>
           </td>
         </tr>
+
+        <!-- Contact Info -->
         <tr>
-          <td style="padding:20px 40px;border-top:1px solid #2A2A2A;">
-            <p style="color:#555;font-size:12px;margin:0;">Kinetiqo Admin · ${new Date().toLocaleString('en-US')}</p>
+          <td style="padding:24px 28px;border-bottom:1px solid #1a1a1a;">
+            <p style="margin:0 0 16px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;">Contact Details</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">FULL NAME</span>
+                  <span style="color:#F5F5F5;font-size:16px;font-weight:700;">${full_name}</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">PHONE</span>
+                  <span style="color:#00fff7;font-size:16px;font-weight:600;">${phone}</span>
+                </td>
+              </tr>
+              ${email ? `<tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">EMAIL</span>
+                  <span style="color:#F5F5F5;font-size:15px;">${email}</span>
+                </td>
+              </tr>` : ''}
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">SOURCE</span>
+                  <span style="color:#F5F5F5;font-size:14px;">${source || 'quiz'}${quiz_section ? ' · ' + quiz_section : ''}</span>
+                </td>
+              </tr>
+              ${country || browser_language ? `<tr>
+                <td style="padding:10px 0;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">LOCATION / LANGUAGE</span>
+                  <span style="color:#F5F5F5;font-size:14px;">${country || '—'}${browser_language ? ' · ' + browser_language : ''}</span>
+                </td>
+              </tr>` : ''}
+            </table>
           </td>
         </tr>
+
+        <!-- Recommendation -->
+        ${quiz_recommendation ? `<tr>
+          <td style="padding:20px 28px;border-bottom:1px solid #1a1a1a;background:#0d0d0d;">
+            <p style="margin:0 0 6px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;">Quiz Recommendation</p>
+            <p style="margin:0;font-size:16px;font-weight:700;color:#00fff7;">${quiz_recommendation}</p>
+          </td>
+        </tr>` : ''}
+
+        <!-- Quiz Answers -->
+        ${quizRows ? `<tr>
+          <td style="padding:20px 28px;border-bottom:1px solid #1a1a1a;">
+            <p style="margin:0 0 14px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;">Quiz Answers</p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              ${quizRows}
+            </table>
+          </td>
+        </tr>` : ''}
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:16px 28px;">
+            <p style="margin:0;font-size:11px;color:#444;">${new Date().toLocaleString('en-GB', { timeZone: 'Asia/Jerusalem', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })} · The Movement Admin</p>
+          </td>
+        </tr>
+
       </table>
     </td></tr>
   </table>
