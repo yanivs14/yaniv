@@ -18,6 +18,8 @@ import WhatYouGetSlider from "@/components/inner-circle/WhatYouGetSlider";
 import ICFAQSection from "@/components/inner-circle/ICFAQSection";
 import ICMediaBlock from "@/components/inner-circle/ICMediaBlock";
 import ICGallery from "@/components/inner-circle/ICGallery";
+import ICJourneySection from "@/components/inner-circle/ICJourneySection";
+import ICValueSection from "@/components/inner-circle/ICValueSection";
 
 const TAG_ICONS = {
   Foundation: Star, Custom: Target, Live: Video, Adaptive: RefreshCw,
@@ -166,6 +168,9 @@ export default function InnerCircle() {
             <div className="absolute bottom-0 left-0 right-0 h-px bg-[#1e1e1e]" />
           </section>
 
+          {/* ── JOURNEY STEPS ── */}
+          <ICJourneySection accent={P} onApply={() => setModalOpen(true)} />
+
           {/* ── WHAT IS IT ── */}
           <section id="ic-what" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
@@ -270,6 +275,9 @@ export default function InnerCircle() {
             </div>
           </section>
 
+          {/* ── VALUE / INCLUDED / CREDIBILITY ── */}
+          <ICValueSection accent={P} onApply={() => setModalOpen(true)} />
+
           {/* ── PROCESS ── */}
           <section id="ic-process" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
             <div className="max-w-7xl mx-auto">
@@ -310,6 +318,34 @@ export default function InnerCircle() {
           <div id="ic-faq">
             <ICFAQSection c={c.faq} accent={P} />
           </div>
+
+          {/* ── STOP GUESSING CTA ── */}
+          <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16 border-t border-[#ddd]">
+            <div className="max-w-7xl mx-auto flex flex-col items-center text-center gap-8">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+                className="font-heading text-5xl sm:text-7xl lg:text-[8rem] font-bold uppercase tracking-tight text-[#0a0a0a] leading-[0.88]">
+                Stop guessing.<br />
+                <span style={{ color: P }}>Start understanding.</span>
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }}
+                className="font-body text-base text-[#555] max-w-md leading-relaxed">
+                Start understanding what your body needs.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => setModalOpen(true)}
+                  style={{ backgroundColor: P }}
+                  className="inline-flex items-center gap-2 font-body text-sm font-bold px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]">
+                  Apply For The Inner Circle <ArrowUpRight className="w-4 h-4" />
+                </button>
+                <p className="font-body text-xs text-[#999]">Application Only • Limited Capacity</p>
+              </motion.div>
+            </div>
+          </section>
 
           {/* ── FINAL CTA ── */}
           <section className="bg-[#0a0a0a] py-24 lg:py-36 px-6 lg:px-16 border-t border-[#1e1e1e]">
