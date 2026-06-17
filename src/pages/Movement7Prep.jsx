@@ -4,7 +4,6 @@ import { Play, ArrowRight, ChevronDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import DayRow from "@/components/movement7prep/DayRow";
-import Movement7PricingModal from "@/components/movement7prep/Movement7PricingModal";
 
 const PAGE_KEY = "movement7prep";
 
@@ -95,7 +94,6 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
 
 export default function Movement7Prep() {
   const [content, setContent] = useState(null);
-  const [pricingOpen, setPricingOpen] = useState(false);
 
   useEffect(() => {
     base44.entities.PrepPageContent.filter({ page_key: PAGE_KEY }).then(records => {
@@ -115,7 +113,6 @@ export default function Movement7Prep() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-body">
-      <Movement7PricingModal open={pricingOpen} onClose={() => setPricingOpen(false)} accent={accent} />
       <main className="flex-1">
 
         {/* ── HERO ── */}
@@ -193,13 +190,13 @@ export default function Movement7Prep() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <button
-                  onClick={() => setPricingOpen(true)}
+                <a
+                  href={content.heroCta1Url || "#"}
                   className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
                   style={{ backgroundColor: accent }}
                 >
                   {content.heroCta1Text} <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
               </motion.div>
             )}
           </div>
@@ -226,7 +223,7 @@ export default function Movement7Prep() {
                   initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
                 >
-                  <DayRow d={d} i={i} accent={accent} onJoin={() => setPricingOpen(true)} />
+                  <DayRow d={d} i={i} accent={accent} joinUrl={content.heroCta1Url} />
                 </motion.div>
               ))}
             </div>
@@ -245,13 +242,13 @@ export default function Movement7Prep() {
                 initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}
                 className="mt-8 flex justify-center"
               >
-                <button
-                  onClick={() => setPricingOpen(true)}
+                <a
+                  href={content.afterDaysCtaUrl || "#"}
                   className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
                   style={{ backgroundColor: accent }}
                 >
                   {content.afterDaysCtaText} <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
               </motion.div>
             )}
           </div>
@@ -279,13 +276,22 @@ export default function Movement7Prep() {
 
               {/* CTA */}
               {content.ctaText && (
-                <button
-                  onClick={() => setPricingOpen(true)}
-                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
-                  style={{ backgroundColor: accent }}
-                >
-                  {content.ctaText} <ArrowRight className="w-4 h-4" />
-                </button>
+                content.ctaUrl ? (
+                  <a
+                    href={content.ctaUrl}
+                    className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                    style={{ backgroundColor: accent }}
+                  >
+                    {content.ctaText} <ArrowRight className="w-4 h-4" />
+                  </a>
+                ) : (
+                  <button
+                    className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                    style={{ backgroundColor: accent }}
+                  >
+                    {content.ctaText} <ArrowRight className="w-4 h-4" />
+                  </button>
+                )
               )}
             </motion.div>
           </div>
