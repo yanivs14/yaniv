@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: PRICE_IDS[plan], quantity: 1 }],
-      success_url: `${origin}?checkout=success`,
+      success_url: `${origin}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}?checkout=cancelled`,
       metadata: {
         base44_app_id: Deno.env.get("BASE44_APP_ID"),

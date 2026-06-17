@@ -103,6 +103,20 @@ export default function Movement7Prep() {
     });
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("checkout") === "success") {
+      const sessionId = params.get("session_id") || "";
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'purchase_complete',
+        currency: 'USD',
+        transaction_id: sessionId,
+        value: 0,
+      });
+    }
+  }, []);
+
   if (!content) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
