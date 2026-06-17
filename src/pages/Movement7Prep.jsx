@@ -44,17 +44,17 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-      className="relative w-full rounded-2xl overflow-hidden bg-[#111]"
-      style={{ aspectRatio: "16/9" }}
+      className="relative rounded-2xl overflow-hidden bg-[#111]"
+      style={{ display: "inline-block", maxWidth: "100%" }}
     >
       <video
         ref={videoRef}
         src={mediaUrl}
-        className="w-full h-full object-cover"
+        className="block max-w-full"
+        style={{ maxHeight: "80vh" }}
         playsInline
         controls={playing}
         preload="metadata"
-        poster=""
       />
       {!playing && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/40">
