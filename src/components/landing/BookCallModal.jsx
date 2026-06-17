@@ -10,6 +10,8 @@ export default function BookCallModal({ open, onClose }) {
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", dialCode: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [gdprChecked, setGdprChecked] = useState(false);
+  const [gdprError, setGdprError] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -23,6 +25,8 @@ export default function BookCallModal({ open, onClose }) {
     setSchedulingUrl(null);
     setForm({ full_name: "", email: "", phone: "", dialCode: "" });
     setErrors({});
+    setGdprChecked(false);
+    setGdprError(false);
     onClose();
   };
 
@@ -37,6 +41,7 @@ export default function BookCallModal({ open, onClose }) {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (!gdprChecked) { setGdprError(true); return; }
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setLoading(true);
@@ -148,6 +153,22 @@ export default function BookCallModal({ open, onClose }) {
                     </div>
                     {errors.phone && <p className="mt-1 text-xs text-red-400 font-body">{errors.phone}</p>}
                   </div>
+
+                  {/* GDPR Consent */}
+                  <label className="flex items-start gap-2.5 cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={gdprChecked}
+                      onChange={e => { setGdprChecked(e.target.checked); setGdprError(false); }}
+                      className="mt-0.5 flex-shrink-0 accent-orange-red w-4 h-4 cursor-pointer"
+                    />
+                    <span className="font-body text-[11px] text-white-dim leading-relaxed">
+                      I agree to the collection and use of my data in accordance with the{" "}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-orange-red underline underline-offset-2 hover:opacity-80">Privacy Policy</a>.
+                      You may unsubscribe at any time.
+                    </span>
+                  </label>
+                  {gdprError && <p className="-mt-2 mb-2 text-xs text-red-400 font-body">Please accept the privacy policy to continue.</p>}
 
                   {errors.submit && <p className="mb-3 text-sm text-red-400 font-body">{errors.submit}</p>}
 
