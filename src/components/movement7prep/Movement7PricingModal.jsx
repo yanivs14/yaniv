@@ -32,6 +32,8 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
       alert("Checkout is only available from the published app.");
       return;
     }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'begin_checkout', currency: 'USD', plan_type: plan });
     setLoading(plan);
     setError("");
     try {

@@ -255,6 +255,8 @@ export default function Quiz({ onClose }) {
   const [gdpr, setGdpr] = useState(false);
 
   const handleCheckout = async (plan) => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'begin_checkout', currency: 'USD', plan_type: plan });
     setCheckoutLoading(plan);
     await startCheckout(plan);
     setCheckoutLoading(null);
@@ -297,6 +299,8 @@ export default function Quiz({ onClose }) {
         country,
       });
     } catch (_) {}
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'post_quiz_lead_submitted', form_type: 'post_quiz' });
     setEmailLoading(false);
     setPhase("pricing");
   };

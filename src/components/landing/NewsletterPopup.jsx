@@ -73,6 +73,8 @@ export default function NewsletterPopup() {
     setLoading(true);
     try {
       await base44.entities.NewsletterSubscriber.create({ email: email.trim(), source: "popup" });
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'landing_popup_submitted', form_type: 'popup' });
       setSubmitted(true);
       setTimeout(dismiss, 2000);
     } catch {

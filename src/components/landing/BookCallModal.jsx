@@ -46,6 +46,8 @@ export default function BookCallModal({ open, onClose }) {
     const dialCode = COUNTRIES.find(c => c.code === form.dialCode)?.dial || "";
     const countryName = COUNTRIES.find(c => c.code === form.dialCode)?.name || "";
     try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'inner_circle_submitted', form_type: 'inner_circle' });
       const [, slotsRes] = await Promise.all([
         base44.functions.invoke("submitLead", {
           full_name: form.full_name.trim(),
