@@ -5,21 +5,33 @@ import { base44 } from "@/api/base44Client";
 
 const PLANS = [
   {
-    id: "monthly",
-    label: "Monthly",
-    price: "$35",
-    period: "/ month",
-    note: "Cancel anytime",
-    features: ["Full 7-Day program", "All video content", "Community access", "Monthly updates"],
-  },
-  {
     id: "annual",
-    label: "Annual",
+    label: "Begin Annual",
     price: "$250",
     period: "/ year",
-    note: "Save 40% — pay once, train all year",
+    note: "SAVE 40% · Billed Yearly",
     badge: "🔥 BEST VALUE — SAVE 40%",
-    features: ["Full 7-Day program", "All video content", "Community access", "Monthly updates"],
+    features: [
+      "Everything in Monthly, plus:",
+      "Weekly live coaching & feedback",
+      "Exclusive member-only trainings",
+      "Advanced content drops",
+      "Priority access to new releases",
+      "Annual member perks & content",
+    ],
+  },
+  {
+    id: "monthly",
+    label: "Begin Monthly",
+    price: "$35",
+    period: "/ month",
+    note: null,
+    features: [
+      "Personalized adaptive daily practice",
+      "Full Movement training library (240+ sessions)",
+      "Strength, mobility, control & longevity tracks",
+      "Community access + challenges",
+    ],
   },
 ];
 
@@ -101,7 +113,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
                       <span className="font-heading text-4xl font-bold text-[#F5F5F5]">{plan.price}</span>
                       <span className="font-body text-sm text-[#888] mb-1">{plan.period}</span>
                     </div>
-                    <p className="font-body text-xs mb-3" style={{ color: accent }}>{plan.note}</p>
+                    {plan.note && <p className="font-body text-xs mb-3" style={{ color: accent }}>{plan.note}</p>}
                     <ul className="space-y-1.5">
                       {plan.features.map(f => (
                         <li key={f} className="flex items-center gap-2 font-body text-xs text-[#aaa]">
@@ -111,9 +123,8 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
                       ))}
                     </ul>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="font-heading text-sm font-bold uppercase text-[#F5F5F5]">
-                        {plan.label}
-                      </span>
+                      <span className="font-heading text-sm font-bold uppercase text-[#F5F5F5]">{plan.label}</span>
+                      <span className="font-body text-[10px] text-[#555]">Cancel anytime</span>
                       {loading === plan.id ? (
                         <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: accent, borderTopColor: "transparent" }} />
                       ) : (
