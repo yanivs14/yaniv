@@ -35,7 +35,7 @@ export default function ICValueSection({ accent, onApply, valueMedia }) {
   return (
     <>
       {/* ── HERO STATEMENT ── */}
-      <section className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16 border-t border-[#e0ddd8]">
+      <section className="bg-[#f5f4f0] pt-10 pb-10 lg:py-28 px-6 lg:px-16 border-t border-[#e0ddd8]">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.65 }}>
             <p className="text-xs uppercase tracking-[0.2em] mb-6 text-[#888]">The Inner Circle</p>

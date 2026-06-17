@@ -63,7 +63,7 @@ export default function ICFAQSection({ c, accent }) {
 
           {/* Gallery — right side, only if images exist */}
           {gallery.length > 0 && (
-            <div className="lg:sticky lg:top-24">
+            <div>
               <ICGallery images={gallery} />
             </div>
           )}

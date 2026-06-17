@@ -39,30 +39,21 @@ function getTagIcon(tag) {
 }
 
 function BentoCard({ item, accent, index, className = "" }) {
-  const bgColor = "#ffffff";
-  const textColor = "#0a0a0a";
-  const tagColor = "rgba(0,0,0,0.4)";
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
       className={`relative rounded-3xl p-7 flex flex-col justify-between cursor-default group transition-all duration-300 overflow-hidden ${className}`}
-      style={{ backgroundColor: bgColor }}
+      style={{ backgroundColor: "#0a0a0a", border: `1px solid ${accent}33` }}
       whileHover={{ scale: 1.025, transition: { duration: 0.2 } }}>
-      {/* Hover overlay */}
-      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-      style={{ background: `linear-gradient(135deg, ${accent}33 0%, ${accent}11 100%)` }} />
-      <p className="relative font-heading text-xl lg:text-2xl font-bold leading-snug uppercase tracking-tight transition-colors duration-300"
-      style={{ color: textColor }}>
+      <p className="relative font-heading text-3xl lg:text-4xl font-bold leading-tight uppercase tracking-tight text-white">
         {item.label}
       </p>
-      <p className="relative font-heading text-xs font-bold uppercase tracking-widest transition-colors duration-300"
-      style={{ color: tagColor }}>
+      <p className="relative font-heading text-xs font-bold uppercase tracking-widest mt-4"
+        style={{ color: accent }}>
         {item.tag}
       </p>
     </motion.div>);
-
 }
 
 export default function InnerCircle() {
