@@ -74,7 +74,11 @@ export default function InnerCircleSection() {
                   </p>
                 )}
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => {
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({ event: 'book_call_click', location: 'inner_circle_section' });
+                    setModalOpen(true);
+                  }}
                   className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                 >
                   {c.ctaButton || "Apply for Inner Circle"}

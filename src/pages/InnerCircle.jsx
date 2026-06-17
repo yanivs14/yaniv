@@ -79,7 +79,11 @@ export default function InnerCircle() {
           links={c.navbar?.links || []}
           cta={c.navbar?.ctaText || "Apply for Inner Circle"}
           accentColor={P}
-          onCtaClick={() => setModalOpen(true)}
+          onCtaClick={() => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'book_call_click', location: 'ic_navbar' });
+            setModalOpen(true);
+          }}
         />
 
         <main className="flex-1">
@@ -123,7 +127,11 @@ export default function InnerCircle() {
                   className="mt-10 flex flex-col sm:flex-row items-start gap-4">
                   
                   <button
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => {
+                      window.dataLayer = window.dataLayer || [];
+                      window.dataLayer.push({ event: 'book_call_click', location: 'ic_hero' });
+                      setModalOpen(true);
+                    }}
                     style={{ backgroundColor: P }}
                     className="inline-flex items-center gap-2 font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90 bg-[#000000] text-[#000000]">
                     
@@ -160,7 +168,11 @@ export default function InnerCircle() {
           </section>
 
           {/* ── JOURNEY STEPS ── */}
-          <ICJourneySection accent={P} onApply={() => setModalOpen(true)} />
+          <ICJourneySection accent={P} onApply={() => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'book_call_click', location: 'ic_journey' });
+            setModalOpen(true);
+          }} />
 
           {/* ── WHAT IS IT ── */}
           <section id="ic-what" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
@@ -221,7 +233,11 @@ export default function InnerCircle() {
                   </h2>
                 </div>
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => {
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({ event: 'book_call_click', location: 'ic_what_you_get' });
+                    setModalOpen(true);
+                  }}
                   className="flex-shrink-0 inline-flex items-center gap-2 text-[#0a0a0a] font-heading text-lg font-bold hover:opacity-60 transition-opacity pb-2">
                   {c.whatYouGet.ctaText} <ArrowUpRight className="w-5 h-5" />
                 </button>
@@ -267,7 +283,11 @@ export default function InnerCircle() {
           </section>
 
           {/* ── VALUE / INCLUDED / CREDIBILITY ── */}
-          <ICValueSection accent={P} onApply={() => setModalOpen(true)} valueMedia={c.valueSection} />
+          <ICValueSection accent={P} onApply={() => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'book_call_click', location: 'ic_value_section' });
+            setModalOpen(true);
+          }} valueMedia={c.valueSection} />
 
           {/* ── PROCESS ── */}
           <section id="ic-process" className="bg-[#f5f4f0] py-20 lg:py-28 px-6 lg:px-16">
@@ -328,7 +348,11 @@ export default function InnerCircle() {
                 initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex flex-col items-center gap-3">
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => {
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({ event: 'book_call_click', location: 'ic_stop_guessing_cta' });
+                    setModalOpen(true);
+                  }}
                   style={{ backgroundColor: P }}
                   className="inline-flex items-center gap-2 font-body text-sm font-bold px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]">
                   Apply For The Inner Circle <ArrowUpRight className="w-4 h-4" />
@@ -356,7 +380,11 @@ export default function InnerCircle() {
                 <p className="text-sm text-white-muted leading-relaxed">{c.finalCta.body}</p>
                 <div>
                   <button
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => {
+                      window.dataLayer = window.dataLayer || [];
+                      window.dataLayer.push({ event: 'book_call_click', location: 'ic_final_cta' });
+                      setModalOpen(true);
+                    }}
                     style={{ backgroundColor: P }}
                     className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity">
                     
