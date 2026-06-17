@@ -5,6 +5,27 @@ import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import DayRow from "@/components/movement7prep/DayRow";
 
+function useCheckout() {
+  const [loadingPlan, setLoadingPlan] = useState(null);
+
+  const startCheckout = async (plan) => {
+    if (window.self !== window.top) {
+      alert("Checkout is only available from the published app.");
+      return;
+    }
+    setLoadingPlan(plan);
+    try {
+      const res = await base44.functions.invoke("createCheckout", { plan });
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch {
+      alert("Something went wrong. Please try again.");
+    }
+    setLoadingPlan(null);
+  };
+
+  return { loadingPlan, startCheckout };
+}
+
 const PAGE_KEY = "movement7prep";
 
 const DAYS = [
@@ -94,6 +115,7 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
 
 export default function Movement7Prep() {
   const [content, setContent] = useState(null);
+  const { loadingPlan, startCheckout } = useCheckout();
 
   useEffect(() => {
     base44.entities.PrepPageContent.filter({ page_key: PAGE_KEY }).then(records => {
@@ -189,14 +211,26 @@ export default function Movement7Prep() {
             {content.heroCta1Text && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}
+                className="flex flex-col sm:flex-row gap-3 items-center"
               >
-                <a
-                  href={content.heroCta1Url || "#"}
-                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                <button
+                  onClick={() => startCheckout("prep_monthly")}
+                  disabled={loadingPlan === "prep_monthly"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a] disabled:opacity-60"
                   style={{ backgroundColor: accent }}
                 >
-                  {content.heroCta1Text} <ArrowRight className="w-4 h-4" />
-                </a>
+                  {loadingPlan === "prep_monthly" ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" /> : null}
+                  $35/mo <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => startCheckout("prep_annual")}
+                  disabled={loadingPlan === "prep_annual"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full border hover:bg-[#00fff7] hover:text-[#0a0a0a] hover:border-[#00fff7] transition-colors text-[#F5F5F5] disabled:opacity-60"
+                  style={{ borderColor: "#2a2a2a" }}
+                >
+                  {loadingPlan === "prep_annual" ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : null}
+                  $250/yr <ArrowRight className="w-4 h-4" />
+                </button>
               </motion.div>
             )}
           </div>
@@ -240,15 +274,26 @@ export default function Movement7Prep() {
             {content.afterDaysCtaText && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.25 }}
-                className="mt-8 flex justify-center"
+                className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-center"
               >
-                <a
-                  href={content.afterDaysCtaUrl || "#"}
-                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                <button
+                  onClick={() => startCheckout("prep_monthly")}
+                  disabled={loadingPlan === "prep_monthly"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a] disabled:opacity-60"
                   style={{ backgroundColor: accent }}
                 >
-                  {content.afterDaysCtaText} <ArrowRight className="w-4 h-4" />
-                </a>
+                  {loadingPlan === "prep_monthly" ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" /> : null}
+                  $35/mo <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => startCheckout("prep_annual")}
+                  disabled={loadingPlan === "prep_annual"}
+                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full border hover:bg-[#00fff7] hover:text-[#0a0a0a] hover:border-[#00fff7] transition-colors text-[#F5F5F5] disabled:opacity-60"
+                  style={{ borderColor: "#2a2a2a" }}
+                >
+                  {loadingPlan === "prep_annual" ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : null}
+                  $250/yr <ArrowRight className="w-4 h-4" />
+                </button>
               </motion.div>
             )}
           </div>
