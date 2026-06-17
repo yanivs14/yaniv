@@ -144,14 +144,44 @@ export default function Movement7Prep() {
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 w-full justify-center"
             >
-              <div className="flex-1 max-w-xs bg-[#161616] border border-[#2a2a2a] rounded-2xl px-6 py-5 text-left">
-                <p className="text-xs uppercase tracking-widest mb-2 font-body" style={{ color: accent }}>Who it's for</p>
-                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whoFor}</p>
-              </div>
-              <div className="flex-1 max-w-xs bg-[#161616] border border-[#2a2a2a] rounded-2xl px-6 py-5 text-left">
-                <p className="text-xs uppercase tracking-widest mb-2 font-body" style={{ color: accent }}>What you'll gain</p>
-                <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whatGain}</p>
-              </div>
+              {[
+                { label: "Who it's for", value: content.whoFor },
+                { label: "What you'll gain", value: content.whatGain },
+              ].map((card, i) => (
+                <motion.div
+                  key={i}
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="relative flex-1 max-w-xs overflow-hidden rounded-2xl text-left cursor-default group"
+                  style={{
+                    background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)",
+                    border: "1px solid #1e1e1e",
+                  }}
+                >
+                  {/* Glow on hover */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+                    style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }}
+                  />
+                  {/* Top accent line */}
+                  <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
+
+                  <div className="px-6 py-6">
+                    <p className="text-[10px] uppercase tracking-[0.25em] mb-4 font-body font-bold" style={{ color: accent }}>{card.label}</p>
+                    <p className="font-heading text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
+                      {card.value}
+                    </p>
+                  </div>
+
+                  {/* Bottom corner accent */}
+                  <div
+                    className="absolute bottom-3 right-4 font-heading text-[4rem] font-black leading-none select-none pointer-events-none opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500"
+                    style={{ color: accent }}
+                  >
+                    {i === 0 ? "WHO" : "GAIN"}
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
 
             {/* Hero CTA */}
