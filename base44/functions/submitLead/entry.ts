@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
     try {
       const settings = await base44.asServiceRole.entities.LeadSettings.list();
       recipientEmails = settings?.[0]?.recipient_emails || [];
+      console.log('LeadSettings recipients:', JSON.stringify(recipientEmails));
     } catch (e) {
       console.warn('Could not fetch LeadSettings:', e.message);
     }
@@ -104,21 +105,23 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: email,
           subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'תודה שהצטרפת — Kinetiqo',
-          from_name: 'Kinetiqo',
+          from_name: 'The Movement - Roye Gold App',
           body: userEmailBody
         });
+        console.log('User confirmation email sent to:', email);
       } catch (emailErr) {
-        console.warn('User confirmation email failed (non-critical):', emailErr.message);
+        console.error('User confirmation email failed:', emailErr.message);
       }
     }
 
     // Notify admins (non-blocking)
+    console.log('Sending admin notifications to', recipientEmails.length, 'recipients');
     for (const adminEmail of recipientEmails) {
       try {
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: adminEmail,
           subject: isInnerCircle ? `Inner Circle inquiry — ${full_name}` : `ליד חדש — ${full_name}`,
-          from_name: 'Kinetiqo Leads',
+          from_name: 'The Movement - Roye Gold App',
           body: `
 <!DOCTYPE html>
 <html lang="en">
@@ -175,8 +178,9 @@ Deno.serve(async (req) => {
 </body>
 </html>`
         });
+        console.log('Admin notification sent to:', adminEmail);
       } catch (adminEmailErr) {
-        console.warn('Admin notification email failed (non-critical):', adminEmailErr.message);
+        console.error('Admin notification email FAILED for', adminEmail, ':', adminEmailErr.message);
       }
     }
 
