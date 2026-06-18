@@ -271,6 +271,47 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Send to ManyChat when source is seven_day (non-blocking)
+    if (source === 'seven_day' && (phone || email)) {
+      try {
+        const manychatKey = Deno.env.get("MANYCHAT_API_KEY");
+        if (manychatKey) {
+          const nameParts = (full_name || "").trim().split(" ");
+          const payload = {
+            first_name: nameParts[0] || full_name,
+            last_name: nameParts.slice(1).join(" ") || "",
+            phone: phone || undefined,
+            email: email || undefined,
+            has_opt_in_sms: true,
+            has_opt_in_email: !!email,
+            custom_fields: [
+              { field_name: "source", value: "seven_day" },
+              { field_name: "event", value: "seven_day_lead_captured" },
+            ],
+          };
+          // Remove undefined fields
+          Object.keys(payload).forEach(k => payload[k] === undefined && delete payload[k]);
+
+          const mcRes = await fetch("https://api.manychat.com/fb/subscriber/createSubscriber", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${manychatKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+          const mcData = await mcRes.json();
+          if (!mcRes.ok) {
+            console.warn("ManyChat createSubscriber failed:", mcData);
+          } else {
+            console.log("ManyChat subscriber created:", mcData?.data?.id);
+          }
+        }
+      } catch (mcErr) {
+        console.warn("ManyChat sync failed (non-critical):", mcErr.message);
+      }
+    }
+
     return Response.json({ success: true, lead_id: lead.id });
   } catch (error) {
     console.error('submitLead error:', error.message);
