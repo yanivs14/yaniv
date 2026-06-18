@@ -158,6 +158,35 @@ export default function Movement7Prep() {
       <Movement7PricingModal open={pricingOpen} onClose={() => setPricingOpen(false)} accent={accent} />
       <main className="flex-1">
 
+        {/* ── INTRO HEADING + VIDEO (first section) ── */}
+        {(content.introHeading || content.introSubheading || content.introVideoUrl) && (
+          <section className="px-6 pt-14 pb-8 flex flex-col items-center text-center">
+            <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-4">
+              {content.introHeading && (
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+                  className="font-heading text-[clamp(2rem,6vw,4.5rem)] font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.92]"
+                >
+                  {content.introHeading}
+                </motion.h1>
+              )}
+              {content.introSubheading && (
+                <motion.p
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+                  className="font-body text-base sm:text-lg text-[#C8C8C8] leading-relaxed max-w-xl"
+                >
+                  {content.introSubheading}
+                </motion.p>
+              )}
+              {content.introVideoUrl && (
+                <div className="w-full mt-2">
+                  <IntroVideoPlayer url={content.introVideoUrl} accent={accent} />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* ── HERO ── */}
         <section className="px-6 py-14 lg:py-20 flex flex-col items-center text-center">
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-6">
@@ -238,30 +267,6 @@ export default function Movement7Prep() {
         {/* ── THE PROGRAM ── */}
         <section className="px-6 pb-20 lg:pb-28">
           <div className="max-w-3xl mx-auto w-full">
-
-            {/* Intro Section Heading */}
-            {(content.introHeading || content.introSubheading) && (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
-                className="mb-8 text-center"
-              >
-                {content.introHeading && (
-                  <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.95] mb-3">
-                    {content.introHeading}
-                  </h2>
-                )}
-                {content.introSubheading && (
-                  <p className="font-body text-sm sm:text-base leading-relaxed max-w-md mx-auto" style={{ color: "#aaa" }}>
-                    {content.introSubheading}
-                  </p>
-                )}
-              </motion.div>
-            )}
-
-            {/* Intro Video */}
-            {content.introVideoUrl && (
-              <IntroVideoPlayer url={content.introVideoUrl} accent={accent} />
-            )}
 
             <motion.div
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
