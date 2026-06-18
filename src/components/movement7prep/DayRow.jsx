@@ -115,19 +115,17 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
                 style={{ color: accent, transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
               />
             </>
-          ) : (
-            {d.day <= 3
-              ? <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />
-              : <button
-                  ref={btnRef}
-                  onClick={onJoin}
-                  className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
-                  style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
-                >
-                  Join Now
-                </button>
-            }
-          )}
+          ) : d.day <= 3
+            ? <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />
+            : <button
+                ref={btnRef}
+                onClick={onJoin}
+                className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
+                style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
+              >
+                Join Now
+              </button>
+          }
         </div>
       </div>
 
