@@ -36,7 +36,7 @@ function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7" }) {
           muted={!playing}
         />
         {!playing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <div className={`absolute inset-0 flex items-center justify-center ${posterUrl ? "" : "bg-black/30"}`}>
             <button
               onClick={handlePlay}
               className="w-16 h-16 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
