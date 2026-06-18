@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import DayRow from "@/components/movement7prep/DayRow";
@@ -39,59 +39,6 @@ const DEFAULTS = {
   afterDaysCtaUrl: "",
 };
 
-function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
-  const [playing, setPlaying] = useState(false);
-  const videoRef = useRef(null);
-
-  const handlePlay = () => {
-    setPlaying(true);
-    setTimeout(() => videoRef.current?.play(), 50);
-  };
-
-  if (!mediaUrl || mediaType === "none") return null;
-
-  if (mediaType === "image") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-        className="w-full rounded-2xl overflow-hidden"
-        style={{ aspectRatio: "16/9" }}
-      >
-        <img src={mediaUrl} alt="" className="w-full h-full object-cover" />
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-      className="relative rounded-2xl overflow-hidden bg-[#111]"
-      style={{ display: "inline-block", maxWidth: "100%" }}
-    >
-      <video
-        ref={videoRef}
-        src={mediaUrl}
-        className="block max-w-full"
-        style={{ maxHeight: "80vh" }}
-        playsInline
-        controls={playing}
-        preload="metadata"
-      />
-      {!playing && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-          <button
-            onClick={handlePlay}
-            className="w-20 h-20 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-            style={{ backgroundColor: accent }}
-            aria-label="Play video"
-          >
-            <Play className="w-8 h-8 text-[#0a0a0a] ml-1" fill="#0a0a0a" />
-          </button>
-        </div>
-      )}
-    </motion.div>
-  );
-}
 
 export default function Movement7Prep() {
   const [content, setContent] = useState(null);
@@ -203,39 +150,6 @@ export default function Movement7Prep() {
           </div>
         </section>
 
-        {/* ── TODAY: DAY 1 ── */}
-        <section className="px-6 pb-12 lg:pb-16">
-          <div className="max-w-3xl mx-auto w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
-              className="bg-[#161616] border border-[#2a2a2a] rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center gap-5"
-            >
-              <h2 className="font-heading text-4xl sm:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
-                Day 1 — Hang / Spinal Wave
-              </h2>
-              <p className="font-body text-base text-[#888]">{content.todayNote}</p>
-
-              {/* Media */}
-              {content.mediaUrl && content.mediaType !== "none" && (
-                <div className="w-full flex justify-center">
-                  <MediaPlayer mediaUrl={content.mediaUrl} mediaType={content.mediaType} accent={accent} />
-                </div>
-              )}
-
-              {/* CTA */}
-              {content.ctaText && (
-                <button
-                  onClick={() => setPricingOpen(true)}
-                  className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
-                  style={{ backgroundColor: accent }}
-                >
-                  {content.ctaText} <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-            </motion.div>
-          </div>
-        </section>
-
         {/* ── THE PROGRAM ── */}
         <section className="px-6 pb-20 lg:pb-28">
           <div className="max-w-3xl mx-auto w-full">
@@ -257,7 +171,15 @@ export default function Movement7Prep() {
                   initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
                 >
-                  <DayRow d={d} i={i} accent={accent} onJoin={() => setPricingOpen(true)} />
+                  <DayRow
+                    d={d}
+                    i={i}
+                    accent={accent}
+                    onJoin={() => setPricingOpen(true)}
+                    mediaUrl={d.day === 1 ? content.mediaUrl : undefined}
+                    mediaType={d.day === 1 ? content.mediaType : undefined}
+                    todayNote={d.day === 1 ? content.todayNote : undefined}
+                  />
                 </motion.div>
               ))}
             </div>
