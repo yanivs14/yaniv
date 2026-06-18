@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import DayRow from "@/components/movement7prep/DayRow";
@@ -39,6 +39,62 @@ const DEFAULTS = {
   afterDaysCtaUrl: "",
 };
 
+
+function IntroVideoPlayer({ url, accent }) {
+  const [playing, setPlaying] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(null);
+  const videoRef = useRef(null);
+
+  const handleMetadata = () => {
+    const v = videoRef.current;
+    if (v) setIsPortrait(v.videoHeight > v.videoWidth);
+  };
+
+  const handlePlay = () => {
+    setPlaying(true);
+    setTimeout(() => videoRef.current?.play(), 50);
+  };
+
+  const containerClass = isPortrait === true
+    ? "mx-auto w-full max-w-xs"
+    : "w-full";
+
+  const aspectStyle = isPortrait === true
+    ? { aspectRatio: "9/16" }
+    : { aspectRatio: "16/9" };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
+      className="mb-10"
+    >
+      <div className={`relative rounded-2xl overflow-hidden bg-[#111] border border-[#1e3333] ${containerClass}`} style={aspectStyle}>
+        <video
+          ref={videoRef}
+          src={url}
+          onLoadedMetadata={handleMetadata}
+          className="absolute inset-0 w-full h-full object-contain"
+          playsInline
+          controls={playing}
+          preload="metadata"
+          muted={!playing}
+        />
+        {!playing && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <button
+              onClick={handlePlay}
+              className="w-16 h-16 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+              style={{ backgroundColor: accent }}
+              aria-label="Play video"
+            >
+              <Play className="w-6 h-6 ml-1 text-[#0a0a0a]" fill="#0a0a0a" />
+            </button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Movement7Prep() {
   const [content, setContent] = useState(null);
@@ -169,18 +225,7 @@ export default function Movement7Prep() {
 
             {/* Intro Video */}
             {content.introVideoUrl && (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
-                className="mb-10 rounded-2xl overflow-hidden border border-[#1e3333]"
-              >
-                <video
-                  src={content.introVideoUrl}
-                  controls
-                  playsInline
-                  className="w-full"
-                  style={{ maxHeight: "480px", background: "#0a0a0a" }}
-                />
-              </motion.div>
+              <IntroVideoPlayer url={content.introVideoUrl} accent={accent} />
             )}
 
             <motion.div
