@@ -35,7 +35,7 @@ export default function DegradingSection() {
           {/* Right */}
           <div className="lg:pt-12 px-6 lg:px-10">
             {c.listTitle && (
-              <motion.p
+              <motion.h2
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -54,7 +54,7 @@ export default function DegradingSection() {
                     </>
                   );
                 })()}
-              </motion.p>
+              </motion.h2>
             )}
             <ul className="space-y-5 border-t border-dark-border">
               {c.painPoints.filter(point => point?.trim()).map((point, i) => (

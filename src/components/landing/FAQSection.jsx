@@ -38,7 +38,7 @@ export default function FAQSection() {
               onClick={() => setOpen(open === i ? null : i)}
               className="w-full flex items-center justify-between px-6 py-5 text-left">
               
-                <span className="font-body text-sm font-semibold text-off-white pr-4">{item.question}</span>
+                <h3 className="font-body text-sm font-semibold text-off-white pr-4">{item.question}</h3>
                 <span className="flex-shrink-0 w-7 h-7 rounded-full border border-dark-border flex items-center justify-center">
                   {open === i ?
                 <Minus className="w-3.5 h-3.5 text-orange-red" /> :

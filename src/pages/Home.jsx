@@ -23,6 +23,41 @@ export default function Home() {
   const { loading, content } = useSiteContent();
 
   useEffect(() => {
+    // Inject JSON-LD structured data for SEO
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "home-structured-data";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "The Movement by Roye Gold",
+      "url": "https://themovement.royegold.com/",
+      "description": "A guided daily movement practice to rebuild mobility, strength, and longevity.",
+      "publisher": {
+        "@type": "Person",
+        "name": "Roye Gold",
+        "jobTitle": "Movement Coach"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "35",
+        "priceSpecification": [
+          { "@type": "UnitPriceSpecification", "price": "35", "priceCurrency": "USD", "billingDuration": "P1M", "name": "Monthly Plan" },
+          { "@type": "UnitPriceSpecification", "price": "250", "priceCurrency": "USD", "billingDuration": "P1Y", "name": "Annual Plan" }
+        ]
+      }
+    });
+    if (!document.getElementById("home-structured-data")) {
+      document.head.appendChild(script);
+    }
+    return () => {
+      const el = document.getElementById("home-structured-data");
+      if (el) el.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") === "success") {
       const sessionId = params.get("session_id") || "";
