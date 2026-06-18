@@ -271,44 +271,72 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Send to ManyChat when source is seven_day (non-blocking)
-    if (source === 'seven_day' && (phone || email)) {
+    // Sync to ManyChat (all sources with phone or email — non-blocking)
+    if (phone || email) {
       try {
         const manychatKey = Deno.env.get("MANYCHAT_API_KEY");
         if (manychatKey) {
           const nameParts = (full_name || "").trim().split(" ");
-          const payload = {
+          const mcPayload = {
             first_name: nameParts[0] || full_name,
             last_name: nameParts.slice(1).join(" ") || "",
-            phone: phone || undefined,
-            email: email || undefined,
             has_opt_in_sms: true,
             has_opt_in_email: !!email,
             custom_fields: [
-              { field_name: "source", value: "seven_day" },
-              { field_name: "event", value: "seven_day_lead_captured" },
+              { field_name: "source", value: source || "quiz" },
             ],
           };
-          // Remove undefined fields
-          Object.keys(payload).forEach(k => payload[k] === undefined && delete payload[k]);
+          if (phone) mcPayload.phone = phone;
+          if (email) mcPayload.email = email;
 
           const mcRes = await fetch("https://api.manychat.com/fb/subscriber/createSubscriber", {
             method: "POST",
-            headers: {
-              "Authorization": `Bearer ${manychatKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
+            headers: { "Authorization": `Bearer ${manychatKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify(mcPayload),
           });
           const mcData = await mcRes.json();
           if (!mcRes.ok) {
-            console.warn("ManyChat createSubscriber failed:", mcData);
+            console.warn("ManyChat sync failed:", JSON.stringify(mcData));
           } else {
-            console.log("ManyChat subscriber created:", mcData?.data?.id);
+            console.log("ManyChat subscriber synced:", mcData?.data?.id);
           }
         }
       } catch (mcErr) {
-        console.warn("ManyChat sync failed (non-critical):", mcErr.message);
+        console.warn("ManyChat sync error (non-critical):", mcErr.message);
+      }
+    }
+
+    // Sync to Kit.com (all sources with email — non-blocking)
+    if (email) {
+      try {
+        const kitKey = Deno.env.get("KIT_API_KEY");
+        if (kitKey) {
+          const nameParts = (full_name || "").trim().split(" ");
+          const kitPayload = {
+            api_key: kitKey,
+            email,
+            first_name: nameParts[0] || full_name,
+            fields: {
+              last_name: nameParts.slice(1).join(" ") || "",
+              phone: phone || "",
+              source: source || "quiz",
+            },
+          };
+
+          const kitRes = await fetch("https://api.kit.com/v3/subscribers", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(kitPayload),
+          });
+          const kitData = await kitRes.json();
+          if (!kitRes.ok) {
+            console.warn("Kit sync failed:", JSON.stringify(kitData));
+          } else {
+            console.log("Kit subscriber synced:", kitData?.subscriber?.id);
+          }
+        }
+      } catch (kitErr) {
+        console.warn("Kit sync error (non-critical):", kitErr.message);
       }
     }
 
