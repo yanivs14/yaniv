@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
-import { Play, ChevronDown, Lock } from "lucide-react";
+import { Play, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7", dayNumber = 1 }) {
@@ -100,9 +100,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
         </>
       );
     }
-    if (d.day <= 3) {
-      return <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />;
-    }
+
     return (
       <button
         ref={btnRef}
