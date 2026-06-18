@@ -30,12 +30,8 @@ Deno.serve(async (req) => {
       firstname,
       lastname,
       phone: phone || "",
-      leadsource: source || "website",
+      hs_lead_status: "NEW",
     };
-
-    if (quiz_recommendation) {
-      properties.hs_lead_status = quiz_recommendation;
-    }
 
     // Try to create contact
     const createRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
