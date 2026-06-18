@@ -786,6 +786,7 @@ function NewsletterTab() {
             <div key={s.id} className="flex items-center gap-3 border border-[#2a2a2a] rounded-xl bg-[#111] px-4 py-3">
               <Mail className="w-4 h-4 text-orange-red flex-shrink-0" />
               <span className="flex-1 font-body text-sm text-off-white truncate">{s.email}</span>
+              {s.source && <span className="text-xs text-white-dim font-body bg-[#1a1a1a] px-2 py-0.5 rounded-full">{s.source}</span>}
               <span className="text-xs text-white-dim font-body">{new Date(s.created_date).toLocaleDateString("he-IL")}</span>
               <button onClick={() => deleteSubscriber(s.id)} className="text-white-muted hover:text-red-400 transition-colors p-1">
                 <Trash2 className="w-3.5 h-3.5" />
