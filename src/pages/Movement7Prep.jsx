@@ -246,14 +246,9 @@ export default function Movement7Prep() {
                 className="mb-8 text-center"
               >
                 {content.introHeading && (
-                  <>
-                    <div className="inline-block mb-3 px-3 py-1 rounded-full text-[10px] font-body font-bold uppercase tracking-[0.25em]" style={{ backgroundColor: `${accent}18`, color: accent, border: `1px solid ${accent}30` }}>
-                      7-Day Challenge
-                    </div>
-                    <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.95] mb-3">
-                      {content.introHeading}
-                    </h2>
-                  </>
+                  <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.95] mb-3">
+                    {content.introHeading}
+                  </h2>
                 )}
                 {content.introSubheading && (
                   <p className="font-body text-sm sm:text-base leading-relaxed max-w-md mx-auto" style={{ color: "#aaa" }}>
