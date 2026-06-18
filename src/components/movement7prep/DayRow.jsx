@@ -24,18 +24,18 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="relative rounded-xl overflow-hidden bg-[#111] inline-block max-w-xs w-full">
+      <div className="relative rounded-xl overflow-hidden bg-[#111] w-full max-w-xs" style={{ aspectRatio: "9/16" }}>
         <video
           ref={videoRef}
           src={mediaUrl}
-          className="block w-full"
-          style={{ maxHeight: "60vh" }}
+          className="absolute inset-0 w-full h-full object-cover"
           playsInline
           controls={playing}
           preload="auto"
+          muted={!playing}
         />
         {!playing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <button
               onClick={handlePlay}
               className="w-16 h-16 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
