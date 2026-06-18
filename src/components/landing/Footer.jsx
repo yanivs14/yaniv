@@ -2,10 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import SocialLinks from "./SocialLinks";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+
+function GdprCheckbox({ checked, onChange }) {
+  return (
+    <div className="flex items-start gap-2.5 text-left">
+      <div className="relative flex-shrink-0 mt-0.5">
+        <input type="checkbox" id="footer-gdpr" checked={checked} onChange={e => onChange(e.target.checked)} className="sr-only" />
+        <label
+          htmlFor="footer-gdpr"
+          className="flex items-center justify-center w-4 h-4 rounded border cursor-pointer transition-all duration-150"
+          style={{ backgroundColor: checked ? "#00fff7" : "transparent", borderColor: checked ? "#00fff7" : "#444" }}
+        >
+          {checked && <Check className="w-2.5 h-2.5 text-[#0a0a0a]" strokeWidth={3} />}
+        </label>
+      </div>
+      <label htmlFor="footer-gdpr" className="font-body text-[11px] text-white-dim leading-relaxed cursor-pointer">
+        I agree to the processing of my personal data in accordance with the{" "}
+        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-white-muted hover:text-off-white transition-colors" onClick={e => e.stopPropagation()}>
+          Privacy Policy
+        </a>
+        . You may unsubscribe at any time.
+      </label>
+    </div>
+  );
+}
 
 function FooterNewsletter() {
   const [email, setEmail] = useState("");
+  const [gdpr, setGdpr] = useState(false);
+  const [gdprError, setGdprError] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -14,6 +40,10 @@ function FooterNewsletter() {
     e.preventDefault();
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email");
+      return;
+    }
+    if (!gdpr) {
+      setGdprError("Please agree to the Privacy Policy to continue.");
       return;
     }
     setLoading(true);
@@ -53,6 +83,8 @@ function FooterNewsletter() {
         </button>
       </div>
       {error && <p className="text-xs text-red-400 font-body text-center">{error}</p>}
+      <GdprCheckbox checked={gdpr} onChange={v => { setGdpr(v); setGdprError(""); }} />
+      {gdprError && <p className="text-xs text-red-400 font-body">{gdprError}</p>}
     </form>
   );
 }
