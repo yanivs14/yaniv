@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import Navbar from "../components/landing/Navbar";
@@ -23,41 +24,6 @@ export default function Home() {
   const { loading, content } = useSiteContent();
 
   useEffect(() => {
-    // Inject JSON-LD structured data for SEO
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "home-structured-data";
-    script.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "The Movement by Roye Gold",
-      "url": "https://themovement.royegold.com/",
-      "description": "A guided daily movement practice to rebuild mobility, strength, and longevity.",
-      "publisher": {
-        "@type": "Person",
-        "name": "Roye Gold",
-        "jobTitle": "Movement Coach"
-      },
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "USD",
-        "price": "35",
-        "priceSpecification": [
-          { "@type": "UnitPriceSpecification", "price": "35", "priceCurrency": "USD", "billingDuration": "P1M", "name": "Monthly Plan" },
-          { "@type": "UnitPriceSpecification", "price": "250", "priceCurrency": "USD", "billingDuration": "P1Y", "name": "Annual Plan" }
-        ]
-      }
-    });
-    if (!document.getElementById("home-structured-data")) {
-      document.head.appendChild(script);
-    }
-    return () => {
-      const el = document.getElementById("home-structured-data");
-      if (el) el.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") === "success") {
       const sessionId = params.get("session_id") || "";
@@ -80,7 +46,42 @@ export default function Home() {
 
   if (loading || !content) return null;
 
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The Movement by Roye Gold",
+    "url": "https://themovement.royegold.com/",
+    "description": "A guided daily movement practice to rebuild mobility, strength, and longevity.",
+    "publisher": { "@type": "Person", "name": "Roye Gold", "jobTitle": "Movement Coach" },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "priceSpecification": [
+        { "@type": "UnitPriceSpecification", "price": "35", "priceCurrency": "USD", "billingDuration": "P1M", "name": "Monthly Plan" },
+        { "@type": "UnitPriceSpecification", "price": "250", "priceCurrency": "USD", "billingDuration": "P1Y", "name": "Annual Plan" }
+      ]
+    }
+  });
+
   return (
+    <>
+    <Helmet>
+      <title>The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength</title>
+      <meta name="description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed. Join The Movement by Roye Gold." />
+      <meta name="robots" content="index, follow" />
+      <link rel="canonical" href="https://themovement.royegold.com/" />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="The Movement by Roye Gold" />
+      <meta property="og:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
+      <meta property="og:description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed." />
+      <meta property="og:url" content="https://themovement.royegold.com/" />
+      <meta property="og:image" content="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
+      <meta name="twitter:description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed." />
+      <meta name="twitter:image" content="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png" />
+      <script type="application/ld+json">{structuredData}</script>
+    </Helmet>
     <div className="bg-dark-bg min-h-screen">
       <Navbar />
       {/* #program */}
@@ -108,5 +109,6 @@ export default function Home() {
       <BackToTop />
       <NewsletterPopup />
     </div>
+    </>
   );
 }
