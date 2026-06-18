@@ -43,7 +43,7 @@ const DEFAULTS = {
 };
 
 
-function IntroVideoPlayer({ url, accent }) {
+function IntroVideoPlayer({ url, posterUrl, accent }) {
   const [playing, setPlaying] = useState(false);
   const [isPortrait, setIsPortrait] = useState(null);
   const videoRef = useRef(null);
@@ -75,6 +75,7 @@ function IntroVideoPlayer({ url, accent }) {
         <video
           ref={videoRef}
           src={url}
+          poster={posterUrl || undefined}
           onLoadedMetadata={handleMetadata}
           className="absolute inset-0 w-full h-full object-contain"
           playsInline
@@ -181,7 +182,7 @@ export default function Movement7Prep() {
               )}
               {content.introVideoUrl && (
                 <div className="w-full mt-2">
-                  <IntroVideoPlayer url={content.introVideoUrl} accent={accent} />
+                  <IntroVideoPlayer url={content.introVideoUrl} posterUrl={content.introVideoPosterUrl} accent={accent} />
                 </div>
               )}
               {content.introCtaText && (

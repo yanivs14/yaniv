@@ -206,6 +206,27 @@ export default function PrepPageEditor() {
         )}
       </div>
 
+      {/* Intro Video Poster */}
+      {data.introVideoUrl && (
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Intro Video — Poster Image (thumbnail before play)</label>
+          <div className="flex gap-2 mb-2">
+            <input value={data.introVideoPosterUrl || ""} onChange={e => set("introVideoPosterUrl", e.target.value)}
+              placeholder="Paste URL or upload..."
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <UploadButton accept="image/*" label="Upload Poster" onUpload={v => set("introVideoPosterUrl", v)} />
+          </div>
+          {data.introVideoPosterUrl && (
+            <img src={data.introVideoPosterUrl} alt="intro poster" className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" />
+          )}
+          {data.introVideoPosterUrl && (
+            <button onClick={() => set("introVideoPosterUrl", "")} className="text-xs text-red-400 hover:text-red-300 mt-1 transition-colors">
+              Remove poster
+            </button>
+          )}
+        </div>
+      )}
+
       {/* ── TODAY BLOCK ── */}
       <SectionTitle>Today's Block (Day 1 Highlight)</SectionTitle>
       <F label="Today Note" value={data.todayNote} onChange={v => set("todayNote", v)} placeholder="10 minutes. That's the only job today." />
