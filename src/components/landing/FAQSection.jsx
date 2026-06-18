@@ -5,8 +5,9 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 
 export default function FAQSection() {
   const { content } = useSiteContent();
-  const items = content.faq?.items || [];
+  const items = content?.faq?.items || [];
   const [open, setOpen] = useState(null);
+  if (!content) return null;
 
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="faq">

@@ -48,8 +48,9 @@ function TestimonialCard({ t }) {
 
 export default function TestimonialsSection() {
   const { content } = useSiteContent();
-  const c = content.testimonials;
+  const c = content?.testimonials;
   const scrollRef = useRef();
+  if (!content) return null;
 
   const scroll = (dir) => {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });

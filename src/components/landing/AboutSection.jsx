@@ -5,9 +5,10 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 
 export default function AboutSection() {
   const { content } = useSiteContent();
-  const c = content.about || {};
+  const c = content?.about || {};
   const gallery = c.gallery || [];
   const [current, setCurrent] = useState(0);
+  if (!content) return null;
 
   // All images: main imageUrl first, then gallery images (type=image only)
   const images = [
