@@ -357,8 +357,8 @@ export default function Movement7Prep() {
               </div>
               <button
                 onClick={() => setPricingOpen(true)}
-                className="flex-shrink-0 inline-flex items-center gap-2 font-heading text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-full border transition-colors hover:bg-[#00fff7] hover:text-[#0a0a0a] hover:border-[#00fff7] text-[#F5F5F5] whitespace-nowrap"
-                style={{ borderColor: "#2a2a2a" }}
+                className="flex-shrink-0 inline-flex items-center gap-2 font-heading text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-colors hover:opacity-90 text-[#0a0a0a] whitespace-nowrap"
+                style={{ backgroundColor: "#00fff7" }}
               >
                 {content.communityCtaText} <ArrowRight className="w-4 h-4" />
               </button>

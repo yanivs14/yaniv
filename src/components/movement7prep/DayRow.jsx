@@ -129,7 +129,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
       >
         <span
           className="font-heading text-xs font-bold flex-shrink-0 w-10 mr-2"
-          style={{ color: isDay1 ? accent : "#333" }}
+          style={{ color: isDay1 ? accent : "#888" }}
         >
           DAY {d.day}
         </span>
@@ -137,7 +137,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
         <span
           ref={labelRef}
           className="font-heading text-lg sm:text-xl font-bold uppercase tracking-tight flex-1 min-w-0"
-          style={{ color: isDay1 ? "#F5F5F5" : "#666" }}
+          style={{ color: isDay1 ? "#F5F5F5" : "#C8C8C8" }}
         >
           {d.title}
         </span>
