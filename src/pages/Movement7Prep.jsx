@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 
-
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import DayRow from "@/components/movement7prep/DayRow";
 import Movement7PricingModal from "@/components/movement7prep/Movement7PricingModal";
+import AboutSection from "@/components/landing/AboutSection";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import FAQSection from "@/components/landing/FAQSection";
 
 const PAGE_KEY = "movement7prep";
 
@@ -347,6 +349,11 @@ export default function Movement7Prep() {
             )}
           </div>
         </section>
+
+        {/* ── ABOUT / TESTIMONIALS / FAQ ── */}
+        <AboutSection />
+        <TestimonialsSection />
+        <FAQSection />
 
         {/* ── WANT MORE ── */}
         <section className="px-6 pb-24 lg:pb-32">
