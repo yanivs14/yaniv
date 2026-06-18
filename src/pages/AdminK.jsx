@@ -945,12 +945,12 @@ export default function AdminK() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#1e1e1e]">
+      <div className="grid grid-cols-3 border-b border-[#1e1e1e]">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button key={key} onClick={() => setActiveTab(key)}
-            className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs font-body transition-colors ${activeTab === key ? "text-orange-red border-b-2 border-orange-red" : "text-white-muted hover:text-off-white"}`}>
-            <Icon className="w-4 h-4" />
-            {label}
+            className={`flex flex-col items-center gap-1.5 py-3 px-1 text-xs font-body transition-colors border-b-2 ${activeTab === key ? "text-orange-red border-orange-red" : "text-white-muted hover:text-off-white border-transparent"}`}>
+            <Icon className="w-4 h-4 flex-shrink-0" />
+            <span className="leading-tight text-center">{label}</span>
           </button>
         ))}
       </div>
