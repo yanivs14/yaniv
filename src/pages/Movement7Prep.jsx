@@ -161,36 +161,42 @@ export default function Movement7Prep() {
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4 w-full justify-center"
             >
-              {[
-                { label: "Who it's for", value: content.whoFor },
-                { label: "What you'll gain", value: content.whatGain },
-              ].map((card, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ scale: 1.02, y: -3 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
-                  style={{
-                    background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)",
-                    border: "1px solid #1e1e1e",
-                  }}
-                >
-                  {/* Glow on hover */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-                    style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }}
-                  />
-                  {/* Top accent line */}
-                  <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
+              {/* WHO IT'S FOR */}
+              <motion.div
+                whileHover={{ scale: 1.02, y: -3 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
+                style={{ background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)", border: "1px solid #1e1e1e" }}
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }} />
+                <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
+                <div className="px-5 py-5">
+                  <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>Who it's for</p>
+                  <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whoFor}</p>
+                </div>
+              </motion.div>
 
-                  <div className="px-5 py-5">
-                    <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>{card.label}</p>
-                    <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">
-                      {card.value}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+              {/* WHAT YOU'LL GAIN */}
+              <motion.div
+                whileHover={{ scale: 1.02, y: -3 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
+                style={{ background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)", border: "1px solid #1e1e1e" }}
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }} />
+                <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
+                <div className="px-5 py-5">
+                  <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>What you'll gain</p>
+                  <ul className="flex flex-col gap-2">
+                    {content.whatGain.split(/✓|\//).map(item => item.trim()).filter(Boolean).map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 font-body text-sm text-[#C8C8C8]">
+                        <span className="mt-0.5 flex-shrink-0 text-xs font-bold" style={{ color: accent }}>✓</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
             </motion.div>
 
 
