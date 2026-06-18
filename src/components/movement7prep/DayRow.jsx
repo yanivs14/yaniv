@@ -74,6 +74,38 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
     gsap.to(btnRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
   };
 
+  const rightSlot = () => {
+    if (isDay1) {
+      return (
+        <>
+          <span
+            className="text-xs font-body font-bold px-3 py-1 rounded-full whitespace-nowrap"
+            style={{ backgroundColor: accent, color: "#0a0a0a" }}
+          >
+            TODAY
+          </span>
+          <ChevronDown
+            className="w-4 h-4 transition-transform duration-300"
+            style={{ color: accent, transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+          />
+        </>
+      );
+    }
+    if (d.day <= 3) {
+      return <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />;
+    }
+    return (
+      <button
+        ref={btnRef}
+        onClick={onJoin}
+        className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
+        style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
+      >
+        Join Now
+      </button>
+    );
+  };
+
   return (
     <div className={`border-b border-[#1e1e1e] ${isDay1 ? "-mx-4" : "-mx-2"}`}>
       <div
@@ -102,34 +134,10 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
         </span>
 
         <div className="flex-shrink-0 ml-3 flex items-center gap-2">
-          {isDay1 ? (
-            <>
-              <span
-                className="text-xs font-body font-bold px-3 py-1 rounded-full whitespace-nowrap"
-                style={{ backgroundColor: accent, color: "#0a0a0a" }}
-              >
-                TODAY
-              </span>
-              <ChevronDown
-                className="w-4 h-4 transition-transform duration-300"
-                style={{ color: accent, transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
-              />
-            </>
-          ) : d.day <= 3
-            ? <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />
-            : <button
-                ref={btnRef}
-                onClick={onJoin}
-                className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
-                style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
-              >
-                Join Now
-              </button>
-          }
+          {rightSlot()}
         </div>
       </div>
 
-      {/* Expandable Day 1 content */}
       {isDay1 && (
         <AnimatePresence initial={false}>
           {expanded && (
