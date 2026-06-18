@@ -77,7 +77,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -86,7 +86,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25 }}
             onClick={e => e.stopPropagation()}
-            className="relative w-full max-w-md bg-[#111] border border-[#2a2a2a] rounded-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-[#111] border border-[#2a2a2a] rounded-t-2xl sm:rounded-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
           >
             {/* Close */}
             <button
@@ -96,7 +96,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
               <X className="w-4 h-4" />
             </button>
 
-            <div className="p-7">
+            <div className="p-5 sm:p-7">
               <p className="font-body text-[10px] uppercase tracking-[0.25em] mb-1" style={{ color: accent }}>7-Day Movement</p>
               <h2 className="font-heading text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] mb-1">Choose Your Plan</h2>
               <p className="font-body text-sm text-[#888] mb-6">Full access to the 7-Day Movement program and community.</p>
@@ -107,31 +107,31 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
                     key={plan.id}
                     onClick={() => handleSelect(plan.id)}
                     disabled={loading !== null}
-                    className="relative w-full text-left rounded-xl border p-5 transition-all duration-200 hover:border-[#00fff7]/60 group disabled:opacity-60"
+                    className="relative w-full text-left rounded-xl border p-4 sm:p-5 transition-all duration-200 hover:border-[#00fff7]/60 group disabled:opacity-60"
                     style={{ backgroundColor: "#0a0a0a", borderColor: "#2a2a2a" }}
                   >
                     {plan.badge && (
                       <span
-                        className="absolute top-3 right-3 font-heading text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full text-[#0a0a0a]"
+                        className="absolute top-2.5 right-2.5 font-heading text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full text-[#0a0a0a]"
                         style={{ backgroundColor: accent }}
                       >
                         {plan.badge}
                       </span>
                     )}
                     <div className="flex items-end gap-2 mb-1">
-                      <span className="font-heading text-4xl font-bold text-[#F5F5F5]">{plan.price}</span>
+                      <span className="font-heading text-3xl sm:text-4xl font-bold text-[#F5F5F5]">{plan.price}</span>
                       <span className="font-body text-sm text-[#888] mb-1">{plan.period}</span>
                     </div>
                     {plan.note && <p className="font-body text-xs mb-3" style={{ color: accent }}>{plan.note}</p>}
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-1">
                       {plan.features.map(f => (
-                        <li key={f} className="flex items-center gap-2 font-body text-xs text-[#aaa]">
+                        <li key={f} className="flex items-start gap-2 font-body text-[11px] text-[#aaa]">
                           <Check className="w-3 h-3 flex-shrink-0" style={{ color: accent }} />
                           {f}
                         </li>
                       ))}
                     </ul>
-                    <div className="mt-4 flex items-center justify-between">
+                    <div className="mt-3 flex items-center justify-between">
                       <span className="font-heading text-sm font-bold uppercase text-[#F5F5F5]">{plan.label}</span>
                       <span className="font-body text-[10px] text-[#555]">Cancel anytime</span>
                       {loading === plan.id ? (
