@@ -37,6 +37,8 @@ const DEFAULTS = {
   heroCta1Url: "",
   afterDaysCtaText: "START NOW →",
   afterDaysCtaUrl: "",
+  introHeading: "Welcome to the 7 Day Movement Prep",
+  introSubheading: "To help you get started — Start with Day 1 for free",
 };
 
 
@@ -236,6 +238,30 @@ export default function Movement7Prep() {
         {/* ── THE PROGRAM ── */}
         <section className="px-6 pb-20 lg:pb-28">
           <div className="max-w-3xl mx-auto w-full">
+
+            {/* Intro Section Heading */}
+            {(content.introHeading || content.introSubheading) && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
+                className="mb-8 text-center"
+              >
+                {content.introHeading && (
+                  <>
+                    <div className="inline-block mb-3 px-3 py-1 rounded-full text-[10px] font-body font-bold uppercase tracking-[0.25em]" style={{ backgroundColor: `${accent}18`, color: accent, border: `1px solid ${accent}30` }}>
+                      7-Day Challenge
+                    </div>
+                    <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.95] mb-3">
+                      {content.introHeading}
+                    </h2>
+                  </>
+                )}
+                {content.introSubheading && (
+                  <p className="font-body text-sm sm:text-base leading-relaxed max-w-md mx-auto" style={{ color: "#aaa" }}>
+                    {content.introSubheading}
+                  </p>
+                )}
+              </motion.div>
+            )}
 
             {/* Intro Video */}
             {content.introVideoUrl && (
