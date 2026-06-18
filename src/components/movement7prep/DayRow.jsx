@@ -3,13 +3,20 @@ import { gsap } from "gsap";
 import { Play, ChevronDown, Lock } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7" }) {
+function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7", dayNumber = 1 }) {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef(null);
 
   const handlePlay = () => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'challenge_video_played', day_number: dayNumber });
     setPlaying(true);
     setTimeout(() => videoRef.current?.play(), 50);
+  };
+
+  const handleEnded = () => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'challenge_day_completed', day_number: dayNumber });
   };
 
   if (!mediaUrl || mediaType === "none") return null;
@@ -34,6 +41,7 @@ function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7" }) {
           controls={playing}
           preload="auto"
           muted={!playing}
+          onEnded={handleEnded}
         />
         {!playing && (
           <div className={`absolute inset-0 flex items-center justify-center ${posterUrl ? "" : "bg-black/30"}`}>
@@ -153,7 +161,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
                 {todayNote && (
                   <p className="font-body text-sm text-[#888] text-center">{todayNote}</p>
                 )}
-                <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} posterUrl={posterUrl} accent={accent} />
+                <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} posterUrl={posterUrl} accent={accent} dayNumber={d.day} />
               </div>
             </motion.div>
           )}

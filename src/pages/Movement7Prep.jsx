@@ -106,6 +106,18 @@ export default function Movement7Prep() {
     });
   }, []);
 
+  // seven_day_page_viewed — fires on every visit
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'seven_day_page_viewed',
+      page: '7day_prep',
+      utm_source: params.get('utm_source'),
+      utm_medium: params.get('utm_medium'),
+    });
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("checkout") === "success") {
@@ -115,6 +127,8 @@ export default function Movement7Prep() {
           window.dataLayer = window.dataLayer || [];
           window.dataLayer.push({
             event: 'purchase_complete',
+            plan_type: res.data?.plan_type || 'unknown',
+            source: '7day',
             currency: res.data?.currency || 'USD',
             transaction_id: res.data?.transaction_id || sessionId,
             value: res.data?.value || 0,
@@ -122,7 +136,7 @@ export default function Movement7Prep() {
         })
         .catch(() => {
           window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({ event: 'purchase_complete', currency: 'USD', transaction_id: sessionId, value: 0 });
+          window.dataLayer.push({ event: 'purchase_complete', source: '7day', currency: 'USD', transaction_id: sessionId, value: 0 });
         });
     }
   }, []);

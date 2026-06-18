@@ -42,6 +42,8 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
   React.useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'upsell_viewed', day_number: 4, source: '7day' });
       return () => { document.body.style.overflow = ""; };
     }
   }, [open]);
@@ -52,7 +54,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
       return;
     }
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'begin_checkout', currency: 'USD', plan_type: plan });
+    window.dataLayer.push({ event: 'begin_checkout', plan_type: plan, source: '7day', currency: 'USD' });
     setLoading(plan);
     setError("");
     try {
