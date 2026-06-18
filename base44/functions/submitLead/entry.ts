@@ -323,7 +323,7 @@ Deno.serve(async (req) => {
             },
           };
 
-          const kitRes = await fetch("https://api.kit.com/v3/subscribers", {
+          const kitRes = await fetch("https://api.convertkit.com/v3/subscribers", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(kitPayload),

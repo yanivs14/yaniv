@@ -18,7 +18,7 @@ function FooterNewsletter() {
     }
     setLoading(true);
     try {
-      await base44.entities.NewsletterSubscriber.create({ email: email.trim(), source: "footer" });
+      await base44.functions.invoke("subscribeNewsletter", { email: email.trim(), source: "footer" });
       setSubmitted(true);
     } catch {
       setError("Something went wrong. Try again.");
