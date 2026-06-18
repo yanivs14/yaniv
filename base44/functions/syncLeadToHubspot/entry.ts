@@ -5,13 +5,21 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
 
-    const { full_name, email, phone, source, quiz_recommendation } = body;
+    // Support both: called directly (flat payload) OR via entity automation (body.data)
+    const lead = body.data || body;
+
+    const { full_name, email, phone, source, quiz_recommendation } = lead;
 
     if (!email) {
-      return Response.json({ error: 'Email is required' }, { status: 400 });
+      console.log("No email found, skipping HubSpot sync. Lead:", JSON.stringify(lead));
+      return Response.json({ skipped: true, reason: "no email" });
     }
 
     const token = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
+    if (!token) {
+      console.error("HUBSPOT_PRIVATE_APP_TOKEN is not set");
+      return Response.json({ error: "Missing HubSpot token" }, { status: 500 });
+    }
 
     const nameParts = (full_name || "").trim().split(" ");
     const firstname = nameParts[0] || "";
@@ -22,14 +30,14 @@ Deno.serve(async (req) => {
       firstname,
       lastname,
       phone: phone || "",
-      lead_source: source || "website",
+      leadsource: source || "website",
     };
 
     if (quiz_recommendation) {
       properties.hs_lead_status = quiz_recommendation;
     }
 
-    // Try to create contact, if exists update it
+    // Try to create contact
     const createRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
       method: "POST",
       headers: {
