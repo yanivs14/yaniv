@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
     // Support both: called directly (flat payload) OR via entity automation (body.data)
     const lead = body.data || body;
 
-    const { full_name, email, phone, source, quiz_recommendation } = lead;
+    const { full_name, email, phone, source, quiz_section, quiz_recommendation } = lead;
 
     if (!email) {
       console.log("No email found, skipping HubSpot sync. Lead:", JSON.stringify(lead));
@@ -25,13 +25,23 @@ Deno.serve(async (req) => {
     const firstname = nameParts[0] || "";
     const lastname = nameParts.slice(1).join(" ") || "";
 
+    // Build a readable note about the lead's origin
+    const originParts = [];
+    if (source) originParts.push(`Form: ${source}`);
+    if (quiz_section) originParts.push(`Section: ${quiz_section}`);
+    if (quiz_recommendation) originParts.push(`Recommendation: ${quiz_recommendation}`);
+
     const properties = {
       email,
       firstname,
       lastname,
       phone: phone || "",
       hs_lead_status: "NEW",
+      message: originParts.length > 0 ? originParts.join(" | ") : undefined,
     };
+
+    // Remove undefined fields
+    Object.keys(properties).forEach(k => properties[k] === undefined && delete properties[k]);
 
     // Try to create contact
     const createRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
