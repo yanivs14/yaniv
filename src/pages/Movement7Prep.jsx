@@ -144,7 +144,7 @@ export default function Movement7Prep() {
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-6">
             <motion.h1
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }}
-              className="font-heading text-[clamp(3rem,10vw,7rem)] font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.88]"
+              className="font-heading text-[clamp(2rem,6vw,4.5rem)] font-bold uppercase tracking-tight text-[#F5F5F5] leading-[0.92]"
             >
               {content.title}
             </motion.h1>
@@ -167,9 +167,9 @@ export default function Movement7Prep() {
               ].map((card, i) => (
                 <motion.div
                   key={i}
-                  whileHover={{ scale: 1.03, y: -4 }}
+                  whileHover={{ scale: 1.02, y: -3 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="relative flex-1 max-w-xs overflow-hidden rounded-2xl text-left cursor-default group"
+                  className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
                   style={{
                     background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)",
                     border: "1px solid #1e1e1e",
@@ -183,19 +183,11 @@ export default function Movement7Prep() {
                   {/* Top accent line */}
                   <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
 
-                  <div className="px-6 py-6">
-                    <p className="text-[10px] uppercase tracking-[0.25em] mb-4 font-body font-bold" style={{ color: accent }}>{card.label}</p>
-                    <p className="font-heading text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#F5F5F5] leading-tight">
+                  <div className="px-5 py-5">
+                    <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>{card.label}</p>
+                    <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">
                       {card.value}
                     </p>
-                  </div>
-
-                  {/* Bottom corner accent */}
-                  <div
-                    className="absolute bottom-3 right-4 font-heading text-[4rem] font-black leading-none select-none pointer-events-none opacity-0 group-hover:opacity-[0.07] transition-opacity duration-500"
-                    style={{ color: accent }}
-                  >
-                    {i === 0 ? "WHO" : "GAIN"}
                   </div>
                 </motion.div>
               ))}
