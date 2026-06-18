@@ -279,6 +279,12 @@ export default function PrepPageEditor() {
       <F label="CTA Button Text" value={data.ctaText} onChange={v => set("ctaText", v)} placeholder="START DAY 1 →" />
       <F label="CTA Button Link" value={data.ctaUrl} onChange={v => set("ctaUrl", v)} placeholder="https://..." />
 
+      {/* ── NEWSLETTER (Day 2 signup) ── */}
+      <SectionTitle>Newsletter (Day 2 Signup)</SectionTitle>
+      <F label="Heading" value={data.newsletterHeading} onChange={v => set("newsletterHeading", v)} placeholder="Ready for Day 2? Unlock it here." />
+      <F label="Subheading" value={data.newsletterSubheading} onChange={v => set("newsletterSubheading", v)} placeholder="Keep the streak alive." />
+      <F label="Button Text" value={data.newsletterCtaText} onChange={v => set("newsletterCtaText", v)} placeholder="Sign up now" />
+
       {/* ── COMMUNITY SECTION ── */}
       <SectionTitle>Want More / Community Section</SectionTitle>
       <F label="Headline" value={data.communityHeadline} onChange={v => set("communityHeadline", v)} />

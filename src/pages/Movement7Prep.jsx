@@ -42,6 +42,9 @@ const DEFAULTS = {
   introHeading: "Welcome to the 7 Day Movement Prep",
   introSubheading: "To help you get started — Start with Day 1 for free",
   introCtaText: "Join The Movement",
+  newsletterHeading: "Ready for Day 2? Unlock it here.",
+  newsletterSubheading: "Keep the streak alive.",
+  newsletterCtaText: "Sign up now",
 };
 
 
@@ -177,7 +180,7 @@ export default function Movement7Prep() {
               {content.introSubheading && (
                 <motion.p
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-                  className="font-body text-base sm:text-lg text-[#C8C8C8] leading-relaxed max-w-xl"
+                  className="font-body text-base sm:text-lg text-[#C8C8C8] leading-relaxed max-w-xl text-balance"
                 >
                   {content.introSubheading}
                 </motion.p>
@@ -311,6 +314,9 @@ export default function Movement7Prep() {
                     mediaType={d.day === 1 ? content.mediaType : undefined}
                     posterUrl={d.day === 1 ? content.posterUrl : undefined}
                     todayNote={d.day === 1 ? content.todayNote : undefined}
+                    newsletterHeading={content.newsletterHeading}
+                    newsletterSubheading={content.newsletterSubheading}
+                    newsletterCtaText={content.newsletterCtaText}
                   />
                 </motion.div>
               ))}

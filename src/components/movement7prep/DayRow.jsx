@@ -4,7 +4,7 @@ import { Play, ChevronDown, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 
-function Day2Newsletter({ accent }) {
+function Day2Newsletter({ accent, heading, subheading, ctaText }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -32,8 +32,8 @@ function Day2Newsletter({ accent }) {
 
   return (
     <div className="flex flex-col items-center gap-3 w-full max-w-sm">
-      <p className="font-heading text-xl font-bold uppercase tracking-tight text-[#F5F5F5]">Ready for Day 2? Unlock it here.</p>
-      <p className="font-body text-sm text-[#888]">Keep the streak alive. Get Day 2.</p>
+      <p className="font-heading text-xl font-bold uppercase tracking-tight text-[#F5F5F5]">{heading || "Ready for Day 2? Unlock it here."}</p>
+      <p className="font-body text-sm text-[#888]">{subheading || "Keep the streak alive."}</p>
       <form onSubmit={handleSubmit} className="flex gap-2 w-full">
         <input
           type="email"
@@ -51,7 +51,7 @@ function Day2Newsletter({ accent }) {
         >
           {loading
             ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" />
-            : "Sign up now"}
+            : (ctaText || "Sign up now")}
         </button>
       </form>
       {error && <p className="text-xs text-red-400 font-body">{error}</p>}
@@ -116,7 +116,7 @@ function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7", dayNu
   );
 }
 
-export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterUrl, todayNote }) {
+export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterUrl, todayNote, newsletterHeading, newsletterSubheading, newsletterCtaText }) {
   const rowRef = useRef(null);
   const btnRef = useRef(null);
   const labelRef = useRef(null);
@@ -216,7 +216,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
                   <p className="font-body text-sm text-[#888] text-center">{todayNote}</p>
                 )}
                 <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} posterUrl={posterUrl} accent={accent} dayNumber={d.day} />
-                <Day2Newsletter accent={accent} />
+                <Day2Newsletter accent={accent} heading={newsletterHeading} subheading={newsletterSubheading} ctaText={newsletterCtaText} />
               </div>
             </motion.div>
           )}
