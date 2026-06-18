@@ -32,7 +32,7 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
           style={{ maxHeight: "60vh" }}
           playsInline
           controls={playing}
-          preload="metadata"
+          preload="auto"
         />
         {!playing && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
