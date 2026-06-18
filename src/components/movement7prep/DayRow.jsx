@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
-import { Play, ChevronDown } from "lucide-react";
+import { Play, ChevronDown, Lock } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
@@ -56,7 +56,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
   const btnRef = useRef(null);
   const labelRef = useRef(null);
   const isDay1 = d.day === 1;
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(isDay1);
 
   const handleEnter = () => {
     if (isDay1) return;
@@ -116,14 +116,17 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
               />
             </>
           ) : (
-            <button
-              ref={btnRef}
-              onClick={onJoin}
-              className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
-              style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
-            >
-              Join Now
-            </button>
+            {d.day <= 3
+              ? <Lock className="w-4 h-4 flex-shrink-0" style={{ color: "#444" }} />
+              : <button
+                  ref={btnRef}
+                  onClick={onJoin}
+                  className="font-heading text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full whitespace-nowrap"
+                  style={{ backgroundColor: accent, color: "#0a0a0a", opacity: 0 }}
+                >
+                  Join Now
+                </button>
+            }
           )}
         </div>
       </div>
