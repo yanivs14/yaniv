@@ -14,6 +14,8 @@ export default function InnerCircleSection() {
   return (
     <>
       <section className="py-12 lg:py-24 bg-dark-bg" id="inner-circle">
+        {/* Mobile anchor — scrolls to text, not image */}
+        <span id="inner-circle-text" className="block lg:hidden" style={{ position: 'relative', top: '-72px' }} />
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
