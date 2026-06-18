@@ -1,7 +1,63 @@
 import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
-import { Play, ChevronDown } from "lucide-react";
+import { Play, ChevronDown, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { base44 } from "@/api/base44Client";
+
+function Day2Newsletter({ accent }) {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email");
+      return;
+    }
+    setLoading(true);
+    try {
+      await base44.functions.invoke("subscribeNewsletter", { email: email.trim(), source: "7day_prep" });
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Try again.");
+    }
+    setLoading(false);
+  };
+
+  if (submitted) {
+    return <p className="font-body text-sm font-semibold" style={{ color: accent }}>You're in! ✓</p>;
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-3 w-full max-w-sm">
+      <p className="font-heading text-xl font-bold uppercase tracking-tight text-[#F5F5F5]">Ready for Day 2? Unlock it here.</p>
+      <p className="font-body text-sm text-[#888]">Keep the streak alive. Get Day 2.</p>
+      <form onSubmit={handleSubmit} className="flex gap-2 w-full">
+        <input
+          type="email"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setError(""); }}
+          placeholder="your@email.com"
+          className="flex-1 min-w-0 bg-[#111] border border-[#2a2a2a] rounded-full px-4 py-2.5 font-body text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
+          style={{ focusBorderColor: accent }}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-shrink-0 px-5 py-2.5 rounded-full font-heading text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-60 text-[#0a0a0a]"
+          style={{ backgroundColor: accent }}
+        >
+          {loading
+            ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" />
+            : "Sign up now"}
+        </button>
+      </form>
+      {error && <p className="text-xs text-red-400 font-body">{error}</p>}
+    </div>
+  );
+}
 
 function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7", dayNumber = 1 }) {
   const [playing, setPlaying] = useState(false);
@@ -160,6 +216,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
                   <p className="font-body text-sm text-[#888] text-center">{todayNote}</p>
                 )}
                 <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} posterUrl={posterUrl} accent={accent} dayNumber={d.day} />
+                <Day2Newsletter accent={accent} />
               </div>
             </motion.div>
           )}
