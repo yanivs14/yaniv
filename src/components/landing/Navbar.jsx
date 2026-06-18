@@ -57,13 +57,13 @@ export default function Navbar() {
       return;
     }
     let id = href.replace("#", "");
-    // On mobile, scroll to the text anchor for inner-circle (not the image)
+    // On mobile, scroll to the text div for inner-circle (not the image above it)
     if (id === "inner-circle" && window.innerWidth < 768) {
       id = "inner-circle-text";
     }
     const el = document.getElementById(id);
     if (el) {
-      const offset = 72;
+      const offset = id === "inner-circle-text" ? 80 : 72;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: "smooth" });
     }
