@@ -178,6 +178,7 @@ export default function Movement7Prep() {
                     onJoin={() => setPricingOpen(true)}
                     mediaUrl={d.day === 1 ? content.mediaUrl : undefined}
                     mediaType={d.day === 1 ? content.mediaType : undefined}
+                    posterUrl={d.day === 1 ? content.posterUrl : undefined}
                     todayNote={d.day === 1 ? content.todayNote : undefined}
                   />
                 </motion.div>

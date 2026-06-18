@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { Play, ChevronDown, Lock } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
-function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
+function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7" }) {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef(null);
 
@@ -28,6 +28,7 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
         <video
           ref={videoRef}
           src={mediaUrl}
+          poster={posterUrl || undefined}
           className="absolute inset-0 w-full h-full object-cover"
           playsInline
           controls={playing}
@@ -51,7 +52,7 @@ function MediaPlayer({ mediaUrl, mediaType, accent = "#00fff7" }) {
   );
 }
 
-export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNote }) {
+export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterUrl, todayNote }) {
   const rowRef = useRef(null);
   const btnRef = useRef(null);
   const labelRef = useRef(null);
@@ -152,7 +153,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, todayNo
                 {todayNote && (
                   <p className="font-body text-sm text-[#888] text-center">{todayNote}</p>
                 )}
-                <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} accent={accent} />
+                <MediaPlayer mediaUrl={mediaUrl} mediaType={mediaType} posterUrl={posterUrl} accent={accent} />
               </div>
             </motion.div>
           )}
