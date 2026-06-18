@@ -729,6 +729,29 @@ function LeadsTab() {
 }
 
 // ---- NEWSLETTER TAB ----
+function SubscriberRow({ s, onDelete }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  return (
+    <div className="flex items-center gap-3 border border-[#2a2a2a] rounded-xl bg-[#111] px-4 py-3">
+      <Mail className="w-4 h-4 text-orange-red flex-shrink-0" />
+      <span className="flex-1 font-body text-sm text-off-white truncate">{s.email}</span>
+      {s.source && <span className="text-xs text-white-dim font-body bg-[#1a1a1a] px-2 py-0.5 rounded-full">{s.source}</span>}
+      <span className="text-xs text-white-dim font-body">{new Date(s.created_date).toLocaleDateString("he-IL")}</span>
+      {!confirmDelete ? (
+        <button onClick={() => setConfirmDelete(true)} className="text-white-muted hover:text-red-400 transition-colors p-1">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-white-muted">Sure?</span>
+          <button onClick={() => onDelete(s.id)} className="text-xs text-red-400 font-semibold hover:text-red-300 transition-colors">Yes</button>
+          <button onClick={() => setConfirmDelete(false)} className="text-xs text-white-muted hover:text-off-white transition-colors">No</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function NewsletterTab() {
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -783,15 +806,7 @@ function NewsletterTab() {
       ) : (
         <div className="space-y-2">
           {subscribers.map(s => (
-            <div key={s.id} className="flex items-center gap-3 border border-[#2a2a2a] rounded-xl bg-[#111] px-4 py-3">
-              <Mail className="w-4 h-4 text-orange-red flex-shrink-0" />
-              <span className="flex-1 font-body text-sm text-off-white truncate">{s.email}</span>
-              {s.source && <span className="text-xs text-white-dim font-body bg-[#1a1a1a] px-2 py-0.5 rounded-full">{s.source}</span>}
-              <span className="text-xs text-white-dim font-body">{new Date(s.created_date).toLocaleDateString("he-IL")}</span>
-              <button onClick={() => deleteSubscriber(s.id)} className="text-white-muted hover:text-red-400 transition-colors p-1">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <SubscriberRow key={s.id} s={s} onDelete={deleteSubscriber} />
           ))}
         </div>
       )}
