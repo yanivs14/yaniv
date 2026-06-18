@@ -110,34 +110,47 @@ export default function Movement7Prep() {
             >
               {/* WHO IT'S FOR */}
               <motion.div
-                whileHover={{ scale: 1.02, y: -3 }}
+                whileHover={{ scale: 1.02, y: -2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
-                style={{ background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)", border: "1px solid #1e1e1e" }}
+                style={{ background: "linear-gradient(145deg, #0d1a1a 0%, #111 100%)", border: "1px solid #1e3333" }}
               >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }} />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}18` }} />
                 <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
-                <div className="px-5 py-5">
-                  <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>Who it's for</p>
-                  <p className="font-body text-sm text-[#C8C8C8] leading-relaxed">{content.whoFor}</p>
+                <div className="px-6 py-6">
+                  <p className="text-[10px] uppercase tracking-[0.25em] mb-4 font-body font-bold" style={{ color: accent }}>Who it's for</p>
+                  <ul className="flex flex-col gap-2.5">
+                    {content.whoFor.split(/[✓,]/).map(item => item.trim()).filter(Boolean).map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 font-body text-sm text-[#C8C8C8]">
+                        <svg className="w-4 h-4 flex-shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
+                          <circle cx="8" cy="8" r="7.5" stroke={accent} strokeOpacity="0.3" />
+                          <path d="M4.5 8l2.5 2.5L11.5 5.5" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </motion.div>
 
               {/* WHAT YOU'LL GAIN */}
               <motion.div
-                whileHover={{ scale: 1.02, y: -3 }}
+                whileHover={{ scale: 1.02, y: -2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="relative flex-1 overflow-hidden rounded-2xl text-left cursor-default group"
-                style={{ background: "linear-gradient(135deg, #161616 0%, #0f1f1f 100%)", border: "1px solid #1e1e1e" }}
+                style={{ background: "linear-gradient(145deg, #0d1a1a 0%, #111 100%)", border: "1px solid #1e3333" }}
               >
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}22` }} />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ boxShadow: `inset 0 0 40px 0 ${accent}18` }} />
                 <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
-                <div className="px-5 py-5">
-                  <p className="text-[10px] uppercase tracking-[0.25em] mb-3 font-body font-bold" style={{ color: accent }}>What you'll gain</p>
-                  <ul className="flex flex-col gap-2">
-                    {content.whatGain.split(/✓|\//).map(item => item.trim()).filter(Boolean).map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 font-body text-sm text-[#C8C8C8]">
-                        <span className="mt-0.5 flex-shrink-0 text-xs font-bold" style={{ color: accent }}>✓</span>
+                <div className="px-6 py-6">
+                  <p className="text-[10px] uppercase tracking-[0.25em] mb-4 font-body font-bold" style={{ color: accent }}>What you'll gain</p>
+                  <ul className="flex flex-col gap-2.5">
+                    {content.whatGain.split(/[✓,]/).map(item => item.trim()).filter(Boolean).map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 font-body text-sm text-[#C8C8C8]">
+                        <svg className="w-4 h-4 flex-shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
+                          <circle cx="8" cy="8" r="7.5" stroke={accent} strokeOpacity="0.3" />
+                          <path d="M4.5 8l2.5 2.5L11.5 5.5" stroke={accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -153,6 +166,22 @@ export default function Movement7Prep() {
         {/* ── THE PROGRAM ── */}
         <section className="px-6 pb-20 lg:pb-28">
           <div className="max-w-3xl mx-auto w-full">
+
+            {/* Intro Video */}
+            {content.introVideoUrl && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}
+                className="mb-10 rounded-2xl overflow-hidden border border-[#1e3333]"
+              >
+                <video
+                  src={content.introVideoUrl}
+                  controls
+                  playsInline
+                  className="w-full"
+                  style={{ maxHeight: "480px", background: "#0a0a0a" }}
+                />
+              </motion.div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}

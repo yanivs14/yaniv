@@ -34,6 +34,7 @@ const DEFAULTS = {
   heroCta1Url: "",
   afterDaysCtaText: "START NOW →",
   afterDaysCtaUrl: "",
+  introVideoUrl: "",
 };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -173,6 +174,25 @@ export default function PrepPageEditor() {
       <SectionTitle>CTA After 7 Days List</SectionTitle>
       <F label="Button Text" value={data.afterDaysCtaText} onChange={v => set("afterDaysCtaText", v)} placeholder="START NOW →" />
       <F label="Button Link" value={data.afterDaysCtaUrl} onChange={v => set("afterDaysCtaUrl", v)} placeholder="https://..." />
+
+      {/* ── INTRO VIDEO ── */}
+      <SectionTitle>Intro Video (above "The Program")</SectionTitle>
+      <div className="mb-4">
+        <div className="flex gap-2 mb-2">
+          <input value={data.introVideoUrl || ""} onChange={e => set("introVideoUrl", e.target.value)}
+            placeholder="Paste URL or upload..."
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <UploadButton accept="video/*" label="Upload Video" onUpload={v => set("introVideoUrl", v)} />
+        </div>
+        {data.introVideoUrl && (
+          <video src={data.introVideoUrl} className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" muted playsInline />
+        )}
+        {data.introVideoUrl && (
+          <button onClick={() => set("introVideoUrl", "")} className="text-xs text-red-400 hover:text-red-300 mt-1 transition-colors">
+            Remove video
+          </button>
+        )}
+      </div>
 
       {/* ── TODAY BLOCK ── */}
       <SectionTitle>Today's Block (Day 1 Highlight)</SectionTitle>
