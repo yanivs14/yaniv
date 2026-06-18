@@ -39,6 +39,7 @@ const DEFAULTS = {
   afterDaysCtaUrl: "",
   introHeading: "Welcome to the 7 Day Movement Prep",
   introSubheading: "To help you get started — Start with Day 1 for free",
+  introCtaText: "Join The Movement",
 };
 
 
@@ -182,6 +183,19 @@ export default function Movement7Prep() {
                 <div className="w-full mt-2">
                   <IntroVideoPlayer url={content.introVideoUrl} accent={accent} />
                 </div>
+              )}
+              {content.introCtaText && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <button
+                    onClick={() => setPricingOpen(true)}
+                    className="inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
+                    style={{ backgroundColor: accent }}
+                  >
+                    {content.introCtaText} <ArrowRight className="w-4 h-4" />
+                  </button>
+                </motion.div>
               )}
             </div>
           </section>
@@ -341,15 +355,13 @@ export default function Movement7Prep() {
                   {content.communityBody}
                 </p>
               </div>
-              <a
-                href={content.communityCtaUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setPricingOpen(true)}
                 className="flex-shrink-0 inline-flex items-center gap-2 font-heading text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-full border transition-colors hover:bg-[#00fff7] hover:text-[#0a0a0a] hover:border-[#00fff7] text-[#F5F5F5] whitespace-nowrap"
                 style={{ borderColor: "#2a2a2a" }}
               >
                 {content.communityCtaText} <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
             </motion.div>
           </div>
         </section>

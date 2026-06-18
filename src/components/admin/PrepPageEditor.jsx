@@ -37,6 +37,7 @@ const DEFAULTS = {
   introVideoUrl: "",
   introHeading: "Welcome to the 7 Day Movement Prep",
   introSubheading: "To help you get started — Start with Day 1 for free",
+  introCtaText: "Join The Movement",
 };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -181,6 +182,10 @@ export default function PrepPageEditor() {
       <SectionTitle>Intro Heading (above video)</SectionTitle>
       <F label="Heading" value={data.introHeading} onChange={v => set("introHeading", v)} placeholder="Welcome to the 7 Day Movement Prep" />
       <F label="Subheading" value={data.introSubheading} onChange={v => set("introSubheading", v)} placeholder="To help you get started — Start with Day 1 for free" />
+
+      {/* ── INTRO CTA ── */}
+      <SectionTitle>Intro CTA Button (below video)</SectionTitle>
+      <F label="Button Text" value={data.introCtaText} onChange={v => set("introCtaText", v)} placeholder="Join The Movement" />
 
       {/* ── INTRO VIDEO ── */}
       <SectionTitle>Intro Video (above "The Program")</SectionTitle>
