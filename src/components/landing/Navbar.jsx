@@ -51,18 +51,19 @@ export default function Navbar() {
     e.preventDefault();
     setOpen(false);
     if (!href || href === "#") return;
-    // "program" section links to top of page (hero)
-    if (href === "#program") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-    const id = href.replace("#", "");
-    const el = document.getElementById(id);
-    if (el) {
-      const offset = 72;
-      const top = el.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
+    setTimeout(() => {
+      if (href === "#program") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      const id = href.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        const offset = 72;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 300);
   };
 
   return (
