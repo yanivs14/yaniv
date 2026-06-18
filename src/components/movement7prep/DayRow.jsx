@@ -1,11 +1,37 @@
 import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
-import { Play, ChevronDown, ArrowRight } from "lucide-react";
+import { Play, ChevronDown, ArrowRight, Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 
+function GdprCheckbox({ id, checked, onChange }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="relative flex-shrink-0 mt-0.5">
+        <input type="checkbox" id={id} checked={checked} onChange={e => onChange(e.target.checked)} className="sr-only" />
+        <label
+          htmlFor={id}
+          className="flex items-center justify-center w-4 h-4 rounded border cursor-pointer transition-all duration-150"
+          style={{ backgroundColor: checked ? "#00fff7" : "transparent", borderColor: checked ? "#00fff7" : "#444" }}
+        >
+          {checked && <Check className="w-2.5 h-2.5 text-[#0a0a0a]" strokeWidth={3} />}
+        </label>
+      </div>
+      <label htmlFor={id} className="font-body text-[11px] text-[#aaa] leading-relaxed cursor-pointer">
+        I agree to the processing of my personal data in accordance with the{" "}
+        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-[#ccc] hover:text-white transition-colors" onClick={e => e.stopPropagation()}>
+          Privacy Policy
+        </a>
+        . You may unsubscribe at any time.
+      </label>
+    </div>
+  );
+}
+
 function Day2Newsletter({ accent, heading, subheading, ctaText }) {
   const [email, setEmail] = useState("");
+  const [gdpr, setGdpr] = useState(false);
+  const [gdprError, setGdprError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -14,6 +40,10 @@ function Day2Newsletter({ accent, heading, subheading, ctaText }) {
     e.preventDefault();
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email");
+      return;
+    }
+    if (!gdpr) {
+      setGdprError("Please agree to the Privacy Policy to continue.");
       return;
     }
     setLoading(true);
@@ -34,27 +64,30 @@ function Day2Newsletter({ accent, heading, subheading, ctaText }) {
     <div className="flex flex-col items-center gap-3 w-full max-w-sm">
       <p className="font-heading text-xl font-bold uppercase tracking-tight text-[#F5F5F5]">{heading || "Ready for Day 2? Unlock it here."}</p>
       <p className="font-body text-sm text-[#888]">{subheading || "Keep the streak alive."}</p>
-      <form onSubmit={handleSubmit} className="flex gap-2 w-full">
-        <input
-          type="email"
-          value={email}
-          onChange={e => { setEmail(e.target.value); setError(""); }}
-          placeholder="your@email.com"
-          className="flex-1 min-w-0 bg-[#111] border border-[#2a2a2a] rounded-full px-4 py-2.5 font-body text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
-          style={{ focusBorderColor: accent }}
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex-shrink-0 px-5 py-2.5 rounded-full font-heading text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-60 text-[#0a0a0a]"
-          style={{ backgroundColor: accent }}
-        >
-          {loading
-            ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" />
-            : (ctaText || "Sign up now")}
-        </button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full">
+        <div className="flex gap-2 w-full">
+          <input
+            type="email"
+            value={email}
+            onChange={e => { setEmail(e.target.value); setError(""); }}
+            placeholder="your@email.com"
+            className="flex-1 min-w-0 bg-[#111] border border-[#2a2a2a] rounded-full px-4 py-2.5 font-body text-sm text-[#F5F5F5] placeholder-[#555] focus:outline-none transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-shrink-0 px-5 py-2.5 rounded-full font-heading text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-60 text-[#0a0a0a]"
+            style={{ backgroundColor: accent }}
+          >
+            {loading
+              ? <div className="w-4 h-4 border-2 border-[#0a0a0a] border-t-transparent rounded-full animate-spin" />
+              : (ctaText || "Sign up now")}
+          </button>
+        </div>
+        {error && <p className="text-xs text-red-400 font-body">{error}</p>}
+        <GdprCheckbox id="day2-gdpr" checked={gdpr} onChange={v => { setGdpr(v); setGdprError(""); }} />
+        {gdprError && <p className="text-xs text-red-400 font-body">{gdprError}</p>}
       </form>
-      {error && <p className="text-xs text-red-400 font-body">{error}</p>}
     </div>
   );
 }
