@@ -484,12 +484,13 @@ const STATUS_LABELS = { new: "New", contacted: "Contacted", converted: "Converte
 const STATUS_COLORS = { new: "bg-orange-red/20 text-orange-red", contacted: "bg-blue-500/20 text-blue-400", converted: "bg-green-500/20 text-green-400" };
 
 function formatIsraelTime(dateStr) {
-  return new Date(dateStr).toLocaleString("en-GB", {
+  const d = new Date(dateStr);
+  return d.toLocaleString("en-GB", {
     timeZone: "Asia/Jerusalem",
     day: "2-digit", month: "2-digit", year: "numeric",
     hour: "2-digit", minute: "2-digit",
     hour12: false
-  });
+  }).replace(",", "") + " (GMT+3)";
 }
 
 function exportLeadsToExcel(leads) {
@@ -541,6 +542,27 @@ const QUIZ_QUESTION_LABELS = {
   experience: "What's your current movement experience?",
 };
 
+function CopyField({ value, icon: Icon, accent }) {
+  const [copied, setCopied] = useState(false);
+  if (!value) return <span className="flex items-center gap-1 text-xs text-white-muted"><Icon className="w-3 h-3" />—</span>;
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+  return (
+    <button onClick={handleCopy} className="flex items-center gap-1 text-xs text-white-muted hover:text-off-white transition-colors text-left">
+      <Icon className="w-3 h-3 flex-shrink-0" />
+      <span className="break-all">{value}</span>
+      {copied
+        ? <span className="ml-1 text-[10px] text-orange-red font-semibold">✓</span>
+        : <span className="ml-1 text-[10px] text-white-dim opacity-0 group-hover:opacity-100">copy</span>
+      }
+    </button>
+  );
+}
+
 function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
   const [showNotes, setShowNotes] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -564,9 +586,9 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <p className="font-body text-sm font-semibold text-off-white">{lead.full_name}</p>
-            <div className="flex flex-wrap gap-3 mt-1">
-              <span className="flex items-center gap-1 text-xs text-white-muted"><Phone className="w-3 h-3" />{lead.phone || "—"}</span>
-              {lead.email && <span className="flex items-center gap-1 text-xs text-white-muted"><Mail className="w-3 h-3" />{lead.email}</span>}
+            <div className="flex flex-col gap-1 mt-1">
+              <CopyField value={lead.phone} icon={Phone} />
+              {lead.email && <CopyField value={lead.email} icon={Mail} />}
             </div>
 
             {/* Source + section */}
@@ -712,7 +734,7 @@ function LeadsTab() {
           <p className="text-white-muted font-body text-sm">No leads yet</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
           {leads.map(l => (
             <LeadCard
               key={l.id}
