@@ -554,7 +554,7 @@ function CopyField({ value, icon: Icon, accent }) {
   return (
     <button onClick={handleCopy} className="flex items-center gap-1 text-xs text-white-muted hover:text-off-white transition-colors text-left">
       <Icon className="w-3 h-3 flex-shrink-0" />
-      <span className="break-all">{value}</span>
+      <span className="truncate max-w-[180px] sm:max-w-none">{value}</span>
       {copied
         ? <span className="ml-1 text-[10px] text-orange-red font-semibold">✓</span>
         : <span className="ml-1 text-[10px] text-white-dim opacity-0 group-hover:opacity-100">copy</span>
@@ -734,7 +734,7 @@ function LeadsTab() {
           <p className="text-white-muted font-body text-sm">No leads yet</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+        <div className="space-y-3">
           {leads.map(l => (
             <LeadCard
               key={l.id}
