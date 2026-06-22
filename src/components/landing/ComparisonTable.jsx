@@ -22,7 +22,7 @@ export default function ComparisonTable() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mb-6"
+        className="mb-3"
       >
         <h3 className="font-heading text-5xl sm:text-6xl font-bold uppercase tracking-tight text-off-white leading-[0.95]">
           Built <span style={{ color: accent }}>different.</span>
