@@ -131,7 +131,6 @@ function AnnualCard({ c, mobile = false }) {
 
 export default function PricingSection() {
   const { content } = useSiteContent();
-  const c = content.pricing;
   const scrollRef = useRef();
   const [activeTab, setActiveTab] = useState("annual");
 
@@ -157,6 +156,9 @@ export default function PricingSection() {
     const cardWidth = el.offsetWidth * 0.82;
     el.scrollTo({ left: idx * (cardWidth + 16), behavior: "smooth" });
   };
+
+  if (!content) return null;
+  const c = content.pricing;
 
   return (
     <section className="py-12 lg:py-24 bg-dark-surface" id="pricing">
