@@ -83,8 +83,8 @@ function AnnualCard({ c, mobile = false }) {
       <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
         Best value
       </div>
+      <p className="font-heading text-lg font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full mt-8 self-end">{c.annualInsteadOf}</p>
       <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-      <p className="font-body text-xs text-dark-bg mb-1">{c.annualInsteadOf}</p>
       <div className="flex items-baseline gap-1.5 my-3">
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualMonthlyPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ month</span>
