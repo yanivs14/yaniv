@@ -13,21 +13,19 @@ export default function FAQSection() {
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="faq">
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-6">
-          
-          <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            Any <span className="text-orange-red">questions?</span>
-          </h2>
-        </motion.div>
-
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* FAQ items */}
           <div className="space-y-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mb-3">
+              <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+                Any <span className="text-orange-red">questions?</span>
+              </h2>
+            </motion.div>
             {items.map((item, i) =>
             <motion.div
               key={i}
