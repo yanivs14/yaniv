@@ -3,6 +3,7 @@ import Stripe from "npm:stripe@14";
 const PRICE_IDS = {
   monthly: "price_1TSPB74T8Uo6bhpdgcMdQoKk",
   annual: "price_1TSPB74T8Uo6bhpduFNzRk8o",
+  promo: "price_1Th6Ap4T8Uo6bhpdZQd9Idsx",
 };
 
 Deno.serve(async (req) => {
@@ -10,7 +11,7 @@ Deno.serve(async (req) => {
     const { plan } = await req.json();
 
     if (!plan || !PRICE_IDS[plan]) {
-      return Response.json({ error: "Invalid plan. Use 'monthly' or 'annual'." }, { status: 400 });
+      return Response.json({ error: "Invalid plan. Use 'monthly', 'annual', or 'promo'." }, { status: 400 });
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));

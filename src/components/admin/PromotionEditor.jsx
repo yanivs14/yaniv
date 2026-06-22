@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Upload, Save } from "lucide-react";
+import { Upload, Save, Plus, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const PAGE_KEY = "promotion";
@@ -13,6 +13,22 @@ const DEFAULTS = {
   videoPosterUrl: "",
   ctaText: "START NOW →",
   ctaUrl: "",
+  pricingEyebrow: "Membership",
+  pricingTitle: "Join The Movement",
+  pricingSubtitle: "Monthly — Cancel Anytime",
+  pricingPlanName: "Monthly",
+  pricingPrice: "$25",
+  pricingPeriod: "/ month",
+  pricingBadge: "Limited Time Offer",
+  pricingPriceNote: "First 3 months only — then $35/mo",
+  pricingCta: "Begin Monthly",
+  pricingFooter: "Cancel anytime · No equipment needed",
+  pricingFeatures: [
+    "Personalized adaptive daily practice",
+    "Full Movement training library (240+ sessions)",
+    "Strength, mobility, control & longevity tracks",
+    "Community access + challenges",
+  ],
 };
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -160,9 +176,33 @@ export default function PromotionEditor() {
       <F label="CTA Button Text" value={data.ctaText} onChange={v => set("ctaText", v)} placeholder="START NOW →" />
       <F label="CTA Button Link (optional — leave empty to scroll to pricing)" value={data.ctaUrl} onChange={v => set("ctaUrl", v)} placeholder="https://..." />
 
-      {/* Pricing note */}
-      <SectionTitle>Pricing Section</SectionTitle>
-      <p className="text-xs text-white-dim font-body">The pricing section is managed from the Content tab → Pricing section. It appears automatically at the bottom of this page.</p>
+      {/* ── PRICING SECTION ── */}
+      <SectionTitle>Pricing Section ($25/mo Single Plan)</SectionTitle>
+      <F label="Eyebrow" value={data.pricingEyebrow} onChange={v => set("pricingEyebrow", v)} placeholder="Membership" />
+      <F label="Title" value={data.pricingTitle} onChange={v => set("pricingTitle", v)} placeholder="Join The Movement" />
+      <F label="Subtitle" value={data.pricingSubtitle} onChange={v => set("pricingSubtitle", v)} placeholder="Monthly — Cancel Anytime" />
+      <F label="Plan Name" value={data.pricingPlanName} onChange={v => set("pricingPlanName", v)} placeholder="Monthly" />
+      <F label="Price (large)" value={data.pricingPrice} onChange={v => set("pricingPrice", v)} placeholder="$25" />
+      <F label="Period (after price)" value={data.pricingPeriod} onChange={v => set("pricingPeriod", v)} placeholder="/ month" />
+      <F label="Badge (top of card)" value={data.pricingBadge} onChange={v => set("pricingBadge", v)} placeholder="Limited Time Offer" />
+      <F label="Price Note (under price)" value={data.pricingPriceNote} onChange={v => set("pricingPriceNote", v)} placeholder="First 3 months only — then $35/mo" />
+      <F label="CTA Button Text" value={data.pricingCta} onChange={v => set("pricingCta", v)} placeholder="Begin Monthly" />
+      <F label="Footer Text" value={data.pricingFooter} onChange={v => set("pricingFooter", v)} placeholder="Cancel anytime · No equipment needed" />
+      <p className="text-xs text-white-muted font-body mb-2 mt-2">Pricing Features</p>
+      {(data.pricingFeatures || []).map((feat, i) => (
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={feat} onChange={e => { const arr = [...(data.pricingFeatures || [])]; arr[i] = e.target.value; set("pricingFeatures", arr); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => set("pricingFeatures", (data.pricingFeatures || []).filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => set("pricingFeatures", [...(data.pricingFeatures || []), ""])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors">
+        <Plus className="w-4 h-4" /> Add feature
+      </button>
 
       {/* Bottom Save */}
       <div className="mt-8 pt-6 border-t border-[#1e1e1e]">

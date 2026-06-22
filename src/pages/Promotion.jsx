@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Clock } from "lucide-react";
+import { ArrowRight, Play, Clock, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
-import PricingSection from "@/components/landing/PricingSection";
+import PromoNavbar from "@/components/promotion/PromoNavbar";
+import PromotionPricing from "@/components/promotion/PromotionPricing";
 
 const PAGE_KEY = "promotion";
 
@@ -16,6 +17,22 @@ const DEFAULTS = {
   videoPosterUrl: "",
   ctaText: "START NOW →",
   ctaUrl: "",
+  pricingEyebrow: "Membership",
+  pricingTitle: "Join The Movement",
+  pricingSubtitle: "Monthly — Cancel Anytime",
+  pricingPlanName: "Monthly",
+  pricingPrice: "$25",
+  pricingPeriod: "/ month",
+  pricingBadge: "Limited Time Offer",
+  pricingPriceNote: "First 3 months only — then $35/mo",
+  pricingCta: "Begin Monthly",
+  pricingFooter: "Cancel anytime · No equipment needed",
+  pricingFeatures: [
+    "Personalized adaptive daily practice",
+    "Full Movement training library (240+ sessions)",
+    "Strength, mobility, control & longevity tracks",
+    "Community access + challenges",
+  ],
 };
 
 function VideoPlayer({ url, posterUrl, accent }) {
@@ -109,7 +126,8 @@ export default function Promotion() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-body">
-      <main className="flex-1">
+      <PromoNavbar />
+      <main className="flex-1 pt-16">
         {/* Hero */}
         <section className="px-6 pt-16 pb-10 flex flex-col items-center text-center">
           <div className="max-w-3xl mx-auto w-full flex flex-col items-center gap-5">
@@ -148,29 +166,43 @@ export default function Promotion() {
             className="max-w-2xl mx-auto"
           >
             <div
-              className="relative rounded-2xl p-6 sm:p-8 text-center border"
-              style={{ borderColor: `${accent}40`, background: "linear-gradient(145deg, #0d1a1a 0%, #111 100%)" }}
+              className="relative rounded-3xl p-8 sm:p-12 text-center overflow-hidden"
+              style={{
+                background: "linear-gradient(145deg, #0a1515 0%, #0c0c0c 100%)",
+                border: "1px solid rgba(0, 255, 247, 0.18)",
+                boxShadow: "0 0 60px -20px rgba(0, 255, 247, 0.25)",
+              }}
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Clock className="w-5 h-5" style={{ color: accent }} />
-                <p className="text-xs uppercase tracking-[0.25em] font-body font-bold" style={{ color: accent }}>
-                  Limited Time Offer
+              {/* Glow accents */}
+              <div className="absolute -top-20 -left-20 w-60 h-60 rounded-full pointer-events-none" style={{ background: `radial-gradient(circle, ${accent}12 0%, transparent 70%)` }} />
+              <div className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full pointer-events-none" style={{ background: `radial-gradient(circle, ${accent}08 0%, transparent 70%)` }} />
+
+              <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full" style={{ background: `${accent}12`, border: `1px solid ${accent}30` }}>
+                  <Clock className="w-4 h-4 animate-pulse" style={{ color: accent }} />
+                  <p className="text-xs uppercase tracking-[0.3em] font-body font-bold" style={{ color: accent }}>
+                    Limited Time Offer
+                  </p>
+                </div>
+                <p className="font-heading text-2xl sm:text-3xl font-bold text-[#F5F5F5] leading-tight max-w-lg mx-auto">
+                  {content.promoText}
                 </p>
+                <button
+                  onClick={handleCta}
+                  className="mt-7 inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-12 py-4 rounded-full transition-all hover:scale-[1.03] active:scale-95 text-[#0a0a0a]"
+                  style={{ backgroundColor: accent, boxShadow: `0 0 30px -8px ${accent}60` }}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {content.ctaText}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
-              <p className="font-heading text-xl sm:text-2xl font-bold text-[#F5F5F5] leading-tight">{content.promoText}</p>
-              <button
-                onClick={handleCta}
-                className="mt-5 inline-flex items-center gap-2 font-heading text-base font-bold uppercase tracking-wider px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]"
-                style={{ backgroundColor: accent }}
-              >
-                {content.ctaText} <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
           </motion.div>
         </section>
 
         {/* Pricing */}
-        <PricingSection />
+        <PromotionPricing content={content} />
       </main>
       <Footer />
     </div>
