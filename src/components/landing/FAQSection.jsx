@@ -18,9 +18,8 @@ export default function FAQSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-10 lg:mb-12">
+          className="mb-6">
           
-          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4"></p>
           <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
             Any <span className="text-orange-red">questions?</span>
           </h2>

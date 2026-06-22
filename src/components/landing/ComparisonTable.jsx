@@ -27,7 +27,7 @@ export default function ComparisonTable() {
         <h3 className="font-heading text-5xl sm:text-6xl font-bold uppercase tracking-tight text-off-white leading-[0.95]">
           Built <span style={{ color: accent }}>different.</span>
         </h3>
-        <p className="font-body text-sm text-white-muted mt-3">
+        <p className="font-body text-sm text-white-muted mt-3 mb-3">
           Not another workout app. A daily movement practice designed for real life.
         </p>
       </motion.div>
@@ -41,25 +41,25 @@ export default function ComparisonTable() {
         className="hidden sm:block rounded-2xl overflow-hidden border border-dark-border bg-dark-surface"
       >
         <div className="grid grid-cols-[1fr_auto_auto]">
-          <div className="px-4 py-3 border-b border-dark-border">
+          <div className="px-4 py-2 border-b border-dark-border">
             <p className="font-body text-xs uppercase tracking-wider text-white-dim">Feature</p>
           </div>
-          <div className="px-4 py-3 border-b border-l border-dark-border bg-[#0d1a1a]">
+          <div className="px-4 py-2 border-b border-l border-dark-border bg-[#0d1a1a]">
             <p className="font-heading text-sm font-bold uppercase tracking-tight text-off-white text-center flex items-center gap-1.5 justify-center whitespace-nowrap">
               <Sparkles className="w-3.5 h-3.5" style={{ color: accent }} />
               The Movement
             </p>
           </div>
-          <div className="px-4 py-3 border-b border-l border-dark-border">
+          <div className="px-4 py-2 border-b border-l border-dark-border">
             <p className="font-heading text-sm font-bold uppercase tracking-tight text-white-dim text-center whitespace-nowrap">Regular</p>
           </div>
 
           {ROWS.map((row, i) => (
             <React.Fragment key={i}>
-              <div className={`px-4 py-3 border-b border-dark-border/50 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
+              <div className={`px-4 py-2 border-b border-dark-border/50 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
                 <p className="font-body text-xs text-white-muted">{row.label}</p>
               </div>
-              <div className={`px-4 py-3 border-b border-l border-dark-border/50 bg-[#0d1a1a]/40 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
+              <div className={`px-4 py-2 border-b border-l border-dark-border/50 bg-[#0d1a1a]/40 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
                 <div className="flex items-center justify-center">
                   {row.us === true ? (
                     <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${accent}20` }}>
@@ -70,7 +70,7 @@ export default function ComparisonTable() {
                   )}
                 </div>
               </div>
-              <div className={`px-4 py-3 border-b border-l border-dark-border/50 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
+              <div className={`px-4 py-2 border-b border-l border-dark-border/50 ${i === ROWS.length - 1 ? "border-b-0" : ""}`}>
                 <div className="flex items-center justify-center">
                   {row.them === true ? (
                     <Check className="w-4 h-4 text-white-dim" strokeWidth={2.5} />
