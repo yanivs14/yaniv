@@ -1,0 +1,35 @@
+{
+  "name": "PromotionPageContent",
+  "type": "object",
+  "properties": {
+    "page_key": {
+      "type": "string",
+      "description": "Unique key for the promotion page"
+    },
+    "data": {
+      "type": "object",
+      "description": "Page content data"
+    }
+  },
+  "required": [
+    "page_key"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

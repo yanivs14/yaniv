@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell, Circle } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell, Circle } from "lucide-react";
 import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
+import PromotionEditor from "@/components/admin/PromotionEditor";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -941,6 +942,7 @@ const TABS = [
   { key: "leads", label: "Leads", icon: Users },
   { key: "newsletter", label: "Newsletter", icon: Bell },
   { key: "prep7", label: "Prep Page", icon: Play },
+  { key: "promotion", label: "Promo Page", icon: Zap },
   { key: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -1060,7 +1062,7 @@ export default function AdminK() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">
-              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
+              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
             </h1>
           </div>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">
@@ -1098,6 +1100,11 @@ export default function AdminK() {
           {activeTab === "prep7" && (
             <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
               <PrepPageEditor />
+            </div>
+          )}
+          {activeTab === "promotion" && (
+            <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
+              <PromotionEditor />
             </div>
           )}
           {activeTab === "settings" && (
