@@ -97,9 +97,8 @@ function AnnualCard({ c, mobile = false }) {
   };
   return (
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative flex flex-col`}>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex justify-end mb-2">
         <span className="font-heading text-lg font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full">{c.annualInsteadOf}</span>
-        <span className="bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">Best value</span>
       </div>
       <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
       <div className="flex items-baseline gap-1.5 my-3">
