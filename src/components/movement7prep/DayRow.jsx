@@ -154,10 +154,11 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
   const btnRef = useRef(null);
   const labelRef = useRef(null);
   const isDay1 = d.day === 1;
-  const [expanded, setExpanded] = useState(isDay1);
+  const isExpandable = d.day === 1 || d.day === 2;
+  const [expanded, setExpanded] = useState(isExpandable);
 
   const handleEnter = () => {
-    if (isDay1) return;
+    if (isExpandable) return;
     gsap.killTweensOf([rowRef.current, btnRef.current, labelRef.current]);
     gsap.to(rowRef.current, { backgroundColor: "#0d1a1a", duration: 0.35, ease: "power2.out" });
     gsap.to(labelRef.current, { color: "#F5F5F5", x: 4, duration: 0.3, ease: "power2.out" });
@@ -165,7 +166,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
   };
 
   const handleLeave = () => {
-    if (isDay1) return;
+    if (isExpandable) return;
     gsap.killTweensOf([rowRef.current, btnRef.current, labelRef.current]);
     gsap.to(rowRef.current, { backgroundColor: "transparent", duration: 0.35, ease: "power2.out" });
     gsap.to(labelRef.current, { color: "#666", x: 0, duration: 0.3, ease: "power2.out" });
@@ -173,15 +174,17 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
   };
 
   const rightSlot = () => {
-    if (isDay1) {
+    if (isExpandable) {
       return (
         <>
-          <span
-            className="text-xs font-body font-bold px-3 py-1 rounded-full whitespace-nowrap"
-            style={{ backgroundColor: accent, color: "#0a0a0a" }}
-          >
-            TODAY
-          </span>
+          {isDay1 && (
+            <span
+              className="text-xs font-body font-bold px-3 py-1 rounded-full whitespace-nowrap"
+              style={{ backgroundColor: accent, color: "#0a0a0a" }}
+            >
+              TODAY
+            </span>
+          )}
           <ChevronDown
             className="w-4 h-4 transition-transform duration-300"
             style={{ color: accent, transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
@@ -203,20 +206,20 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
   };
 
   return (
-    <div className={`border-b border-[#1e1e1e] ${isDay1 ? "-mx-4" : "-mx-2"}`}>
+    <div className={`border-b border-[#1e1e1e] ${isExpandable ? "-mx-4" : "-mx-2"}`}>
       <div
         ref={rowRef}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
-        onClick={isDay1 ? () => setExpanded(v => !v) : undefined}
+        onClick={isExpandable ? () => setExpanded(v => !v) : undefined}
         className={`flex items-center justify-between py-4 rounded-xl ${
-          isDay1 ? "bg-[#0d1a1a] px-4 cursor-pointer" : "px-2 cursor-pointer"
+          isExpandable ? "bg-[#0d1a1a] px-4 cursor-pointer" : "px-2 cursor-pointer"
         }`}
         style={{ minHeight: "60px" }}
       >
         <span
           className="font-heading text-xs font-bold flex-shrink-0 w-10 mr-2"
-          style={{ color: isDay1 ? accent : "#888" }}
+          style={{ color: isExpandable ? accent : "#888" }}
         >
           DAY {d.day}
         </span>
@@ -224,7 +227,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
         <span
           ref={labelRef}
           className="font-heading text-lg sm:text-xl font-bold uppercase tracking-tight flex-1 min-w-0"
-          style={{ color: isDay1 ? "#F5F5F5" : "#C8C8C8" }}
+          style={{ color: isExpandable ? "#F5F5F5" : "#C8C8C8" }}
         >
           {d.title}
         </span>
@@ -234,7 +237,7 @@ export default function DayRow({ d, accent, onJoin, mediaUrl, mediaType, posterU
         </div>
       </div>
 
-      {isDay1 && (
+      {isExpandable && (
         <AnimatePresence initial={false}>
           {expanded && (
             <motion.div

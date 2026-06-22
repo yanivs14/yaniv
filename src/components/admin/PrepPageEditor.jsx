@@ -24,6 +24,10 @@ const DEFAULTS = {
   todayNote: "10 minutes. That's the only job today.",
   mediaUrl: "",
   mediaType: "none",
+  day2MediaUrl: "",
+  day2MediaType: "none",
+  day2PosterUrl: "",
+  day2TodayNote: "10 minutes. That's the only job today.",
   ctaText: "START DAY 1 →",
   ctaUrl: "",
   communityHeadline: "This is just the entry point.",
@@ -278,6 +282,54 @@ export default function PrepPageEditor() {
 
       <F label="CTA Button Text" value={data.ctaText} onChange={v => set("ctaText", v)} placeholder="START DAY 1 →" />
       <F label="CTA Button Link" value={data.ctaUrl} onChange={v => set("ctaUrl", v)} placeholder="https://..." />
+
+      {/* ── DAY 2 BLOCK ── */}
+      <SectionTitle>Day 2 Block (Joint Prep / Push)</SectionTitle>
+      <F label="Day 2 Note" value={data.day2TodayNote} onChange={v => set("day2TodayNote", v)} placeholder="10 minutes. That's the only job today." />
+
+      <div className="mb-4">
+        <label className="block text-xs text-white-muted mb-1.5 font-body">Media Type (video shown in Day 2 block)</label>
+        <select value={data.day2MediaType || "none"} onChange={e => set("day2MediaType", e.target.value)}
+          className="w-full bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+          <option value="none">No media</option>
+          <option value="image">Image</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      {data.day2MediaType !== "none" && (
+        <div className="mb-4">
+          <div className="flex gap-2 mb-2">
+            <input value={data.day2MediaUrl || ""} onChange={e => set("day2MediaUrl", e.target.value)}
+              placeholder="Paste URL or upload..."
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <UploadButton
+              accept={data.day2MediaType === "video" ? "video/*" : "image/*"}
+              label={data.day2MediaType === "video" ? "Video" : "Image"}
+              onUpload={v => set("day2MediaUrl", v)}
+            />
+          </div>
+          {data.day2MediaUrl && data.day2MediaType === "image" && (
+            <img src={data.day2MediaUrl} alt="" className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" />
+          )}
+          {data.day2MediaUrl && data.day2MediaType === "video" && (
+            <video src={data.day2MediaUrl} className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" muted playsInline />
+          )}
+        </div>
+      )}
+      {data.day2MediaType === "video" && (
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Poster Image (thumbnail shown before play)</label>
+          <div className="flex gap-2 mb-2">
+            <input value={data.day2PosterUrl || ""} onChange={e => set("day2PosterUrl", e.target.value)}
+              placeholder="Paste URL or upload..."
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <UploadButton accept="image/*" label="Upload Poster" onUpload={v => set("day2PosterUrl", v)} />
+          </div>
+          {data.day2PosterUrl && (
+            <img src={data.day2PosterUrl} alt="poster" className="w-full h-40 object-cover rounded-lg border border-[#2a2a2a]" />
+          )}
+        </div>
+      )}
 
       {/* ── NEWSLETTER (Day 2 signup) ── */}
       <SectionTitle>Newsletter (Day 2 Signup)</SectionTitle>

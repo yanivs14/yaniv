@@ -31,6 +31,10 @@ const DEFAULTS = {
   todayNote: "10 minutes. That's the only job today.",
   mediaUrl: "",
   mediaType: "none",
+  day2MediaUrl: "",
+  day2MediaType: "none",
+  day2PosterUrl: "",
+  day2TodayNote: "10 minutes. That's the only job today.",
   ctaText: "START DAY 1 →",
   ctaUrl: "",
   communityHeadline: "This is just the entry point.",
@@ -312,10 +316,10 @@ export default function Movement7Prep() {
                     i={i}
                     accent={accent}
                     onJoin={() => setPricingOpen(true)}
-                    mediaUrl={d.day === 1 ? content.mediaUrl : undefined}
-                    mediaType={d.day === 1 ? content.mediaType : undefined}
-                    posterUrl={d.day === 1 ? content.posterUrl : undefined}
-                    todayNote={d.day === 1 ? content.todayNote : undefined}
+                    mediaUrl={d.day === 1 ? content.mediaUrl : d.day === 2 ? content.day2MediaUrl : undefined}
+                    mediaType={d.day === 1 ? content.mediaType : d.day === 2 ? content.day2MediaType : undefined}
+                    posterUrl={d.day === 1 ? content.posterUrl : d.day === 2 ? content.day2PosterUrl : undefined}
+                    todayNote={d.day === 1 ? content.todayNote : d.day === 2 ? content.day2TodayNote : undefined}
                     newsletterHeading={content.newsletterHeading}
                     newsletterSubheading={content.newsletterSubheading}
                     newsletterCtaText={content.newsletterCtaText}
