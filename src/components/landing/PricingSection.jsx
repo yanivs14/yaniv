@@ -89,7 +89,7 @@ function AnnualCard({ c, mobile = false }) {
         <span className="font-body text-sm text-dark-bg/60">/ month</span>
       </div>
       <p className="font-body text-xs text-dark-bg/50 mb-1">
-        <span className="line-through">$250</span> / year billed annually
+        <span>$250</span> / year billed annually
       </p>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
       {c.annualSubtitle &&
