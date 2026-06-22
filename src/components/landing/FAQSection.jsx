@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import ComparisonTable from "./ComparisonTable";
 
 export default function FAQSection() {
   const { content } = useSiteContent();
@@ -11,13 +12,13 @@ export default function FAQSection() {
 
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="faq">
-      <div className="max-w-3xl mx-auto px-6 lg:px-10">
+      <div className="max-w-5xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12">
+          className="mb-10 lg:mb-12">
           
           <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4"></p>
           <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
@@ -25,15 +26,17 @@ export default function FAQSection() {
           </h2>
         </motion.div>
 
-        <div className="space-y-3">
-          {items.map((item, i) =>
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: i * 0.07 }}
-            className="border border-dark-border rounded-2xl overflow-hidden bg-dark-surface">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* FAQ items */}
+          <div className="space-y-3">
+            {items.map((item, i) =>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.07 }}
+              className="border border-dark-border rounded-2xl overflow-hidden bg-dark-surface">
             
               <button
               onClick={() => setOpen(open === i ? null : i)}
@@ -60,7 +63,11 @@ export default function FAQSection() {
               }
               </AnimatePresence>
             </motion.div>
-          )}
+            )}
+          </div>
+
+          {/* Comparison table */}
+          <ComparisonTable />
         </div>
       </div>
     </section>);

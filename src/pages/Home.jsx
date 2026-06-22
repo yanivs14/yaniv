@@ -7,7 +7,6 @@ import HeroSection from "../components/landing/HeroSection";
 import MarqueeBanner from "../components/landing/MarqueeBanner";
 import DegradingSection from "../components/landing/DegradingSection";
 import PillarsSection from "../components/landing/PillarsSection";
-import ComparisonSection from "../components/landing/ComparisonSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import PricingSection from "../components/landing/PricingSection";
 import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
@@ -88,7 +87,6 @@ export default function Home() {
       {/* #program */}
       <HeroSection />
       <PillarsSection />
-      <ComparisonSection />
       <HowItFlowsSection />
       <MarqueeBanner />
       {/* #who */}
