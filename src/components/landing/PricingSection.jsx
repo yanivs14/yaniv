@@ -15,6 +15,23 @@ async function startCheckout(plan) {
   if (res.data?.url) window.location.href = res.data.url;
 }
 
+// Renders a price string with cents (anything after a ".") in a smaller size.
+function PriceSplit({ price, className = "", small = false }) {
+  const str = String(price || "");
+  const dotIdx = str.indexOf(".");
+  if (dotIdx === -1) {
+    return <span className={`font-heading ${small ? "text-xl" : "text-6xl"} font-bold ${className}`}>{str}</span>;
+  }
+  const main = str.slice(0, dotIdx);
+  const cents = str.slice(dotIdx); // includes the "."
+  return (
+    <span className={`font-heading ${small ? "text-xl" : "text-6xl"} font-bold ${className} flex items-baseline`}>
+      {main}
+      <span className={`${small ? "text-sm" : "text-2xl"} font-bold`}>{cents}</span>
+    </span>
+  );
+}
+
 const DEFAULT_MONTHLY_FEATURES = [
 "Personalized adaptive daily practice",
 "Full Movement training library (240+ sessions)",
@@ -44,7 +61,7 @@ function MonthlyCard({ c, mobile = false }) {
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-dark-bg border border-dark-border rounded-2xl ${mobile ? "p-5" : "p-8"} flex flex-col`}>
       <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
       <div className="flex items-baseline gap-1 my-3">
-        <span className="font-heading text-6xl font-bold text-off-white">{c.monthlyPrice}</span>
+        <PriceSplit price={c.monthlyPrice} className="text-off-white" />
         <span className="font-body text-sm text-white-muted">/ month</span>
       </div>
       {c.monthlySubtitle &&
@@ -80,17 +97,17 @@ function AnnualCard({ c, mobile = false }) {
   };
   return (
     <div className={`${mobile ? "flex-shrink-0 w-[78vw] snap-start" : ""} bg-orange-red border border-orange-red rounded-2xl ${mobile ? "p-5" : "p-8"} relative flex flex-col`}>
-      <div className="absolute top-3 right-3 bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">
-        Best value
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-heading text-lg font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full">{c.annualInsteadOf}</span>
+        <span className="bg-dark-bg/20 text-dark-bg font-body text-xs font-semibold px-3 py-1 rounded-full">Best value</span>
       </div>
-      <p className="font-heading text-lg font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full mt-8 self-end">{c.annualInsteadOf}</p>
       <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
       <div className="flex items-baseline gap-1.5 my-3">
-        <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualMonthlyPrice}</span>
+        <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
         <span className="font-body text-sm text-dark-bg/60">/ month</span>
       </div>
       <p className="font-body text-sm text-dark-bg mb-1">
-        <span>{c.annualPrice}</span> / year billed annually
+        <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
       </p>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
       {c.annualSubtitle &&
