@@ -93,6 +93,7 @@ const DEFAULT_CONTENT = {
     annualMonthlyPrice: "$20",
     annualPrice: "$250",
     annualSubtitle: "For committed practitioners who want deeper access and better value.",
+    annualInsteadOf: "Instead of $420/year, just $250/year on annual plan",
     annualSavings: "Save 40% · Billed Yearly",
     ctaMonthly: "Begin Monthly",
     ctaAnnual: "Begin Annual",
