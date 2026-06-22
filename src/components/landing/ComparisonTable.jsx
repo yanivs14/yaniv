@@ -27,9 +27,6 @@ export default function ComparisonTable() {
         <h3 className="font-heading text-5xl sm:text-6xl font-bold uppercase tracking-tight text-off-white leading-[0.95]">
           Built <span style={{ color: accent }}>different.</span>
         </h3>
-        <p className="font-body text-sm text-white-muted mt-3 mb-3">
-          Not another workout app. A daily movement practice designed for real life.
-        </p>
       </motion.div>
 
       {/* ── Desktop table ── */}
