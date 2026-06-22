@@ -297,7 +297,7 @@ function SectionEditor({ sectionKey }) {
       {f("subtitle", "Subtitle", true)}
 
       <p className="text-xs text-white-muted font-body font-semibold mt-4 mb-3">Monthly Plan</p>
-      {f("monthlyPrice", "Monthly Price")}
+      {f("monthlyPrice", "Large Price (e.g. $35)")}
       {f("monthlySubtitle", "Monthly Subtitle", true)}
       {f("ctaMonthly", "Monthly CTA Button")}
       <p className="text-xs text-white-muted font-body mb-2">Monthly Features</p>
@@ -317,7 +317,8 @@ function SectionEditor({ sectionKey }) {
       </button>
 
       <p className="text-xs text-white-muted font-body font-semibold mt-2 mb-3">Annual Plan</p>
-      {f("annualPrice", "Annual Price")}
+      {f("annualMonthlyPrice", "Large Price (e.g. $20)")}
+      {f("annualPrice", "Yearly Price (e.g. $250)")}
       {f("annualSavings", "Savings Label")}
       {f("annualSubtitle", "Annual Subtitle", true)}
       {f("ctaAnnual", "Annual CTA Button")}
