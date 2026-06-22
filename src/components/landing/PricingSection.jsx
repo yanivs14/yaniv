@@ -84,11 +84,12 @@ function AnnualCard({ c, mobile = false }) {
         Best value
       </div>
       <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
+      <p className="font-body text-xs text-dark-bg/60 mb-1">Instead of $35/month, just $250/year on annual plan</p>
       <div className="flex items-baseline gap-1.5 my-3">
         <span className="font-heading text-6xl font-bold text-dark-bg">{c.annualMonthlyPrice}</span>
         <span className="font-body text-sm text-dark-bg/60">/ month</span>
       </div>
-      <p className="font-body text-xs text-dark-bg/50 mb-1">
+      <p className="font-body text-sm text-dark-bg mb-1">
         <span>{c.annualPrice}</span> / year billed annually
       </p>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
