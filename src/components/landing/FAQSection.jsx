@@ -26,7 +26,7 @@ export default function FAQSection() {
           </h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* FAQ items */}
           <div className="space-y-3">
             {items.map((item, i) =>

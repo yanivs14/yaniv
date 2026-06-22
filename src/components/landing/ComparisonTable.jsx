@@ -18,19 +18,16 @@ export default function ComparisonTable() {
   return (
     <div>
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
         className="mb-6"
       >
-        <p className="text-xs uppercase tracking-[0.2em] font-body font-bold mb-3" style={{ color: accent }}>
-          Why The Movement
-        </p>
-        <h3 className="font-heading text-3xl sm:text-4xl font-bold uppercase tracking-tight text-off-white leading-[0.9]">
-          Built different.
+        <h3 className="font-heading text-5xl sm:text-6xl font-bold uppercase tracking-tight text-off-white leading-[0.95]">
+          Built <span style={{ color: accent }}>different.</span>
         </h3>
-        <p className="font-body text-sm text-white-muted mt-2">
+        <p className="font-body text-sm text-white-muted mt-3">
           Not another workout app. A daily movement practice designed for real life.
         </p>
       </motion.div>
