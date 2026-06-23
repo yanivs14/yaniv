@@ -1065,9 +1065,14 @@ export default function AdminK() {
               {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
             </h1>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">
-            <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-            <span className="text-xs text-orange-red font-body">Live</span>
+          <div className="flex items-center gap-2">
+            <Link to="/email-dashboard" className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors whitespace-nowrap">
+              <Mail className="w-3.5 h-3.5" /> Email Hub
+            </Link>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">
+              <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
+              <span className="text-xs text-orange-red font-body">Live</span>
+            </div>
           </div>
         </div>
 

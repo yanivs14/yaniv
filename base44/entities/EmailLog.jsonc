@@ -1,0 +1,77 @@
+{
+  "name": "EmailLog",
+  "type": "object",
+  "properties": {
+    "recipient_email": {
+      "type": "string",
+      "description": "Recipient email address"
+    },
+    "recipient_name": {
+      "type": "string",
+      "description": "Recipient name"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject line"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Template used (promotion, custom)"
+    },
+    "campaign_name": {
+      "type": "string",
+      "description": "Campaign name for tracking"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed"
+      ],
+      "default": "sent",
+      "description": "Send status"
+    },
+    "source": {
+      "type": "string",
+      "description": "Recipient source (quiz, inner_circle, newsletter)"
+    },
+    "country": {
+      "type": "string",
+      "description": "Recipient country"
+    },
+    "language": {
+      "type": "string",
+      "description": "Recipient browser language"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error message if send failed"
+    }
+  },
+  "required": [
+    "recipient_email",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
