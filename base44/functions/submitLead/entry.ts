@@ -230,7 +230,7 @@ Deno.serve(async (req) => {
       try {
         await await base44.asServiceRole.integrations.Core.SendEmail({
           to: email,
-          subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'Your movement program is ready',
+          subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'Start Train With Roye Gold - Now With Over 25% OFF',
           from_name: 'The Movement - Roye Gold',
           body: userEmailBody
         });
