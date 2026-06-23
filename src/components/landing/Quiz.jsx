@@ -453,7 +453,7 @@ export default function Quiz({ onClose }) {
                     className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-1">
                     {emailLoading
                       ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-                      : <>See My Plan <ArrowRight className="w-4 h-4" /></>}
+                      : "Master Movement With Roye"}
                   </button>
                 </form>
 

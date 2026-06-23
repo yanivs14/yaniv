@@ -10,7 +10,7 @@ const DEFAULT_CONTENT = {
     subtitle: "We pay attention to movement only after we lose it. A guided, daily method to rebuild your physical foundation.",
     badge1: "No equipment",
     badge2: "Cancel anytime",
-    ctaPrimary: "Start moving",
+    ctaPrimary: "Start Moving With Roye",
     ctaSecondary: "Take the 60-second quiz now",
     videoUrl: "",
     videoPoster: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png",
@@ -133,7 +133,7 @@ const DEFAULT_CONTENT = {
       { label: "Inner Circle", href: "#inner-circle" },
       { label: "FAQ", href: "#faq" },
     ],
-    cta: "Start moving",
+    cta: "Start Moving With Roye",
   },
   footer: {
     brand: "KINETIQO",
