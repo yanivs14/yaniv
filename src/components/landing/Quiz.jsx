@@ -109,7 +109,6 @@ const monthlyFeatures = [
 const annualFeatures = [
   "Save 40% annually",
   "Everything in Monthly",
-  "Weekly live coaching & feedback",
   "Exclusive member-only trainings and advanced content",
   "Priority access to new releases",
 ];
@@ -180,6 +179,12 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                     </div>
                     {plan.secondaryPrice && (
                       <p className="font-body text-[11px] text-white-muted mt-0.5">{plan.secondaryPrice(c)}</p>
+                    )}
+                    {plan.accentColor && (
+                      <p className="font-body text-xs font-semibold text-off-white mt-1 flex items-center gap-1.5">
+                        <span className="w-1 h-1 rounded-full bg-orange-red"></span>
+                        Weekly live coaching & feedback
+                      </p>
                     )}
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
