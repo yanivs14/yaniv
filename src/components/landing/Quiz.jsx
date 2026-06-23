@@ -118,8 +118,9 @@ const plans = [
   {
     key: "annual",
     label: "Annual",
-    price: (c) => c.annualPrice,
-    period: "/ year",
+    price: (c) => c.annualMonthlyPrice,
+    period: "/ month",
+    secondaryPrice: (c) => `${c.annualPrice} / year billed annually`,
     discount: "Save 40%",
     badge: "Best value",
     subtitle: "Our annual members enjoy extra content and benefits.",
@@ -131,6 +132,7 @@ const plans = [
     label: "Monthly",
     price: (c) => c.monthlyPrice,
     period: "/ month",
+    secondaryPrice: null,
     discount: null,
     badge: null,
     features: monthlyFeatures,
@@ -176,6 +178,9 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                       <span className={`font-heading text-2xl font-bold ${plan.accentColor ? "text-orange-red" : "text-off-white"}`}>{plan.price(c)}</span>
                       <span className="font-body text-xs text-white-muted">{plan.period}</span>
                     </div>
+                    {plan.secondaryPrice && (
+                      <p className="font-body text-[11px] text-white-muted mt-0.5">{plan.secondaryPrice(c)}</p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
