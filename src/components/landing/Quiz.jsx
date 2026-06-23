@@ -278,6 +278,10 @@ export default function Quiz({ onClose }) {
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+    if (!fullName.trim()) {
+      setEmailError("Please enter your full name");
+      return;
+    }
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setEmailError("Please enter a valid email address");
       return;
@@ -298,7 +302,7 @@ export default function Quiz({ onClose }) {
       } catch (_) {}
 
       await base44.functions.invoke("submitLead", {
-        full_name: fullName.trim() || "Quiz Lead",
+        full_name: fullName.trim(),
         phone: phone.trim() || "-",
         email: email.trim(),
         source: "quiz",
@@ -421,7 +425,7 @@ export default function Quiz({ onClose }) {
                     type="text"
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
-                    placeholder="Full name (optional)"
+                    placeholder="Full name *"
                     className="w-full bg-dark-bg border border-dark-border rounded-2xl px-4 py-4 font-body text-sm text-off-white placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
                   />
 
