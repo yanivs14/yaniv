@@ -169,9 +169,24 @@ Deno.serve(async (req) => {
         ${promoContent.videoPosterUrl ? `
         <tr>
           <td class="video-pad" style="padding:26px 32px 30px;">
-            <a href="${promoUrl}" target="_blank" style="display:block;text-decoration:none;">
-              <img src="${promoContent.videoPosterUrl}" alt="Watch the demo" style="display:block;width:100%;max-width:496px;border-radius:14px;border:1px solid #1e3333;" />
-            </a>
+            <table cellpadding="0" cellspacing="0" border="0" style="position:relative;width:100%;max-width:496px;">
+              <tr>
+                <td style="position:relative;">
+                  <a href="${promoUrl}" target="_blank" style="display:block;text-decoration:none;position:relative;">
+                    <img src="${promoContent.videoPosterUrl}" alt="Watch the demo" style="display:block;width:100%;max-width:496px;border-radius:14px;border:1px solid #1e3333;" />
+                    <!--[if gte mso 9]>
+                    <v:rect style="position:absolute;left:50%;top:50%;margin-left:-36px;margin-top:-36px;width:72px;height:72px;" fillcolor="#00fff7" strokeweight="0">
+                      <v:fill type="solid" color="#00fff7" />
+                      <v:path textpathok="t" />
+                    </v:rect>
+                    <![endif]-->
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;background:#00fff7;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.35);">
+                      <div style="width:0;height:0;border-style:solid;border-width:14px 0 14px 22px;border-color:transparent transparent transparent #0a0a0a;margin-left:6px;"></div>
+                    </div>
+                  </a>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>` : ''}
 
