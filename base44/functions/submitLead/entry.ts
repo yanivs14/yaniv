@@ -158,7 +158,7 @@ Deno.serve(async (req) => {
         <!-- Hero -->
         <tr>
           <td class="hero-pad" style="padding:40px 32px 10px;">
-            <p style="margin:0 0 18px;font-size:15px;color:#00fff7;line-height:1.5;">Hi ${full_name.split(' ')[0]}, your personalized program is ready.</p>
+            <p style="margin:0 0 18px;font-size:15px;color:#00fff7;line-height:1.5;font-weight:600;">${full_name.split(' ')[0]} — Roye Gold has unlocked a one-time offer for you: over 25% off your membership.</p>
             <h1 class="hero-h1" style="margin:0 0 16px;font-size:31px;font-weight:900;color:#F5F5F5;line-height:1.12;text-transform:uppercase;letter-spacing:-0.5px;">${promoContent.headline || 'Fix Your Pull Up In 7 Days'}</h1>
             <p class="hero-sub" style="margin:0 0 14px;font-size:16px;color:#C8C8C8;line-height:1.6;">${promoContent.subtitle || 'Not with more reps. Not with bands. With the one movement pattern your body has been missing.'}</p>
             <p class="hero-desc" style="margin:0;font-size:13px;color:#888;line-height:1.6;">${promoContent.description || 'Arch Scap — the foundation of every pull, every hang, every strong back. Taught by Roye Gold. 10 min/day.'}</p>
