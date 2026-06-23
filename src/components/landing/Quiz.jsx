@@ -187,22 +187,22 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 sm:flex-shrink-0">
-                    <button
-                      onClick={() => setExpanded(isOpen ? null : plan.key)}
-                      className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full flex-shrink-0"
-                    >
-                      {isOpen ? "Hide" : "Compare"}
-                    </button>
+                  <div className="flex flex-col gap-2 sm:flex-shrink-0">
                     <button
                       onClick={() => handleCheckout(plan.key)}
                       disabled={checkoutLoading === plan.key}
-                      className={`flex items-center justify-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 flex-1 sm:flex-initial ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
+                      className={`flex items-center justify-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 w-full sm:w-auto ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
                     >
                       {checkoutLoading === plan.key
                         ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
                         : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"}</>
                       }
+                    </button>
+                    <button
+                      onClick={() => setExpanded(isOpen ? null : plan.key)}
+                      className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full w-full sm:w-auto"
+                    >
+                      {isOpen ? "Hide" : "Compare"}
                     </button>
                   </div>
                 </div>
