@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { CheckCircle, ArrowRight, Mail, Sparkles, Home, Dumbbell } from "lucide-react";
+import { ArrowRight, Mail, Sparkles, Home, Dumbbell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 
@@ -105,26 +105,6 @@ export default function ThankYou() {
                 transition={{ duration: 0.6 }}
                 className="flex flex-col items-center text-center"
               >
-                {/* Checkmark */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -10 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                  className="w-20 h-20 rounded-full bg-orange-red/10 border border-orange-red/30 flex items-center justify-center mb-8"
-                >
-                  <CheckCircle className="w-10 h-10 text-orange-red" />
-                </motion.div>
-
-                {/* Eyebrow */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="font-body text-sm text-orange-red uppercase tracking-widest mb-3"
-                >
-                  Payment Confirmed
-                </motion.p>
-
                 {/* Headline */}
                 <motion.h1
                   initial={{ opacity: 0, y: 10 }}
@@ -246,14 +226,7 @@ export default function ThankYou() {
                     Back to Home
                     <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <a
-                    href="https://www.skool.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 bg-transparent border border-dark-border text-off-white font-body text-sm font-bold py-3.5 rounded-full hover:border-orange-red hover:text-orange-red transition-colors"
-                  >
-                    Join Community
-                  </a>
+
                 </motion.div>
 
                 {/* Footer note */}
