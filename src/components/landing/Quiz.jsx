@@ -162,7 +162,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
             <div key={plan.key} className={`rounded-2xl border transition-all duration-200 overflow-hidden ${plan.accentColor ? "border-orange-red/60 bg-orange-red/5" : "border-dark-border bg-dark-bg"}`}>
               {/* Row */}
               <div className="px-4 pt-3.5 pb-3">
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-heading text-base font-bold uppercase tracking-tight text-off-white">{plan.label}</span>
@@ -187,21 +187,21 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:flex-shrink-0">
                     <button
                       onClick={() => setExpanded(isOpen ? null : plan.key)}
-                      className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full"
+                      className="font-body text-xs text-white-muted hover:text-orange-red transition-colors border border-dark-border hover:border-orange-red/50 px-3 py-1.5 rounded-full flex-shrink-0"
                     >
                       {isOpen ? "Hide" : "Compare"}
                     </button>
                     <button
                       onClick={() => handleCheckout(plan.key)}
                       disabled={checkoutLoading === plan.key}
-                      className={`flex items-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
+                      className={`flex items-center justify-center gap-1.5 font-body text-xs font-semibold px-4 py-2 rounded-full transition-colors disabled:opacity-60 flex-1 sm:flex-initial ${plan.accentColor ? "bg-orange-red text-dark-bg hover:bg-orange-red-hover" : "bg-off-white text-dark-bg hover:bg-off-white/90"}`}
                     >
                       {checkoutLoading === plan.key
                         ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-                        : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"} <ArrowRight className="w-3 h-3" /></>
+                        : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"} <ArrowRight className="w-3 h-3 flex-shrink-0" /></>
                       }
                     </button>
                   </div>
