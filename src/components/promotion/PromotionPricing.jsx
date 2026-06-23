@@ -3,15 +3,22 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
+let _checkoutInProgress = false;
 async function startCheckout(plan) {
+  if (_checkoutInProgress) return;
   if (window.self !== window.top) {
     alert("Checkout is only available from the published app.");
     return;
   }
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: "begin_checkout", currency: "USD", plan_type: plan });
-  const res = await base44.functions.invoke("createCheckout", { plan });
-  if (res.data?.url) window.location.href = res.data.url;
+  _checkoutInProgress = true;
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "begin_checkout", currency: "USD", plan_type: plan });
+    const res = await base44.functions.invoke("createCheckout", { plan });
+    if (res.data?.url) window.location.href = res.data.url;
+  } finally {
+    _checkoutInProgress = false;
+  }
 }
 
 const DEFAULT_FEATURES = [

@@ -187,6 +187,10 @@ Deno.serve(async (req) => {
       transaction_id: session.id,
       value: amount,
       currency,
+      plan,
+      plan_label: planLabel,
+      customer_name: customerName,
+      customer_email: customerEmail,
     });
   } catch (error) {
     console.error("getCheckoutSession error:", error.message);

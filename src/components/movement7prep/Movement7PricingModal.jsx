@@ -38,6 +38,7 @@ const PLANS = [
 export default function Movement7PricingModal({ open, onClose, accent = "#00fff7" }) {
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState("");
+  const checkoutRef = React.useRef(false);
 
   React.useEffect(() => {
     if (open) {
@@ -49,10 +50,12 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
   }, [open]);
 
   const handleSelect = async (plan) => {
+    if (checkoutRef.current) return;
     if (window.self !== window.top) {
       alert("Checkout is only available from the published app.");
       return;
     }
+    checkoutRef.current = true;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: 'begin_checkout', plan_type: plan, source: '7day', currency: 'USD' });
     setLoading(plan);
@@ -67,6 +70,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
     } catch {
       setError("Something went wrong. Please try again.");
     }
+    checkoutRef.current = false;
     setLoading(null);
   };
 

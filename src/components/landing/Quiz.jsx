@@ -90,13 +90,20 @@ const slideVariants = {
   exit: { opacity: 0, y: -8 },
 };
 
+let _checkoutInProgress = false;
 async function startCheckout(plan) {
+  if (_checkoutInProgress) return;
   if (window.self !== window.top) {
     alert("Checkout is only available from the published app.");
     return;
   }
-  const res = await base44.functions.invoke("createCheckout", { plan });
-  if (res.data?.url) window.location.href = res.data.url;
+  _checkoutInProgress = true;
+  try {
+    const res = await base44.functions.invoke("createCheckout", { plan });
+    if (res.data?.url) window.location.href = res.data.url;
+  } finally {
+    _checkoutInProgress = false;
+  }
 }
 
 const monthlyFeatures = [
