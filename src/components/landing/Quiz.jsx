@@ -201,7 +201,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                     >
                       {checkoutLoading === plan.key
                         ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-                        : <>Start <ArrowRight className="w-3 h-3" /></>
+                        : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"} <ArrowRight className="w-3 h-3" /></>
                       }
                     </button>
                   </div>
