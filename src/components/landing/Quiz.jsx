@@ -107,7 +107,7 @@ const monthlyFeatures = [
 ];
 
 const annualFeatures = [
-  "Save 40% annually",
+  "Save $170",
   "Everything in Monthly",
   "Exclusive member-only trainings and advanced content",
   "Priority access to new releases",
@@ -201,7 +201,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
                     >
                       {checkoutLoading === plan.key
                         ? <div className="w-3 h-3 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-                        : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"} <ArrowRight className="w-3 h-3 flex-shrink-0" /></>
+                        : <>{plan.key === "annual" ? "Transform Your Body Today" : "Start Moving Pain-Free"}</>
                       }
                     </button>
                   </div>
