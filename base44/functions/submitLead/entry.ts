@@ -27,6 +27,28 @@ Deno.serve(async (req) => {
 
     console.log('Lead saved:', lead.id, '| source:', source);
 
+    // Fetch promotion page content for the user email
+    let promoContent = {};
+    let pricingFeatures = [
+      "Personalized adaptive daily practice",
+      "Full Movement training library (240+ sessions)",
+      "Strength, mobility, control & longevity tracks",
+      "Community access + challenges",
+    ];
+    let promoUrl = "https://themovement.royegold.com/promotion";
+    try {
+      const origin = req.headers.get("origin");
+      if (origin) promoUrl = `${origin}/promotion`;
+      const promoRecords = await base44.asServiceRole.entities.PromotionPageContent.filter({ page_key: "promotion" });
+      if (promoRecords.length > 0) {
+        const raw = promoRecords[0].data;
+        promoContent = raw?.data && raw?.page_key ? raw.data : raw;
+        if (promoContent.pricingFeatures?.length) pricingFeatures = promoContent.pricingFeatures;
+      }
+    } catch (e) {
+      console.warn('Could not fetch promotion content:', e.message);
+    }
+
     // Get notification emails
     let recipientEmails = [];
     try {
@@ -90,40 +112,113 @@ Deno.serve(async (req) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Movement</title>
 </head>
 <body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:24px 16px;">
     <tr><td align="center">
       <table cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#111111;border-radius:16px;border:1px solid #222;overflow:hidden;">
+
         <!-- Header -->
         <tr>
           <td style="padding:28px 32px;border-bottom:1px solid #222;">
-            <p style="margin:0;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:3px;">Confirmation</p>
-            <p style="margin:6px 0 0;font-size:22px;font-weight:900;color:#00fff7;letter-spacing:2px;text-transform:uppercase;">The Movement</p>
+            <p style="margin:0;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:3px;">The Movement</p>
+            <p style="margin:6px 0 0;font-size:22px;font-weight:900;color:#00fff7;letter-spacing:2px;text-transform:uppercase;">Roye Gold</p>
           </td>
         </tr>
-        <!-- Body -->
+
+        <!-- Hero -->
         <tr>
-          <td style="padding:32px;">
-            <h1 style="margin:0 0 12px;font-size:26px;font-weight:700;color:#F5F5F5;line-height:1.2;">Thank you, ${full_name}!</h1>
-            <p style="margin:0 0 28px;font-size:15px;color:#888;line-height:1.7;">
-              We've received your details and will get back to you shortly.
-            </p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #222;border-radius:12px;">
+          <td style="padding:36px 32px 8px;">
+            <h1 style="margin:0 0 16px;font-size:32px;font-weight:900;color:#F5F5F5;line-height:1.1;text-transform:uppercase;letter-spacing:-0.5px;">${promoContent.headline || 'Fix Your Pull Up In 7 Days'}</h1>
+            <p style="margin:0 0 16px;font-size:16px;color:#C8C8C8;line-height:1.6;">${promoContent.subtitle || 'Not with more reps. Not with bands. With the one movement pattern your body has been missing.'}</p>
+            <p style="margin:0;font-size:14px;color:#888;line-height:1.6;">${promoContent.description || 'Arch Scap — the foundation of every pull, every hang, every strong back. Taught by Roye Gold. 10 min/day.'}</p>
+          </td>
+        </tr>
+
+        <!-- Video Poster -->
+        ${promoContent.videoPosterUrl ? `
+        <tr>
+          <td style="padding:24px 32px 28px;">
+            <a href="${promoUrl}" target="_blank" style="display:block;text-decoration:none;">
+              <img src="${promoContent.videoPosterUrl}" alt="Watch the demo" style="display:block;width:100%;max-width:496px;border-radius:12px;border:1px solid #1e3333;" />
+            </a>
+          </td>
+        </tr>` : ''}
+
+        <!-- Promo Banner -->
+        <tr>
+          <td style="padding:0 32px 28px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1515;border:1px solid rgba(0,255,247,0.18);border-radius:16px;">
               <tr>
-                <td style="padding:20px 24px;">
-                  <p style="margin:0 0 6px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:2px;">Your Recommendation</p>
-                  <p style="margin:0;font-size:17px;font-weight:700;color:#F5F5F5;line-height:1.3;">${quiz_recommendation || 'Start with the Foundation Track'}</p>
+                <td style="padding:28px 24px;text-align:center;">
+                  <p style="margin:0 0 10px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:3px;font-weight:700;">Limited Time Offer</p>
+                  <p style="margin:0;font-size:20px;font-weight:700;color:#F5F5F5;line-height:1.3;">${promoContent.promoText || '$25/mo for the first 3 months if you sign up in the next 24 hours!'}</p>
                 </td>
               </tr>
             </table>
           </td>
         </tr>
+
+        <!-- CTA Button -->
+        <tr>
+          <td style="padding:0 32px 32px;" align="center">
+            <a href="${promoUrl}" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:16px;font-weight:800;text-decoration:none;padding:16px 48px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">${promoContent.ctaText || 'START NOW'}</a>
+          </td>
+        </tr>
+
+        <!-- Pricing -->
+        <tr>
+          <td style="padding:0 32px 32px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1a1a;border:1px solid #1e3333;border-radius:16px;">
+              <tr>
+                <td style="padding:28px 24px;">
+                  <p style="margin:0 0 4px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:2px;text-align:center;">${promoContent.pricingEyebrow || 'Membership'}</p>
+                  <p style="margin:0 0 20px;font-size:24px;font-weight:900;color:#F5F5F5;text-align:center;text-transform:uppercase;">${promoContent.pricingTitle || 'Join The Movement'}</p>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+                    <tr><td align="center">
+                      <span style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:10px;font-weight:700;padding:4px 12px;border-radius:100px;text-transform:uppercase;">${promoContent.pricingBadge || 'Limited Time Offer'}</span>
+                    </td></tr>
+                  </table>
+                  <p style="margin:0;text-align:center;font-size:14px;color:#888;">${promoContent.pricingPlanName || 'Monthly'}</p>
+                  <p style="margin:4px 0 4px;text-align:center;">
+                    <span style="font-size:48px;font-weight:900;color:#F5F5F5;">${promoContent.pricingPrice || '$25'}</span>
+                    <span style="font-size:14px;color:#888;">${promoContent.pricingPeriod || '/ month'}</span>
+                  </p>
+                  <p style="margin:0 0 20px;text-align:center;font-size:12px;color:#555;">${promoContent.pricingPriceNote || 'First 3 months only - then $35/mo'}</p>
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    ${pricingFeatures.map(f => `<tr><td style="padding:8px 0;border-bottom:1px solid #1a2a2a;"><span style="color:#00fff7;font-size:14px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:14px;">${f}</span></td></tr>`).join('')}
+                  </table>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">
+                    <tr><td align="center">
+                      <a href="${promoUrl}" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:14px;font-weight:800;text-decoration:none;padding:14px 40px;border-radius:100px;">${promoContent.pricingCta || 'Begin Monthly'}</a>
+                    </td></tr>
+                  </table>
+                  <p style="margin:12px 0 0;text-align:center;font-size:11px;color:#555;">${promoContent.pricingFooter || 'Cancel anytime - No equipment needed'}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Quiz Recommendation -->
+        ${quiz_recommendation ? `
+        <tr>
+          <td style="padding:0 32px 28px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;border:1px solid #222;border-radius:12px;">
+              <tr>
+                <td style="padding:20px 24px;">
+                  <p style="margin:0 0 6px;font-size:11px;color:#00fff7;text-transform:uppercase;letter-spacing:2px;">Your Quiz Recommendation</p>
+                  <p style="margin:0;font-size:16px;font-weight:700;color:#F5F5F5;">${quiz_recommendation}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>` : ''}
+
         <!-- Footer -->
         <tr>
           <td style="padding:20px 32px;border-top:1px solid #222;">
-            <p style="margin:0;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+            <p style="margin:0;font-size:11px;color:#444;text-align:center;">© 2026 The Movement by Roye Gold</p>
           </td>
         </tr>
       </table>
@@ -135,7 +230,7 @@ Deno.serve(async (req) => {
       try {
         await await base44.asServiceRole.integrations.Core.SendEmail({
           to: email,
-          subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'Thank you for joining — Kinetiqo',
+          subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'Your movement program is ready',
           from_name: 'The Movement - Roye Gold',
           body: userEmailBody
         });
