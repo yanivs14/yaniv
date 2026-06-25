@@ -134,7 +134,18 @@ export default function BookCallModal({ open, onClose }) {
                 </p>
 
                 <form onSubmit={handleFormSubmit} noValidate>
-                  {field("full_name", "Full Name", "text", "John Doe")}
+                  <div className="mb-4">
+                    <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">Full Name</label>
+                    <input
+                      type="text"
+                      autoComplete="name"
+                      value={form.full_name}
+                      onChange={e => { setForm(f => ({ ...f, full_name: e.target.value })); setErrors(er => ({ ...er, full_name: undefined })); }}
+                      placeholder="John Doe"
+                      className={`w-full bg-dark-bg border rounded-xl px-4 py-3 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${errors.full_name ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
+                    />
+                    {errors.full_name && <p className="mt-1 text-xs text-red-400 font-body">{errors.full_name}</p>}
+                  </div>
                   {field("email", "Email Address", "email", "john@example.com")}
                   <div className="mb-4">
                     <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">
@@ -183,9 +194,6 @@ export default function BookCallModal({ open, onClose }) {
             {/* STEP 2: Schedule on Calendly */}
             {step === "schedule" && (
               <div className="p-7 sm:p-8 text-center">
-                <div className="w-16 h-16 bg-orange-red/15 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <CheckCircle className="w-8 h-8 text-orange-red" />
-                </div>
                 <h2 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-2">
                   Thanks for your interest in Inner Circle!
                 </h2>
