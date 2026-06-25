@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -42,6 +42,8 @@ export default function EmailDashboard() {
   const [leads, setLeads] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [meetingsMap, setMeetingsMap] = useState({});
+  const [loadingMeetings, setLoadingMeetings] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedIds, setSelectedIds] = useState(new Set());
 
@@ -67,9 +69,24 @@ export default function EmailDashboard() {
     setLoadingData(false);
   }, []);
 
+  const loadMeetings = useCallback(async () => {
+    setLoadingMeetings(true);
+    try {
+      const res = await base44.functions.invoke("getCalendlyMeetings", {});
+      setMeetingsMap(res.data?.meetingsByEmail || {});
+    } catch (e) {
+      console.error("Failed to load Calendly meetings:", e);
+      setMeetingsMap({});
+    }
+    setLoadingMeetings(false);
+  }, []);
+
   useEffect(() => {
-    if (user && user.role === "admin") loadData();
-  }, [user, loadData]);
+    if (user && user.role === "admin") {
+      loadData();
+      loadMeetings();
+    }
+  }, [user, loadData, loadMeetings]);
 
   // Build unified recipients list (deduplicated by email)
   const recipients = useMemo(() => {
@@ -183,11 +200,12 @@ export default function EmailDashboard() {
   const totalSent = logs.filter(l => l.status === "sent").length;
   const totalFailed = logs.filter(l => l.status === "failed").length;
   const successRate = totalSent + totalFailed > 0 ? Math.round((totalSent / (totalSent + totalFailed)) * 100) : 0;
+  const totalMeetings = Object.values(meetingsMap).reduce((sum, arr) => sum + arr.length, 0);
 
   const stats = [
     { label: "Recipients", value: totalRecipients, icon: Users, color: "text-orange-red" },
     { label: "Emails Sent", value: totalSent, icon: MailCheck, color: "text-green-400" },
-    { label: "Failed", value: totalFailed, icon: XCircle, color: "text-red-400" },
+    { label: "Upcoming Calls", value: loadingMeetings ? "…" : totalMeetings, icon: CalendarClock, color: "text-orange-red" },
     { label: "Success Rate", value: `${successRate}%`, icon: CheckCircle, color: "text-orange-red" },
   ];
 
@@ -265,6 +283,9 @@ export default function EmailDashboard() {
                     onToggleAll={toggleAll}
                     onClear={clearSelection}
                     emailLogMap={emailLogMap}
+                    meetingsMap={meetingsMap}
+                    loadingMeetings={loadingMeetings}
+                    onRefreshMeetings={loadMeetings}
                   />
                 )}
                 {activeTab === "compose" && (

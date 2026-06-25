@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Search, Mail, Globe, Languages, CheckSquare, Square, Users, Filter, MailCheck, Clock } from "lucide-react";
+import { Search, Mail, Globe, Languages, CheckSquare, Square, Users, Filter, MailCheck, Clock, CalendarClock, RefreshCw, Video } from "lucide-react";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -23,14 +23,16 @@ function formatDate(dateStr) {
   }).replace(",", "");
 }
 
-export default function RecipientList({ recipients, selectedIds, onToggle, onToggleAll, onClear, emailLogMap }) {
+export default function RecipientList({ recipients, selectedIds, onToggle, onToggleAll, onClear, emailLogMap, meetingsMap, loadingMeetings, onRefreshMeetings }) {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [unsentOnly, setUnsentOnly] = useState(false);
+  const [hasMeeting, setHasMeeting] = useState(false);
 
   const filtered = useMemo(() => {
     return recipients.filter(r => {
       if (unsentOnly && emailLogMap?.has((r.email || "").toLowerCase())) return false;
+      if (hasMeeting && !meetingsMap?.[(r.email || "").toLowerCase()]?.length) return false;
       if (sourceFilter !== "all" && r.source !== sourceFilter) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -40,7 +42,7 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
       }
       return true;
     });
-  }, [recipients, search, sourceFilter, unsentOnly, emailLogMap]);
+  }, [recipients, search, sourceFilter, unsentOnly, hasMeeting, emailLogMap, meetingsMap]);
 
   const allFilteredSelected = filtered.length > 0 && filtered.every(r => selectedIds.has(r.id));
   const filteredIds = filtered.map(r => r.id);
@@ -86,19 +88,45 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
           })}
         </div>
 
-        {/* Unsent only toggle */}
-        <button
-          onClick={() => setUnsentOnly(v => !v)}
-          className={`flex items-center gap-1.5 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${unsentOnly ? "bg-green-500 text-dark-bg border-green-500" : "bg-[#1a1a1a] text-white-muted border-[#2a2a2a] hover:border-orange-red"}`}
-        >
-          <MailCheck className="w-3.5 h-3.5" />
-          {unsentOnly ? "Showing unsent only" : "Unsent only"}
-          {!unsentOnly && recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length > 0 && (
-            <span className="text-[10px] font-bold opacity-70">
-              ({recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length})
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Unsent only toggle */}
+          <button
+            onClick={() => setUnsentOnly(v => !v)}
+            className={`flex items-center gap-1.5 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${unsentOnly ? "bg-green-500 text-dark-bg border-green-500" : "bg-[#1a1a1a] text-white-muted border-[#2a2a2a] hover:border-orange-red"}`}
+          >
+            <MailCheck className="w-3.5 h-3.5" />
+            {unsentOnly ? "Showing unsent only" : "Unsent only"}
+            {!unsentOnly && recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length > 0 && (
+              <span className="text-[10px] font-bold opacity-70">
+                ({recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length})
+              </span>
+            )}
+          </button>
+
+          {/* Has meeting toggle */}
+          <button
+            onClick={() => setHasMeeting(v => !v)}
+            className={`flex items-center gap-1.5 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${hasMeeting ? "bg-orange-red text-dark-bg border-orange-red" : "bg-[#1a1a1a] text-white-muted border-[#2a2a2a] hover:border-orange-red"}`}
+          >
+            <CalendarClock className="w-3.5 h-3.5" />
+            {hasMeeting ? "Showing scheduled" : "Has call"}
+            {!hasMeeting && recipients.filter(r => meetingsMap?.[(r.email || "").toLowerCase()]?.length).length > 0 && (
+              <span className="text-[10px] font-bold opacity-70">
+                ({recipients.filter(r => meetingsMap?.[(r.email || "").toLowerCase()]?.length).length})
+              </span>
+            )}
+          </button>
+
+          {/* Refresh meetings */}
+          <button
+            onClick={onRefreshMeetings}
+            disabled={loadingMeetings}
+            className="flex items-center gap-1.5 text-xs font-body px-3 py-1.5 rounded-full border bg-[#1a1a1a] text-white-muted border-[#2a2a2a] hover:border-orange-red transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingMeetings ? "animate-spin" : ""}`} />
+            Sync Calendly
+          </button>
+        </div>
       </div>
 
       {/* Select all bar */}
@@ -171,6 +199,20 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
                       <p className="text-[10px] text-green-400/60">Last: {formatDate(emailLog.lastDate)}</p>
                     </div>
                   )}
+                  {meetingsMap?.[(r.email || "").toLowerCase()]?.map((m, i) => (
+                    <div key={m.event_uuid + i} className="mt-1.5 bg-orange-red/10 border border-orange-red/25 rounded-lg px-2.5 py-2">
+                      <div className="flex items-center gap-1.5">
+                        <CalendarClock className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
+                        <p className="text-[11px] text-off-white font-semibold">{m.formatted_time}</p>
+                      </div>
+                      <p className="text-[10px] text-white-muted mt-0.5 ml-5">{m.event_name}</p>
+                      {m.join_url && (
+                        <a href={m.join_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="flex items-center gap-1 mt-1 ml-5 text-[10px] text-orange-red hover:underline">
+                          <Video className="w-3 h-3" /> Join call
+                        </a>
+                      )}
+                    </div>
+                  ))}
                   <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                     {r.country && (
                       <span className="flex items-center gap-1 text-[10px] text-white-dim">
