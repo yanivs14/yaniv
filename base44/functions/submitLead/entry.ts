@@ -286,6 +286,63 @@ Deno.serve(async (req) => {
         </tr>`).join('')
       : '';
 
+    // Check Calendly for scheduled booking by email (Inner Circle leads)
+    let calendlyBookingRow = '';
+    if (email) {
+      try {
+        const { accessToken } = await base44.asServiceRole.connectors.getConnection("calendly");
+        if (accessToken) {
+          // Get user URI
+          const meRes = await fetch("https://api.calendly.com/users/me", {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          const meData = await meRes.json();
+          const userUri = meData.resource?.uri;
+
+          if (userUri) {
+            const now = new Date();
+            const endTime = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+            const evRes = await fetch(
+              `https://api.calendly.com/scheduled_events?user=${encodeURIComponent(userUri)}&status=active&min_start_time=${encodeURIComponent(now.toISOString())}&max_start_time=${encodeURIComponent(endTime.toISOString())}`,
+              { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+            const evData = await evRes.json();
+            const events = evData.collection || [];
+
+            // Check invitees for each event (limit to 15 to control API calls)
+            for (const ev of events.slice(0, 15)) {
+              const invRes = await fetch(
+                `https://api.calendly.com/scheduled_events/${ev.uuid}/invitees`,
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+              );
+              const invData = await invRes.json();
+              const invitees = invData.collection || [];
+              const match = invitees.find(inv => (inv.email || '').toLowerCase() === email.toLowerCase());
+              if (match) {
+                const startDate = new Date(ev.start_time);
+                const formatted = startDate.toLocaleString('en-GB', {
+                  timeZone: 'Asia/Jerusalem',
+                  day: '2-digit', month: '2-digit', year: 'numeric',
+                  hour: '2-digit', minute: '2-digit', hour12: false
+                }).replace(',', '');
+                const eventName = ev.name || 'Consultation Call';
+                calendlyBookingRow = `<tr>
+                  <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                    <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">CALENDLY BOOKING</span>
+                    <span style="color:#00fff7;font-size:14px;font-weight:600;">${eventName}</span><br>
+                    <span style="color:#F5F5F5;font-size:13px;">${formatted} (GMT+3)</span>
+                  </td>
+                </tr>`;
+                break;
+              }
+            }
+          }
+        }
+      } catch (calendlyErr) {
+        console.warn('Calendly booking lookup failed (non-critical):', calendlyErr.message);
+      }
+    }
+
     // Notify admins (non-blocking)
     for (const adminEmail of recipientEmails) {
       try {
@@ -350,12 +407,19 @@ Deno.serve(async (req) => {
                   <span style="color:#F5F5F5;font-size:14px;">${source || 'quiz'}${quiz_section ? ' · ' + quiz_section : ''}</span>
                 </td>
               </tr>
-              ${country || browser_language ? `<tr>
-                <td style="padding:10px 0;">
-                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">LOCATION / LANGUAGE</span>
-                  <span style="color:#F5F5F5;font-size:14px;">${country || '—'}${browser_language ? ' · ' + browser_language : ''}</span>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">COUNTRY</span>
+                  <span style="color:#F5F5F5;font-size:14px;">${country || '—'}</span>
                 </td>
-              </tr>` : ''}
+              </tr>
+              <tr>
+                <td style="padding:10px 0;border-bottom:1px solid #1a1a1a;">
+                  <span style="color:#666;font-size:12px;display:block;margin-bottom:3px;">BROWSER LANGUAGE</span>
+                  <span style="color:#F5F5F5;font-size:14px;">${browser_language || '—'}</span>
+                </td>
+              </tr>
+              ${calendlyBookingRow}
             </table>
           </td>
         </tr>

@@ -48,13 +48,16 @@ export default function BookCallModal({ open, onClose }) {
     try {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: 'inner_circle_submitted', form_type: 'inner_circle' });
+      const browserLang = navigator.language || navigator.userLanguage || "";
       const [, slotsRes] = await Promise.all([
         base44.functions.invoke("submitLead", {
           full_name: form.full_name.trim(),
           email: form.email.trim(),
           phone: `${dialCode} ${form.phone.trim()}`,
           source: "inner_circle",
-          quiz_recommendation: `Inner Circle Inquiry — ${countryName}`
+          quiz_recommendation: `Inner Circle Inquiry — ${countryName}`,
+          country: countryName,
+          browser_language: browserLang
         }),
         base44.functions.invoke("getCalendlySlots", {})
       ]);

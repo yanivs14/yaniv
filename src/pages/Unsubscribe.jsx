@@ -90,18 +90,6 @@ export default function Unsubscribe() {
                 <p className="font-body text-sm text-white-muted leading-relaxed mb-6">
                   You've been successfully removed from our mailing list and all connected platforms. You won't hear from us again.
                 </p>
-                {result && (
-                  <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl p-4 mb-6 text-left">
-                    <p className="text-[10px] text-white-dim uppercase tracking-2px font-semibold mb-2">Removal Summary</p>
-                    <div className="space-y-1.5">
-                      <SummaryRow label="Lead database" done={result.lead_deleted} />
-                      <SummaryRow label="Newsletter subscribers" done={result.newsletter_deleted > 0} count={result.newsletter_deleted} />
-                      <SummaryRow label="Email history" done={result.email_logs_deleted > 0} count={result.email_logs_deleted} />
-                      <SummaryRow label="Kit.com (ConvertKit)" done={result.kit_unsubscribed} />
-                      <SummaryRow label="HubSpot CRM" done={result.hubspot_deleted} />
-                    </div>
-                  </div>
-                )}
                 <Link
                   to="/"
                   className="inline-block text-xs text-white-dim hover:text-white-muted transition-colors"
@@ -136,22 +124,6 @@ export default function Unsubscribe() {
           </div>
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-function SummaryRow({ label, done, count }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-xs text-white-muted font-body">{label}</span>
-      {done ? (
-        <span className="flex items-center gap-1 text-xs text-green-400 font-body">
-          <CheckCircle className="w-3.5 h-3.5" />
-          {count ? `${count} removed` : "Removed"}
-        </span>
-      ) : (
-        <span className="text-xs text-white-dim font-body">Not found</span>
-      )}
     </div>
   );
 }
