@@ -16,7 +16,6 @@ import Movement7Prep from './pages/Movement7Prep';
 import Promotion from './pages/Promotion';
 import EmailDashboard from './pages/EmailDashboard';
 import ThankYou from './pages/ThankYou';
-import Unsubscribe from './pages/Unsubscribe';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -53,7 +52,6 @@ const AuthenticatedApp = () => {
         <Route path="/promotion" element={<Promotion />} />
         <Route path="/email-dashboard" element={<EmailDashboard />} />
         <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
