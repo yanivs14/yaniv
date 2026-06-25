@@ -39,8 +39,13 @@ Deno.serve(async (req) => {
 
     for (const ev of events) {
       try {
+        const eventUuid = ev.uuid || ev.uri?.split('/').pop();
+        if (!eventUuid) {
+          console.warn('Event without uuid/uri:', JSON.stringify(ev).substring(0, 200));
+          continue;
+        }
         const invRes = await fetch(
-          `https://api.calendly.com/scheduled_events/${ev.uuid}/invitees?count=10`,
+          `https://api.calendly.com/scheduled_events/${eventUuid}/invitees?count=10`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         const invData = await invRes.json();
@@ -55,13 +60,13 @@ Deno.serve(async (req) => {
         }).replace(',', '');
 
         const meetingInfo = {
-          event_uuid: ev.uuid,
+          event_uuid: eventUuid,
           event_name: ev.name || 'Consultation Call',
           start_time: ev.start_time,
           end_time: ev.end_time,
           formatted_time: formatted,
           location: ev.location?.location || '',
-          join_url: ev.location?.join_url || '',
+          join_url: ev.location?.join_url || (ev.location?.location && ev.location.location.startsWith('http') ? ev.location.location.split(' (')[0] : ''),
           cancel_url: invitees[0]?.cancel_url || '',
           reschedule_url: invitees[0]?.reschedule_url || '',
         };
