@@ -5,6 +5,7 @@ import Navbar from "@/components/landing/Navbar";
 import NewHero from "@/components/landing-new/NewHero";
 import NewProblem from "@/components/landing-new/NewProblem";
 import NewReframe from "@/components/landing-new/NewReframe";
+import NewPrograms from "@/components/landing-new/NewPrograms";
 import NewWhatIs from "@/components/landing-new/NewWhatIs";
 import MarqueeBanner from "@/components/landing/MarqueeBanner";
 import NewWhoFor from "@/components/landing-new/NewWhoFor";
@@ -36,6 +37,7 @@ export default function HomeNew() {
         <NewHero />
         <NewProblem />
         <NewReframe />
+        <NewPrograms />
         <NewWhatIs />
         <MarqueeBanner />
         <NewWhoFor />
