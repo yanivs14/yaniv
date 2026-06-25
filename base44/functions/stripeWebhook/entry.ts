@@ -224,6 +224,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sync to Kit — mark as Customer (non-blocking)
+    if (customerEmail) {
+      try {
+        await base44.asServiceRole.functions.invoke("syncLeadToKit", {
+          full_name: customerName,
+          email: customerEmail,
+          phone: matchedLead?.phone || "",
+          source: matchedLead?.source || "checkout",
+          quiz_recommendation: matchedLead?.quiz_recommendation || "",
+          quiz_answers: matchedLead?.quiz_answers || {},
+          lifecycle_stage: "customer",
+          purchase_plan: planLabel,
+        });
+      } catch (kitErr) {
+        console.warn("Kit customer sync failed (non-critical):", kitErr.message);
+      }
+    }
+
     return Response.json({ received: true, processed: true, customer: customerName, plan: planLabel });
   } catch (error) {
     console.error("Stripe webhook error:", error.message);

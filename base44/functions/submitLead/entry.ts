@@ -550,6 +550,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sync to Kit — mark as Lead (non-blocking)
+    if (email) {
+      try {
+        await base44.asServiceRole.functions.invoke("syncLeadToKit", {
+          full_name,
+          email,
+          phone,
+          source: source || "quiz",
+          quiz_section,
+          quiz_recommendation,
+          quiz_answers,
+          lifecycle_stage: "lead",
+        });
+      } catch (kitErr) {
+        console.warn("Kit sync failed (non-critical):", kitErr.message);
+      }
+    }
+
     return Response.json({ success: true, lead_id: lead.id });
   } catch (error) {
     console.error('submitLead error:', error.message);
