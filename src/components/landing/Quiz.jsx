@@ -114,7 +114,7 @@ const monthlyFeatures = [
 ];
 
 const annualFeatures = [
-  "Save $170",
+  "Save $181",
   "Everything in Monthly",
   "Exclusive member-only trainings and advanced content",
   "Priority access to new releases",
