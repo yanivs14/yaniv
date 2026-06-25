@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       "Strength, mobility, control & longevity tracks",
       "Community access + challenges",
     ];
-    const promoUrl = "https://themovement.royegold.com/promotion";
+    const promoUrl = "https://royegold.com/Promotion";
     try {
       const promoRecords = await base44.asServiceRole.entities.PromotionPageContent.filter({ page_key: "promotion" });
       if (promoRecords.length > 0) {
