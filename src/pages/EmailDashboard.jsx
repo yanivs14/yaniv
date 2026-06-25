@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
 import ComposeEmail from "@/components/admin/email/ComposeEmail";
 import EmailHistory from "@/components/admin/email/EmailHistory";
+import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
 
 const TABS = [
   { key: "recipients", label: "Recipients", icon: Users },
@@ -46,6 +47,7 @@ export default function EmailDashboard() {
   const [loadingMeetings, setLoadingMeetings] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [leadSettings, setLeadSettings] = useState(null);
 
   useEffect(() => {
     base44.auth.me()
@@ -55,19 +57,40 @@ export default function EmailDashboard() {
 
   const loadData = useCallback(async () => {
     try {
-      const [leadData, subData, logData] = await Promise.all([
+      const [leadData, subData, logData, settingsData] = await Promise.all([
         base44.entities.Lead.list("-created_date", 500),
         base44.entities.NewsletterSubscriber.list("-created_date", 500),
         base44.entities.EmailLog.list("-created_date", 200).catch(() => []),
+        base44.entities.LeadSettings.list().catch(() => []),
       ]);
       setLeads(leadData);
       setSubscribers(subData);
       setLogs(logData);
+      setLeadSettings(settingsData?.[0] || null);
     } catch (e) {
       console.error("Failed to load data:", e);
     }
     setLoadingData(false);
   }, []);
+
+  const handleToggleAutoEmail = useCallback(async (enabled) => {
+    try {
+      if (leadSettings?.id) {
+        const updated = await base44.entities.LeadSettings.update(leadSettings.id, {
+          auto_email_enabled: enabled,
+        });
+        setLeadSettings(updated);
+      } else {
+        const created = await base44.entities.LeadSettings.create({
+          auto_email_enabled: enabled,
+          recipient_emails: [],
+        });
+        setLeadSettings(created);
+      }
+    } catch (e) {
+      console.error("Failed to update auto email setting:", e);
+    }
+  }, [leadSettings]);
 
   const loadMeetings = useCallback(async () => {
     setLoadingMeetings(true);
@@ -238,6 +261,11 @@ export default function EmailDashboard() {
             </div>
           );
         })}
+      </div>
+
+      {/* Auto email toggle */}
+      <div className="px-3 sm:px-4 pt-3">
+        <AutoEmailToggle settings={leadSettings} onToggle={handleToggleAutoEmail} />
       </div>
 
       {/* Tab navigation */}

@@ -47,17 +47,20 @@ Deno.serve(async (req) => {
       console.warn('Could not fetch promotion content:', e.message);
     }
 
-    // Get notification emails
+    // Get notification emails and auto email setting
     let recipientEmails = [];
+    let autoEmailEnabled = true;
     try {
       const settings = await base44.asServiceRole.entities.LeadSettings.list();
       recipientEmails = settings?.[0]?.recipient_emails || [];
+      // auto_email_enabled defaults to true if not set
+      autoEmailEnabled = settings?.[0]?.auto_email_enabled !== false;
     } catch (e) {
       console.warn('Could not fetch LeadSettings:', e.message);
     }
 
-    // Send confirmation email to user (non-blocking)
-    if (email) {
+    // Send confirmation email to user (non-blocking) — only if auto email is enabled
+    if (email && autoEmailEnabled) {
       const userEmailBody = isInnerCircle ? `
 <!DOCTYPE html>
 <html lang="en">
