@@ -115,7 +115,7 @@ function AnnualCard({ c, mobile = false }) {
         <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
       </p>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
-      <p className="font-body text-sm font-semibold text-dark-bg mb-2 flex items-center gap-1.5">AnnualWeekly live coaching & feedback
+      <p className="font-body text-sm font-semibold text-dark-bg mb-2 flex items-center gap-1.5">Annual Exclusive  Weekly live coaching & feedback
 
 
       </p>
