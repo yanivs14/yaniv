@@ -7,7 +7,7 @@ const DEFAULT_PRICING_FEATURES = [
   "Community access + challenges",
 ];
 
-function buildPromotionEmail(firstName, promoContent, pricingFeatures, promoUrl) {
+function buildPromotionEmail(firstName, promoContent, pricingFeatures, promoUrl, recipientEmail) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,8 +118,9 @@ function buildPromotionEmail(firstName, promoContent, pricingFeatures, promoUrl)
           </td>
         </tr>
         <tr>
-          <td class="footer-pad" style="padding:20px 32px;border-top:1px solid #1a1a1a;">
-            <p style="margin:0;font-size:11px;color:#444;text-align:center;">© 2026 The Movement by Roye Gold</p>
+          <td class="footer-pad" style="padding:20px 32px;border-top:1px solid #1a1a1a;text-align:center;">
+            <p style="margin:0 0 6px;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+            <a href="https://royegold.com/unsubscribe?email=${encodeURIComponent(recipientEmail)}" style="font-size:11px;color:#555;text-decoration:underline;">Unsubscribe from all emails</a>
           </td>
         </tr>
       </table>
@@ -167,12 +168,13 @@ Deno.serve(async (req) => {
       const firstName = (r.name || '').trim().split(' ')[0] || 'there';
       let emailSubject, emailBody;
 
+      const unsubscribeLink = `https://royegold.com/unsubscribe?email=${encodeURIComponent(r.email)}`;
       if (templateType === 'promotion') {
         emailSubject = 'Start Train With Roye Gold - Now With Over 25% OFF';
-        emailBody = buildPromotionEmail(firstName, promoContent, pricingFeatures, promoUrl);
+        emailBody = buildPromotionEmail(firstName, promoContent, pricingFeatures, promoUrl, r.email);
       } else {
         emailSubject = subject || 'The Movement — Roye Gold';
-        emailBody = (body || '').replace(/\{\{name\}\}/gi, firstName);
+        emailBody = (body || '').replace(/\{\{name\}\}/gi, firstName) + `\n\n---\nUnsubscribe: ${unsubscribeLink}`;
       }
 
       try {

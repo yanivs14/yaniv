@@ -96,8 +96,9 @@ Deno.serve(async (req) => {
         </tr>
         <!-- Footer -->
         <tr>
-          <td style="padding:20px 32px;border-top:1px solid #222;">
-            <p style="margin:0;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+          <td style="padding:20px 32px;border-top:1px solid #222;text-align:center;">
+            <p style="margin:0 0 6px;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+            <a href="https://royegold.com/unsubscribe?lead_id=${lead.id}" style="font-size:11px;color:#555;text-decoration:underline;">Unsubscribe from all emails</a>
           </td>
         </tr>
       </table>
@@ -245,8 +246,9 @@ Deno.serve(async (req) => {
 
         <!-- Footer -->
         <tr>
-          <td class="footer-pad" style="padding:20px 32px;border-top:1px solid #1a1a1a;">
-            <p style="margin:0;font-size:11px;color:#444;text-align:center;">© 2026 The Movement by Roye Gold</p>
+          <td class="footer-pad" style="padding:20px 32px;border-top:1px solid #1a1a1a;text-align:center;">
+            <p style="margin:0 0 6px;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+            <a href="https://royegold.com/unsubscribe?lead_id=${lead.id}" style="font-size:11px;color:#555;text-decoration:underline;">Unsubscribe from all emails</a>
           </td>
         </tr>
       </table>
