@@ -22,14 +22,14 @@ export default function NewHero() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
-                You don't need<br />
-                more gym hours.<br />
-                You need <span className="text-orange-red">control</span><br />
-                of your own body.
+              <h1 className="font-heading text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-off-white uppercase tracking-tight">
+                You don't need more<br />
+                gym hours. You need<br />
+                <span className="text-orange-red">control</span> of your<br />
+                own body.
               </h1>
 
-              <p className="mt-6 font-body text-base lg:text-lg text-white-muted max-w-md leading-relaxed">
+              <p className="mt-8 font-body text-base lg:text-lg text-white-muted max-w-lg leading-relaxed">
                 Most pain isn't weakness — it's your joints losing control of their range. The Movement rebuilds that control from the floor up, in 10–15 minutes a day, using nothing but your bodyweight.
               </p>
 
