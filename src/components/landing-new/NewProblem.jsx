@@ -10,7 +10,7 @@ export default function NewProblem() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-8"
+          className="font-heading text-[2.25rem] leading-[1.05] sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-8"
         >
           You've done everything "right"<br />
           and your body <span className="text-orange-red">still hurts.</span>

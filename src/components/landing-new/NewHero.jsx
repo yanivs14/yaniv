@@ -17,41 +17,41 @@ export default function NewHero() {
 
   return (
     <>
-      <section className="pt-20 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg" id="program">
+      <section className="pt-24 pb-12 lg:pt-32 lg:pb-20 bg-dark-bg" id="program">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <h1 className="font-heading text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] text-off-white uppercase tracking-tight">
-                You don't need more<br />
-                gym hours. You need<br />
-                <span className="text-orange-red">control</span> of your<br />
-                own body.
+              <h1 className="font-heading text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-6xl xl:text-7xl font-bold text-off-white uppercase tracking-tight">
+                You don't need<br />
+                more gym hours.<br />
+                You need <span className="text-orange-red">control</span><br />
+                of your own body.
               </h1>
 
               <p className="mt-8 font-body text-base lg:text-lg text-white-muted max-w-lg leading-relaxed">
                 Most pain isn't weakness — it's your joints losing control of their range. The Movement rebuilds that control from the floor up, in 10–15 minutes a day, using nothing but your bodyweight.
               </p>
 
-              <div className="mt-6 flex flex-col gap-4">
+              <div className="mt-8 flex flex-col gap-4">
                 <button
                   onClick={() => setQuizOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors w-fit"
+                  className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-base font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors w-full sm:w-fit"
                 >
                   Join The Movement
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
                 <div className="flex flex-wrap items-center gap-2 font-body text-xs">
-                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3.5 py-2 text-white-muted">
                     <Dumbbell className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                     Bodyweight only
                   </span>
-                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3.5 py-2 text-white-muted">
                     <Clock className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                     10–15 min a day
                   </span>
-                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3 py-1.5 text-white-muted">
+                  <span className="flex items-center gap-1.5 bg-dark-surface border border-dark-border rounded-full px-3.5 py-2 text-white-muted">
                     <RefreshCcw className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
                     Cancel anytime
                   </span>

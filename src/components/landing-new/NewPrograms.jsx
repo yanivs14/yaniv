@@ -51,7 +51,7 @@ export default function NewPrograms() {
               transition={{ duration: 0.6 }}
             >
               <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">Join The Movement</p>
-              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
+              <h2               className="font-heading text-[2.25rem] leading-[1.05] sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-6">
                 Learn About<br />
                 Our <span className="text-orange-red">Programs</span>
               </h2>
