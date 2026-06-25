@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell, Circle } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell, Circle, CalendarClock, Video, RefreshCw } from "lucide-react";
 import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
@@ -574,7 +574,7 @@ function CopyField({ value, icon: Icon, accent }) {
   );
 }
 
-function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
+function LeadCard({ lead, onStatusChange, onDelete, onNotesChange, meetings }) {
   const [showNotes, setShowNotes] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [notes, setNotes] = useState(lead.notes || "");
@@ -625,6 +625,26 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
               {lead.country && <span className="text-xs text-white-dim">🌍 {lead.country}</span>}
               {lead.browser_language && <span className="text-xs text-white-dim">🗣 {lead.browser_language}</span>}
             </div>
+
+            {/* Calendly meetings */}
+            {meetings?.length > 0 && (
+              <div className="mt-2 space-y-1.5">
+                {meetings.map((m, i) => (
+                  <div key={m.event_uuid + i} className="inline-flex flex-col bg-orange-red/10 border border-orange-red/25 rounded-lg px-2.5 py-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <CalendarClock className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
+                      <span className="text-[11px] text-off-white font-semibold">{m.formatted_time}</span>
+                    </div>
+                    <span className="text-[10px] text-white-muted ml-5">{m.event_name}</span>
+                    {m.join_url && (
+                      <a href={m.join_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 mt-0.5 ml-5 text-[10px] text-orange-red hover:underline">
+                        <Video className="w-3 h-3" /> Join call
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <select value={lead.status || "new"} onChange={e => onStatusChange(lead.id, e.target.value)}
@@ -703,13 +723,27 @@ function LeadCard({ lead, onStatusChange, onDelete, onNotesChange }) {
 
 function LeadsTab() {
   const [leads, setLeads] = useState([]);
+  const [meetingsMap, setMeetingsMap] = useState({});
+  const [loadingMeetings, setLoadingMeetings] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const loadMeetings = async () => {
+    setLoadingMeetings(true);
+    try {
+      const res = await base44.functions.invoke("getCalendlyMeetings", {});
+      setMeetingsMap(res.data?.meetingsByEmail || {});
+    } catch (e) {
+      console.error("Failed to load Calendly meetings:", e);
+    }
+    setLoadingMeetings(false);
+  };
 
   useEffect(() => {
     base44.entities.Lead.list("-created_date", 200).then(data => {
       setLeads(data);
       setLoading(false);
     });
+    loadMeetings();
   }, []);
 
   const updateStatus = async (id, status) => {
@@ -731,13 +765,27 @@ function LeadsTab() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-white-muted font-body">{leads.length} leads</p>
-        {leads.length > 0 && (
-          <button onClick={() => exportLeadsToExcel(leads)}
-            className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors">
-            <Download className="w-3.5 h-3.5" /> Export to Excel
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-white-muted font-body">{leads.length} leads</p>
+          {Object.values(meetingsMap).reduce((s, a) => s + a.length, 0) > 0 && (
+            <span className="flex items-center gap-1 text-xs text-orange-red font-body">
+              <CalendarClock className="w-3.5 h-3.5" />
+              {Object.values(meetingsMap).reduce((s, a) => s + a.length, 0)} upcoming calls
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={loadMeetings} disabled={loadingMeetings}
+            className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors disabled:opacity-50">
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingMeetings ? "animate-spin" : ""}`} /> Sync Calendly
           </button>
-        )}
+          {leads.length > 0 && (
+            <button onClick={() => exportLeadsToExcel(leads)}
+              className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors">
+              <Download className="w-3.5 h-3.5" /> Export to Excel
+            </button>
+          )}
+        </div>
       </div>
       {leads.length === 0 ? (
         <div className="text-center py-20">
@@ -753,6 +801,7 @@ function LeadsTab() {
               onStatusChange={updateStatus}
               onDelete={deleteLead}
               onNotesChange={updateNotes}
+              meetings={l.email ? meetingsMap[l.email.toLowerCase()] : undefined}
             />
           ))}
         </div>
