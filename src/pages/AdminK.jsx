@@ -487,7 +487,15 @@ const STATUS_LABELS = { new: "New", contacted: "Contacted", converted: "Converte
 const STATUS_COLORS = { new: "bg-orange-red/20 text-orange-red", contacted: "bg-blue-500/20 text-blue-400", converted: "bg-green-500/20 text-green-400" };
 
 function formatIsraelTime(dateStr) {
-  const d = new Date(dateStr);
+  if (!dateStr) return "—";
+  // Ensure the date string is parsed as UTC — Base44 stores created_date as UTC
+  // but the string may arrive without a trailing 'Z', causing the browser to
+  // interpret it as local time and skip the timezone conversion.
+  let normalized = String(dateStr);
+  if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized)) {
+    normalized = normalized + "Z";
+  }
+  const d = new Date(normalized);
   return d.toLocaleString("en-GB", {
     timeZone: "Asia/Jerusalem",
     day: "2-digit", month: "2-digit", year: "numeric",
