@@ -376,6 +376,13 @@ Deno.serve(async (req) => {
           </td>
         </tr>` : ''}
 
+        <!-- Unsubscribe -->
+        <tr>
+          <td style="padding:16px 28px;border-top:1px solid #1a1a1a;">
+            <a href="https://royegold.com/unsubscribe?lead_id=${lead.id}" target="_blank" style="display:inline-block;background:#1a1a1a;color:#888;font-size:11px;font-weight:600;text-decoration:none;padding:8px 16px;border-radius:8px;border:1px solid #2a2a2a;">🗑 Remove from all lists</a>
+          </td>
+        </tr>
+
         <!-- Footer -->
         <tr>
           <td style="padding:16px 28px;">
