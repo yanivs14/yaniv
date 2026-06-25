@@ -35,10 +35,8 @@ Deno.serve(async (req) => {
       "Strength, mobility, control & longevity tracks",
       "Community access + challenges",
     ];
-    let promoUrl = "https://themovement.royegold.com/promotion";
+    const promoUrl = "https://themovement.royegold.com/promotion";
     try {
-      const origin = req.headers.get("origin");
-      if (origin) promoUrl = `${origin}/promotion`;
       const promoRecords = await base44.asServiceRole.entities.PromotionPageContent.filter({ page_key: "promotion" });
       if (promoRecords.length > 0) {
         const raw = promoRecords[0].data;

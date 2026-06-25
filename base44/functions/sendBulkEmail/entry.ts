@@ -146,11 +146,9 @@ Deno.serve(async (req) => {
     // Fetch promotion content if needed
     let promoContent = {};
     let pricingFeatures = [...DEFAULT_PRICING_FEATURES];
-    let promoUrl = 'https://themovement.royegold.com/promotion';
+    const promoUrl = 'https://themovement.royegold.com/promotion';
     if (templateType === 'promotion') {
       try {
-        const origin = req.headers.get('origin');
-        if (origin) promoUrl = `${origin}/promotion`;
         const promoRecords = await base44.asServiceRole.entities.PromotionPageContent.filter({ page_key: 'promotion' });
         if (promoRecords.length > 0) {
           const raw = promoRecords[0].data;
