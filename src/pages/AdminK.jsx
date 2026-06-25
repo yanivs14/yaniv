@@ -742,7 +742,7 @@ function LeadsTab() {
   };
 
   useEffect(() => {
-    base44.entities.Lead.list("-created_date", 200).then(data => {
+    base44.entities.Lead.list("-created_date", 2000).then(data => {
       setLeads(data);
       setLoading(false);
     });
