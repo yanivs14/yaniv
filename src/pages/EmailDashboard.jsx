@@ -105,6 +105,34 @@ export default function EmailDashboard() {
     return Array.from(map.values());
   }, [leads, subscribers]);
 
+  // Build a map of email → email log summary (count, last date, templates)
+  const emailLogMap = useMemo(() => {
+    const map = new Map();
+    logs.forEach(l => {
+      if (!l.recipient_email) return;
+      const key = l.recipient_email.toLowerCase();
+      const existing = map.get(key);
+      if (existing) {
+        existing.count += 1;
+        if (l.status === "sent") existing.sentCount += 1;
+        if (new Date(l.created_date) > new Date(existing.lastDate)) {
+          existing.lastDate = l.created_date;
+        }
+        if (l.template_name && !existing.templates.includes(l.template_name)) {
+          existing.templates.push(l.template_name);
+        }
+      } else {
+        map.set(key, {
+          count: 1,
+          sentCount: l.status === "sent" ? 1 : 0,
+          lastDate: l.created_date,
+          templates: l.template_name ? [l.template_name] : [],
+        });
+      }
+    });
+    return map;
+  }, [logs]);
+
   const selectedRecipients = useMemo(() => {
     return recipients.filter(r => selectedIds.has(r.id));
   }, [recipients, selectedIds]);
@@ -236,6 +264,7 @@ export default function EmailDashboard() {
                     onToggle={toggleId}
                     onToggleAll={toggleAll}
                     onClear={clearSelection}
+                    emailLogMap={emailLogMap}
                   />
                 )}
                 {activeTab === "compose" && (

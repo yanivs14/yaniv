@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Search, Mail, Globe, Languages, CheckSquare, Square, Users, Filter } from "lucide-react";
+import { Search, Mail, Globe, Languages, CheckSquare, Square, Users, Filter, MailCheck, Clock } from "lucide-react";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -13,12 +13,24 @@ const SOURCE_COLORS = {
   newsletter: "bg-purple-500/15 text-purple-400 border-purple-500/30",
 };
 
-export default function RecipientList({ recipients, selectedIds, onToggle, onToggleAll, onClear }) {
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleString("en-GB", {
+    timeZone: "Asia/Jerusalem",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+    hour12: false,
+  }).replace(",", "");
+}
+
+export default function RecipientList({ recipients, selectedIds, onToggle, onToggleAll, onClear, emailLogMap }) {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
+  const [unsentOnly, setUnsentOnly] = useState(false);
 
   const filtered = useMemo(() => {
     return recipients.filter(r => {
+      if (unsentOnly && emailLogMap?.has((r.email || "").toLowerCase())) return false;
       if (sourceFilter !== "all" && r.source !== sourceFilter) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -28,7 +40,7 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
       }
       return true;
     });
-  }, [recipients, search, sourceFilter]);
+  }, [recipients, search, sourceFilter, unsentOnly, emailLogMap]);
 
   const allFilteredSelected = filtered.length > 0 && filtered.every(r => selectedIds.has(r.id));
   const filteredIds = filtered.map(r => r.id);
@@ -73,6 +85,20 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
             );
           })}
         </div>
+
+        {/* Unsent only toggle */}
+        <button
+          onClick={() => setUnsentOnly(v => !v)}
+          className={`flex items-center gap-1.5 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${unsentOnly ? "bg-green-500 text-dark-bg border-green-500" : "bg-[#1a1a1a] text-white-muted border-[#2a2a2a] hover:border-orange-red"}`}
+        >
+          <MailCheck className="w-3.5 h-3.5" />
+          {unsentOnly ? "Showing unsent only" : "Unsent only"}
+          {!unsentOnly && recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length > 0 && (
+            <span className="text-[10px] font-bold opacity-70">
+              ({recipients.filter(r => !emailLogMap?.has((r.email || "").toLowerCase())).length})
+            </span>
+          )}
+        </button>
       </div>
 
       {/* Select all bar */}
@@ -107,6 +133,7 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
         <div className="space-y-2">
           {filtered.map(r => {
             const selected = selectedIds.has(r.id);
+            const emailLog = emailLogMap?.get((r.email || "").toLowerCase());
             return (
               <button
                 key={r.id}
@@ -127,11 +154,23 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
                     <span className={`text-[10px] font-body px-2 py-0.5 rounded-full border ${SOURCE_COLORS[r.source] || SOURCE_COLORS.quiz}`}>
                       {SOURCE_LABELS[r.source] || r.source || "Lead"}
                     </span>
+                    {emailLog && (
+                      <span className="flex items-center gap-1 text-[10px] font-body px-2 py-0.5 rounded-full border bg-green-500/15 text-green-400 border-green-500/30" title={`Last sent: ${formatDate(emailLog.lastDate)}`}>
+                        <MailCheck className="w-3 h-3" />
+                        {emailLog.sentCount} sent
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-1 mt-0.5">
                     <Mail className="w-3 h-3 text-white-dim flex-shrink-0" />
                     <p className="text-xs text-white-muted truncate">{r.email}</p>
                   </div>
+                  {emailLog && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Clock className="w-3 h-3 text-green-400/60 flex-shrink-0" />
+                      <p className="text-[10px] text-green-400/60">Last: {formatDate(emailLog.lastDate)}</p>
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                     {r.country && (
                       <span className="flex items-center gap-1 text-[10px] text-white-dim">
