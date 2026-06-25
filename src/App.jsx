@@ -7,6 +7,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
+import HomeNew from './pages/HomeNew';
 import AdminK from './pages/AdminK';
 import PolicyPage from './pages/PolicyPage';
 import CookieBanner from './components/CookieBanner';
@@ -47,6 +48,7 @@ const AuthenticatedApp = () => {
     <SiteContentProvider>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/home-new" element={<HomeNew />} />
         <Route path="/admin-k" element={<AdminK />} />
         <Route path="/inner-circle" element={<InnerCircle />} />
         <Route path="/MOVEMENT7PREP" element={<Movement7Prep />} />
