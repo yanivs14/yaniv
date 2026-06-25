@@ -206,6 +206,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sync to HubSpot — mark as Customer (non-blocking)
+    if (customerEmail) {
+      try {
+        await base44.asServiceRole.functions.invoke("syncLeadToHubspot", {
+          full_name: customerName,
+          email: customerEmail,
+          phone: matchedLead?.phone || "",
+          source: matchedLead?.source || "checkout",
+          quiz_recommendation: matchedLead?.quiz_recommendation || "",
+          quiz_answers: matchedLead?.quiz_answers || {},
+          lifecycle_stage: "customer",
+          purchase_plan: planLabel,
+        });
+      } catch (hubErr) {
+        console.warn("HubSpot customer sync failed (non-critical):", hubErr.message);
+      }
+    }
+
     return Response.json({ received: true, processed: true, customer: customerName, plan: planLabel });
   } catch (error) {
     console.error("Stripe webhook error:", error.message);

@@ -532,6 +532,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sync to HubSpot — mark as Lead (non-blocking)
+    if (email) {
+      try {
+        await base44.asServiceRole.functions.invoke("syncLeadToHubspot", {
+          full_name,
+          email,
+          phone,
+          source: source || "quiz",
+          quiz_section,
+          quiz_recommendation,
+          quiz_answers,
+          lifecycle_stage: "lead",
+        });
+      } catch (hubErr) {
+        console.warn("HubSpot sync failed (non-critical):", hubErr.message);
+      }
+    }
+
     return Response.json({ success: true, lead_id: lead.id });
   } catch (error) {
     console.error('submitLead error:', error.message);

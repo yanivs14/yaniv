@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
     // Support both: called directly (flat payload) OR via entity automation (body.data)
     const lead = body.data || body;
 
-    const { full_name, email, phone, source, quiz_section, quiz_recommendation } = lead;
+    const { full_name, email, phone, source, quiz_section, quiz_recommendation, quiz_answers, lifecycle_stage, purchase_plan } = lead;
 
     if (!email) {
       console.log("No email found, skipping HubSpot sync. Lead:", JSON.stringify(lead));
@@ -30,12 +30,18 @@ Deno.serve(async (req) => {
     if (source) originParts.push(`Form: ${source}`);
     if (quiz_section) originParts.push(`Section: ${quiz_section}`);
     if (quiz_recommendation) originParts.push(`Recommendation: ${quiz_recommendation}`);
+    if (purchase_plan) originParts.push(`Purchased: ${purchase_plan}`);
+    if (quiz_answers && Object.keys(quiz_answers).length > 0) {
+      const quizSummary = Object.entries(quiz_answers).map(([k, v]) => `${k}: ${v}`).join(", ");
+      originParts.push(`Quiz: ${quizSummary}`);
+    }
 
     const properties = {
       email,
       firstname,
       lastname,
       phone: phone || "",
+      lifecyclestage: lifecycle_stage || "lead",
       hs_lead_status: "NEW",
       message: originParts.length > 0 ? originParts.join(" | ") : undefined,
     };
@@ -76,15 +82,20 @@ Deno.serve(async (req) => {
       const contactId = searchData.results?.[0]?.id;
 
       if (contactId) {
+        // Only upgrade lifecyclestage (HubSpot doesn't allow downgrading)
+        const updateProps = { ...properties };
+        if (lifecycle_stage !== "customer") {
+          delete updateProps.lifecyclestage;
+        }
         await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
           method: "PATCH",
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ properties }),
+          body: JSON.stringify({ properties: updateProps }),
         });
-        console.log("HubSpot contact updated:", contactId);
+        console.log("HubSpot contact updated:", contactId, "| lifecycle:", lifecycle_stage || "lead");
         return Response.json({ success: true, hubspot_id: contactId, updated: true });
       }
     }
