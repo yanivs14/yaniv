@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, Bell, Circle, CalendarClock, Video, RefreshCw } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Bell, Circle, CalendarClock, Video, RefreshCw } from "lucide-react";
 import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
+import Pagination from "@/components/admin/leads/Pagination";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -726,6 +727,8 @@ function LeadsTab() {
   const [meetingsMap, setMeetingsMap] = useState({});
   const [loadingMeetings, setLoadingMeetings] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 50;
 
   const loadMeetings = async () => {
     setLoadingMeetings(true);
@@ -762,6 +765,10 @@ function LeadsTab() {
 
   if (loading) return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" /></div>;
 
+  const totalPages = Math.ceil(leads.length / PAGE_SIZE);
+  const safePage = Math.min(currentPage, totalPages || 1);
+  const paginatedLeads = leads.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -794,7 +801,7 @@ function LeadsTab() {
         </div>
       ) : (
         <div className="space-y-3">
-          {leads.map(l => (
+          {paginatedLeads.map(l => (
             <LeadCard
               key={l.id}
               lead={l}
@@ -805,6 +812,13 @@ function LeadsTab() {
             />
           ))}
         </div>
+      )}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={safePage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       )}
     </div>
   );
