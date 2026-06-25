@@ -114,7 +114,7 @@ const monthlyFeatures = [
 ];
 
 const annualFeatures = [
-  "Save $170",
+  "Save $180",
   "Everything in Monthly",
   "Exclusive member-only trainings and advanced content",
   "Priority access to new releases",
@@ -127,7 +127,7 @@ const plans = [
     price: (c) => c.annualMonthlyPrice,
     period: "/ month",
     secondaryPrice: (c) => `${c.annualPrice} / year billed annually`,
-    discount: "Save 40%",
+    discount: "Save 43%",
     badge: "Best value",
     subtitle: "Our annual members enjoy extra content and benefits.",
     features: annualFeatures,
