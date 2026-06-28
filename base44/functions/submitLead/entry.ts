@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
   try {
@@ -498,37 +498,118 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Sync to HubSpot — mark as Lead (non-blocking)
+    // Sync to HubSpot — direct API call (non-blocking)
     if (email) {
       try {
-        await base44.asServiceRole.functions.invoke("syncLeadToHubspot", {
-          full_name,
-          email,
-          phone,
-          source: source || "quiz",
-          quiz_section,
-          quiz_recommendation,
-          quiz_answers,
-          lifecycle_stage: "lead",
-        });
+        const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
+        if (hubToken) {
+          const hubNameParts = (full_name || "").trim().split(" ");
+          const originParts = [];
+          if (source) originParts.push(`Form: ${source}`);
+          if (quiz_section) originParts.push(`Section: ${quiz_section}`);
+          if (quiz_recommendation) originParts.push(`Recommendation: ${quiz_recommendation}`);
+          if (quiz_answers && Object.keys(quiz_answers).length > 0) {
+            originParts.push(`Quiz: ${Object.entries(quiz_answers).map(([k, v]) => `${k}: ${v}`).join(", ")}`);
+          }
+          const hubProps = {
+            email,
+            firstname: hubNameParts[0] || "",
+            lastname: hubNameParts.slice(1).join(" ") || "",
+            phone: phone || "",
+            lifecyclestage: "lead",
+            hs_lead_status: "NEW",
+            message: originParts.length > 0 ? originParts.join(" | ") : undefined,
+          };
+          Object.keys(hubProps).forEach(k => hubProps[k] === undefined && delete hubProps[k]);
+
+          const hubCreateRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ properties: hubProps }),
+          });
+          if (hubCreateRes.ok) {
+            console.log("HubSpot contact created:", (await hubCreateRes.json())?.id);
+          } else if (hubCreateRes.status === 409) {
+            // Contact exists — update by email
+            const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: email }] }] }),
+            });
+            const searchData = await searchRes.json();
+            const contactId = searchData.results?.[0]?.id;
+            if (contactId) {
+              await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
+                method: "PATCH",
+                headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ properties: hubProps }),
+              });
+              console.log("HubSpot contact updated:", contactId);
+            }
+          } else {
+            console.warn("HubSpot create failed:", hubCreateRes.status, await hubCreateRes.text());
+          }
+        }
       } catch (hubErr) {
         console.warn("HubSpot sync failed (non-critical):", hubErr.message);
       }
     }
 
-    // Sync to Kit — mark as Lead (non-blocking)
+    // Sync to Kit — direct API call (non-blocking)
     if (email) {
       try {
-        await base44.asServiceRole.functions.invoke("syncLeadToKit", {
-          full_name,
-          email,
-          phone,
-          source: source || "quiz",
-          quiz_section,
-          quiz_recommendation,
-          quiz_answers,
-          lifecycle_stage: "lead",
-        });
+        const kitKey = Deno.env.get("API_Key_kit");
+        if (kitKey) {
+          const kitNameParts = (full_name || "").trim().split(" ");
+          const kitFields = {
+            last_name: kitNameParts.slice(1).join(" ") || "",
+            phone_number: phone || "",
+            source: source || "quiz",
+            lifecycle_stage: "lead",
+          };
+          if (quiz_section) kitFields.quiz_section = quiz_section;
+          if (quiz_recommendation) kitFields.quiz_recommendation = quiz_recommendation;
+          if (quiz_answers && Object.keys(quiz_answers).length > 0) {
+            kitFields.quiz_answers = Object.entries(quiz_answers).map(([k, v]) => `${k}: ${v}`).join(", ");
+          }
+
+          const kitHeaders = { "Content-Type": "application/json", "X-Kit-Api-Key": kitKey };
+
+          // Step 1: Create subscriber
+          const kitCreateRes = await fetch("https://api.kit.com/v4/subscribers", {
+            method: "POST",
+            headers: kitHeaders,
+            body: JSON.stringify({ email_address: email, first_name: kitNameParts[0] || full_name || "", state: "active", fields: kitFields }),
+          });
+          let kitSubscriberId = null;
+          if (kitCreateRes.ok) {
+            const kitData = await kitCreateRes.json();
+            kitSubscriberId = kitData?.subscriber?.id;
+            console.log("Kit subscriber created:", kitSubscriberId);
+          } else {
+            console.warn("Kit create failed:", kitCreateRes.status, await kitCreateRes.text());
+          }
+
+          // Step 2: Subscribe to first form
+          try {
+            const formsRes = await fetch("https://api.kit.com/v4/forms", { headers: kitHeaders });
+            const formsData = await formsRes.json();
+            const form = formsData?.forms?.[0];
+            if (form) {
+              const formSubRes = await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
+                method: "POST",
+                headers: kitHeaders,
+                body: JSON.stringify({ email_address: email, first_name: kitNameParts[0] || full_name || "", fields: kitFields }),
+              });
+              if (formSubRes.ok) {
+                if (!kitSubscriberId) kitSubscriberId = (await formSubRes.json())?.subscriber?.id;
+                console.log("Kit form subscribed:", form.id);
+              }
+            }
+          } catch (formErr) {
+            console.warn("Kit form subscribe error:", formErr.message);
+          }
+        }
       } catch (kitErr) {
         console.warn("Kit sync failed (non-critical):", kitErr.message);
       }

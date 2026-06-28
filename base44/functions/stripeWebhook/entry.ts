@@ -206,37 +206,106 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Sync to HubSpot — mark as Customer (non-blocking)
+    // Sync to HubSpot — direct API call (non-blocking)
     if (customerEmail) {
       try {
-        await base44.asServiceRole.functions.invoke("syncLeadToHubspot", {
-          full_name: customerName,
-          email: customerEmail,
-          phone: matchedLead?.phone || "",
-          source: matchedLead?.source || "checkout",
-          quiz_recommendation: matchedLead?.quiz_recommendation || "",
-          quiz_answers: matchedLead?.quiz_answers || {},
-          lifecycle_stage: "customer",
-          purchase_plan: planLabel,
-        });
+        const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
+        if (hubToken) {
+          const hubNameParts = (customerName || "").trim().split(" ");
+          const originParts = [];
+          if (matchedLead?.source) originParts.push(`Form: ${matchedLead.source}`);
+          if (matchedLead?.quiz_recommendation) originParts.push(`Recommendation: ${matchedLead.quiz_recommendation}`);
+          if (matchedLead?.quiz_answers && Object.keys(matchedLead.quiz_answers).length > 0) {
+            originParts.push(`Quiz: ${Object.entries(matchedLead.quiz_answers).map(([k, v]) => `${k}: ${v}`).join(", ")}`);
+          }
+          originParts.push(`Purchased: ${planLabel}`);
+          const hubProps = {
+            email: customerEmail,
+            firstname: hubNameParts[0] || "",
+            lastname: hubNameParts.slice(1).join(" ") || "",
+            phone: matchedLead?.phone || "",
+            lifecyclestage: "customer",
+            message: originParts.join(" | "),
+          };
+
+          const hubCreateRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ properties: hubProps }),
+          });
+          if (hubCreateRes.ok) {
+            console.log("HubSpot customer created:", (await hubCreateRes.json())?.id);
+          } else if (hubCreateRes.status === 409) {
+            const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: customerEmail }] }] }),
+            });
+            const searchData = await searchRes.json();
+            const contactId = searchData.results?.[0]?.id;
+            if (contactId) {
+              await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
+                method: "PATCH",
+                headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ properties: hubProps }),
+              });
+              console.log("HubSpot customer updated:", contactId);
+            }
+          } else {
+            console.warn("HubSpot create failed:", hubCreateRes.status, await hubCreateRes.text());
+          }
+        }
       } catch (hubErr) {
         console.warn("HubSpot customer sync failed (non-critical):", hubErr.message);
       }
     }
 
-    // Sync to Kit — mark as Customer (non-blocking)
+    // Sync to Kit — direct API call (non-blocking)
     if (customerEmail) {
       try {
-        await base44.asServiceRole.functions.invoke("syncLeadToKit", {
-          full_name: customerName,
-          email: customerEmail,
-          phone: matchedLead?.phone || "",
-          source: matchedLead?.source || "checkout",
-          quiz_recommendation: matchedLead?.quiz_recommendation || "",
-          quiz_answers: matchedLead?.quiz_answers || {},
-          lifecycle_stage: "customer",
-          purchase_plan: planLabel,
-        });
+        const kitKey = Deno.env.get("API_Key_kit");
+        if (kitKey) {
+          const kitNameParts = (customerName || "").trim().split(" ");
+          const kitFields = {
+            last_name: kitNameParts.slice(1).join(" ") || "",
+            phone_number: matchedLead?.phone || "",
+            source: matchedLead?.source || "checkout",
+            lifecycle_stage: "customer",
+            purchase_plan: planLabel,
+          };
+          if (matchedLead?.quiz_recommendation) kitFields.quiz_recommendation = matchedLead.quiz_recommendation;
+          if (matchedLead?.quiz_answers && Object.keys(matchedLead.quiz_answers).length > 0) {
+            kitFields.quiz_answers = Object.entries(matchedLead.quiz_answers).map(([k, v]) => `${k}: ${v}`).join(", ");
+          }
+
+          const kitHeaders = { "Content-Type": "application/json", "X-Kit-Api-Key": kitKey };
+
+          const kitCreateRes = await fetch("https://api.kit.com/v4/subscribers", {
+            method: "POST",
+            headers: kitHeaders,
+            body: JSON.stringify({ email_address: customerEmail, first_name: kitNameParts[0] || customerName || "", state: "active", fields: kitFields }),
+          });
+          if (kitCreateRes.ok) {
+            console.log("Kit subscriber updated (customer):", (await kitCreateRes.json())?.subscriber?.id);
+          } else {
+            console.warn("Kit create failed:", kitCreateRes.status, await kitCreateRes.text());
+          }
+
+          try {
+            const formsRes = await fetch("https://api.kit.com/v4/forms", { headers: kitHeaders });
+            const formsData = await formsRes.json();
+            const form = formsData?.forms?.[0];
+            if (form) {
+              await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
+                method: "POST",
+                headers: kitHeaders,
+                body: JSON.stringify({ email_address: customerEmail, first_name: kitNameParts[0] || customerName || "", fields: kitFields }),
+              });
+            }
+          } catch (formErr) {
+            console.warn("Kit form subscribe error:", formErr.message);
+          }
+        }
       } catch (kitErr) {
         console.warn("Kit customer sync failed (non-critical):", kitErr.message);
       }
