@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
 
     const fields = {
       last_name: nameParts.slice(1).join(" ") || "",
-      phone: phone || "",
+      phone_number: phone || "",
       source: source || "quiz",
       lifecycle_stage: lifecycle_stage || "lead",
     };
