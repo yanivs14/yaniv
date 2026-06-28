@@ -13,9 +13,9 @@ Deno.serve(async (req) => {
       return Response.json({ skipped: true, reason: "no email" });
     }
 
-    const kitKey = Deno.env.get("KIT_API_KEY");
+    const kitKey = Deno.env.get("API_Key_kit");
     if (!kitKey) {
-      console.error("KIT_API_KEY is not set");
+      console.error("API_Key_kit is not set");
       return Response.json({ error: "Missing Kit API key" }, { status: 500 });
     }
 
