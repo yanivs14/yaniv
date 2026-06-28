@@ -498,40 +498,6 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Sync to Kit.com (all sources with email — non-blocking)
-    if (email) {
-      try {
-        const kitKey = Deno.env.get("KIT_API_KEY");
-        if (kitKey) {
-          const nameParts = (full_name || "").trim().split(" ");
-          const kitPayload = {
-            api_key: kitKey,
-            email,
-            first_name: nameParts[0] || full_name,
-            fields: {
-              last_name: nameParts.slice(1).join(" ") || "",
-              phone: phone || "",
-              source: source || "quiz",
-            },
-          };
-
-          const kitRes = await fetch("https://api.convertkit.com/v3/subscribers", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(kitPayload),
-          });
-          const kitData = await kitRes.json();
-          if (!kitRes.ok) {
-            console.warn("Kit sync failed:", JSON.stringify(kitData));
-          } else {
-            console.log("Kit subscriber synced:", kitData?.subscriber?.id);
-          }
-        }
-      } catch (kitErr) {
-        console.warn("Kit sync error (non-critical):", kitErr.message);
-      }
-    }
-
     // Sync to HubSpot — mark as Lead (non-blocking)
     if (email) {
       try {

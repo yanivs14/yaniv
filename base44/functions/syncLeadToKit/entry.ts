@@ -40,7 +40,30 @@ Deno.serve(async (req) => {
       "X-Kit-Api-Key": kitKey,
     };
 
-    // Kit v4: try to add subscriber to a form (embed/hosted type)
+    // Primary method: direct subscriber creation (creates or updates — returns 200 if exists)
+    const createRes = await fetch("https://api.kit.com/v4/subscribers", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        email_address: email,
+        first_name: firstName,
+        state: "active",
+        fields,
+      }),
+    });
+
+    if (createRes.ok) {
+      const data = await createRes.json();
+      const subId = data?.subscriber?.id;
+      console.log("Kit subscriber synced directly:", subId, "| lifecycle:", lifecycle_stage || "lead");
+      return Response.json({ success: true, kit_id: subId });
+    }
+
+    // If direct creation fails, log and fall back to forms/sequences
+    const createErr = await createRes.text();
+    console.warn("Kit direct create failed:", createRes.status, createErr);
+
+    // Fallback: try forms
     let formsRes = await fetch("https://api.kit.com/v4/forms?type=embed", { headers });
     let formsData = await formsRes.json();
     if (!formsData?.forms?.length) {
@@ -68,7 +91,6 @@ Deno.serve(async (req) => {
         return Response.json({ success: true, kit_id: subId });
       }
 
-      // If 404, form doesn't support subscribers — fall through to sequences
       if (formSubRes.status !== 404) {
         const formErr = await formSubRes.json();
         console.error("Kit form subscribe failed:", JSON.stringify(formErr));
@@ -101,7 +123,8 @@ Deno.serve(async (req) => {
     }
 
     return Response.json({
-      error: "No subscribable Kit forms or sequences found",
+      error: "All Kit sync methods failed",
+      direct_error: createErr,
       formsDebug: formsData?.forms?.map(f => ({ id: f.id, name: f.name, type: f.type })),
     }, { status: 500 });
   } catch (error) {
