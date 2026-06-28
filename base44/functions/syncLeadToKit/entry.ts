@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
       "X-Kit-Api-Key": kitKey,
     };
 
-    // Primary method: direct subscriber creation (creates or updates — returns 200 if exists)
+    // Step 1: Create or update the subscriber directly
     const createRes = await fetch("https://api.kit.com/v4/subscribers", {
       method: "POST",
       headers,
@@ -52,81 +52,55 @@ Deno.serve(async (req) => {
       }),
     });
 
+    let subscriberId = null;
     if (createRes.ok) {
       const data = await createRes.json();
-      const subId = data?.subscriber?.id;
-      console.log("Kit subscriber synced directly:", subId, "| lifecycle:", lifecycle_stage || "lead");
-      return Response.json({ success: true, kit_id: subId });
+      subscriberId = data?.subscriber?.id;
+      console.log("Kit subscriber created/updated:", subscriberId, "| lifecycle:", lifecycle_stage || "lead");
+    } else {
+      const createErr = await createRes.text();
+      console.warn("Kit direct create failed:", createRes.status, createErr);
     }
 
-    // If direct creation fails, log and fall back to forms/sequences
-    const createErr = await createRes.text();
-    console.warn("Kit direct create failed:", createRes.status, createErr);
+    // Step 2: Subscribe to the first available form (makes them visible in dashboard + triggers automations)
+    let formSubscribed = false;
+    try {
+      const formsRes = await fetch("https://api.kit.com/v4/forms", { headers });
+      const formsData = await formsRes.json();
+      const form = formsData?.forms?.[0];
 
-    // Fallback: try forms
-    let formsRes = await fetch("https://api.kit.com/v4/forms?type=embed", { headers });
-    let formsData = await formsRes.json();
-    if (!formsData?.forms?.length) {
-      formsRes = await fetch("https://api.kit.com/v4/forms?type=hosted", { headers });
-      formsData = await formsRes.json();
-    }
-    if (!formsData?.forms?.length) {
-      formsRes = await fetch("https://api.kit.com/v4/forms", { headers });
-      formsData = await formsRes.json();
-    }
+      if (form) {
+        const formSubRes = await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            email_address: email,
+            first_name: firstName,
+            fields,
+          }),
+        });
 
-    const candidateForm = formsData?.forms?.[0];
-
-    if (candidateForm) {
-      const formSubRes = await fetch(`https://api.kit.com/v4/forms/${candidateForm.id}/subscribers`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ email_address: email, first_name: firstName, fields }),
-      });
-
-      if (formSubRes.ok) {
-        const formData = await formSubRes.json();
-        const subId = formData?.subscriber?.id;
-        console.log("Kit subscriber synced via form:", subId, "| lifecycle:", lifecycle_stage || "lead");
-        return Response.json({ success: true, kit_id: subId });
+        if (formSubRes.ok) {
+          const formData = await formSubRes.json();
+          if (!subscriberId) subscriberId = formData?.subscriber?.id;
+          formSubscribed = true;
+          console.log("Kit subscriber subscribed to form:", form.id, "| name:", form.name);
+        } else {
+          const formErr = await formSubRes.text();
+          console.warn("Kit form subscribe failed:", formSubRes.status, formErr);
+        }
+      } else {
+        console.warn("No Kit forms found to subscribe to");
       }
-
-      if (formSubRes.status !== 404) {
-        const formErr = await formSubRes.json();
-        console.error("Kit form subscribe failed:", JSON.stringify(formErr));
-        return Response.json({ error: "Kit sync failed", details: formErr, formId: candidateForm.id }, { status: 500 });
-      }
+    } catch (formErr) {
+      console.warn("Kit form subscription error:", formErr.message);
     }
 
-    // Fallback: try sequences
-    const seqRes = await fetch("https://api.kit.com/v4/sequences", { headers });
-    const seqData = await seqRes.json();
-    const sequenceId = seqData?.sequences?.[0]?.id;
-
-    if (sequenceId) {
-      const seqSubRes = await fetch(`https://api.kit.com/v4/sequences/${sequenceId}/subscribers`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({ email_address: email, first_name: firstName }),
-      });
-
-      if (seqSubRes.ok) {
-        const seqSubData = await seqSubRes.json();
-        const subId = seqSubData?.subscriber?.id;
-        console.log("Kit subscriber synced via sequence:", subId, "| lifecycle:", lifecycle_stage || "lead");
-        return Response.json({ success: true, kit_id: subId });
-      }
-
-      const seqErr = await seqSubRes.json();
-      console.error("Kit sequence subscribe failed:", JSON.stringify(seqErr));
-      return Response.json({ error: "Kit sequence subscribe failed", details: seqErr, sequenceId }, { status: 500 });
+    if (subscriberId || formSubscribed) {
+      return Response.json({ success: true, kit_id: subscriberId, form_subscribed: formSubscribed });
     }
 
-    return Response.json({
-      error: "All Kit sync methods failed",
-      direct_error: createErr,
-      formsDebug: formsData?.forms?.map(f => ({ id: f.id, name: f.name, type: f.type })),
-    }, { status: 500 });
+    return Response.json({ error: "Kit sync failed — no subscriber created or form subscribed" }, { status: 500 });
   } catch (error) {
     console.error("syncLeadToKit error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
