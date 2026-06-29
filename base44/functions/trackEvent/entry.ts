@@ -21,12 +21,16 @@ Deno.serve(async (req) => {
       return Response.json({ skipped: true, reason: "no_hubspot_token" });
     }
 
-    // Build properties — filter out empty values and non-string types
-    const properties = Object.entries(params)
-      .filter(([k, v]) => k !== "email" && v !== "" && v != null && k !== "event")
-      .map(([k, v]) => ({ name: k, value: String(v) }));
+    // Build properties — HubSpot expects a flat { key: value } object, not an array
+    const properties = {};
+    for (const [k, v] of Object.entries(params)) {
+      if (k !== "email" && k !== "event" && v !== "" && v != null) {
+        properties[k] = String(v);
+      }
+    }
 
-    const hubspotEventName = `pe.${event_name}`;
+    // HubSpot requires: pe{portalId}_{event_name}
+    const hubspotEventName = `pe148037733_${event_name}`;
 
     const res = await fetch("https://api.hubapi.com/events/v3/send", {
       method: "POST",
@@ -39,14 +43,13 @@ Deno.serve(async (req) => {
         eventName: hubspotEventName,
         occurredAt: new Date().toISOString(),
         properties,
-        objectId: undefined,
       }),
     });
 
     if (!res.ok) {
       const errText = await res.text();
       console.warn(`HubSpot event ${event_name} failed:`, res.status, errText);
-      return Response.json({ skipped: true, reason: "hubspot_error", status: res.status });
+      return Response.json({ skipped: true, reason: "hubspot_error", status: res.status, detail: errText });
     }
 
     return Response.json({ success: true, event: event_name });
