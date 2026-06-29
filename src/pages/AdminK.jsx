@@ -4,6 +4,7 @@ import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus
 import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
+import DraggableFeatureList from "@/components/admin/DraggableFeatureList";
 import Pagination from "@/components/admin/leads/Pagination";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
@@ -303,44 +304,29 @@ function SectionEditor({ sectionKey }) {
       {f("monthlySubtitle", "Monthly Subtitle", true)}
       {f("ctaMonthly", "Monthly CTA Button")}
       <p className="text-xs text-white-muted font-body mb-2">Monthly Features</p>
-      {(data.monthlyFeatures || []).map((feat, i) => (
-        <div key={i} className="flex gap-2 mb-2">
-          <input value={feat} onChange={e => { const arr = [...(data.monthlyFeatures || [])]; arr[i] = e.target.value; update("pricing", "monthlyFeatures", arr); }}
-            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-          <button onClick={() => update("pricing", "monthlyFeatures", (data.monthlyFeatures || []).filter((_, idx) => idx !== i))}
-            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      ))}
-      <button onClick={() => update("pricing", "monthlyFeatures", [...(data.monthlyFeatures || []), ""])}
-        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mb-5">
-        <Plus className="w-4 h-4" /> Add feature
-      </button>
+      <p className="text-xs text-white-dim font-body mb-3">Drag rows to reorder</p>
+      <div className="mb-5">
+        <DraggableFeatureList
+          features={data.monthlyFeatures || []}
+          onChange={(arr) => update("pricing", "monthlyFeatures", arr)}
+          addLabel="Add feature"
+        />
+      </div>
 
       <p className="text-xs text-white-muted font-body font-semibold mt-2 mb-3">Annual Plan</p>
       {f("annualMonthlyPrice", "Large Price (e.g. $20)")}
       {f("annualPrice", "Yearly Price (e.g. $250)")}
       {f("annualSavings", "Savings Label")}
       {f("annualInsteadOf", "Savings Pill (top right of card)")}
-      {f("annualExclusiveFeature", "Annual Exclusive Feature (bold item at top of list)")}
       {f("annualSubtitle", "Annual Subtitle", true)}
       {f("ctaAnnual", "Annual CTA Button")}
       <p className="text-xs text-white-muted font-body mb-2">Annual Features</p>
-      {(data.annualFeatures || []).map((feat, i) => (
-        <div key={i} className="flex gap-2 mb-2">
-          <input value={feat} onChange={e => { const arr = [...(data.annualFeatures || [])]; arr[i] = e.target.value; update("pricing", "annualFeatures", arr); }}
-            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-          <button onClick={() => update("pricing", "annualFeatures", (data.annualFeatures || []).filter((_, idx) => idx !== i))}
-            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      ))}
-      <button onClick={() => update("pricing", "annualFeatures", [...(data.annualFeatures || []), ""])}
-        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors">
-        <Plus className="w-4 h-4" /> Add feature
-      </button>
+      <p className="text-xs text-white-dim font-body mb-3">Drag rows to reorder · Row 1 & 2 appear bold on site</p>
+      <DraggableFeatureList
+        features={data.annualFeatures || []}
+        onChange={(arr) => update("pricing", "annualFeatures", arr)}
+        addLabel="Add feature"
+      />
     </div>
   );
 

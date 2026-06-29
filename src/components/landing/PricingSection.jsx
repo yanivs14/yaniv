@@ -95,9 +95,7 @@ function MonthlyCard({ c, mobile = false }) {
 
 function AnnualCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
-  const allFeatures = c.annualFeatures?.length ? c.annualFeatures : DEFAULT_ANNUAL_FEATURES;
-  const features = allFeatures.filter((f) => f !== "Weekly live coaching & feedback");
-  const exclusiveFeature = c.annualExclusiveFeature || "Weekly live coaching & feedback";
+  const features = c.annualFeatures?.length ? c.annualFeatures : DEFAULT_ANNUAL_FEATURES;
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -120,14 +118,10 @@ function AnnualCard({ c, mobile = false }) {
       <p className="font-body text-sm text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>
       }
       <ul className="space-y-2 flex-1">
-        <li className="flex items-start gap-2.5">
-          <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-          <span className="font-body text-sm font-bold text-dark-bg">{exclusiveFeature}</span>
-        </li>
         {features.map((f, i) =>
         <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-            <span className={`font-body text-sm text-dark-bg/90 ${i === 0 ? "font-bold" : ""}`}>{f}</span>
+            <span className={`font-body text-sm text-dark-bg/90 ${i === 0 || i === 1 ? "font-bold" : ""}`}>{f}</span>
           </li>
         )}
       </ul>
