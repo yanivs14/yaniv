@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import BookCallModal from "@/components/landing/BookCallModal";
-import { useSectionTracking, trackCtaClicked } from "@/lib/analytics";
+import { trackCtaClicked } from "@/lib/analytics";
+import { useSectionTracking } from "@/hooks/useSectionTracking";
 
 export default function InnerCircleSection() {
   const { content } = useSiteContent();

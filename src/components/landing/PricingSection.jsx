@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
-import { useSectionTracking, trackPricingViewed, track } from "@/lib/analytics";
+import { trackPricingViewed, track } from "@/lib/analytics";
+import { useSectionTracking } from "@/hooks/useSectionTracking";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
