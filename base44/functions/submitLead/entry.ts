@@ -1,5 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
+async function ensureKitTags(kitKey, tagNames) {
+  const headers = { "X-Kit-Api-Key": kitKey };
+  const tagsRes = await fetch("https://api.kit.com/v4/tags", { headers });
+  const existingTags = (await tagsRes.json())?.tags || [];
+  const tagMap = {};
+  for (const name of tagNames) {
+    let tag = existingTags.find(t => t.name === name);
+    if (!tag) {
+      const createRes = await fetch("https://api.kit.com/v4/tags", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (createRes.ok) tag = (await createRes.json())?.tag;
+    }
+    if (tag?.id) tagMap[name] = tag.id;
+  }
+  return tagMap;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -55,13 +75,15 @@ Deno.serve(async (req) => {
           const kitHeaders = { "Content-Type": "application/json", "X-Kit-Api-Key": kitKey };
 
           // Create subscriber
+          let kitSubscriberId = null;
           const kitCreateRes = await fetch("https://api.kit.com/v4/subscribers", {
             method: "POST",
             headers: kitHeaders,
             body: JSON.stringify({ email_address: email, first_name: kitNameParts[0] || full_name || "", state: "active", fields: kitFields }),
           });
           if (kitCreateRes.ok) {
-            console.log("Kit subscriber created:", (await kitCreateRes.json())?.subscriber?.id);
+            kitSubscriberId = (await kitCreateRes.json())?.subscriber?.id;
+            console.log("Kit subscriber created:", kitSubscriberId);
           } else {
             console.warn("Kit create failed:", kitCreateRes.status, await kitCreateRes.text());
           }
@@ -77,10 +99,30 @@ Deno.serve(async (req) => {
                 headers: kitHeaders,
                 body: JSON.stringify({ email_address: email, first_name: kitNameParts[0] || full_name || "", fields: kitFields }),
               });
-              if (formSubRes.ok) console.log("Kit form subscribed:", form.id);
+              if (formSubRes.ok) {
+                if (!kitSubscriberId) kitSubscriberId = (await formSubRes.json())?.subscriber?.id;
+                console.log("Kit form subscribed:", form.id);
+              }
             }
           } catch (formErr) {
             console.warn("Kit form subscribe error:", formErr.message);
+          }
+
+          // Tag subscriber with LP_Leads_June26
+          if (kitSubscriberId) {
+            try {
+              const tagMap = await ensureKitTags(kitKey, ["LP_Leads_June26"]);
+              for (const [name, tagId] of Object.entries(tagMap)) {
+                await fetch(`https://api.kit.com/v4/subscribers/${kitSubscriberId}/tags`, {
+                  method: "POST",
+                  headers: kitHeaders,
+                  body: JSON.stringify({ tag_id: tagId }),
+                });
+                console.log(`Kit tag applied: ${name}`);
+              }
+            } catch (tagErr) {
+              console.warn("Kit tagging failed:", tagErr.message);
+            }
           }
         }
       } catch (kitErr) {

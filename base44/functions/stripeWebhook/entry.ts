@@ -7,6 +7,102 @@ const PLAN_LABELS = {
   promo: "Promo — $25/month (first 3 months)",
 };
 
+async function ensureKitTags(kitKey, tagNames) {
+  const headers = { "X-Kit-Api-Key": kitKey };
+  const tagsRes = await fetch("https://api.kit.com/v4/tags", { headers });
+  const existingTags = (await tagsRes.json())?.tags || [];
+  const tagMap = {};
+  for (const name of tagNames) {
+    let tag = existingTags.find(t => t.name === name);
+    if (!tag) {
+      const createRes = await fetch("https://api.kit.com/v4/tags", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (createRes.ok) tag = (await createRes.json())?.tag;
+    }
+    if (tag?.id) tagMap[name] = tag.id;
+  }
+  return tagMap;
+}
+
+async function tagKitSubscriber(kitKey, subscriberId, tagNames) {
+  if (!subscriberId || !tagNames.length) return;
+  const tagMap = await ensureKitTags(kitKey, tagNames);
+  const headers = { "X-Kit-Api-Key": kitKey, "Content-Type": "application/json" };
+  for (const [name, tagId] of Object.entries(tagMap)) {
+    await fetch(`https://api.kit.com/v4/subscribers/${subscriberId}/tags`, {
+      method: "POST", headers, body: JSON.stringify({ tag_id: tagId }),
+    });
+    console.log(`Kit tag applied: ${name} → subscriber ${subscriberId}`);
+  }
+}
+
+async function handleChurn(stripe, subscription) {
+  const customerId = subscription.customer;
+  const customer = await stripe.customers.retrieve(customerId);
+  const customerEmail = customer?.email;
+  if (!customerEmail) return Response.json({ received: true, skipped: "no_email" });
+
+  const created = new Date(subscription.created * 1000);
+  const canceledAt = subscription.canceled_at || Math.floor(Date.now() / 1000);
+  const canceled = new Date(canceledAt * 1000);
+  const durationMs = canceled - created;
+  const sixMonthsMs = 6 * 30 * 24 * 60 * 60 * 1000;
+  const churnTag = durationMs > sixMonthsMs ? ">6m Churn" : "Churned <6m";
+
+  console.log(`Churn: ${customerEmail} | duration ~${Math.round(durationMs / (30*24*60*60*1000))}mo | tag: ${churnTag}`);
+
+  const kitKey = Deno.env.get("API_Key_kit");
+  if (kitKey) {
+    try {
+      const kitHeaders = { "Content-Type": "application/json", "X-Kit-Api-Key": kitKey };
+      let subscriberId = null;
+      const kitRes = await fetch("https://api.kit.com/v4/subscribers", {
+        method: "POST",
+        headers: kitHeaders,
+        body: JSON.stringify({
+          email_address: customerEmail,
+          first_name: (customer?.name || "").split(" ")[0] || "",
+          state: "active",
+          fields: { lifecycle_stage: "churned" },
+        }),
+      });
+      if (kitRes.ok) subscriberId = (await kitRes.json())?.subscriber?.id;
+      if (subscriberId) await tagKitSubscriber(kitKey, subscriberId, [churnTag]);
+    } catch (kitErr) {
+      console.warn("Kit churn sync failed:", kitErr.message);
+    }
+  }
+
+  // Update HubSpot lifecycle to churned
+  const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
+  if (hubToken) {
+    try {
+      const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: customerEmail }] }] }),
+      });
+      const searchData = await searchRes.json();
+      const contactId = searchData.results?.[0]?.id;
+      if (contactId) {
+        await fetch(`https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ properties: { lifecyclestage: "churned" } }),
+        });
+        console.log("HubSpot contact marked as churned:", contactId);
+      }
+    } catch (hubErr) {
+      console.warn("HubSpot churn update failed:", hubErr.message);
+    }
+  }
+
+  return Response.json({ received: true, processed: true, churn: churnTag, email: customerEmail });
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -24,6 +120,10 @@ Deno.serve(async (req) => {
     }
 
     console.log("Stripe webhook received:", event.type);
+
+    if (event.type === "customer.subscription.deleted") {
+      return await handleChurn(stripe, event.data.object);
+    }
 
     if (event.type !== "checkout.session.completed") {
       return Response.json({ received: true, skipped: event.type });
@@ -280,13 +380,15 @@ Deno.serve(async (req) => {
 
           const kitHeaders = { "Content-Type": "application/json", "X-Kit-Api-Key": kitKey };
 
+          let kitSubscriberId = null;
           const kitCreateRes = await fetch("https://api.kit.com/v4/subscribers", {
             method: "POST",
             headers: kitHeaders,
             body: JSON.stringify({ email_address: customerEmail, first_name: kitNameParts[0] || customerName || "", state: "active", fields: kitFields }),
           });
           if (kitCreateRes.ok) {
-            console.log("Kit subscriber updated (customer):", (await kitCreateRes.json())?.subscriber?.id);
+            kitSubscriberId = (await kitCreateRes.json())?.subscriber?.id;
+            console.log("Kit subscriber updated (customer):", kitSubscriberId);
           } else {
             console.warn("Kit create failed:", kitCreateRes.status, await kitCreateRes.text());
           }
@@ -296,14 +398,23 @@ Deno.serve(async (req) => {
             const formsData = await formsRes.json();
             const form = formsData?.forms?.[0];
             if (form) {
-              await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
+              const formSubRes = await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
                 method: "POST",
                 headers: kitHeaders,
                 body: JSON.stringify({ email_address: customerEmail, first_name: kitNameParts[0] || customerName || "", fields: kitFields }),
               });
+              if (formSubRes.ok && !kitSubscriberId) {
+                kitSubscriberId = (await formSubRes.json())?.subscriber?.id;
+              }
             }
           } catch (formErr) {
             console.warn("Kit form subscribe error:", formErr.message);
+          }
+
+          // Tag subscriber with plan tag
+          if (kitSubscriberId) {
+            const planTag = plan === "annual" ? "Annual" : "Monthly-Active";
+            await tagKitSubscriber(kitKey, kitSubscriberId, [planTag]);
           }
         }
       } catch (kitErr) {
