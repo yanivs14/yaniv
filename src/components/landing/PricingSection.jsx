@@ -97,6 +97,7 @@ function AnnualCard({ c, mobile = false }) {
   const [loading, setLoading] = useState(false);
   const allFeatures = c.annualFeatures?.length ? c.annualFeatures : DEFAULT_ANNUAL_FEATURES;
   const features = allFeatures.filter((f) => f !== "Weekly live coaching & feedback");
+  const exclusiveFeature = c.annualExclusiveFeature || "Weekly live coaching & feedback";
   const handleClick = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -115,14 +116,14 @@ function AnnualCard({ c, mobile = false }) {
         <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
       </p>
       <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
-      <p className="font-body text-sm font-semibold text-dark-bg mb-2 flex items-center gap-1.5">Annual Exclusive Weekly live coaching & feedback
-
-
-      </p>
       {c.annualSubtitle &&
       <p className="font-body text-sm text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>
       }
       <ul className="space-y-2 flex-1">
+        <li className="flex items-start gap-2.5">
+          <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+          <span className="font-body text-sm font-bold text-dark-bg">{exclusiveFeature}</span>
+        </li>
         {features.map((f, i) =>
         <li key={i} className="flex items-start gap-2.5">
             <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />

@@ -323,6 +323,7 @@ function SectionEditor({ sectionKey }) {
       {f("annualPrice", "Yearly Price (e.g. $250)")}
       {f("annualSavings", "Savings Label")}
       {f("annualInsteadOf", "Savings Pill (top right of card)")}
+      {f("annualExclusiveFeature", "Annual Exclusive Feature (bold item at top of list)")}
       {f("annualSubtitle", "Annual Subtitle", true)}
       {f("ctaAnnual", "Annual CTA Button")}
       <p className="text-xs text-white-muted font-body mb-2">Annual Features</p>
