@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { trackCtaClicked } from "@/lib/analytics";
 
 const fadeUp = { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } } };
 const fadeLeft = { hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } };
@@ -80,8 +81,7 @@ export default function InnerCircle() {
           cta={c.navbar?.ctaText || "Apply for Inner Circle"}
           accentColor={P}
           onCtaClick={() => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'book_call_click', location: 'ic_navbar' });
+            trackCtaClicked("ic_navbar_cta", c.navbar?.ctaText || "Apply for Inner Circle", "#book-call", "ic_navbar");
             setModalOpen(true);
           }}
         />
@@ -128,10 +128,10 @@ export default function InnerCircle() {
                   
                   <button
                     onClick={() => {
-                      window.dataLayer = window.dataLayer || [];
-                      window.dataLayer.push({ event: 'book_call_click', location: 'ic_hero' });
+                      trackCtaClicked("ic_hero_cta", c.hero.ctaText, "#book-call", "ic_hero");
                       setModalOpen(true);
                     }}
+                    data-cta-id="ic_hero_apply"
                     style={{ backgroundColor: P }}
                     className="inline-flex items-center gap-2 font-body text-sm font-bold px-7 py-3.5 rounded-full transition-colors hover:opacity-90 bg-[#000000] text-[#000000]">
                     
@@ -169,8 +169,7 @@ export default function InnerCircle() {
 
           {/* ── JOURNEY STEPS ── */}
           <ICJourneySection accent={P} onApply={() => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'book_call_click', location: 'ic_journey' });
+            trackCtaClicked("ic_journey_cta", "Apply", "#book-call", "ic_journey");
             setModalOpen(true);
           }} />
 
@@ -234,12 +233,12 @@ export default function InnerCircle() {
                 </div>
                 <button
                   onClick={() => {
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push({ event: 'book_call_click', location: 'ic_what_you_get' });
-                    setModalOpen(true);
-                  }}
-                  className="flex-shrink-0 inline-flex items-center gap-2 text-[#0a0a0a] font-heading text-lg font-bold hover:opacity-60 transition-opacity pb-2">
-                  {c.whatYouGet.ctaText} <ArrowUpRight className="w-5 h-5" />
+                     trackCtaClicked("ic_what_you_get_cta", c.whatYouGet.ctaText, "#book-call", "ic_what_you_get");
+                     setModalOpen(true);
+                   }}
+                   data-cta-id="ic_benefits_apply"
+                   className="flex-shrink-0 inline-flex items-center gap-2 text-[#0a0a0a] font-heading text-lg font-bold hover:opacity-60 transition-opacity pb-2">
+                   {c.whatYouGet.ctaText} <ArrowUpRight className="w-5 h-5" />
                 </button>
               </motion.div>
             </div>
@@ -284,8 +283,7 @@ export default function InnerCircle() {
 
           {/* ── VALUE / INCLUDED / CREDIBILITY ── */}
           <ICValueSection accent={P} onApply={() => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'book_call_click', location: 'ic_value_section' });
+            trackCtaClicked("ic_value_cta", "Apply", "#book-call", "ic_value_section");
             setModalOpen(true);
           }} valueMedia={c.valueSection} />
 
@@ -349,13 +347,13 @@ export default function InnerCircle() {
                 className="flex flex-col items-center gap-3">
                 <button
                   onClick={() => {
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push({ event: 'book_call_click', location: 'ic_stop_guessing_cta' });
-                    setModalOpen(true);
-                  }}
-                  style={{ backgroundColor: P }}
-                  className="inline-flex items-center gap-2 font-body text-sm font-bold px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]">
-                  Apply For The Inner Circle <ArrowUpRight className="w-4 h-4" />
+                     trackCtaClicked("ic_stop_guessing_cta", "Apply For The Inner Circle", "#book-call", "ic_stop_guessing");
+                     setModalOpen(true);
+                   }}
+                   data-cta-id="ic_stop_guessing_apply"
+                   style={{ backgroundColor: P }}
+                   className="inline-flex items-center gap-2 font-body text-sm font-bold px-10 py-4 rounded-full hover:opacity-90 transition-opacity text-[#0a0a0a]">
+                   Apply For The Inner Circle <ArrowUpRight className="w-4 h-4" />
                 </button>
                 <p className="font-body text-xs text-[#999]">Application Only • Limited Capacity</p>
               </motion.div>
@@ -381,12 +379,12 @@ export default function InnerCircle() {
                 <div>
                   <button
                     onClick={() => {
-                      window.dataLayer = window.dataLayer || [];
-                      window.dataLayer.push({ event: 'book_call_click', location: 'ic_final_cta' });
-                      setModalOpen(true);
-                    }}
-                    style={{ backgroundColor: P }}
-                    className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity">
+                       trackCtaClicked("ic_final_cta", c.finalCta.ctaText, "#book-call", "ic_final_cta");
+                       setModalOpen(true);
+                     }}
+                     data-cta-id="ic_final_apply"
+                     style={{ backgroundColor: P }}
+                     className="inline-flex items-center gap-2 text-white font-body text-sm font-bold px-8 py-4 rounded-full hover:opacity-90 transition-opacity">
                     
                     {c.finalCta.ctaText} <ArrowUpRight className="w-5 h-5" />
                   </button>

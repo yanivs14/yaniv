@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import Footer from "@/components/landing/Footer";
 import PromoNavbar from "@/components/promotion/PromoNavbar";
 import PromotionPricing from "@/components/promotion/PromotionPricing";
+import { trackPageView, trackCtaClicked } from "@/lib/analytics";
 
 const PAGE_KEY = "promotion";
 
@@ -97,13 +98,7 @@ export default function Promotion() {
   }, []);
 
   useEffect(() => {
-    window.dataLayer = window.dataLayer || [];
-    const params = new URLSearchParams(window.location.search);
-    window.dataLayer.push({
-      event: "promotion_page_viewed",
-      utm_source: params.get("utm_source"),
-      utm_medium: params.get("utm_medium"),
-    });
+    trackPageView("promotion");
   }, []);
 
   if (!content) {
@@ -117,6 +112,7 @@ export default function Promotion() {
   const accent = "#00fff7";
 
   const handleCta = () => {
+    trackCtaClicked("promo_hero_cta", content.ctaText || "START NOW", content.ctaUrl || "#pricing", "promo_hero");
     if (content.ctaUrl) {
       window.location.href = content.ctaUrl;
     } else {

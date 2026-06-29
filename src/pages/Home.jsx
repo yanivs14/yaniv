@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { trackPurchase } from "@/lib/analytics";
 import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
 import MarqueeBanner from "../components/landing/MarqueeBanner";
@@ -29,17 +30,17 @@ export default function Home() {
       const sessionId = params.get("session_id") || "";
       base44.functions.invoke("getCheckoutSession", { session_id: sessionId })
         .then(res => {
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({
-            event: 'purchase_complete',
-            currency: res.data?.currency || 'USD',
-            transaction_id: res.data?.transaction_id || sessionId,
-            value: res.data?.value || 0,
-          });
+          trackPurchase(
+            res.data?.transaction_id || sessionId,
+            res.data?.value || 0,
+            res.data?.currency || 'USD',
+            'unknown',
+            res.data?.customer_email,
+            res.data?.customer_name
+          );
         })
         .catch(() => {
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({ event: 'purchase_complete', currency: 'USD', transaction_id: sessionId, value: 0 });
+          trackPurchase(sessionId, 0, 'USD', 'unknown', '', '');
         });
     }
   }, []);

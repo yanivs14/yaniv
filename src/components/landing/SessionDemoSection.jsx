@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { trackVideoEngaged } from "@/lib/analytics";
 
 export default function SessionDemoSection() {
   const { content } = useSiteContent();
@@ -32,7 +33,7 @@ export default function SessionDemoSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="relative rounded-2xl overflow-hidden aspect-video bg-dark-bg group cursor-pointer"
-          onClick={() => c.videoUrl && setPlaying(true)}
+          onClick={() => { if (c.videoUrl) { trackVideoEngaged("session_demo", 0); setPlaying(true); } }}
         >
           {playing && c.videoUrl ? (
             <video src={c.videoUrl} autoPlay controls className="w-full h-full object-cover" />

@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { Play, ChevronDown, ArrowRight, Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
+import { trackVideoEngaged } from "@/lib/analytics";
 
 function GdprCheckbox({ id, checked, onChange }) {
   return (
@@ -97,15 +98,13 @@ function MediaPlayer({ mediaUrl, mediaType, posterUrl, accent = "#00fff7", dayNu
   const videoRef = useRef(null);
 
   const handlePlay = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'challenge_video_played', day_number: dayNumber });
+    trackVideoEngaged(`7day_day${dayNumber}`, 0);
     setPlaying(true);
     setTimeout(() => videoRef.current?.play(), 50);
   };
 
   const handleEnded = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'challenge_day_completed', day_number: dayNumber });
+    trackVideoEngaged(`7day_day${dayNumber}`, 100);
   };
 
   if (!mediaUrl || mediaType === "none") return null;

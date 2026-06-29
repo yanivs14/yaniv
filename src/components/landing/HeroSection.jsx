@@ -4,6 +4,8 @@ import { ArrowRight, Upload, Dumbbell, RefreshCcw } from "lucide-react";
 import Quiz from "./Quiz";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
+import { trackQuizOpened } from "@/lib/analytics";
+import { useSectionTracking } from "@/hooks/useSectionTracking";
 
 export default function HeroSection() {
   const [quizOpen, setQuizOpen] = useState(false);
@@ -11,6 +13,12 @@ export default function HeroSection() {
   const c = content.hero;
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
+  const heroRef = useSectionTracking("hero");
+
+  const openQuiz = () => {
+    trackQuizOpened("movement_quiz", "1.0");
+    setQuizOpen(true);
+  };
 
   useEffect(() => {
     const handler = () => setQuizOpen(true);
@@ -29,7 +37,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section className="pt-20 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg" id="program">
+      <section ref={heroRef} className="pt-20 pb-10 lg:pt-32 lg:pb-20 bg-dark-bg" id="program">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left */}
@@ -55,7 +63,8 @@ export default function HeroSection() {
               <div className="mt-4 flex flex-col gap-4 relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <button
-                    onClick={() => setQuizOpen(true)}
+                    onClick={openQuiz}
+                    data-cta-id="hero_start_moving"
                     className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                   >
                     {c.ctaPrimary}
@@ -63,6 +72,7 @@ export default function HeroSection() {
 
                   <motion.a
                     href="#pricing"
+                    data-cta-id="hero_take_quiz"
                     className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
                     whileHover={{ x: 3 }}
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}

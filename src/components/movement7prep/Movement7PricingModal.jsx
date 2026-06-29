@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { track, trackPricingViewed } from "@/lib/analytics";
 
 const PLANS = [
   {
@@ -43,8 +44,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
   React.useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: 'upsell_viewed', day_number: 4, source: '7day' });
+      trackPricingViewed(["annual", "monthly"], "7day_pricing_modal");
       return () => { document.body.style.overflow = ""; };
     }
   }, [open]);
@@ -56,8 +56,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
       return;
     }
     checkoutRef.current = true;
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'begin_checkout', plan_type: plan, source: '7day', currency: 'USD' });
+    track('begin_checkout', { plan_type: plan, source: '7day', currency: 'USD', plan_options: ['annual', 'monthly'], page_state: '7day_pricing_modal' });
     setLoading(plan);
     setError("");
     try {

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
+import { useSectionTracking, trackPricingViewed, track } from "@/lib/analytics";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
@@ -13,8 +14,7 @@ async function startCheckout(plan) {
   }
   _checkoutInProgress = true;
   try {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'begin_checkout', currency: 'USD', plan_type: plan });
+    track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['monthly', 'annual'], page_state: 'pricing_section' });
     const res = await base44.functions.invoke("createCheckout", { plan });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {
@@ -84,6 +84,7 @@ function MonthlyCard({ c, mobile = false }) {
       </ul>
       <div className="mt-5">
         <button onClick={handleClick} disabled={loading}
+        data-cta-id="pricing_monthly_cta"
         className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60">
           {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
         </button>
@@ -127,6 +128,7 @@ function AnnualCard({ c, mobile = false }) {
       </ul>
       <div className="mt-4">
         <button onClick={handleClick} disabled={loading}
+        data-cta-id="pricing_annual_cta"
         className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60">
           {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
         </button>
@@ -140,6 +142,13 @@ export default function PricingSection() {
   const { content } = useSiteContent();
   const scrollRef = useRef();
   const [activeTab, setActiveTab] = useState("annual");
+  const pricingRef = useSectionTracking("pricing");
+
+  useEffect(() => {
+    if (content?.pricing) {
+      trackPricingViewed(["annual", "monthly"], "pricing_section");
+    }
+  }, [content]);
 
   // Detect scroll position to sync toggle
   useEffect(() => {
@@ -168,7 +177,7 @@ export default function PricingSection() {
   const c = content.pricing;
 
   return (
-    <section className="py-12 lg:py-24 bg-dark-surface" id="pricing">
+    <section ref={pricingRef} className="py-12 lg:py-24 bg-dark-surface" id="pricing">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

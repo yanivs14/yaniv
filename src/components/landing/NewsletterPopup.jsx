@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import GdprConsent from "./GdprConsent";
+import { trackLeadCapture } from "@/lib/analytics";
 
 const STORAGE_KEY = "newsletter_dismissed_until";
 
@@ -73,8 +74,7 @@ export default function NewsletterPopup() {
     setLoading(true);
     try {
       await base44.functions.invoke("subscribeNewsletter", { email: email.trim(), source: "popup" });
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: 'landing_popup_submitted', form_type: 'popup' });
+      trackLeadCapture(email.trim(), "newsletter_popup", gdpr, "");
       setSubmitted(true);
       setTimeout(dismiss, 2000);
     } catch {

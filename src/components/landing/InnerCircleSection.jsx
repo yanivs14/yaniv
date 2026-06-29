@@ -3,17 +3,19 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import BookCallModal from "@/components/landing/BookCallModal";
+import { useSectionTracking, trackCtaClicked } from "@/lib/analytics";
 
 export default function InnerCircleSection() {
   const { content } = useSiteContent();
   const c = content.innerCircle || {};
   const [modalOpen, setModalOpen] = useState(false);
+  const sectionRef = useSectionTracking("inner_circle");
 
   const whatYouGet = c.whatYouGet || [];
 
   return (
     <>
-      <section className="py-12 lg:py-24 bg-dark-bg" id="inner-circle">
+      <section ref={sectionRef} className="py-12 lg:py-24 bg-dark-bg" id="inner-circle">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
@@ -76,10 +78,10 @@ export default function InnerCircleSection() {
                 )}
                 <button
                   onClick={() => {
-                    window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push({ event: 'book_call_click', location: 'inner_circle_section' });
+                    trackCtaClicked("inner_circle_section_cta", c.ctaButton || "Apply for Inner Circle", "#book-call", "inner_circle_section");
                     setModalOpen(true);
                   }}
+                  data-cta-id="inner_circle_apply"
                   className="inline-flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                 >
                   {c.ctaButton || "Apply for Inner Circle"}

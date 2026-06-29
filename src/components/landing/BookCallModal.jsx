@@ -4,6 +4,7 @@ import { X, ArrowRight, CheckCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { DialCodePicker, COUNTRIES } from "./CountrySelect";
 import GdprConsent from "./GdprConsent";
+import { trackLeadCapture, getCurrentUtms } from "@/lib/analytics";
 
 export default function BookCallModal({ open, onClose }) {
   const [step, setStep] = useState("form");
@@ -46,9 +47,8 @@ export default function BookCallModal({ open, onClose }) {
     const dialCode = COUNTRIES.find(c => c.code === form.dialCode)?.dial || "";
     const countryName = COUNTRIES.find(c => c.code === form.dialCode)?.name || "";
     try {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: 'inner_circle_submitted', form_type: 'inner_circle' });
       const browserLang = navigator.language || navigator.userLanguage || "";
+      const utms = getCurrentUtms();
       const [, slotsRes] = await Promise.all([
         base44.functions.invoke("submitLead", {
           full_name: form.full_name.trim(),
@@ -57,7 +57,8 @@ export default function BookCallModal({ open, onClose }) {
           source: "inner_circle",
           quiz_recommendation: `Inner Circle Inquiry — ${countryName}`,
           country: countryName,
-          browser_language: browserLang
+          browser_language: browserLang,
+          utms,
         }),
         base44.functions.invoke("getCalendlySlots", {})
       ]);
@@ -65,6 +66,7 @@ export default function BookCallModal({ open, onClose }) {
       const eventTypes = slotsRes.data?.eventTypes || [];
       const url = eventTypes[0]?.scheduling_url || null;
       setSchedulingUrl(url);
+      trackLeadCapture(form.email.trim(), "inner_circle", gdpr, `Inner Circle Inquiry — ${countryName}`);
       setStep("schedule");
     } catch {
       setErrors({ submit: "Something went wrong. Please try again." });

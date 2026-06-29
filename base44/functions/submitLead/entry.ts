@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { full_name, phone, email, source, quiz_section, quiz_recommendation, quiz_answers, browser_language, country } = await req.json();
+    const { full_name, phone, email, source, quiz_section, quiz_recommendation, quiz_answers, browser_language, country, utms } = await req.json();
 
     if (!full_name || !phone) {
       return Response.json({ error: 'Full name and phone are required' }, { status: 400 });
@@ -39,6 +39,13 @@ Deno.serve(async (req) => {
             source: source || "quiz",
             lifecycle_stage: "lead",
           };
+          if (utms) {
+            if (utms.utm_source) kitFields.utm_source = utms.utm_source;
+            if (utms.utm_medium) kitFields.utm_medium = utms.utm_medium;
+            if (utms.utm_campaign) kitFields.utm_campaign = utms.utm_campaign;
+            if (utms.utm_content) kitFields.utm_content = utms.utm_content;
+            if (utms.utm_term) kitFields.utm_term = utms.utm_term;
+          }
           if (quiz_section) kitFields.quiz_section = quiz_section;
           if (quiz_recommendation) kitFields.quiz_recommendation = quiz_recommendation;
           if (quiz_answers && Object.keys(quiz_answers).length > 0) {
@@ -103,6 +110,14 @@ Deno.serve(async (req) => {
             hs_lead_status: "NEW",
             message: originParts.length > 0 ? originParts.join(" | ") : undefined,
           };
+          // Add UTM attribution fields (first-touch + last-touch)
+          if (utms) {
+            if (utms.utm_source) hubProps.utm_source = utms.utm_source;
+            if (utms.utm_medium) hubProps.utm_medium = utms.utm_medium;
+            if (utms.utm_campaign) hubProps.utm_campaign = utms.utm_campaign;
+            if (utms.utm_content) hubProps.utm_content = utms.utm_content;
+            if (utms.utm_term) hubProps.utm_term = utms.utm_term;
+          }
           Object.keys(hubProps).forEach(k => hubProps[k] === undefined && delete hubProps[k]);
 
           const hubCreateRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {

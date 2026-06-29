@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { ArrowRight, Mail, Sparkles, Home, Dumbbell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { trackPurchase } from "@/lib/analytics";
 
 const PLAN_LABELS = {
   monthly: "Monthly Membership",
@@ -48,23 +49,18 @@ export default function ThankYou() {
         });
 
         // Analytics
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "purchase_complete",
-          currency: data.currency || "USD",
-          transaction_id: data.transaction_id || sessionId,
-          value: data.value || 0,
-        });
+        trackPurchase(
+          data.transaction_id || sessionId,
+          data.value || 0,
+          data.currency || "USD",
+          data.plan,
+          data.customer_email,
+          data.customer_name
+        );
       })
       .catch(() => {
         setError(true);
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "purchase_complete",
-          currency: "USD",
-          transaction_id: sessionId,
-          value: 0,
-        });
+        trackPurchase(sessionId, 0, "USD", "unknown", "", "");
       })
       .finally(() => setLoading(false));
   }, []);

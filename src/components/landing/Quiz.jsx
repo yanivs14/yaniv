@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ChevronRight, ArrowLeft, Activity, Armchair, Target, Clock, Flame, RotateCcw, Dumbbell, Infinity, Sprout, Layers, Zap, Mountain, Check, CheckCircle, Mail, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { track, trackQuizOpened, trackLeadCapture, getCurrentUtms } from "@/lib/analytics";
 
 const questions = [
   {
@@ -254,6 +255,7 @@ function PricingPhase({ c, rec, checkoutLoading, handleCheckout, onBack }) {
 export default function Quiz({ onClose }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    trackQuizOpened("movement_quiz", "1.0");
     return () => { document.body.style.overflow = ""; };
   }, []);
 
@@ -272,8 +274,7 @@ export default function Quiz({ onClose }) {
   const [gdpr, setGdpr] = useState(false);
 
   const handleCheckout = async (plan) => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'begin_checkout', currency: 'USD', plan_type: plan });
+    track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['monthly', 'annual'], page_state: 'quiz_pricing' });
     setCheckoutLoading(plan);
     await startCheckout(plan);
     setCheckoutLoading(null);
@@ -308,6 +309,7 @@ export default function Quiz({ onClose }) {
         country = geo.country_name || geo.country || "";
       } catch (_) {}
 
+      const utms = getCurrentUtms();
       await base44.functions.invoke("submitLead", {
         full_name: fullName.trim(),
         phone: phone.trim() || "-",
@@ -318,10 +320,10 @@ export default function Quiz({ onClose }) {
         quiz_answers: answers,
         browser_language: navigator.language || "",
         country,
+        utms,
       });
     } catch (_) {}
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'post_quiz_lead_submitted', form_type: 'post_quiz' });
+    trackLeadCapture(email.trim(), "quiz", gdpr, getRecommendation(answers).title);
     setEmailLoading(false);
     setPhase("pricing");
   };

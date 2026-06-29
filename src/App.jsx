@@ -1,11 +1,21 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster"
 import { HelmetProvider } from "react-helmet-async";
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { initAnalytics, trackPageView } from "@/lib/analytics";
+
+function RouteTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
+  return null;
+}
 import Home from './pages/Home';
 import HomeNew from './pages/HomeNew';
 import AdminK from './pages/AdminK';
@@ -46,6 +56,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <SiteContentProvider>
+      <RouteTracker />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home-new" element={<HomeNew />} />
@@ -65,6 +76,7 @@ const AuthenticatedApp = () => {
 
 
 function App() {
+  useEffect(() => { initAnalytics(); }, []);
 
   return (
     <HelmetProvider>
