@@ -2,7 +2,7 @@ import Stripe from "npm:stripe@14";
 
 const PRICE_IDS = {
   monthly: "price_1TSPB74T8Uo6bhpdgcMdQoKk",
-  annual: "price_1Tm8pz4T8Uo6bhpdwmsTPMkO",
+  annual: "price_1Tndsr4T8Uo6bhpd4wTA4Q8F",
   promo: "price_1Th6Ap4T8Uo6bhpdZQd9Idsx",
 };
 
