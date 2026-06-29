@@ -41,8 +41,16 @@ async function tagKitSubscriber(kitKey, subscriberId, tagNames) {
 
 async function handleChurn(stripe, subscription) {
   const customerId = subscription.customer;
-  const customer = await stripe.customers.retrieve(customerId);
-  const customerEmail = customer?.email;
+  let customerEmail = "";
+  let customerName = "";
+  try {
+    const customer = await stripe.customers.retrieve(customerId);
+    customerEmail = customer?.email || "";
+    customerName = customer?.name || customer?.email || "Churned Customer";
+  } catch (custErr) {
+    console.warn("Stripe customer retrieve failed:", custErr.message);
+    return Response.json({ received: true, skipped: "customer_lookup_failed", error: custErr.message });
+  }
   if (!customerEmail) return Response.json({ received: true, skipped: "no_email" });
 
   const created = new Date(subscription.created * 1000);
@@ -64,7 +72,7 @@ async function handleChurn(stripe, subscription) {
         headers: kitHeaders,
         body: JSON.stringify({
           email_address: customerEmail,
-          first_name: (customer?.name || "").split(" ")[0] || "",
+          first_name: (customerName || "").split(" ")[0] || "",
           state: "active",
           fields: { lifecycle_stage: "churned" },
         }),
