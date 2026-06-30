@@ -12,7 +12,7 @@ export default function HandstandHero({ c }) {
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover opacity-40" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/10 via-dark-bg/30 to-dark-bg" />
+        <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/50 via-dark-bg/70 to-dark-bg" />
       </div>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20">
         <motion.div
