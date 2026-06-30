@@ -402,6 +402,45 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Send purchase event to GA4 via Measurement Protocol (non-blocking)
+    try {
+      const gaMeasurementId = Deno.env.get("GA4_MEASUREMENT_ID");
+      const gaApiSecret = Deno.env.get("GA4_API_SECRET");
+      if (gaMeasurementId && gaApiSecret) {
+        const gaRes = await fetch(
+          `https://www.google-analytics.com/mp/collect?measurement_id=${gaMeasurementId}&api_secret=${gaApiSecret}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              client_id: transactionId + ".stripe",
+              events: [{
+                name: "purchase",
+                params: {
+                  transaction_id: transactionId,
+                  value: amount,
+                  currency: currency.toLowerCase(),
+                  items: [{
+                    item_id: plan,
+                    item_name: planLabel,
+                    price: amount,
+                    quantity: 1,
+                  }],
+                },
+              }],
+            }),
+          }
+        );
+        if (gaRes.ok) {
+          console.log(`GA4 purchase event sent: ${transactionId} | $${amount} ${currency} | ${planLabel}`);
+        } else {
+          console.warn("GA4 purchase event failed:", gaRes.status, await gaRes.text());
+        }
+      }
+    } catch (gaErr) {
+      console.warn("GA4 purchase event error (non-critical):", gaErr.message);
+    }
+
     // Sync to Kit — direct API call (non-blocking)
     if (customerEmail) {
       try {
