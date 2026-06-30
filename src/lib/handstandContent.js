@@ -28,6 +28,12 @@ export const defaultHandstandContent = {
     eyebrow: "The Solution",
     headline: "A Structured Path to Wall-Free Handstands",
     subtitle: "The Handstand Blueprint breaks the skill into digestible weekly progressions.",
+    imageUrl: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=900&q=80",
+    videoUrl: "",
+    videoLabel: "Watch the method",
+    videoDuration: "2:14",
+    statValue: "8wks",
+    statLabel: "to wall-free",
     benefits: [
       { title: "8-Week Progression", desc: "Follow a clear, week-by-week roadmap from complete beginner to wall-free holds." },
       { title: "Strength Foundations", desc: "Build the wrist, shoulder, and core strength needed to support your bodyweight." },
