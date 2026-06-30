@@ -10,7 +10,7 @@ export default function HandstandSolution({ c }) {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-red/5 rounded-full blur-[120px]" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-red/3 rounded-full blur-[120px]" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Video / Image side */}
           <motion.div
