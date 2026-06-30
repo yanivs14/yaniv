@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export default function HandstandSolution({ c }) {
   const benefits = c?.benefits || [];
+  const videoRef = useRef(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!c?.videoUrl || videoLoaded) return;
+    const el = videoRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVideoLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [c?.videoUrl, videoLoaded]);
   return (
     <section className="py-20 lg:py-28 bg-dark-surface relative overflow-hidden">
       {/* Glow accents */}
@@ -22,7 +41,16 @@ export default function HandstandSolution({ c }) {
           >
             <div className="relative aspect-[4/5] sm:aspect-video lg:aspect-[4/5] rounded-3xl overflow-hidden border border-dark-border group cursor-pointer">
               {c?.videoUrl ? (
-                <video src={c.videoUrl} className="w-full h-full object-cover" muted loop autoPlay playsInline />
+                <video
+                  ref={videoRef}
+                  src={videoLoaded ? c.videoUrl : undefined}
+                  className="w-full h-full object-cover"
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  preload="none"
+                />
               ) : (
                 <img
                   src={c?.imageUrl || "https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=900&q=80"}
@@ -31,11 +59,6 @@ export default function HandstandSolution({ c }) {
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/40 to-transparent" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-orange-red flex items-center justify-center shadow-2xl shadow-orange-red/30 group-hover:scale-110 transition-transform">
-                  <Play className="w-8 h-8 text-dark-bg ml-1 fill-dark-bg" />
-                </div>
-              </div>
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                 <span className="font-body text-xs text-off-white bg-dark-bg/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
                   {c?.videoLabel || "Watch the method"}
