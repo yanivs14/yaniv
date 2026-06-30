@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
       { name: "quiz_opened", label: "Quiz Opened", description: "User opened the movement quiz" },
       { name: "pricing_viewed", label: "Pricing Viewed", description: "User viewed the pricing section" },
       { name: "lead_capture", label: "Lead Capture", description: "User submitted their contact details" },
+      { name: "purchase", label: "Purchase", description: "Customer completed a checkout — includes revenue, plan, and transaction data" },
     ];
 
     const results = [];

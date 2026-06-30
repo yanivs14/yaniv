@@ -368,6 +368,40 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Send purchase behavioral event to HubSpot analytics (non-blocking)
+    if (customerEmail) {
+      try {
+        const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
+        if (hubToken) {
+          const evRes = await fetch("https://api.hubapi.com/events/v3/send", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: customerEmail,
+              eventName: "pe148037733_purchase",
+              occurredAt: new Date().toISOString(),
+              properties: {
+                revenue: String(amount),
+                price: String(amount),
+                currency,
+                plan: planLabel,
+                product: planLabel,
+                transaction_id: transactionId,
+                quantity: "1",
+              },
+            }),
+          });
+          if (evRes.ok) {
+            console.log(`HubSpot purchase event sent: ${customerEmail} | $${amount} ${currency} | ${planLabel}`);
+          } else {
+            console.warn("HubSpot purchase event failed:", evRes.status, await evRes.text());
+          }
+        }
+      } catch (evErr) {
+        console.warn("HubSpot purchase event error (non-critical):", evErr.message);
+      }
+    }
+
     // Sync to Kit — direct API call (non-blocking)
     if (customerEmail) {
       try {
