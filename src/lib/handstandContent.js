@@ -76,7 +76,7 @@ export const defaultHandstandContent = {
     eyebrow: "Enroll Today",
     headline: "Get Full Access",
     subtitle: "One-time payment. Lifetime access. Start today.",
-    price: "97",
+    price: "14.99",
     priceNote: "One-time payment",
     badge: "Best Value",
     features: [
