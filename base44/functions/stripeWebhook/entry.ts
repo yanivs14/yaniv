@@ -403,10 +403,18 @@ Deno.serve(async (req) => {
     }
 
     // Send purchase event to GA4 via Measurement Protocol (non-blocking)
+    // Includes revenue, plan details, lead attribution, and quiz data.
+    // NOTE: GA4 prohibits PII (email, phone, full name) — only non-identifying attributes are sent.
     try {
       const gaMeasurementId = Deno.env.get("GA4_MEASUREMENT_ID");
       const gaApiSecret = Deno.env.get("GA4_API_SECRET");
       if (gaMeasurementId && gaApiSecret) {
+        const leadSource = matchedLead?.source || "checkout";
+        const quizRec = matchedLead?.quiz_recommendation || "";
+        const country = matchedLead?.country || "";
+        const browserLang = matchedLead?.browser_language || "";
+        const isPromo = plan === "promo";
+
         const gaRes = await fetch(
           `https://www.google-analytics.com/mp/collect?measurement_id=${gaMeasurementId}&api_secret=${gaApiSecret}`,
           {
@@ -414,15 +422,32 @@ Deno.serve(async (req) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               client_id: transactionId + ".stripe",
+              user_properties: {
+                plan_type: { value: plan },
+                lead_source: { value: leadSource },
+                country: { value: country },
+                lifecycle_stage: { value: "customer" },
+              },
               events: [{
                 name: "purchase",
                 params: {
                   transaction_id: transactionId,
                   value: amount,
+                  revenue: amount,
                   currency: currency.toLowerCase(),
+                  coupon: isPromo ? "promo_25_first_3_months" : "",
+                  plan: planLabel,
+                  plan_type: plan,
+                  lead_source: leadSource,
+                  quiz_recommendation: quizRec,
+                  country: country,
+                  browser_language: browserLang,
+                  has_quiz_data: matchedLead?.quiz_answers && Object.keys(matchedLead.quiz_answers).length > 0 ? "true" : "false",
                   items: [{
                     item_id: plan,
                     item_name: planLabel,
+                    item_category: plan,
+                    item_variant: isPromo ? "promo" : "standard",
                     price: amount,
                     quantity: 1,
                   }],
@@ -432,7 +457,7 @@ Deno.serve(async (req) => {
           }
         );
         if (gaRes.ok) {
-          console.log(`GA4 purchase event sent: ${transactionId} | $${amount} ${currency} | ${planLabel}`);
+          console.log(`GA4 purchase event sent: ${transactionId} | $${amount} ${currency} | ${planLabel} | source: ${leadSource}`);
         } else {
           console.warn("GA4 purchase event failed:", gaRes.status, await gaRes.text());
         }
