@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, trackPricingViewed } from "@/lib/analytics";
+import { track, trackPricingViewed, getGaClientId } from "@/lib/analytics";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
@@ -14,7 +14,7 @@ async function startCheckout(plan) {
   _checkoutInProgress = true;
   try {
     track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['promo'], page_state: 'promo_pricing' });
-    const res = await base44.functions.invoke("createCheckout", { plan });
+    const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {
     _checkoutInProgress = false;

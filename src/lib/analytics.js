@@ -58,7 +58,7 @@ function getDeviceInfo() {
   return { device_type: deviceType, browser };
 }
 
-function getGaClientId() {
+export function getGaClientId() {
   try {
     const m = document.cookie.match(/_ga=([^;]+)/);
     if (m) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, trackPricingViewed } from "@/lib/analytics";
+import { track, trackPricingViewed, getGaClientId } from "@/lib/analytics";
 
 const PLANS = [
   {
@@ -60,7 +60,7 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
     setLoading(plan);
     setError("");
     try {
-      const res = await base44.functions.invoke("createMovement7Checkout", { plan });
+      const res = await base44.functions.invoke("createMovement7Checkout", { plan, ga_client_id: getGaClientId() });
       if (res.data?.url) {
         window.location.href = res.data.url;
       } else {

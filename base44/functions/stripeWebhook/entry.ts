@@ -145,6 +145,7 @@ Deno.serve(async (req) => {
     const amount = session.amount_total ? session.amount_total / 100 : 0;
     const currency = session.currency?.toUpperCase() || "USD";
     const transactionId = session.id;
+    const gaClientId = session.metadata?.ga_client_id || "";
 
     // Try to match an existing lead by email to get quiz data
     let matchedLead = null;
@@ -431,6 +432,10 @@ Deno.serve(async (req) => {
         const country = matchedLead?.country || "";
         const browserLang = matchedLead?.browser_language || "";
         const isPromo = plan === "promo";
+        // Use the real GA4 client_id from the user's browser (passed via checkout metadata)
+        // so the purchase is attributed to the same session that had page views & clicks.
+        // Fallback to a synthetic ID if not available.
+        const gaClientIdValue = gaClientId || (transactionId + ".stripe");
 
         const gaRes = await fetch(
           `https://www.google-analytics.com/mp/collect?measurement_id=${gaMeasurementId}&api_secret=${gaApiSecret}`,
@@ -438,7 +443,7 @@ Deno.serve(async (req) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              client_id: transactionId + ".stripe",
+              client_id: gaClientIdValue,
               user_properties: {
                 plan_type: { value: plan },
                 lead_source: { value: leadSource },
@@ -448,6 +453,7 @@ Deno.serve(async (req) => {
               events: [{
                 name: "purchase",
                 params: {
+                  engagement_time_msec: 100,
                   transaction_id: transactionId,
                   value: amount,
                   revenue: amount,
