@@ -28,7 +28,7 @@ export default function HandstandInstructor({ c }) {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c?.eyebrow}</p>
+            
             <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-6">
               {c?.name}
             </h2>

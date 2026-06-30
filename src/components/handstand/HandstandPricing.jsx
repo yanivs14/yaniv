@@ -49,7 +49,7 @@ export default function HandstandPricing({ c }) {
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c?.eyebrow}</p>
+          
           <h2 className="font-heading text-4xl sm:text-5xl font-bold text-off-white uppercase tracking-tight mb-3">
             {c?.headline}
           </h2>

@@ -21,7 +21,7 @@ export default function HandstandHero({ c }) {
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c?.eyebrow}</p>
+          
           <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight mb-6">
             {c?.headline1}<br />
             {c?.headline2} <span className="text-orange-red">{c?.headlineAccent}</span>

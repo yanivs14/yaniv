@@ -16,7 +16,7 @@ export default function HandstandFAQ({ c }) {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <p className="font-body text-sm text-white-dim uppercase tracking-widest mb-4">{c?.eyebrow}</p>
+          
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {c?.headline}
           </h2>

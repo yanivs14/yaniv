@@ -16,7 +16,7 @@ export default function HandstandFinalCTA({ c }) {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c?.eyebrow}</p>
+          
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-5 leading-[0.95]">
             {c?.headline}
           </h2>

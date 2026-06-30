@@ -62,10 +62,7 @@ export default function HandstandSolution({ c }) {
             transition={{ duration: 0.7 }}
             className="order-2"
           >
-            <div className="inline-flex items-center gap-2 mb-5">
-              <span className="w-8 h-px bg-orange-red" />
-              <p className="font-body text-sm text-orange-red uppercase tracking-widest font-semibold">{c?.eyebrow}</p>
-            </div>
+            
             <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-5 leading-[0.95]">
               {c?.headline?.split(" ").slice(0, -2).join(" ")}{" "}
               <span className="text-orange-red">{c?.headline?.split(" ").slice(-2).join(" ")}</span>
