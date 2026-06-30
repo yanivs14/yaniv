@@ -5,6 +5,7 @@ const PLAN_LABELS = {
   monthly: "Monthly — $35/month",
   annual: "Annual — $250/year",
   promo: "Promo — $25/month (first 3 months)",
+  handstand_course: "Handstand Course — $97 one-time",
 };
 
 async function ensureKitTags(kitKey, tagNames) {
@@ -542,7 +543,7 @@ Deno.serve(async (req) => {
 
           // Tag subscriber with plan tag
           if (kitSubscriberId) {
-            const planTag = plan === "annual" ? "Annual" : "Monthly-Active";
+            const planTag = plan === "annual" ? "Annual" : plan === "handstand_course" ? "Handstand Course" : "Monthly-Active";
             await tagKitSubscriber(kitKey, kitSubscriberId, [planTag]);
           }
         }

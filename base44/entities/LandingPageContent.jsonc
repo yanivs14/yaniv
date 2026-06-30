@@ -1,0 +1,35 @@
+{
+  "name": "LandingPageContent",
+  "type": "object",
+  "properties": {
+    "page_key": {
+      "type": "string",
+      "description": "Unique key for the landing page (e.g. handstand_course)"
+    },
+    "data": {
+      "type": "object",
+      "description": "Full page content data \u2014 all sections"
+    }
+  },
+  "required": [
+    "page_key"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
