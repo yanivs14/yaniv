@@ -1,44 +1,85 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 export default function HandstandProblem({ c }) {
   const points = c?.points || [];
   return (
-    <section className="py-20 lg:py-28 bg-dark-bg">
-      <div className="max-w-5xl mx-auto px-6 lg:px-10">
+    <section className="py-20 lg:py-28 bg-dark-bg relative overflow-hidden">
+      {/* Background grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}
+      />
+      {/* Red glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-destructive/5 rounded-full blur-[120px]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
+        {/* Header — left-aligned, not centered */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
+          className="mb-14 max-w-2xl"
         >
-          
-          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-4">
-            {c?.headline}
+          <div className="inline-flex items-center gap-2 mb-4">
+            <AlertTriangle className="w-4 h-4 text-destructive" />
+            <span className="font-body text-xs text-destructive uppercase tracking-widest font-semibold">The Problem</span>
+          </div>
+          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-4 leading-[0.95]">
+            {c?.headline?.split(" ").slice(0, -2).join(" ")}{" "}
+            <span className="text-destructive">{c?.headline?.split(" ").slice(-2).join(" ")}</span>
           </h2>
           <p className="font-body text-base text-white-muted">{c?.subtitle}</p>
         </motion.div>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {points.map((p, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="bg-dark-surface border border-dark-border rounded-2xl p-6 flex items-start gap-4"
-            >
-              <div className="w-10 h-10 rounded-full bg-destructive/15 flex items-center justify-center flex-shrink-0">
-                <X className="w-5 h-5 text-destructive" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-bold text-off-white mb-1 uppercase">{p.title}</h3>
-                <p className="font-body text-sm text-white-muted leading-relaxed">{p.desc}</p>
-              </div>
-            </motion.div>
-          ))}
+
+        {/* Asymmetric staggered layout — not a uniform grid */}
+        <div className="grid md:grid-cols-12 gap-4 lg:gap-5">
+          {points.map((p, i) => {
+            // Alternate card sizes and offsets for visual rhythm
+            const layouts = [
+              "md:col-span-7 md:mt-0",
+              "md:col-span-5 md:mt-12",
+              "md:col-span-5 md:mt-0",
+              "md:col-span-7 md:mt-12",
+            ];
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className={`group relative bg-dark-surface border border-dark-border rounded-2xl p-6 lg:p-8 overflow-hidden hover:border-destructive/30 transition-colors duration-300 ${layouts[i % 4]}`}
+              >
+                {/* Hover glow */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-destructive/0 group-hover:bg-destructive/5 rounded-full blur-[60px] transition-all duration-500" />
+
+                <div className="relative flex items-start gap-5">
+                  {/* Large index number instead of X icon */}
+                  <div className="flex-shrink-0">
+                    <span className="font-heading text-5xl lg:text-6xl font-bold text-dark-border group-hover:text-destructive/30 transition-colors duration-300 leading-none">
+                      0{i + 1}
+                    </span>
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="w-6 h-px bg-destructive/40" />
+                      <h3 className="font-heading text-lg lg:text-xl font-bold text-off-white uppercase tracking-wide">{p.title}</h3>
+                    </div>
+                    <p className="font-body text-sm text-white-muted leading-relaxed">{p.desc}</p>
+                  </div>
+                </div>
+
+                {/* Bottom accent line on hover */}
+                <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full bg-destructive/40 transition-all duration-500" />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
