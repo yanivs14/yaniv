@@ -42,7 +42,7 @@ export default function HandstandLanding() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
       <HandstandNavbar c={content.navbar} />
       <HandstandHero c={content.hero} />
       <HandstandMarquee />

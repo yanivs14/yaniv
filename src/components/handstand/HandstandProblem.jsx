@@ -1,28 +1,31 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Lock, Shuffle, TrendingDown, AlertTriangle } from "lucide-react";
 
 const STRUGGLES = [
   {
-    icon: "🧱",
+    icon: Lock,
     title: "Stuck at the Wall",
     desc: "You can hold against the wall for minutes — but the second you step away, you collapse. The wall is a crutch, not a tool.",
   },
   {
-    icon: "🎲",
+    icon: Shuffle,
     title: "Random YouTube Chaos",
     desc: "You bounce between tutorials with no structure, no plan, no progression. Ten coaches, ten opinions, zero results.",
   },
   {
-    icon: "📉",
+    icon: TrendingDown,
     title: "Plateaued for Months",
     desc: "Your hold time hasn't moved in weeks. You train hard, but you're not training smart — so nothing changes.",
   },
   {
-    icon: "😱",
+    icon: AlertTriangle,
     title: "Fear of Falling",
     desc: "Every kick-up feels like a gamble. Your brain freezes your body, and fear — not strength — is what's holding you back.",
   },
 ];
+
+const FALLBACK_ICONS = [Lock, Shuffle, TrendingDown, AlertTriangle];
 
 export default function HandstandProblem({ c }) {
   const points = c?.points || [];
@@ -30,7 +33,7 @@ export default function HandstandProblem({ c }) {
   // Use CMS data if available, otherwise fall back to the hardcoded struggles
   const items = points.length > 0
     ? points.map((p, i) => ({
-        icon: ["🧱", "🎲", "📉", "😱"][i % 4],
+        icon: FALLBACK_ICONS[i % FALLBACK_ICONS.length],
         title: p.title,
         desc: p.desc,
       }))
@@ -60,40 +63,43 @@ export default function HandstandProblem({ c }) {
 
         {/* Cards */}
         <div className="grid sm:grid-cols-2 gap-4 lg:gap-6">
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group relative bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 hover:border-orange-red/40 transition-all duration-300 overflow-hidden"
-            >
-              {/* Hover gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-red/0 to-orange-red/0 group-hover:from-orange-red/[0.04] group-hover:to-transparent transition-all duration-500" />
+          {items.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="group relative bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 hover:border-orange-red/40 transition-all duration-300 overflow-hidden"
+              >
+                {/* Hover gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-red/0 to-orange-red/0 group-hover:from-orange-red/[0.04] group-hover:to-transparent transition-all duration-500" />
 
-              <div className="relative">
-                {/* Icon */}
-                <div className="text-4xl mb-5 grayscale group-hover:grayscale-0 transition-all duration-300">
-                  {item.icon}
+                <div className="relative">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-dark-surface-2 border border-dark-border flex items-center justify-center mb-5 group-hover:border-orange-red/40 group-hover:bg-orange-red/10 transition-all duration-300">
+                    <Icon className="w-5 h-5 text-white-dim group-hover:text-orange-red transition-colors duration-300" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-heading text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight mb-3 group-hover:text-orange-red transition-colors duration-300">
+                    {item.title}
+                  </h3>
+
+                  {/* Desc */}
+                  <p className="font-body text-sm text-white-muted leading-relaxed">{item.desc}</p>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-heading text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight mb-3 group-hover:text-orange-red transition-colors duration-300">
-                  {item.title}
-                </h3>
-
-                {/* Desc */}
-                <p className="font-body text-sm text-white-muted leading-relaxed">{item.desc}</p>
-              </div>
-
-              {/* Corner accent */}
-              <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-                <div className="absolute top-0 right-0 w-px h-8 bg-orange-red/0 group-hover:bg-orange-red/40 transition-all duration-500" />
-                <div className="absolute top-0 right-0 h-px w-8 bg-orange-red/0 group-hover:bg-orange-red/40 transition-all duration-500" />
-              </div>
-            </motion.div>
-          ))}
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                  <div className="absolute top-0 right-0 w-px h-8 bg-orange-red/0 group-hover:bg-orange-red/40 transition-all duration-500" />
+                  <div className="absolute top-0 right-0 h-px w-8 bg-orange-red/0 group-hover:bg-orange-red/40 transition-all duration-500" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Bottom line */}
