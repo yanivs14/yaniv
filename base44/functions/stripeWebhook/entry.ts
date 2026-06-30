@@ -369,10 +369,18 @@ Deno.serve(async (req) => {
     }
 
     // Send purchase behavioral event to HubSpot analytics (non-blocking)
+    // Mirrors GA4 fields: revenue, plan details, lead attribution, and quiz data.
     if (customerEmail) {
       try {
         const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
         if (hubToken) {
+          const leadSource = matchedLead?.source || "checkout";
+          const quizRec = matchedLead?.quiz_recommendation || "";
+          const country = matchedLead?.country || "";
+          const browserLang = matchedLead?.browser_language || "";
+          const isPromo = plan === "promo";
+          const hasQuizData = matchedLead?.quiz_answers && Object.keys(matchedLead.quiz_answers).length > 0;
+
           const evRes = await fetch("https://api.hubapi.com/events/v3/send", {
             method: "POST",
             headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
@@ -383,16 +391,25 @@ Deno.serve(async (req) => {
               properties: {
                 revenue: String(amount),
                 price: String(amount),
+                value: String(amount),
                 currency,
                 plan: planLabel,
+                plan_type: plan,
                 product: planLabel,
                 transaction_id: transactionId,
                 quantity: "1",
+                coupon: isPromo ? "promo_25_first_3_months" : "",
+                lead_source: leadSource,
+                quiz_recommendation: quizRec,
+                country,
+                browser_language: browserLang,
+                has_quiz_data: hasQuizData ? "true" : "false",
+                lifecycle_stage: "customer",
               },
             }),
           });
           if (evRes.ok) {
-            console.log(`HubSpot purchase event sent: ${customerEmail} | $${amount} ${currency} | ${planLabel}`);
+            console.log(`HubSpot purchase event sent: ${customerEmail} | $${amount} ${currency} | ${planLabel} | source: ${leadSource}`);
           } else {
             console.warn("HubSpot purchase event failed:", evRes.status, await evRes.text());
           }
