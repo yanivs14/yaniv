@@ -9,7 +9,7 @@ export const defaultHandstandContent = {
     headline2: "Handstand",
     headlineAccent: "Hero",
     subheadline: "The complete 8-week system to build strength, balance, and wall-free confidence on your hands.",
-    ctaText: "Enroll Now",
+    ctaText: "HANDSTAND 4 LIFE",
     ctaSubtext: "One-time payment · Lifetime access",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/77f6a616e_generated_image.png",
   },
