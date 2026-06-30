@@ -68,10 +68,10 @@ export default function HandstandProblem({ c }) {
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                initial={{ opacity: 0, scale: 0.85, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: i * 0.08, type: "spring", stiffness: 200, damping: 20 }}
                 className="group relative bg-dark-surface border border-dark-border rounded-2xl p-4 sm:p-7 lg:p-8 hover:border-orange-red/40 transition-all duration-300 overflow-hidden"
               >
                 {/* Hover gradient */}
