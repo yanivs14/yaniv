@@ -62,7 +62,7 @@ export default function HandstandProblem({ c }) {
         </motion.div>
 
         {/* Cards */}
-        <div className="grid sm:grid-cols-2 gap-4 lg:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {items.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -72,24 +72,24 @@ export default function HandstandProblem({ c }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 hover:border-orange-red/40 transition-all duration-300 overflow-hidden"
+                className="group relative bg-dark-surface border border-dark-border rounded-2xl p-4 sm:p-7 lg:p-8 hover:border-orange-red/40 transition-all duration-300 overflow-hidden"
               >
                 {/* Hover gradient */}
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-red/0 to-orange-red/0 group-hover:from-orange-red/[0.04] group-hover:to-transparent transition-all duration-500" />
 
                 <div className="relative">
                   {/* Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-dark-surface-2 border border-dark-border flex items-center justify-center mb-5 group-hover:border-orange-red/40 group-hover:bg-orange-red/10 transition-all duration-300">
-                    <Icon className="w-5 h-5 text-white-dim group-hover:text-orange-red transition-colors duration-300" />
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-dark-surface-2 border border-dark-border flex items-center justify-center mb-3 sm:mb-5 group-hover:border-orange-red/40 group-hover:bg-orange-red/10 transition-all duration-300">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white-dim group-hover:text-orange-red transition-colors duration-300" />
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-heading text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight mb-3 group-hover:text-orange-red transition-colors duration-300">
+                  <h3 className="font-heading text-lg sm:text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight mb-2 sm:mb-3 group-hover:text-orange-red transition-colors duration-300">
                     {item.title}
                   </h3>
 
                   {/* Desc */}
-                  <p className="font-body text-sm text-white-muted leading-relaxed">{item.desc}</p>
+                  <p className="font-body text-xs sm:text-sm text-white-muted leading-relaxed">{item.desc}</p>
                 </div>
 
                 {/* Corner accent */}
