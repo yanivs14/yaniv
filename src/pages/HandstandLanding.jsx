@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 import HandstandNavbar from "@/components/handstand/HandstandNavbar";
 import HandstandHero from "@/components/handstand/HandstandHero";
+import HandstandMarquee from "@/components/handstand/HandstandMarquee";
 import HandstandProblem from "@/components/handstand/HandstandProblem";
 import HandstandSolution from "@/components/handstand/HandstandSolution";
 import HandstandCurriculum from "@/components/handstand/HandstandCurriculum";
@@ -44,6 +45,7 @@ export default function HandstandLanding() {
     <div className="min-h-screen bg-dark-bg">
       <HandstandNavbar c={content.navbar} />
       <HandstandHero c={content.hero} />
+      <HandstandMarquee />
       <HandstandProblem c={content.problem} />
       <HandstandSolution c={content.solution} />
       <HandstandCurriculum c={content.curriculum} />
