@@ -93,7 +93,7 @@ async function handleChurn(stripe, subscription) {
   const canceled = new Date(canceledAt * 1000);
   const durationMs = canceled - created;
   const sixMonthsMs = 6 * 30 * 24 * 60 * 60 * 1000;
-  const churnTag = durationMs > sixMonthsMs ? ">6m Churn" : "Churned <6m";
+  const churnTag = durationMs > sixMonthsMs ? "6m Churn<" : "Churned <6m";
 
   console.log(`Churn: ${customerEmail} | duration ~${Math.round(durationMs / (30*24*60*60*1000))}mo | tag: ${churnTag}`);
 
