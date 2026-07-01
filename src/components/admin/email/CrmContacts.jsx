@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const SOURCE_LABELS = {
@@ -32,6 +32,8 @@ export default function CrmContacts() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 15;
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -63,6 +65,15 @@ export default function CrmContacts() {
       return true;
     });
   }, [contacts, search, filter]);
+
+  // Reset to page 1 when filter/search changes
+  useEffect(() => { setCurrentPage(1); }, [search, filter]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const pagedContacts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, currentPage]);
 
   const statCards = [
     { label: "Total", value: stats.total_contacts || 0, icon: Users, color: "text-off-white" },
@@ -141,8 +152,9 @@ export default function CrmContacts() {
           <p className="text-white-muted font-body text-sm">No contacts found</p>
         </div>
       ) : (
+        <>
         <div className="space-y-2">
-          {filtered.map((c, i) => {
+          {pagedContacts.map((c, i) => {
             const expanded = expandedId === c.email;
             return (
               <motion.div
@@ -253,6 +265,50 @@ export default function CrmContacts() {
             );
           })}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between gap-2 mt-4 mb-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 text-xs font-body px-3 py-2 rounded-lg border border-[#2a2a2a] text-white-muted hover:border-orange-red hover:text-orange-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-4 h-4" /> Prev
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                .map((p, idx, arr) => (
+                  <React.Fragment key={p}>
+                    {idx > 0 && arr[idx - 1] !== p - 1 && (
+                      <span className="text-white-dim text-xs px-1">…</span>
+                    )}
+                    <button
+                      onClick={() => setCurrentPage(p)}
+                      className={`w-8 h-8 text-xs font-body rounded-lg transition-colors ${currentPage === p ? "bg-orange-red text-dark-bg font-bold" : "text-white-muted hover:bg-[#1a1a1a]"}`}
+                    >
+                      {p}
+                    </button>
+                  </React.Fragment>
+                ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 text-xs font-body px-3 py-2 rounded-lg border border-[#2a2a2a] text-white-muted hover:border-orange-red hover:text-orange-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Next <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        <p className="text-center text-[10px] text-white-dim mt-2 mb-1">
+          Page {currentPage} of {totalPages} · {filtered.length} contacts
+        </p>
+        </>
       )}
     </div>
   );

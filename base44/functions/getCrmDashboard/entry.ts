@@ -15,16 +15,24 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.EmailLog.list('-created_date', 500).catch(() => []),
     ]);
 
-    // 2. Fetch Kit subscribers (paginate up to 5 pages)
+    // 2. Fetch Kit subscribers (cursor-based pagination, up to 20 pages)
     const kitKey = Deno.env.get("API_Key_kit");
     const kitMap = new Map();
     if (kitKey) {
       try {
         const kitHeaders = { "X-Kit-Api-Key": kitKey };
-        let page = 1;
-        while (page <= 5) {
-          const res = await fetch(`https://api.kit.com/v4/subscribers?per_page=100&page=${page}`, { headers: kitHeaders });
-          if (!res.ok) { console.warn("Kit page", page, "failed:", res.status); break; }
+        let after = null;
+        let pageCount = 0;
+        while (pageCount < 20) {
+          let url = "https://api.kit.com/v4/subscribers?per_page=100";
+          if (after) url += `&after=${encodeURIComponent(after)}`;
+          let res;
+          for (let attempt = 0; attempt < 3; attempt++) {
+            res = await fetch(url, { headers: kitHeaders });
+            if (res.status !== 429) break;
+            await new Promise(r => setTimeout(r, 2000));
+          }
+          if (!res.ok) { console.warn("Kit page", pageCount, "failed:", res.status); break; }
           const data = await res.json();
           const subs = data?.subscribers || [];
           if (subs.length === 0) break;
@@ -38,8 +46,10 @@ Deno.serve(async (req) => {
               });
             }
           }
-          if (subs.length < 100) break;
-          page++;
+          if (!data?.pagination?.has_next_page) break;
+          after = data?.pagination?.end_cursor;
+          if (!after) break;
+          pageCount++;
         }
         console.log(`Kit: fetched ${kitMap.size} subscribers`);
       } catch (e) {
