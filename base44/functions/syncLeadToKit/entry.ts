@@ -137,9 +137,9 @@ Deno.serve(async (req) => {
       console.warn("Kit form subscription error:", formErr.message);
     }
 
-    // Tag the lead with "Leads- Cold"
+    // Tag the lead with "LP_Leads_June26" (quiz / Inner Circle lead saved)
     if (subscriberId) {
-      await tagSubscriber(subscriberId, ["Leads- Cold"]);
+      await tagSubscriber(subscriberId, ["LP_Leads_June26"]);
     }
 
     if (subscriberId || formSubscribed) {

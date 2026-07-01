@@ -36,12 +36,24 @@ Deno.serve(async (req) => {
         console.warn("Kit sync failed:", kitRes.status, await kitRes.text());
       }
 
-      // Tag with Newsletter
+      // Tag with Newsletter — correct Kit v4 endpoint: POST /v4/tags/{tag_id}/subscribers/{subscriber_id}
       if (subscriberId) {
         try {
-          const tagsRes = await fetch("https://api.kit.com/v4/tags", { headers: kitHeaders });
-          const existingTags = (await tagsRes.json())?.tags || [];
-          let tag = existingTags.find(t => t.name === "Newsletter");
+          let allTags = [];
+          let afterCursor = null;
+          for (let page = 0; page < 10; page++) {
+            const url = afterCursor
+              ? `https://api.kit.com/v4/tags?per_page=1000&after=${afterCursor}`
+              : `https://api.kit.com/v4/tags?per_page=1000`;
+            const tagsRes = await fetch(url, { headers: kitHeaders });
+            if (!tagsRes.ok) break;
+            const tagsData = await tagsRes.json();
+            allTags = allTags.concat(tagsData?.tags || []);
+            if (!tagsData?.pagination?.has_next_page) break;
+            afterCursor = tagsData?.pagination?.end_cursor;
+            if (!afterCursor) break;
+          }
+          let tag = allTags.find(t => t.name === "Newsletter");
           if (!tag) {
             const createRes = await fetch("https://api.kit.com/v4/tags", {
               method: "POST",
@@ -51,12 +63,16 @@ Deno.serve(async (req) => {
             if (createRes.ok) tag = (await createRes.json())?.tag;
           }
           if (tag?.id) {
-            await fetch(`https://api.kit.com/v4/subscribers/${subscriberId}/tags`, {
+            const tagRes = await fetch(`https://api.kit.com/v4/tags/${tag.id}/subscribers/${subscriberId}`, {
               method: "POST",
               headers: kitHeaders,
-              body: JSON.stringify({ tag_id: tag.id }),
+              body: JSON.stringify({}),
             });
-            console.log("Kit tag applied: Newsletter");
+            if (tagRes.ok) {
+              console.log("Kit tag applied: Newsletter → subscriber", subscriberId);
+            } else {
+              console.warn("Kit tag FAILED: Newsletter → subscriber", subscriberId, `[${tagRes.status}]`);
+            }
           }
         } catch (tagErr) {
           console.warn("Kit tagging failed:", tagErr.message);
