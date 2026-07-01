@@ -40,6 +40,47 @@ Deno.serve(async (req) => {
       "X-Kit-Api-Key": kitKey,
     };
 
+    // Helper: ensure tags exist (with cursor pagination) and tag a subscriber
+    async function tagSubscriber(subscriberId, tagNames) {
+      if (!subscriberId || !tagNames.length) return;
+      // Fetch all existing tags
+      let allTags = [];
+      let afterCursor = null;
+      for (let page = 0; page < 10; page++) {
+        const url = afterCursor
+          ? `https://api.kit.com/v4/tags?per_page=1000&after=${afterCursor}`
+          : `https://api.kit.com/v4/tags?per_page=1000`;
+        const tagsRes = await fetch(url, { headers });
+        if (!tagsRes.ok) break;
+        const tagsData = await tagsRes.json();
+        allTags = allTags.concat(tagsData?.tags || []);
+        if (!tagsData?.pagination?.has_next_page) break;
+        afterCursor = tagsData?.pagination?.end_cursor;
+        if (!afterCursor) break;
+      }
+      for (const name of tagNames) {
+        let tag = allTags.find(t => t.name === name);
+        if (!tag) {
+          const createRes = await fetch("https://api.kit.com/v4/tags", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ name }),
+          });
+          if (createRes.ok) tag = (await createRes.json())?.tag;
+        }
+        if (tag?.id) {
+          const tagRes = await fetch(`https://api.kit.com/v4/tags/${tag.id}/subscribers/${subscriberId}`, {
+            method: "POST", headers, body: JSON.stringify({}),
+          });
+          if (tagRes.ok) {
+            console.log(`Kit tag applied: ${name} → subscriber ${subscriberId}`);
+          } else {
+            console.warn(`Kit tag FAILED: ${name} → subscriber ${subscriberId} [${tagRes.status}] ${await tagRes.text()}`);
+          }
+        }
+      }
+    }
+
     // Step 1: Create or update the subscriber directly
     const createRes = await fetch("https://api.kit.com/v4/subscribers", {
       method: "POST",
@@ -94,6 +135,11 @@ Deno.serve(async (req) => {
       }
     } catch (formErr) {
       console.warn("Kit form subscription error:", formErr.message);
+    }
+
+    // Tag the lead with "Leads- Cold"
+    if (subscriberId) {
+      await tagSubscriber(subscriberId, ["Leads- Cold"]);
     }
 
     if (subscriberId || formSubscribed) {
