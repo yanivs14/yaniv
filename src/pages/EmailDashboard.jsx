@@ -7,9 +7,11 @@ import RecipientList from "@/components/admin/email/RecipientList";
 import ComposeEmail from "@/components/admin/email/ComposeEmail";
 import EmailHistory from "@/components/admin/email/EmailHistory";
 import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
+import CrmContacts from "@/components/admin/email/CrmContacts";
 
 const TABS = [
-  { key: "recipients", label: "Recipients", icon: Users },
+  { key: "crm", label: "CRM", icon: Users },
+  { key: "recipients", label: "Recipients", icon: MailCheck },
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
 ];
@@ -39,7 +41,7 @@ function AuthGate() {
 
 export default function EmailDashboard() {
   const [user, setUser] = useState(undefined);
-  const [activeTab, setActiveTab] = useState("recipients");
+  const [activeTab, setActiveTab] = useState("crm");
   const [leads, setLeads] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -303,6 +305,9 @@ export default function EmailDashboard() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
               >
+                {activeTab === "crm" && (
+                  <CrmContacts />
+                )}
                 {activeTab === "recipients" && (
                   <RecipientList
                     recipients={recipients}

@@ -552,6 +552,19 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Update Lead entity to mark as converted
+    if (matchedLead) {
+      try {
+        await base44.asServiceRole.entities.Lead.update(matchedLead.id, {
+          status: "converted",
+          notes: `Purchased: ${planLabel} | $${amount} ${currency} | ${transactionId}`
+        });
+        console.log("Lead marked as converted:", matchedLead.id);
+      } catch (e) {
+        console.warn("Failed to update lead status:", e.message);
+      }
+    }
+
     return Response.json({ received: true, processed: true, customer: customerName, plan: planLabel });
   } catch (error) {
     console.error("Stripe webhook error:", error.message);
