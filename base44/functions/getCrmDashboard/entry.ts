@@ -47,27 +47,27 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 3. Fetch HubSpot contacts (paginate up to 5 pages)
+    // 3. Fetch HubSpot contacts — search by our lead emails (IN operator, batches of 100)
     const hubToken = Deno.env.get("HUBSPOT_PRIVATE_APP_TOKEN");
     const hubMap = new Map();
     if (hubToken) {
       try {
-        let after = null;
-        let pageCount = 0;
+        const leadEmails = [...new Set(leads.filter(l => l.email).map(l => l.email.toLowerCase()))];
         const props = ["email", "firstname", "lastname", "phone", "lifecyclestage", "hs_lead_status", "createdate"];
-        while (pageCount < 5) {
-          const body = { limit: 100, properties: props };
-          if (after) body.after = after;
+        for (let i = 0; i < leadEmails.length; i += 100) {
+          const chunk = leadEmails.slice(i, i + 100);
           const res = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
             method: "POST",
             headers: { "Authorization": `Bearer ${hubToken}`, "Content-Type": "application/json" },
-            body: JSON.stringify(body),
+            body: JSON.stringify({
+              limit: 100,
+              properties: props,
+              filterGroups: [{ filters: [{ propertyName: "email", operator: "IN", values: chunk }] }],
+            }),
           });
-          if (!res.ok) { console.warn("HubSpot page", pageCount, "failed:", res.status); break; }
+          if (!res.ok) { console.warn("HubSpot search batch", i, "failed:", res.status); continue; }
           const data = await res.json();
-          const contacts = data?.results || [];
-          if (contacts.length === 0) break;
-          for (const c of contacts) {
+          for (const c of (data?.results || [])) {
             const email = c.properties?.email;
             if (email) {
               hubMap.set(email.toLowerCase(), {
@@ -78,11 +78,8 @@ Deno.serve(async (req) => {
               });
             }
           }
-          after = data?.paging?.next?.after;
-          if (!after) break;
-          pageCount++;
         }
-        console.log(`HubSpot: fetched ${hubMap.size} contacts`);
+        console.log(`HubSpot: found ${hubMap.size} matches for ${leadEmails.length} lead emails`);
       } catch (e) {
         console.warn("HubSpot fetch failed:", e.message);
       }
