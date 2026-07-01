@@ -10,18 +10,43 @@ const PLAN_LABELS = {
 
 async function ensureKitTags(kitKey, tagNames) {
   const headers = { "X-Kit-Api-Key": kitKey };
-  const tagsRes = await fetch("https://api.kit.com/v4/tags", { headers });
-  const existingTags = (await tagsRes.json())?.tags || [];
+  // Fetch all existing tags with cursor-based pagination (per_page=500 default)
+  let allTags = [];
+  let afterCursor = null;
+  for (let page = 0; page < 10; page++) {
+    const url = afterCursor
+      ? `https://api.kit.com/v4/tags?per_page=1000&after=${afterCursor}`
+      : `https://api.kit.com/v4/tags?per_page=1000`;
+    const tagsRes = await fetch(url, { headers });
+    if (!tagsRes.ok) {
+      console.warn(`Kit list tags failed: ${tagsRes.status} ${await tagsRes.text()}`);
+      break;
+    }
+    const tagsData = await tagsRes.json();
+    allTags = allTags.concat(tagsData?.tags || []);
+    if (!tagsData?.pagination?.has_next_page) break;
+    afterCursor = tagsData?.pagination?.end_cursor;
+    if (!afterCursor) break;
+  }
+  console.log(`Kit: fetched ${allTags.length} existing tags`);
+
   const tagMap = {};
   for (const name of tagNames) {
-    let tag = existingTags.find(t => t.name === name);
+    let tag = allTags.find(t => t.name === name);
     if (!tag) {
+      console.log(`Kit: creating tag "${name}"...`);
       const createRes = await fetch("https://api.kit.com/v4/tags", {
         method: "POST",
         headers: { ...headers, "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
       });
-      if (createRes.ok) tag = (await createRes.json())?.tag;
+      const createData = await createRes.json();
+      if (createRes.ok) {
+        tag = createData?.tag;
+        console.log(`Kit: tag "${name}" created with id ${tag?.id}`);
+      } else {
+        console.warn(`Kit: tag create failed for "${name}": ${createRes.status}`, JSON.stringify(createData));
+      }
     }
     if (tag?.id) tagMap[name] = tag.id;
   }
@@ -29,14 +54,23 @@ async function ensureKitTags(kitKey, tagNames) {
 }
 
 async function tagKitSubscriber(kitKey, subscriberId, tagNames) {
-  if (!subscriberId || !tagNames.length) return;
+  if (!subscriberId || !tagNames.length) {
+    console.warn(`Kit tag skipped: subscriberId=${subscriberId}, tagNames=${JSON.stringify(tagNames)}`);
+    return;
+  }
   const tagMap = await ensureKitTags(kitKey, tagNames);
   const headers = { "X-Kit-Api-Key": kitKey, "Content-Type": "application/json" };
   for (const [name, tagId] of Object.entries(tagMap)) {
-    await fetch(`https://api.kit.com/v4/subscribers/${subscriberId}/tags`, {
-      method: "POST", headers, body: JSON.stringify({ tag_id: tagId }),
+    // Kit v4 API: POST /v4/tags/{tag_id}/subscribers/{subscriber_id}
+    const tagRes = await fetch(`https://api.kit.com/v4/tags/${tagId}/subscribers/${subscriberId}`, {
+      method: "POST", headers, body: JSON.stringify({}),
     });
-    console.log(`Kit tag applied: ${name} → subscriber ${subscriberId}`);
+    if (tagRes.ok || tagRes.status === 200) {
+      console.log(`Kit tag applied: ${name} (id=${tagId}) → subscriber ${subscriberId} [${tagRes.status}]`);
+    } else {
+      const errText = await tagRes.text();
+      console.warn(`Kit tag FAILED: ${name} (id=${tagId}) → subscriber ${subscriberId} [${tagRes.status}] ${errText}`);
+    }
   }
 }
 
