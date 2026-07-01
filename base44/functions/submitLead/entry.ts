@@ -2,11 +2,24 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 async function ensureKitTags(kitKey, tagNames) {
   const headers = { "X-Kit-Api-Key": kitKey };
-  const tagsRes = await fetch("https://api.kit.com/v4/tags", { headers });
-  const existingTags = (await tagsRes.json())?.tags || [];
+  // Paginate through ALL existing tags
+  let allTags = [];
+  let afterCursor = null;
+  for (let page = 0; page < 10; page++) {
+    const url = afterCursor
+      ? `https://api.kit.com/v4/tags?per_page=1000&after=${afterCursor}`
+      : `https://api.kit.com/v4/tags?per_page=1000`;
+    const tagsRes = await fetch(url, { headers });
+    if (!tagsRes.ok) break;
+    const tagsData = await tagsRes.json();
+    allTags = allTags.concat(tagsData?.tags || []);
+    if (!tagsData?.pagination?.has_next_page) break;
+    afterCursor = tagsData?.pagination?.end_cursor;
+    if (!afterCursor) break;
+  }
   const tagMap = {};
   for (const name of tagNames) {
-    let tag = existingTags.find(t => t.name === name);
+    let tag = allTags.find(t => t.name === name);
     if (!tag) {
       const createRes = await fetch("https://api.kit.com/v4/tags", {
         method: "POST",
@@ -113,12 +126,16 @@ Deno.serve(async (req) => {
             try {
               const tagMap = await ensureKitTags(kitKey, ["LP_Leads_June26"]);
               for (const [name, tagId] of Object.entries(tagMap)) {
-                await fetch(`https://api.kit.com/v4/subscribers/${kitSubscriberId}/tags`, {
+                const tagRes = await fetch(`https://api.kit.com/v4/tags/${tagId}/subscribers/${kitSubscriberId}`, {
                   method: "POST",
                   headers: kitHeaders,
-                  body: JSON.stringify({ tag_id: tagId }),
+                  body: JSON.stringify({}),
                 });
-                console.log(`Kit tag applied: ${name}`);
+                if (tagRes.ok) {
+                  console.log(`Kit tag applied: ${name} → subscriber ${kitSubscriberId}`);
+                } else {
+                  console.warn(`Kit tag FAILED: ${name} → subscriber ${kitSubscriberId} [${tagRes.status}] ${await tagRes.text()}`);
+                }
               }
             } catch (tagErr) {
               console.warn("Kit tagging failed:", tagErr.message);
