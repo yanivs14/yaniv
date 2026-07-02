@@ -1,6 +1,10 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import {
+  Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe,
+  RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw,
+  CheckCircle2, XCircle, DollarSign,
+} from "lucide-react";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
 
 const SOURCE_LABELS = {
@@ -28,6 +32,11 @@ function formatDate(dateStr) {
   return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function formatMoney(n) {
+  if (!n || n === 0) return "—";
+  return `$${n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+}
+
 export default function CrmContacts() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,7 +45,7 @@ export default function CrmContacts() {
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 15;
+  const pageSize = 50;
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -44,7 +53,6 @@ export default function CrmContacts() {
       const crmData = await fetchCrmOnly();
       setData(crmData);
       setLoading(false);
-      // Phase 2: enrich with Stripe data
       setStripeLoading(true);
       try {
         const stripeData = await fetchStripeOnly();
@@ -64,11 +72,16 @@ export default function CrmContacts() {
   const contacts = data?.contacts || [];
   const stats = data?.stats || {};
 
+  const activeCount = useMemo(() => contacts.filter(c => c.is_paying_customer && !c.is_churned).length, [contacts]);
+  const pastCount = useMemo(() => contacts.filter(c => c.is_churned).length, [contacts]);
+  const leadsCount = useMemo(() => contacts.filter(c => !c.is_paying_customer && !c.is_churned).length, [contacts]);
+  const refundedCount = useMemo(() => contacts.filter(c => c.is_refunded).length, [contacts]);
+
   const filtered = useMemo(() => {
     return contacts.filter(c => {
-      if (filter === "customers" && !c.is_paying_customer) return false;
+      if (filter === "active" && !(c.is_paying_customer && !c.is_churned)) return false;
+      if (filter === "past" && !c.is_churned) return false;
       if (filter === "leads" && (c.is_paying_customer || c.is_churned)) return false;
-      if (filter === "churned" && !c.is_churned) return false;
       if (filter === "refunded" && !c.is_refunded) return false;
       if (search) {
         const q = search.toLowerCase();
@@ -80,7 +93,6 @@ export default function CrmContacts() {
     });
   }, [contacts, search, filter]);
 
-  // Reset to page 1 when filter/search changes
   useEffect(() => { setCurrentPage(1); }, [search, filter]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -91,10 +103,18 @@ export default function CrmContacts() {
 
   const statCards = [
     { label: "Total", value: stats.total_contacts || 0, icon: Users, color: "text-off-white" },
-    { label: "Customers", value: stats.paying_customers || 0, icon: Crown, color: "text-green-400" },
-    { label: "Leads", value: stats.leads || 0, icon: TrendingUp, color: "text-orange-red" },
-    { label: "Churned", value: stats.churned || 0, icon: UserMinus, color: "text-red-400" },
-    { label: "Refunded", value: stats.refunded || 0, icon: RotateCcw, color: "text-yellow-400" },
+    { label: "Active", value: activeCount, icon: CheckCircle2, color: "text-green-400" },
+    { label: "Past", value: pastCount, icon: XCircle, color: "text-red-400" },
+    { label: "Leads", value: leadsCount, icon: TrendingUp, color: "text-orange-red" },
+    { label: "Refunded", value: refundedCount, icon: RotateCcw, color: "text-yellow-400" },
+  ];
+
+  const filterTabs = [
+    { key: "all", label: "All", count: contacts.length },
+    { key: "active", label: "Active", count: activeCount },
+    { key: "past", label: "Past", count: pastCount },
+    { key: "leads", label: "Leads", count: leadsCount },
+    { key: "refunded", label: "Refunded", count: refundedCount },
   ];
 
   if (loading) {
@@ -147,19 +167,13 @@ export default function CrmContacts() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search by name, email, or phone..."
-          className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl pl-10 pr-4 py-3 text-sm text-off-white font-body placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
+          className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl pl-10 pr-4 py-2.5 text-sm text-off-white font-body placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
         />
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 mb-3" style={{ scrollbarWidth: "none" }}>
-        {[
-          { key: "all", label: `All`, count: contacts.length },
-          { key: "customers", label: `Customers`, count: stats.paying_customers || 0 },
-          { key: "leads", label: `Leads`, count: stats.leads || 0 },
-          { key: "churned", label: `Churned`, count: stats.churned || 0 },
-          { key: "refunded", label: `Refunded`, count: stats.refunded || 0 },
-        ].map(f => (
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3" style={{ scrollbarWidth: "none" }}>
+        {filterTabs.map(f => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
@@ -170,7 +184,7 @@ export default function CrmContacts() {
         ))}
       </div>
 
-      {/* Contact list */}
+      {/* Contact table — desktop */}
       {filtered.length === 0 ? (
         <div className="text-center py-16">
           <Users className="w-10 h-10 text-white-dim mx-auto mb-3" />
@@ -178,151 +192,151 @@ export default function CrmContacts() {
         </div>
       ) : (
         <>
-        <div className="space-y-2">
+        {/* Desktop table */}
+        <div className="hidden md:block bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-[1.8fr_2.5fr_0.8fr_1.5fr_0.7fr_0.9fr_0.4fr] gap-2 px-3 py-2 text-[10px] uppercase tracking-wide text-white-dim font-body font-semibold border-b border-[#2a2a2a] bg-[#111]">
+            <span>Name</span>
+            <span>Email</span>
+            <span>Source</span>
+            <span>Plan</span>
+            <span className="text-right">Paid</span>
+            <span className="text-right">Added</span>
+            <span></span>
+          </div>
+          {/* Rows */}
+          <div className="divide-y divide-[#1a1a1a]">
+            {pagedContacts.map((c, i) => {
+              const expanded = expandedId === c.email;
+              const statusColor = c.is_paying_customer ? "bg-green-500/20 text-green-400" : c.is_churned ? "bg-red-500/20 text-red-400" : "bg-[#1a1a1a] text-white-muted";
+              return (
+                <React.Fragment key={c.email + i}>
+                  <button
+                    onClick={() => setExpandedId(expanded ? null : c.email)}
+                    className={`w-full grid grid-cols-[1.8fr_2.5fr_0.8fr_1.5fr_0.7fr_0.9fr_0.4fr] gap-2 px-3 py-2 items-center text-left hover:bg-[#141414] transition-colors ${expanded ? "bg-[#141414]" : ""}`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${statusColor}`}>
+                        {(c.name || c.email || "?")[0].toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-body font-semibold text-off-white truncate flex items-center gap-1">
+                          {c.name || "Unknown"}
+                          {c.is_paying_customer && <Crown className="w-2.5 h-2.5 text-green-400 flex-shrink-0" />}
+                        </p>
+                        <div className="flex items-center gap-1.5">
+                          {c.kit_id && <span className="w-1.5 h-1.5 rounded-full bg-amber-400" title="Kit" />}
+                          {c.hubspot_id && <span className="w-1.5 h-1.5 rounded-full bg-orange-400" title="HubSpot" />}
+                          {c.stripe_customer_id && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" title="Stripe" />}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-xs text-white-muted font-body truncate">{c.email}</span>
+                    <span className={`text-[10px] font-body px-1.5 py-0.5 rounded-full border inline-block w-fit ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
+                      {SOURCE_LABELS[c.source] || c.source}
+                    </span>
+                    <span className="text-[11px] text-orange-red font-body truncate">{c.purchase_plan || "—"}</span>
+                    <span className="text-xs text-green-400 font-body text-right font-semibold">{formatMoney(c.total_paid)}</span>
+                    <span className="text-[11px] text-white-dim font-body text-right">{formatDate(c.created_date)}</span>
+                    <span className="flex justify-end">
+                      {expanded ? <ChevronUp className="w-3.5 h-3.5 text-white-dim" /> : <ChevronDown className="w-3.5 h-3.5 text-white-dim" />}
+                    </span>
+                  </button>
+                  {expanded && (
+                    <div className="px-3 py-3 bg-[#0a0a0a] grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-xs font-body">
+                      {c.phone && (
+                        <div className="flex items-center gap-1.5 text-white-muted"><Phone className="w-3 h-3 text-white-dim" /> {c.phone}</div>
+                      )}
+                      {c.country && (
+                        <div className="flex items-center gap-1.5 text-white-muted"><Globe className="w-3 h-3 text-white-dim" /> {c.country}{c.language ? ` · ${c.language}` : ""}</div>
+                      )}
+                      {c.quiz_recommendation && (
+                        <div className="text-white-muted col-span-2"><span className="text-white-dim">Quiz:</span> {c.quiz_recommendation}</div>
+                      )}
+                      {c.kit_lifecycle && (
+                        <div className="text-white-muted"><span className="text-white-dim">Kit:</span> {c.kit_lifecycle}</div>
+                      )}
+                      {c.hubspot_lifecycle && (
+                        <div className="text-white-muted"><span className="text-white-dim">HubSpot:</span> {c.hubspot_lifecycle}</div>
+                      )}
+                      {c.subscription_status && (
+                        <div className="text-white-muted"><span className="text-white-dim">Sub:</span> {c.subscription_status}</div>
+                      )}
+                      {c.first_payment_date && (
+                        <div className="text-white-muted"><span className="text-white-dim">First pay:</span> {formatDate(c.first_payment_date)}</div>
+                      )}
+                      {c.last_payment_date && (
+                        <div className="text-white-muted"><span className="text-white-dim">Last pay:</span> {formatDate(c.last_payment_date)}</div>
+                      )}
+                      {c.subscription_canceled && (
+                        <div className="text-red-400"><span className="text-white-dim">Canceled:</span> {formatDate(c.subscription_canceled)}</div>
+                      )}
+                      {c.total_paid > 0 && (
+                        <div className="text-white-muted"><span className="text-white-dim">Total:</span> <span className="text-green-400 font-semibold">${c.total_paid.toFixed(2)}</span>
+                          {c.total_refunded > 0 && <span className="text-yellow-400"> · Ref: ${c.total_refunded.toFixed(2)}</span>}
+                        </div>
+                      )}
+                      {c.last_email_date && (
+                        <div className="text-white-muted"><span className="text-white-dim">Last email:</span> {formatDate(c.last_email_date)}</div>
+                      )}
+                      {c.emails_sent > 0 && (
+                        <div className="text-white-muted flex items-center gap-1"><Mail className="w-3 h-3 text-white-dim" /> {c.emails_sent} sent</div>
+                      )}
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-2">
           {pagedContacts.map((c, i) => {
             const expanded = expandedId === c.email;
+            const statusColor = c.is_paying_customer ? "bg-green-500/20 text-green-400" : c.is_churned ? "bg-red-500/20 text-red-400" : "bg-[#1a1a1a] text-white-muted";
             return (
-              <motion.div
-                key={c.email + i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: Math.min(i * 0.02, 0.3) }}
-                className="bg-[#111] border border-[#2a2a2a] rounded-xl overflow-hidden hover:border-[#3a3a3a] transition-colors"
-              >
-                <button
-                  onClick={() => setExpandedId(expanded ? null : c.email)}
-                  className="w-full text-left p-3"
-                >
+              <div key={c.email + i} className="bg-[#111] border border-[#2a2a2a] rounded-xl overflow-hidden">
+                <button onClick={() => setExpandedId(expanded ? null : c.email)} className="w-full text-left p-3">
                   <div className="flex items-start gap-3">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${c.is_paying_customer ? "bg-green-500/20 text-green-400" : c.is_churned ? "bg-red-500/20 text-red-400" : "bg-[#1a1a1a] text-white-muted"}`}>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${statusColor}`}>
                       {(c.name || c.email || "?")[0].toUpperCase()}
                     </div>
-
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <p className="text-sm font-body font-semibold text-off-white truncate">
-                          {c.name || "Unknown"}
-                        </p>
-                        {c.is_paying_customer && (
-                          <span className="flex items-center gap-1 text-[10px] font-body px-2 py-0.5 rounded-full border bg-green-500/15 text-green-400 border-green-500/30">
-                            <Crown className="w-2.5 h-2.5" /> Customer
-                          </span>
-                        )}
-                        {c.is_churned && (
-                          <span className="text-[10px] font-body px-2 py-0.5 rounded-full border bg-red-500/15 text-red-400 border-red-500/30">
-                            Churned
-                          </span>
-                        )}
-                        {c.is_refunded && (
-                          <span className="text-[10px] font-body px-2 py-0.5 rounded-full border bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
-                            Refunded
-                          </span>
-                        )}
+                        <p className="text-sm font-body font-semibold text-off-white truncate">{c.name || "Unknown"}</p>
+                        {c.is_paying_customer && <Crown className="w-3 h-3 text-green-400" />}
+                        {c.is_churned && <span className="text-[10px] text-red-400">Churned</span>}
                         <span className={`text-[10px] font-body px-2 py-0.5 rounded-full border ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
                           {SOURCE_LABELS[c.source] || c.source}
                         </span>
                       </div>
-
-                      <div className="flex items-center gap-1">
-                        <Mail className="w-3 h-3 text-white-dim flex-shrink-0" />
-                        <p className="text-xs text-white-muted truncate">{c.email}</p>
-                      </div>
-
+                      <p className="text-xs text-white-muted truncate">{c.email}</p>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        {c.kit_id && (
-                          <span className="flex items-center gap-1 text-[10px] text-amber-400">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Kit
-                          </span>
-                        )}
-                        {c.hubspot_id && (
-                          <span className="flex items-center gap-1 text-[10px] text-orange-400">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span> HubSpot
-                          </span>
-                        )}
-                        {c.emails_sent > 0 && (
-                          <span className="flex items-center gap-1 text-[10px] text-green-400">
-                            <Mail className="w-2.5 h-2.5" /> {c.emails_sent}
-                          </span>
-                        )}
-                        {c.purchase_plan && (
-                          <span className="text-[10px] text-orange-red truncate max-w-[120px]">{c.purchase_plan}</span>
-                        )}
+                        {c.purchase_plan && <span className="text-[10px] text-orange-red truncate max-w-[140px]">{c.purchase_plan}</span>}
+                        {c.total_paid > 0 && <span className="text-[10px] text-green-400 font-semibold">${c.total_paid.toFixed(0)}</span>}
                       </div>
                     </div>
-
                     {expanded ? <ChevronUp className="w-4 h-4 text-white-dim flex-shrink-0 mt-1" /> : <ChevronDown className="w-4 h-4 text-white-dim flex-shrink-0 mt-1" />}
                   </div>
                 </button>
-
                 {expanded && (
-                  <div className="border-t border-[#2a2a2a] p-3 space-y-1.5 bg-[#0d0d0d]">
-                    {c.phone && (
-                      <div className="flex items-center gap-2 text-xs text-white-muted">
-                        <Phone className="w-3.5 h-3.5 text-white-dim" /> {c.phone}
-                      </div>
-                    )}
-                    {c.country && (
-                      <div className="flex items-center gap-2 text-xs text-white-muted">
-                        <Globe className="w-3.5 h-3.5 text-white-dim" /> {c.country}{c.language ? ` · ${c.language}` : ""}
-                      </div>
-                    )}
-                    {c.quiz_recommendation && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Quiz rec:</span> {c.quiz_recommendation}
-                      </div>
-                    )}
-                    {c.kit_lifecycle && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Kit lifecycle:</span> {c.kit_lifecycle}
-                      </div>
-                    )}
-                    {c.hubspot_lifecycle && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">HubSpot lifecycle:</span> {c.hubspot_lifecycle}
-                      </div>
-                    )}
-                    {c.purchase_plan && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Plan:</span> <span className="text-orange-red font-medium">{c.purchase_plan}</span>
-                      </div>
-                    )}
-                    {c.subscription_status && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Subscription:</span> {c.subscription_status}
-                      </div>
-                    )}
-                    {c.first_payment_date && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">First payment:</span> {formatDate(c.first_payment_date)}
-                      </div>
-                    )}
-                    {c.last_payment_date && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Last payment:</span> {formatDate(c.last_payment_date)}
-                      </div>
-                    )}
-                    {c.subscription_canceled && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Canceled:</span> <span className="text-red-400">{formatDate(c.subscription_canceled)}</span>
-                      </div>
-                    )}
-                    {c.total_paid > 0 && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Total paid:</span> ${c.total_paid.toFixed(2)}
-                        {c.total_refunded > 0 && <span className="text-yellow-400"> · Refunded: ${c.total_refunded.toFixed(2)}</span>}
-                      </div>
-                    )}
-                    {c.last_email_date && (
-                      <div className="text-xs text-white-muted">
-                        <span className="text-white-dim">Last email:</span> {formatDate(c.last_email_date)}
-                      </div>
-                    )}
-                    <div className="text-xs text-white-dim">
-                      Added: {formatDate(c.created_date)}
-                    </div>
+                  <div className="border-t border-[#2a2a2a] p-3 space-y-1.5 bg-[#0d0d0d] text-xs text-white-muted">
+                    {c.phone && <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-white-dim" /> {c.phone}</div>}
+                    {c.country && <div className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white-dim" /> {c.country}{c.language ? ` · ${c.language}` : ""}</div>}
+                    {c.quiz_recommendation && <div><span className="text-white-dim">Quiz:</span> {c.quiz_recommendation}</div>}
+                    {c.kit_lifecycle && <div><span className="text-white-dim">Kit:</span> {c.kit_lifecycle}</div>}
+                    {c.hubspot_lifecycle && <div><span className="text-white-dim">HubSpot:</span> {c.hubspot_lifecycle}</div>}
+                    {c.subscription_status && <div><span className="text-white-dim">Sub:</span> {c.subscription_status}</div>}
+                    {c.first_payment_date && <div><span className="text-white-dim">First pay:</span> {formatDate(c.first_payment_date)}</div>}
+                    {c.last_payment_date && <div><span className="text-white-dim">Last pay:</span> {formatDate(c.last_payment_date)}</div>}
+                    {c.subscription_canceled && <div className="text-red-400"><span className="text-white-dim">Canceled:</span> {formatDate(c.subscription_canceled)}</div>}
+                    {c.total_paid > 0 && <div><span className="text-white-dim">Total:</span> <span className="text-green-400 font-semibold">${c.total_paid.toFixed(2)}</span>{c.total_refunded > 0 && <span className="text-yellow-400"> · Ref: ${c.total_refunded.toFixed(2)}</span>}</div>}
+                    {c.last_email_date && <div><span className="text-white-dim">Last email:</span> {formatDate(c.last_email_date)}</div>}
+                    <div className="text-white-dim">Added: {formatDate(c.created_date)}</div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -337,15 +351,12 @@ export default function CrmContacts() {
             >
               <ChevronLeft className="w-4 h-4" /> Prev
             </button>
-
             <div className="flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
                 .map((p, idx, arr) => (
                   <React.Fragment key={p}>
-                    {idx > 0 && arr[idx - 1] !== p - 1 && (
-                      <span className="text-white-dim text-xs px-1">…</span>
-                    )}
+                    {idx > 0 && arr[idx - 1] !== p - 1 && <span className="text-white-dim text-xs px-1">…</span>}
                     <button
                       onClick={() => setCurrentPage(p)}
                       className={`w-8 h-8 text-xs font-body rounded-lg transition-colors ${currentPage === p ? "bg-orange-red text-dark-bg font-bold" : "text-white-muted hover:bg-[#1a1a1a]"}`}
@@ -355,7 +366,6 @@ export default function CrmContacts() {
                   </React.Fragment>
                 ))}
             </div>
-
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
@@ -365,7 +375,6 @@ export default function CrmContacts() {
             </button>
           </div>
         )}
-
         <p className="text-center text-[10px] text-white-dim mt-2 mb-1">
           Page {currentPage} of {totalPages} · {filtered.length} contacts
         </p>
