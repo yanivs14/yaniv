@@ -123,6 +123,8 @@ export default function CrmContacts() {
 
       {/* Platform indicators */}
       <div className="flex items-center gap-3 mb-3 text-[10px] text-white-dim px-1">
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400"></span> Kit {stats.in_kit || 0}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-400"></span> HubSpot {stats.in_hubspot || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400"></span> Emails {stats.total_emails_sent || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-400"></span> Stripe {stats.in_stripe || 0}</span>
         <span className="ml-auto flex items-center gap-2">

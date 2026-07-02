@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar } from "lucide-react";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell, LineChart, Line, AreaChart, Area, PieChart, Pie, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -140,7 +140,6 @@ export default function FinancesTab() {
                 cursor={{ fill: "rgba(0,255,247,0.05)" }}
                 contentStyle={{ background: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", fontSize: "12px" }}
                 labelStyle={{ color: "#C8C8C8" }}
-                itemStyle={{ color: "#F5F5F5" }}
                 formatter={(value, name) => [name === "revenue" ? formatMoneyDetailed(value) : value, name === "revenue" ? "Revenue" : "Transactions"]}
               />
               <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
@@ -149,94 +148,6 @@ export default function FinancesTab() {
                 ))}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Transactions chart */}
-      {monthlyData.length > 0 && (
-        <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-4">
-          <p className="text-xs font-body font-semibold text-off-white mb-3">Transactions — Last 6 Months</p>
-          <ResponsiveContainer width="100%" height={140}>
-            <BarChart data={monthlyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
-              <XAxis dataKey="month" tick={{ fill: "#555", fontSize: 10 }} axisLine={{ stroke: "#2a2a2a" }} tickLine={false} />
-              <YAxis tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip
-                cursor={{ fill: "rgba(0,255,247,0.05)" }}
-                contentStyle={{ background: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", fontSize: "12px" }}
-                labelStyle={{ color: "#C8C8C8" }}
-                itemStyle={{ color: "#F5F5F5" }}
-              />
-              <Bar dataKey="transactions" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Cumulative revenue area chart */}
-      {monthlyData.length > 0 && (
-        <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-4">
-          <p className="text-xs font-body font-semibold text-off-white mb-3">Cumulative Revenue Trend</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <AreaChart data={monthlyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
-              <defs>
-                <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#00fff7" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="#00fff7" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="month" tick={{ fill: "#555", fontSize: 10 }} axisLine={{ stroke: "#2a2a2a" }} tickLine={false} />
-              <YAxis tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-              <Tooltip
-                cursor={{ stroke: "#00fff7", strokeWidth: 1, strokeDasharray: "3 3" }}
-                contentStyle={{ background: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", fontSize: "12px" }}
-                labelStyle={{ color: "#C8C8C8" }}
-                itemStyle={{ color: "#F5F5F5" }}
-                formatter={(value) => [formatMoneyDetailed(value), "Revenue"]}
-              />
-              <Area type="monotone" dataKey="revenue" stroke="#00fff7" strokeWidth={2} fill="url(#revGradient)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Customer status donut */}
-      {stats.total_contacts > 0 && (
-        <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-4">
-          <p className="text-xs font-body font-semibold text-off-white mb-3">Customer Breakdown</p>
-          <ResponsiveContainer width="100%" height={180}>
-            <PieChart>
-              <Pie
-                data={[
-                  { name: "Leads", value: stats.leads || 0, fill: "#555" },
-                  { name: "Customers", value: stats.paying_customers || 0, fill: "#22c55e" },
-                  { name: "Churned", value: stats.churned || 0, fill: "#ef4444" },
-                  { name: "Refunded", value: stats.refunded || 0, fill: "#f59e0b" },
-                ]}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={40}
-                outerRadius={70}
-                paddingAngle={2}
-              >
-                {[
-                  { name: "Leads", value: stats.leads || 0, fill: "#555" },
-                  { name: "Customers", value: stats.paying_customers || 0, fill: "#22c55e" },
-                  { name: "Churned", value: stats.churned || 0, fill: "#ef4444" },
-                  { name: "Refunded", value: stats.refunded || 0, fill: "#f59e0b" },
-                ].map((entry, idx) => (
-                  <Cell key={idx} fill={entry.fill} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{ background: "#111", border: "1px solid #2a2a2a", borderRadius: "8px", fontSize: "12px" }}
-                labelStyle={{ color: "#C8C8C8" }}
-                itemStyle={{ color: "#F5F5F5" }}
-              />
-              <Legend wrapperStyle={{ fontSize: "10px", color: "#C8C8C8" }} />
-            </PieChart>
           </ResponsiveContainer>
         </div>
       )}
