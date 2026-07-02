@@ -30,6 +30,7 @@ export default function SkoolUpload({ onSkoolData }) {
       const parseRes = await base44.functions.invoke("parseSkoolFile", { file_url: fileUrl });
       const data = parseRes.data;
       if (data.error) throw new Error(data.error);
+      data.fileName = file.name;
       setResult(data);
       if (onSkoolData) onSkoolData(data);
     } catch (e) {

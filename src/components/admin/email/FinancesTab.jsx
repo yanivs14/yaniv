@@ -1,9 +1,28 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar, Undo2, FileText, Clock } from "lucide-react";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm } from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
+
+const SKOOL_STORAGE_KEY = "skool_upload_state";
+
+function loadSkoolState() {
+  try {
+    const raw = localStorage.getItem(SKOOL_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function saveSkoolState(state) {
+  try {
+    localStorage.setItem(SKOOL_STORAGE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function clearSkoolState() {
+  try { localStorage.removeItem(SKOOL_STORAGE_KEY); } catch {}
+}
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -30,10 +49,32 @@ export default function FinancesTab() {
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [skoolData, setSkoolData] = useState(null);
+  const [skoolMeta, setSkoolMeta] = useState(null); // { fileName, uploadedAt }
+  // Snapshot of data BEFORE Skool merge — for rollback
+  const preSkoolSnapshot = useRef(null);
+  const stripeDone = useRef(false);
 
-  const handleSkoolData = useCallback((data) => {
-    setSkoolData(data);
-    setData(prev => prev ? mergeSkoolIntoCrm({ ...prev }, data) : prev);
+  const handleSkoolData = useCallback((skoolResult) => {
+    setSkoolData(skoolResult);
+    const meta = { fileName: skoolResult.fileName || "skool.csv", uploadedAt: new Date().toISOString() };
+    setSkoolMeta(meta);
+    // Save snapshot before merging (so we can restore)
+    setData(prev => {
+      if (!prev) return prev;
+      preSkoolSnapshot.current = JSON.parse(JSON.stringify(prev));
+      return mergeSkoolIntoCrm({ ...prev }, skoolResult);
+    });
+    saveSkoolState({ skoolData: skoolResult, meta });
+  }, []);
+
+  const handleRestore = useCallback(() => {
+    if (preSkoolSnapshot.current) {
+      setData(JSON.parse(JSON.stringify(preSkoolSnapshot.current)));
+      preSkoolSnapshot.current = null;
+    }
+    setSkoolData(null);
+    setSkoolMeta(null);
+    clearSkoolState();
   }, []);
 
   const loadData = useCallback(async () => {
@@ -50,6 +91,18 @@ export default function FinancesTab() {
         console.error("Stripe enrich failed:", e);
       }
       setStripeLoading(false);
+      stripeDone.current = true;
+      // Re-apply persisted Skool data after Stripe is loaded
+      const saved = loadSkoolState();
+      if (saved?.skoolData) {
+        setData(prev => {
+          if (!prev) return prev;
+          preSkoolSnapshot.current = JSON.parse(JSON.stringify(prev));
+          return mergeSkoolIntoCrm({ ...prev }, saved.skoolData);
+        });
+        setSkoolData(saved.skoolData);
+        setSkoolMeta(saved.meta);
+      }
     } catch (e) {
       console.error("Finances load failed:", e);
       setLoading(false);
@@ -106,8 +159,31 @@ export default function FinancesTab() {
         </span>
       </div>
 
-      {/* Skool upload */}
-      <SkoolUpload onSkoolData={handleSkoolData} />
+      {/* Skool integration bar */}
+      {skoolMeta ? (
+        <div className="bg-[#111] border border-amber-500/30 rounded-xl p-3 mb-4 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+            <FileText className="w-4 h-4 text-amber-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-body font-semibold text-off-white truncate">{skoolMeta.fileName}</p>
+            <p className="text-[10px] text-white-dim flex items-center gap-1">
+              <Clock className="w-2.5 h-2.5" />
+              Uploaded {new Date(skoolMeta.uploadedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+              <span className="text-amber-400 ml-1">· Merged into finances</span>
+            </p>
+          </div>
+          <button
+            onClick={handleRestore}
+            className="flex items-center gap-1.5 text-[11px] font-body text-white-muted hover:text-red-400 border border-[#2a2a2a] hover:border-red-500/40 rounded-lg px-2.5 py-1.5 transition-colors flex-shrink-0"
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+            Restore
+          </button>
+        </div>
+      ) : (
+        <SkoolUpload onSkoolData={handleSkoolData} />
+      )}
 
       {/* Main stat cards */}
       <div className="grid grid-cols-2 gap-2 mb-4">

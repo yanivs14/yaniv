@@ -52,10 +52,45 @@ export function mergeSkoolIntoCrm(crmData, skoolData) {
   crmData.stats.total_contacts = crmData.contacts.length;
   crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
 
+  // Merge Skool financials INTO the main financials so all cards reflect combined data
   if (!crmData.financials) crmData.financials = {};
-  crmData.financials.skool_revenue = skoolData.financials.total_revenue;
+  const sf = skoolData.financials || {};
+  const skoolRevenue = sf.total_revenue || 0;
+
+  crmData.financials.total_revenue = (crmData.financials.total_revenue || 0) + skoolRevenue;
+  crmData.financials.skool_revenue = skoolRevenue;
   crmData.financials.skool_active = skoolData.stats.active_members;
   crmData.financials.skool_churned = skoolData.stats.churned_members;
+
+  // Merge monthly data
+  const now = new Date();
+  const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
+
+  const combinedMonthly = { ...(crmData.financials.monthly_data || {}) };
+  for (const [key, val] of Object.entries(sf.monthly_data || {})) {
+    if (!combinedMonthly[key]) combinedMonthly[key] = { revenue: 0, transactions: 0 };
+    combinedMonthly[key].revenue += val.revenue || 0;
+    combinedMonthly[key].transactions += val.transactions || 0;
+    if (key === thisMonthKey) {
+      crmData.financials.this_month_revenue = (crmData.financials.this_month_revenue || 0) + (val.revenue || 0);
+      crmData.financials.this_month_transactions = (crmData.financials.this_month_transactions || 0) + (val.transactions || 0);
+    } else if (key === lastMonthKey) {
+      crmData.financials.last_month_revenue = (crmData.financials.last_month_revenue || 0) + (val.revenue || 0);
+      crmData.financials.last_month_transactions = (crmData.financials.last_month_transactions || 0) + (val.transactions || 0);
+    }
+  }
+  // Sort and keep last 6 months
+  const sortedMonths = Object.entries(combinedMonthly)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-6);
+  crmData.financials.monthly_data = Object.fromEntries(sortedMonths);
+
+  // Recalculate ARPU with combined customers
+  crmData.financials.arpu = crmData.stats.paying_customers > 0
+    ? crmData.financials.total_revenue / crmData.stats.paying_customers
+    : 0;
 
   return crmData;
 }
