@@ -170,15 +170,7 @@ Deno.serve(async (req) => {
       ));
     }
 
-    for (const [key, kitData] of kitMap) {
-      if (unifiedMap.has(key)) continue;
-      unifiedMap.set(key, buildContact(
-        key, kitData.kit_first_name || "", kitData.kit_phone || "",
-        "kit", "", "", kitData.kit_created, "new", "",
-        kitData, hubMap.get(key), emailLogMap.get(key)
-      ));
-    }
-
+    // Kit-only contacts (no lead/newsletter in our DB) are NOT displayed — Kit data only enriches existing leads
     for (const [key, hubData] of hubMap) {
       if (unifiedMap.has(key)) continue;
       unifiedMap.set(key, buildContact(
