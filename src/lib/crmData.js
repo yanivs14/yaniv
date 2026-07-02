@@ -24,7 +24,6 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
         is_refunded: sd.is_refunded,
         purchase_plan: sd.plan || c.purchase_plan || "",
         subscription_status: sd.subscription_status || "",
-        subscription_start: sd.subscription_start || null,
         subscription_canceled: sd.subscription_canceled || null,
         first_payment_date: sd.first_payment_date || null,
         last_payment_date: sd.last_payment_date || null,

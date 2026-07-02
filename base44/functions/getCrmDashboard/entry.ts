@@ -47,8 +47,10 @@ Deno.serve(async (req) => {
               if (s.email_address) {
                 kitMap.set(s.email_address.toLowerCase(), {
                   kit_id: s.id,
-                  kit_state: s.state || "",
-                  kit_fields: s.fields || {},
+                  kit_lifecycle_stage: s.fields?.lifecycle_stage || "",
+                  kit_purchase_plan: s.fields?.purchase_plan || "",
+                  kit_first_name: s.fields?.first_name || "",
+                  kit_phone: s.fields?.phone_number || "",
                   kit_created: s.created_at || "",
                 });
               }
@@ -127,13 +129,11 @@ Deno.serve(async (req) => {
     const unifiedMap = new Map();
 
     function buildContact(email, name, phone, source, country, language, createdDate, leadStatus, quizRec, kitData, hubData, emailLog) {
-      const kitLifecycle = kitData?.kit_fields?.lifecycle_stage || "";
+      const kitLifecycle = kitData?.kit_lifecycle_stage || "";
       const hubLifecycle = hubData?.hubspot_lifecycle || "";
-      const lifecycle = hubLifecycle || kitLifecycle || "";
-      // Without Stripe, use lifecycle/lead status as fallback
-      const isCustomer = lifecycle === "customer" || leadStatus === "converted";
-      const isChurned = lifecycle === "churned";
-      return {
+      const isCustomer = hubLifecycle === "customer" || leadStatus === "converted";
+      const isChurned = hubLifecycle === "churned";
+      const contact = {
         email,
         name: name || "",
         phone: phone || "",
@@ -141,32 +141,22 @@ Deno.serve(async (req) => {
         country: country || "",
         language: language || "",
         created_date: createdDate,
-        lead_status: leadStatus,
         quiz_recommendation: quizRec || "",
         kit_id: kitData?.kit_id || null,
-        kit_state: kitData?.kit_state || "",
         kit_lifecycle: kitLifecycle,
-        kit_purchase_plan: kitData?.kit_fields?.purchase_plan || "",
         hubspot_id: hubData?.hubspot_id || null,
         hubspot_lifecycle: hubLifecycle,
-        hubspot_lead_status: hubData?.hubspot_lead_status || "",
-        lifecycle_stage: lifecycle,
-        stripe_customer_id: null,
         is_paying_customer: isCustomer,
         is_churned: isChurned,
-        is_refunded: false,
-        purchase_plan: kitData?.kit_fields?.purchase_plan || "",
-        subscription_status: "",
-        subscription_start: null,
-        subscription_canceled: null,
-        first_payment_date: null,
-        last_payment_date: null,
-        total_paid: 0,
-        total_refunded: 0,
+        purchase_plan: kitData?.kit_purchase_plan || "",
         emails_sent: emailLog?.sent || 0,
-        emails_total: emailLog?.count || 0,
         last_email_date: emailLog?.lastDate || null,
       };
+      // Remove falsy values to reduce response size
+      for (const k of Object.keys(contact)) {
+        if (!contact[k]) delete contact[k];
+      }
+      return contact;
     }
 
     for (const lead of leads) {
@@ -183,7 +173,7 @@ Deno.serve(async (req) => {
     for (const [key, kitData] of kitMap) {
       if (unifiedMap.has(key)) continue;
       unifiedMap.set(key, buildContact(
-        key, kitData.kit_fields?.first_name || "", kitData.kit_fields?.phone_number || "",
+        key, kitData.kit_first_name || "", kitData.kit_phone || "",
         "kit", "", "", kitData.kit_created, "new", "",
         kitData, hubMap.get(key), emailLogMap.get(key)
       ));
