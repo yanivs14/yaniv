@@ -1,28 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar, Undo2, FileText, Clock } from "lucide-react";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm } from "@/lib/crmData";
+import {
+  fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm,
+  fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
+} from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
-
-const SKOOL_STORAGE_KEY = "skool_upload_state";
-
-function loadSkoolState() {
-  try {
-    const raw = localStorage.getItem(SKOOL_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
-
-function saveSkoolState(state) {
-  try {
-    localStorage.setItem(SKOOL_STORAGE_KEY, JSON.stringify(state));
-  } catch {}
-}
-
-function clearSkoolState() {
-  try { localStorage.removeItem(SKOOL_STORAGE_KEY); } catch {}
-}
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -49,33 +33,79 @@ export default function FinancesTab() {
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [skoolData, setSkoolData] = useState(null);
-  const [skoolMeta, setSkoolMeta] = useState(null); // { fileName, uploadedAt }
-  // Snapshot of data BEFORE Skool merge — for rollback
+  const [skoolMeta, setSkoolMeta] = useState(null); // { id, fileName, uploadedAt }
+  const [skoolHistory, setSkoolHistory] = useState([]);
   const preSkoolSnapshot = useRef(null);
-  const stripeDone = useRef(false);
 
-  const handleSkoolData = useCallback((skoolResult) => {
+  // Apply Skool merge to current data
+  const applySkool = useCallback((skoolResult, meta) => {
     setSkoolData(skoolResult);
-    const meta = { fileName: skoolResult.fileName || "skool.csv", uploadedAt: new Date().toISOString() };
     setSkoolMeta(meta);
-    // Save snapshot before merging (so we can restore)
     setData(prev => {
       if (!prev) return prev;
       preSkoolSnapshot.current = JSON.parse(JSON.stringify(prev));
       return mergeSkoolIntoCrm({ ...prev }, skoolResult);
     });
-    saveSkoolState({ skoolData: skoolResult, meta });
   }, []);
 
-  const handleRestore = useCallback(() => {
+  const handleSkoolData = useCallback(async (skoolResult) => {
+    const fileName = skoolResult.fileName || "skool.csv";
+    // Save to DB
+    try {
+      const saved = await saveSkoolUpload(fileName, skoolResult);
+      if (saved) {
+        applySkool(skoolResult, {
+          id: saved.id,
+          fileName: saved.file_name,
+          uploadedAt: saved.created_date,
+        });
+        // Refresh history
+        const history = await fetchSkoolUploads();
+        setSkoolHistory(history);
+      }
+    } catch (e) {
+      console.error("Failed to save Skool upload:", e);
+      // Still apply locally even if DB save fails
+      applySkool(skoolResult, { fileName, uploadedAt: new Date().toISOString() });
+    }
+  }, [applySkool]);
+
+  const handleRestore = useCallback(async () => {
+    try {
+      await restoreSkoolUpload();
+    } catch (e) {
+      console.error("Failed to restore in DB:", e);
+    }
+    // Restore local snapshot
     if (preSkoolSnapshot.current) {
       setData(JSON.parse(JSON.stringify(preSkoolSnapshot.current)));
       preSkoolSnapshot.current = null;
     }
     setSkoolData(null);
     setSkoolMeta(null);
-    clearSkoolState();
+    // Refresh history (the restored upload is now inactive)
+    try {
+      const history = await fetchSkoolUploads();
+      setSkoolHistory(history);
+    } catch {}
   }, []);
+
+  const handleActivate = useCallback(async (uploadId) => {
+    try {
+      const activated = await activateSkoolUpload(uploadId);
+      if (activated?.data) {
+        applySkool(activated.data, {
+          id: activated.id,
+          fileName: activated.file_name,
+          uploadedAt: activated.created_date,
+        });
+        const history = await fetchSkoolUploads();
+        setSkoolHistory(history);
+      }
+    } catch (e) {
+      console.error("Failed to activate Skool upload:", e);
+    }
+  }, [applySkool]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -91,23 +121,26 @@ export default function FinancesTab() {
         console.error("Stripe enrich failed:", e);
       }
       setStripeLoading(false);
-      stripeDone.current = true;
-      // Re-apply persisted Skool data after Stripe is loaded
-      const saved = loadSkoolState();
-      if (saved?.skoolData) {
-        setData(prev => {
-          if (!prev) return prev;
-          preSkoolSnapshot.current = JSON.parse(JSON.stringify(prev));
-          return mergeSkoolIntoCrm({ ...prev }, saved.skoolData);
-        });
-        setSkoolData(saved.skoolData);
-        setSkoolMeta(saved.meta);
+      // Load Skool state from DB and re-apply if active
+      try {
+        const uploads = await fetchSkoolUploads();
+        setSkoolHistory(uploads);
+        const active = uploads.find(u => u.is_active);
+        if (active?.data) {
+          applySkool(active.data, {
+            id: active.id,
+            fileName: active.file_name,
+            uploadedAt: active.created_date,
+          });
+        }
+      } catch (e) {
+        console.error("Skool load from DB failed:", e);
       }
     } catch (e) {
       console.error("Finances load failed:", e);
       setLoading(false);
     }
-  }, []);
+  }, [applySkool]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
@@ -161,28 +194,75 @@ export default function FinancesTab() {
 
       {/* Skool integration bar */}
       {skoolMeta ? (
-        <div className="bg-[#111] border border-amber-500/30 rounded-xl p-3 mb-4 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-            <FileText className="w-4 h-4 text-amber-400" />
+        <div className="space-y-2 mb-4">
+          <div className="bg-[#111] border border-amber-500/30 rounded-xl p-3 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+              <FileText className="w-4 h-4 text-amber-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-body font-semibold text-off-white truncate">{skoolMeta.fileName}</p>
+              <p className="text-[10px] text-white-dim flex items-center gap-1">
+                <Clock className="w-2.5 h-2.5" />
+                Uploaded {new Date(skoolMeta.uploadedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                <span className="text-amber-400 ml-1">· Active</span>
+              </p>
+            </div>
+            <button
+              onClick={handleRestore}
+              className="flex items-center gap-1.5 text-[11px] font-body text-white-muted hover:text-red-400 border border-[#2a2a2a] hover:border-red-500/40 rounded-lg px-2.5 py-1.5 transition-colors flex-shrink-0"
+            >
+              <Undo2 className="w-3.5 h-3.5" />
+              Restore
+            </button>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-body font-semibold text-off-white truncate">{skoolMeta.fileName}</p>
-            <p className="text-[10px] text-white-dim flex items-center gap-1">
-              <Clock className="w-2.5 h-2.5" />
-              Uploaded {new Date(skoolMeta.uploadedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
-              <span className="text-amber-400 ml-1">· Merged into finances</span>
-            </p>
-          </div>
-          <button
-            onClick={handleRestore}
-            className="flex items-center gap-1.5 text-[11px] font-body text-white-muted hover:text-red-400 border border-[#2a2a2a] hover:border-red-500/40 rounded-lg px-2.5 py-1.5 transition-colors flex-shrink-0"
-          >
-            <Undo2 className="w-3.5 h-3.5" />
-            Restore
-          </button>
+          {/* History of previous uploads */}
+          {skoolHistory.filter(u => !u.is_active).length > 0 && (
+            <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl p-2">
+              <p className="text-[9px] text-white-dim uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
+              <div className="space-y-1">
+                {skoolHistory.filter(u => !u.is_active).map(u => (
+                  <button
+                    key={u.id}
+                    onClick={() => handleActivate(u.id)}
+                    className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#1a1a1a] transition-colors text-left"
+                  >
+                    <FileText className="w-3 h-3 text-white-dim flex-shrink-0" />
+                    <span className="text-[11px] text-white-muted truncate flex-1">{u.file_name}</span>
+                    <span className="text-[9px] text-white-dim flex-shrink-0">
+                      {new Date(u.created_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                    </span>
+                    <RotateCcw className="w-3 h-3 text-orange-red flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
-        <SkoolUpload onSkoolData={handleSkoolData} />
+        <div className="space-y-2 mb-4">
+          <SkoolUpload onSkoolData={handleSkoolData} />
+          {skoolHistory.length > 0 && (
+            <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl p-2">
+              <p className="text-[9px] text-white-dim uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
+              <div className="space-y-1">
+                {skoolHistory.map(u => (
+                  <button
+                    key={u.id}
+                    onClick={() => handleActivate(u.id)}
+                    className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#1a1a1a] transition-colors text-left"
+                  >
+                    <FileText className="w-3 h-3 text-white-dim flex-shrink-0" />
+                    <span className="text-[11px] text-white-muted truncate flex-1">{u.file_name}</span>
+                    <span className="text-[9px] text-white-dim flex-shrink-0">
+                      {new Date(u.created_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                    </span>
+                    <RotateCcw className="w-3 h-3 text-orange-red flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Main stat cards */}

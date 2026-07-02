@@ -10,6 +10,26 @@ export async function fetchStripeOnly() {
   return res.data;
 }
 
+export async function fetchSkoolUploads() {
+  const res = await base44.functions.invoke("manageSkoolUpload", { action: "load" });
+  return res.data?.uploads || [];
+}
+
+export async function saveSkoolUpload(fileName, data) {
+  const res = await base44.functions.invoke("manageSkoolUpload", { action: "save", file_name: fileName, data });
+  return res.data?.upload;
+}
+
+export async function restoreSkoolUpload() {
+  const res = await base44.functions.invoke("manageSkoolUpload", { action: "restore" });
+  return res.data;
+}
+
+export async function activateSkoolUpload(uploadId) {
+  const res = await base44.functions.invoke("manageSkoolUpload", { action: "activate", upload_id: uploadId });
+  return res.data?.upload;
+}
+
 export function mergeSkoolIntoCrm(crmData, skoolData) {
   if (!skoolData?.skoolMap) return crmData;
 

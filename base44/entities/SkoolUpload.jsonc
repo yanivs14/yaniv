@@ -1,0 +1,44 @@
+{
+  "name": "SkoolUpload",
+  "type": "object",
+  "properties": {
+    "file_name": {
+      "type": "string",
+      "description": "Name of the uploaded Skool CSV file"
+    },
+    "data": {
+      "type": "object",
+      "description": "Full parsed Skool data (skoolMap, financials, stats, fileName)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this upload is currently merged into the dashboard"
+    }
+  },
+  "required": [
+    "file_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
