@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -27,16 +27,26 @@ const PLAN_COLORS = [
 export default function FinancesTab() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("getCrmDashboard", {});
-      setData(res.data);
+      const crmData = await fetchCrmOnly();
+      setData(crmData);
+      setLoading(false);
+      setStripeLoading(true);
+      try {
+        const stripeData = await fetchStripeOnly();
+        setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
+      } catch (e) {
+        console.error("Stripe enrich failed:", e);
+      }
+      setStripeLoading(false);
     } catch (e) {
       console.error("Finances load failed:", e);
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -76,9 +86,17 @@ export default function FinancesTab() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-heading text-base font-bold text-off-white uppercase tracking-tight">Financial Overview</h2>
-        <button onClick={loadData} className="text-white-muted hover:text-orange-red transition-colors">
-          <RefreshCw className="w-4 h-4" />
-        </button>
+        <span className="flex items-center gap-2">
+          {stripeLoading && (
+            <span className="flex items-center gap-1 text-[10px] text-orange-red">
+              <div className="w-3 h-3 border border-orange-red border-t-transparent rounded-full animate-spin" />
+              Loading Stripe…
+            </span>
+          )}
+          <button onClick={loadData} className="text-white-muted hover:text-orange-red transition-colors">
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </span>
       </div>
 
       {/* Main stat cards */}

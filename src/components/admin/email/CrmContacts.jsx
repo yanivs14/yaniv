@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -31,6 +31,7 @@ function formatDate(dateStr) {
 export default function CrmContacts() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stripeLoading, setStripeLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
@@ -40,12 +41,22 @@ export default function CrmContacts() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("getCrmDashboard", {});
-      setData(res.data);
+      const crmData = await fetchCrmOnly();
+      setData(crmData);
+      setLoading(false);
+      // Phase 2: enrich with Stripe data
+      setStripeLoading(true);
+      try {
+        const stripeData = await fetchStripeOnly();
+        setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
+      } catch (e) {
+        console.error("Stripe enrich failed:", e);
+      }
+      setStripeLoading(false);
     } catch (e) {
       console.error("CRM load failed:", e);
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -116,9 +127,17 @@ export default function CrmContacts() {
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-400"></span> HubSpot {stats.in_hubspot || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400"></span> Emails {stats.total_emails_sent || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-400"></span> Stripe {stats.in_stripe || 0}</span>
-        <button onClick={loadData} className="ml-auto text-white-muted hover:text-orange-red transition-colors">
-          <RefreshCw className="w-3.5 h-3.5" />
-        </button>
+        <span className="ml-auto flex items-center gap-2">
+          {stripeLoading && (
+            <span className="flex items-center gap-1 text-[10px] text-orange-red">
+              <div className="w-2.5 h-2.5 border border-orange-red border-t-transparent rounded-full animate-spin" />
+              Loading Stripe…
+            </span>
+          )}
+          <button onClick={loadData} className="text-white-muted hover:text-orange-red transition-colors">
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
+        </span>
       </div>
 
       {/* Search */}
