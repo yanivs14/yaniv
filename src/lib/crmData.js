@@ -13,6 +13,9 @@ export async function fetchStripeOnly() {
 export function mergeStripeIntoCrm(crmData, stripeData) {
   if (!stripeData?.stripeMap) return crmData;
 
+  // 1. Enrich existing contacts with Stripe data
+  const existingEmails = new Set(crmData.contacts.map(c => c.email.toLowerCase()));
+
   crmData.contacts = crmData.contacts.map(c => {
     const sd = stripeData.stripeMap[c.email.toLowerCase()];
     if (sd) {
@@ -34,11 +37,39 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
     return c;
   });
 
+  // 2. Add Stripe-only customers (not in our lead/newsletter DB)
+  for (const [email, sd] of Object.entries(stripeData.stripeMap)) {
+    if (existingEmails.has(email)) continue;
+    const contact = {
+      email,
+      name: sd.name || "",
+      source: "stripe",
+      stripe_customer_id: sd.stripe_customer_id,
+      is_paying_customer: sd.is_paying,
+      is_churned: sd.is_churned,
+      is_refunded: sd.is_refunded,
+      purchase_plan: sd.plan || "",
+      subscription_status: sd.subscription_status || "",
+      subscription_canceled: sd.subscription_canceled || null,
+      first_payment_date: sd.first_payment_date || null,
+      last_payment_date: sd.last_payment_date || null,
+      total_paid: sd.total_paid || 0,
+      total_refunded: sd.total_refunded || 0,
+      created_date: sd.first_payment_date || sd.subscription_start || null,
+    };
+    // Remove falsy values
+    for (const k of Object.keys(contact)) {
+      if (!contact[k]) delete contact[k];
+    }
+    crmData.contacts.push(contact);
+  }
+
   crmData.stats.paying_customers = crmData.contacts.filter(c => c.is_paying_customer).length;
   crmData.stats.leads = crmData.contacts.filter(c => !c.is_paying_customer && !c.is_churned).length;
   crmData.stats.churned = crmData.contacts.filter(c => c.is_churned).length;
   crmData.stats.refunded = crmData.contacts.filter(c => c.is_refunded).length;
   crmData.stats.in_stripe = crmData.contacts.filter(c => c.stripe_customer_id).length;
+  crmData.stats.total_contacts = crmData.contacts.length;
   crmData.financials = stripeData.financials;
 
   return crmData;
