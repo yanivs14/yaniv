@@ -13,23 +13,27 @@ export async function fetchStripeOnly() {
 export function mergeStripeIntoCrm(crmData, stripeData) {
   if (!stripeData?.stripeMap) return crmData;
 
-  for (const c of crmData.contacts) {
+  crmData.contacts = crmData.contacts.map(c => {
     const sd = stripeData.stripeMap[c.email.toLowerCase()];
     if (sd) {
-      c.stripe_customer_id = sd.stripe_customer_id;
-      c.is_paying_customer = sd.is_paying;
-      c.is_churned = sd.is_churned;
-      c.is_refunded = sd.is_refunded;
-      c.purchase_plan = sd.plan || c.purchase_plan || "";
-      c.subscription_status = sd.subscription_status || "";
-      c.subscription_start = sd.subscription_start || null;
-      c.subscription_canceled = sd.subscription_canceled || null;
-      c.first_payment_date = sd.first_payment_date || null;
-      c.last_payment_date = sd.last_payment_date || null;
-      c.total_paid = sd.total_paid || 0;
-      c.total_refunded = sd.total_refunded || 0;
+      return {
+        ...c,
+        stripe_customer_id: sd.stripe_customer_id,
+        is_paying_customer: sd.is_paying,
+        is_churned: sd.is_churned,
+        is_refunded: sd.is_refunded,
+        purchase_plan: sd.plan || c.purchase_plan || "",
+        subscription_status: sd.subscription_status || "",
+        subscription_start: sd.subscription_start || null,
+        subscription_canceled: sd.subscription_canceled || null,
+        first_payment_date: sd.first_payment_date || null,
+        last_payment_date: sd.last_payment_date || null,
+        total_paid: sd.total_paid || 0,
+        total_refunded: sd.total_refunded || 0,
+      };
     }
-  }
+    return c;
+  });
 
   crmData.stats.paying_customers = crmData.contacts.filter(c => c.is_paying_customer).length;
   crmData.stats.leads = crmData.contacts.filter(c => !c.is_paying_customer && !c.is_churned).length;
