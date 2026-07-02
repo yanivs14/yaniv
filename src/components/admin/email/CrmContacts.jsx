@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe, RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const SOURCE_LABELS = {
@@ -9,6 +9,7 @@ const SOURCE_LABELS = {
   newsletter: "Newsletter",
   kit: "Kit",
   hubspot: "HubSpot",
+  stripe: "Stripe",
 };
 
 const SOURCE_COLORS = {
@@ -17,6 +18,7 @@ const SOURCE_COLORS = {
   newsletter: "bg-purple-500/15 text-purple-400 border-purple-500/30",
   kit: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   hubspot: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+  stripe: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
 };
 
 function formatDate(dateStr) {
@@ -56,6 +58,7 @@ export default function CrmContacts() {
       if (filter === "customers" && !c.is_paying_customer) return false;
       if (filter === "leads" && (c.is_paying_customer || c.is_churned)) return false;
       if (filter === "churned" && !c.is_churned) return false;
+      if (filter === "refunded" && !c.is_refunded) return false;
       if (search) {
         const q = search.toLowerCase();
         return (c.email || "").toLowerCase().includes(q) ||
@@ -80,6 +83,7 @@ export default function CrmContacts() {
     { label: "Customers", value: stats.paying_customers || 0, icon: Crown, color: "text-green-400" },
     { label: "Leads", value: stats.leads || 0, icon: TrendingUp, color: "text-orange-red" },
     { label: "Churned", value: stats.churned || 0, icon: UserMinus, color: "text-red-400" },
+    { label: "Refunded", value: stats.refunded || 0, icon: RotateCcw, color: "text-yellow-400" },
   ];
 
   if (loading) {
@@ -93,7 +97,7 @@ export default function CrmContacts() {
   return (
     <div>
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-2 mb-3">
+      <div className="grid grid-cols-5 gap-2 mb-3">
         {statCards.map((s, i) => {
           const Icon = s.icon;
           return (
@@ -111,6 +115,7 @@ export default function CrmContacts() {
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400"></span> Kit {stats.in_kit || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-400"></span> HubSpot {stats.in_hubspot || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400"></span> Emails {stats.total_emails_sent || 0}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-400"></span> Stripe {stats.in_stripe || 0}</span>
         <button onClick={loadData} className="ml-auto text-white-muted hover:text-orange-red transition-colors">
           <RefreshCw className="w-3.5 h-3.5" />
         </button>
@@ -134,6 +139,7 @@ export default function CrmContacts() {
           { key: "customers", label: `Customers`, count: stats.paying_customers || 0 },
           { key: "leads", label: `Leads`, count: stats.leads || 0 },
           { key: "churned", label: `Churned`, count: stats.churned || 0 },
+          { key: "refunded", label: `Refunded`, count: stats.refunded || 0 },
         ].map(f => (
           <button
             key={f.key}
@@ -186,6 +192,11 @@ export default function CrmContacts() {
                         {c.is_churned && (
                           <span className="text-[10px] font-body px-2 py-0.5 rounded-full border bg-red-500/15 text-red-400 border-red-500/30">
                             Churned
+                          </span>
+                        )}
+                        {c.is_refunded && (
+                          <span className="text-[10px] font-body px-2 py-0.5 rounded-full border bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
+                            Refunded
                           </span>
                         )}
                         <span className={`text-[10px] font-body px-2 py-0.5 rounded-full border ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
@@ -249,6 +260,37 @@ export default function CrmContacts() {
                     {c.hubspot_lifecycle && (
                       <div className="text-xs text-white-muted">
                         <span className="text-white-dim">HubSpot lifecycle:</span> {c.hubspot_lifecycle}
+                      </div>
+                    )}
+                    {c.purchase_plan && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">Plan:</span> <span className="text-orange-red font-medium">{c.purchase_plan}</span>
+                      </div>
+                    )}
+                    {c.subscription_status && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">Subscription:</span> {c.subscription_status}
+                      </div>
+                    )}
+                    {c.first_payment_date && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">First payment:</span> {formatDate(c.first_payment_date)}
+                      </div>
+                    )}
+                    {c.last_payment_date && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">Last payment:</span> {formatDate(c.last_payment_date)}
+                      </div>
+                    )}
+                    {c.subscription_canceled && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">Canceled:</span> <span className="text-red-400">{formatDate(c.subscription_canceled)}</span>
+                      </div>
+                    )}
+                    {c.total_paid > 0 && (
+                      <div className="text-xs text-white-muted">
+                        <span className="text-white-dim">Total paid:</span> ${c.total_paid.toFixed(2)}
+                        {c.total_refunded > 0 && <span className="text-yellow-400"> · Refunded: ${c.total_refunded.toFixed(2)}</span>}
                       </div>
                     )}
                     {c.last_email_date && (
