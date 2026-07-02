@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw, DollarSign } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -8,9 +8,11 @@ import ComposeEmail from "@/components/admin/email/ComposeEmail";
 import EmailHistory from "@/components/admin/email/EmailHistory";
 import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
 import CrmContacts from "@/components/admin/email/CrmContacts";
+import FinancesTab from "@/components/admin/email/FinancesTab";
 
 const TABS = [
   { key: "crm", label: "CRM", icon: Users },
+  { key: "finances", label: "Finances", icon: DollarSign },
   { key: "recipients", label: "Recipients", icon: MailCheck },
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
@@ -307,6 +309,9 @@ export default function EmailDashboard() {
               >
                 {activeTab === "crm" && (
                   <CrmContacts />
+                )}
+                {activeTab === "finances" && (
+                  <FinancesTab />
                 )}
                 {activeTab === "recipients" && (
                   <RecipientList

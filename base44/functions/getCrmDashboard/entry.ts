@@ -130,79 +130,104 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 4. Fetch Stripe customers + charges (source of truth for paying/churned/refunded)
+    // 4. Fetch Stripe data: subscriptions (all statuses) + charges
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     const stripeMap = new Map();
+    const financials = {
+      total_revenue: 0,
+      total_refunded: 0,
+      this_month_revenue: 0,
+      last_month_revenue: 0,
+      this_month_transactions: 0,
+      last_month_transactions: 0,
+      mrr: 0,
+      monthly_data: {},
+    };
     if (stripeKey) {
       try {
         const stripe = new Stripe(stripeKey);
 
-        // 4a. List all customers with subscriptions expanded
-        let custHasMore = true;
-        let custStartingAfter = null;
-        let custPageCount = 0;
-        while (custHasMore && custPageCount < 30) {
-          const params = { limit: 100, expand: ['data.subscriptions'] };
-          if (custStartingAfter) params.starting_after = custStartingAfter;
-          const customers = await stripe.customers.list(params);
+        const now = new Date();
+        const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
 
-          for (const cust of customers.data) {
-            const email = (cust.email || '').toLowerCase().trim();
+        // 4a. List ALL subscriptions (active + canceled + trialing) with expanded customer
+        let subHasMore = true;
+        let subStartingAfter = null;
+        let subPageCount = 0;
+        while (subHasMore && subPageCount < 50) {
+          const params = { limit: 100, status: 'all', expand: ['data.customer'] };
+          if (subStartingAfter) params.starting_after = subStartingAfter;
+          const subs = await stripe.subscriptions.list(params);
+
+          for (const sub of subs.data) {
+            const email = (sub.customer?.email || '').toLowerCase().trim();
             if (!email) continue;
 
-            const subs = cust.subscriptions?.data || [];
-            const activeSubs = subs.filter(s => ['active', 'trialing'].includes(s.status));
-            const canceledSubs = subs.filter(s => s.status === 'canceled');
+            let data = stripeMap.get(email);
+            if (!data) {
+              data = {
+                stripe_customer_id: sub.customer?.id || null,
+                name: sub.customer?.name || '',
+                is_paying: false,
+                is_churned: false,
+                is_refunded: false,
+                plan: '',
+                subscription_status: '',
+                subscription_start: null,
+                subscription_canceled: null,
+                first_payment_date: null,
+                last_payment_date: null,
+                total_paid: 0,
+                total_refunded: 0,
+              };
+              stripeMap.set(email, data);
+            }
 
-            const data = {
-              stripe_customer_id: cust.id,
-              name: cust.name || '',
-              is_paying: activeSubs.length > 0,
-              is_churned: activeSubs.length === 0 && canceledSubs.length > 0,
-              is_refunded: false,
-              plan: '',
-              subscription_status: '',
-              subscription_start: null,
-              subscription_canceled: null,
-              first_payment_date: null,
-              last_payment_date: null,
-              total_paid: 0,
-              total_refunded: 0,
-            };
+            const isActive = ['active', 'trialing'].includes(sub.status);
+            const isCanceled = sub.status === 'canceled';
+            const price = sub.items?.data?.[0]?.price;
+            const subPlan = sub.metadata?.plan ? (PLAN_LABELS[sub.metadata.plan] || sub.metadata.plan) : inferPlanFromPrice(price);
 
-            if (activeSubs.length > 0) {
-              const sub = activeSubs[0];
-              data.plan = sub.metadata?.plan ? (PLAN_LABELS[sub.metadata.plan] || sub.metadata.plan) : inferPlanFromPrice(sub.items?.data?.[0]?.price);
+            if (isActive) {
+              data.is_paying = true;
+              data.is_churned = false;
               data.subscription_status = sub.status;
               data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
-            } else if (canceledSubs.length > 0) {
-              const sub = canceledSubs[0];
-              data.plan = sub.metadata?.plan ? (PLAN_LABELS[sub.metadata.plan] || sub.metadata.plan) : inferPlanFromPrice(sub.items?.data?.[0]?.price);
+              if (!data.plan) data.plan = subPlan;
+              // MRR: monthly subs add full amount, annual subs add amount/12
+              if (price?.recurring?.interval === 'month') {
+                financials.mrr += price.unit_amount / 100;
+              } else if (price?.recurring?.interval === 'year') {
+                financials.mrr += (price.unit_amount / 100) / 12;
+              }
+            } else if (isCanceled && !data.is_paying) {
+              data.is_churned = true;
               data.subscription_status = sub.status;
               data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
               data.subscription_canceled = sub.canceled_at ? new Date(sub.canceled_at * 1000).toISOString() : null;
+              if (!data.plan) data.plan = subPlan;
             }
-
-            stripeMap.set(email, data);
           }
 
-          custHasMore = customers.has_more;
-          if (custHasMore) custStartingAfter = customers.data[customers.data.length - 1].id;
-          custPageCount++;
+          subHasMore = subs.has_more;
+          if (subHasMore) subStartingAfter = subs.data[subs.data.length - 1].id;
+          subPageCount++;
         }
-        console.log(`Stripe: fetched ${stripeMap.size} customers`);
+        console.log(`Stripe: fetched subscriptions, ${stripeMap.size} contacts so far`);
 
-        // 4b. List all charges (one-time payments, payment dates, refunds)
+        // 4b. List all charges (one-time payments, payment dates, refunds, revenue)
         let chargeHasMore = true;
         let chargeStartingAfter = null;
         let chargePageCount = 0;
-        while (chargeHasMore && chargePageCount < 50) {
+        while (chargeHasMore && chargePageCount < 100) {
           const params = { limit: 100 };
           if (chargeStartingAfter) params.starting_after = chargeStartingAfter;
           const charges = await stripe.charges.list(params);
 
           for (const charge of charges.data) {
-            if (!charge.paid || charge.amount === 0) continue;
+            if (!charge.paid) continue;
 
             const email = charge.billing_details?.email?.toLowerCase().trim();
             if (!email) continue;
@@ -227,27 +252,45 @@ Deno.serve(async (req) => {
               stripeMap.set(email, data);
             }
 
-            const chargeDate = new Date(charge.created * 1000).toISOString();
+            const chargeDate = new Date(charge.created * 1000);
+            const chargeMonthKey = `${chargeDate.getFullYear()}-${String(chargeDate.getMonth() + 1).padStart(2, '0')}`;
+            const netAmount = (charge.amount - charge.amount_refunded) / 100;
+
             data.total_paid += charge.amount / 100;
+            financials.total_revenue += netAmount;
 
             if (charge.amount_refunded > 0) {
               data.total_refunded += charge.amount_refunded / 100;
               data.is_refunded = true;
+              financials.total_refunded += charge.amount_refunded / 100;
             }
 
-            if (!data.first_payment_date || chargeDate < data.first_payment_date) {
-              data.first_payment_date = chargeDate;
+            if (!data.first_payment_date || chargeDate < new Date(data.first_payment_date)) {
+              data.first_payment_date = chargeDate.toISOString();
             }
-            if (!data.last_payment_date || chargeDate > data.last_payment_date) {
-              data.last_payment_date = chargeDate;
+            if (!data.last_payment_date || chargeDate > new Date(data.last_payment_date)) {
+              data.last_payment_date = chargeDate.toISOString();
             }
 
-            // One-time payment with no subscription → mark as paying (but don't override churned)
-            if (!data.is_paying && !data.is_churned && (charge.amount - charge.amount_refunded) > 0) {
+            // Monthly revenue tracking
+            if (!financials.monthly_data[chargeMonthKey]) {
+              financials.monthly_data[chargeMonthKey] = { revenue: 0, transactions: 0 };
+            }
+            financials.monthly_data[chargeMonthKey].revenue += netAmount;
+            financials.monthly_data[chargeMonthKey].transactions += 1;
+
+            if (chargeMonthKey === thisMonthKey) {
+              financials.this_month_revenue += netAmount;
+              financials.this_month_transactions += 1;
+            } else if (chargeMonthKey === lastMonthKey) {
+              financials.last_month_revenue += netAmount;
+              financials.last_month_transactions += 1;
+            }
+
+            // One-time payment with no subscription → paying (but don't override churned)
+            if (!data.is_paying && !data.is_churned && netAmount > 0) {
               data.is_paying = true;
-              if (!data.plan) {
-                data.plan = inferPlanFromCharge(charge);
-              }
+              if (!data.plan) data.plan = inferPlanFromCharge(charge);
             }
           }
 
@@ -256,6 +299,12 @@ Deno.serve(async (req) => {
           chargePageCount++;
         }
         console.log(`Stripe: processed charges, ${stripeMap.size} total contacts`);
+
+        // Sort monthly_data and keep last 6 months for chart
+        const sortedMonths = Object.entries(financials.monthly_data)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .slice(-6);
+        financials.monthly_data = Object.fromEntries(sortedMonths);
       } catch (e) {
         console.warn("Stripe fetch failed:", e.message);
       }
@@ -395,7 +444,19 @@ Deno.serve(async (req) => {
       total_emails_sent: logs.filter(l => l.status === "sent").length,
     };
 
-    return Response.json({ contacts, stats, kit_count: kitMap.size, hubspot_count: hubMap.size, stripe_count: stripeMap.size });
+    // Plan breakdown + ARPU
+    const planBreakdown = {};
+    for (const c of contacts) {
+      if (c.is_paying_customer && c.purchase_plan) {
+        planBreakdown[c.purchase_plan] = (planBreakdown[c.purchase_plan] || 0) + 1;
+      }
+    }
+    financials.arpu = stats.paying_customers > 0 ? financials.total_revenue / stats.paying_customers : 0;
+    financials.churn_rate = stats.paying_customers + stats.churned > 0
+      ? (stats.churned / (stats.paying_customers + stats.churned)) * 100 : 0;
+    financials.plan_breakdown = planBreakdown;
+
+    return Response.json({ contacts, stats, financials, kit_count: kitMap.size, hubspot_count: hubMap.size, stripe_count: stripeMap.size });
   } catch (error) {
     console.error("getCrmDashboard error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
