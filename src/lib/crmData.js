@@ -10,6 +10,56 @@ export async function fetchStripeOnly() {
   return res.data;
 }
 
+export function mergeSkoolIntoCrm(crmData, skoolData) {
+  if (!skoolData?.skoolMap) return crmData;
+
+  const existingEmails = new Set(crmData.contacts.map(c => c.email.toLowerCase()));
+
+  crmData.contacts = crmData.contacts.map(c => {
+    const sd = skoolData.skoolMap[c.email.toLowerCase()];
+    if (sd) {
+      return {
+        ...c,
+        skool_member: true,
+        is_paying_customer: c.is_paying_customer || sd.is_paying,
+        is_churned: c.is_churned || sd.is_churned,
+        purchase_plan: c.purchase_plan || sd.skool_plan || "",
+      };
+    }
+    return c;
+  });
+
+  for (const [email, sd] of Object.entries(skoolData.skoolMap)) {
+    if (existingEmails.has(email)) continue;
+    const contact = {
+      email,
+      name: sd.skool_name || "",
+      source: "skool",
+      is_paying_customer: sd.is_paying,
+      is_churned: sd.is_churned,
+      purchase_plan: sd.skool_plan || "",
+      created_date: sd.skool_joined || null,
+    };
+    for (const k of Object.keys(contact)) {
+      if (!contact[k]) delete contact[k];
+    }
+    crmData.contacts.push(contact);
+  }
+
+  crmData.stats.paying_customers = crmData.contacts.filter(c => c.is_paying_customer).length;
+  crmData.stats.leads = crmData.contacts.filter(c => !c.is_paying_customer && !c.is_churned).length;
+  crmData.stats.churned = crmData.contacts.filter(c => c.is_churned).length;
+  crmData.stats.total_contacts = crmData.contacts.length;
+  crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
+
+  if (!crmData.financials) crmData.financials = {};
+  crmData.financials.skool_revenue = skoolData.financials.total_revenue;
+  crmData.financials.skool_active = skoolData.stats.active_members;
+  crmData.financials.skool_churned = skoolData.stats.churned_members;
+
+  return crmData;
+}
+
 export function mergeStripeIntoCrm(crmData, stripeData) {
   if (!stripeData?.stripeMap) return crmData;
 

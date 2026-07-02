@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar } from "lucide-react";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm } from "@/lib/crmData";
+import SkoolUpload from "@/components/admin/email/SkoolUpload";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -28,6 +29,12 @@ export default function FinancesTab() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
+  const [skoolData, setSkoolData] = useState(null);
+
+  const handleSkoolData = useCallback((data) => {
+    setSkoolData(data);
+    setData(prev => prev ? mergeSkoolIntoCrm({ ...prev }, data) : prev);
+  }, []);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -98,6 +105,9 @@ export default function FinancesTab() {
           </button>
         </span>
       </div>
+
+      {/* Skool upload */}
+      <SkoolUpload onSkoolData={handleSkoolData} />
 
       {/* Main stat cards */}
       <div className="grid grid-cols-2 gap-2 mb-4">
