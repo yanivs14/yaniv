@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -9,6 +9,7 @@ import EmailHistory from "@/components/admin/email/EmailHistory";
 import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
 import CrmContacts from "@/components/admin/email/CrmContacts";
 import FinancesTab from "@/components/admin/email/FinancesTab";
+import AutomationsTab from "@/components/admin/email/AutomationsTab";
 
 const TABS = [
   { key: "crm", label: "CRM", icon: Users },
@@ -16,6 +17,7 @@ const TABS = [
   { key: "recipients", label: "Recipients", icon: MailCheck },
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
+  { key: "automations", label: "Automations", icon: Zap },
 ];
 
 function AuthGate() {
@@ -228,7 +230,7 @@ export default function EmailDashboard() {
           <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center">
             <LayoutDashboard className="w-4.5 h-4.5 text-white" />
           </div>
-          <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
+          <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">CRM</h1>
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
@@ -277,17 +279,14 @@ export default function EmailDashboard() {
             <Link to="/admin-k" className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
+            <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">CRM</h1>
           </div>
           <button onClick={() => base44.auth.logout("/admin-k")} className="text-slate-400 hover:text-red-500 transition-colors p-2">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Auto email toggle */}
-        <div className="px-3 sm:px-4 lg:px-6 pt-4">
-          <AutoEmailToggle settings={leadSettings} onToggle={handleToggleAutoEmail} />
-        </div>
+
 
         {/* Mobile tab navigation */}
         <div className="lg:hidden sticky top-14 z-20 flex border-b border-slate-200 bg-white/95 backdrop-blur-sm overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none" }}>
@@ -351,6 +350,9 @@ export default function EmailDashboard() {
                     />
                   )}
                   {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
+                  {activeTab === "automations" && (
+                    <AutomationsTab leadSettings={leadSettings} onToggleAutoEmail={handleToggleAutoEmail} />
+                  )}
                 </motion.div>
               </AnimatePresence>
             )}
