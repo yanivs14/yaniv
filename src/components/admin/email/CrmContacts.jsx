@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import {
   Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe,
   RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw,
-  CheckCircle2, XCircle, DollarSign,
+  CheckCircle2, XCircle, DollarSign, Ban,
 } from "lucide-react";
+import StripeActionModal from "@/components/admin/email/StripeActionModal";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
 
 const SOURCE_LABELS = {
@@ -45,6 +46,7 @@ export default function CrmContacts() {
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [stripeAction, setStripeAction] = useState(null);
   const pageSize = 50;
 
   const loadData = useCallback(async () => {
@@ -282,6 +284,26 @@ export default function CrmContacts() {
                       {c.emails_sent > 0 && (
                         <div className="text-white-muted flex items-center gap-1"><Mail className="w-3 h-3 text-white-dim" /> {c.emails_sent} sent</div>
                       )}
+                      {c.stripe_customer_id && (
+                        <div className="flex items-center gap-2 col-span-2 md:col-span-4 mt-2 pt-2 border-t border-[#1a1a1a]">
+                          {c.is_paying_customer && !c.is_churned && (
+                            <button
+                              onClick={() => setStripeAction({ contact: c, action: 'cancel' })}
+                              className="flex items-center gap-1.5 text-[11px] font-body text-red-400 hover:text-red-300 border border-red-500/30 hover:border-red-500/50 rounded-lg px-2.5 py-1.5 transition-colors"
+                            >
+                              <Ban className="w-3.5 h-3.5" /> Cancel Subscription
+                            </button>
+                          )}
+                          {c.total_paid > 0 && (
+                            <button
+                              onClick={() => setStripeAction({ contact: c, action: 'refund' })}
+                              className="flex items-center gap-1.5 text-[11px] font-body text-yellow-400 hover:text-yellow-300 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg px-2.5 py-1.5 transition-colors"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" /> Refund Payment
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </React.Fragment>
@@ -334,6 +356,26 @@ export default function CrmContacts() {
                     {c.total_paid > 0 && <div><span className="text-white-dim">Total:</span> <span className="text-green-400 font-semibold">${c.total_paid.toFixed(2)}</span>{c.total_refunded > 0 && <span className="text-yellow-400"> · Ref: ${c.total_refunded.toFixed(2)}</span>}</div>}
                     {c.last_email_date && <div><span className="text-white-dim">Last email:</span> {formatDate(c.last_email_date)}</div>}
                     <div className="text-white-dim">Added: {formatDate(c.created_date)}</div>
+                    {c.stripe_customer_id && (
+                      <div className="flex items-center gap-2 pt-2 mt-1 border-t border-[#1a1a1a]">
+                        {c.is_paying_customer && !c.is_churned && (
+                          <button
+                            onClick={() => setStripeAction({ contact: c, action: 'cancel' })}
+                            className="flex items-center gap-1.5 text-[11px] font-body text-red-400 border border-red-500/30 rounded-lg px-2.5 py-1.5"
+                          >
+                            <Ban className="w-3.5 h-3.5" /> Cancel Sub
+                          </button>
+                        )}
+                        {c.total_paid > 0 && (
+                          <button
+                            onClick={() => setStripeAction({ contact: c, action: 'refund' })}
+                            className="flex items-center gap-1.5 text-[11px] font-body text-yellow-400 border border-yellow-500/30 rounded-lg px-2.5 py-1.5"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" /> Refund
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -379,6 +421,15 @@ export default function CrmContacts() {
           Page {currentPage} of {totalPages} · {filtered.length} contacts
         </p>
         </>
+      )}
+
+      {stripeAction && (
+        <StripeActionModal
+          contact={stripeAction.contact}
+          action={stripeAction.action}
+          onClose={() => setStripeAction(null)}
+          onSuccess={() => { setStripeAction(null); loadData(); }}
+        />
       )}
     </div>
   );
