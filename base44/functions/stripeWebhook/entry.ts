@@ -591,7 +591,7 @@ Deno.serve(async (req) => {
       try {
         const skoolWebhookUrl = Deno.env.get("SKOOL_WEBHOOK_URL");
         if (skoolWebhookUrl) {
-          const skoolRes = await fetch(`${skoolWebhookUrl}?email=${encodeURIComponent(customerEmail)}`);
+          const skoolRes = await fetch(`${skoolWebhookUrl}?email=${encodeURIComponent(customerEmail)}`, { method: "POST" });
           if (skoolRes.ok) {
             console.log(`Skool invite sent: ${customerEmail} [${skoolRes.status}]`);
           } else {
