@@ -121,6 +121,17 @@ Deno.serve(async (req) => {
         }
         if (!customerEmail) customerEmail = charge.billing_details?.email || "";
 
+        // Try to retrieve Stripe invoice PDF
+        let invoicePdfUrl = "";
+        if (charge.invoice) {
+          try {
+            const invoice = await stripe.invoices.retrieve(charge.invoice);
+            invoicePdfUrl = invoice.invoice_pdf || "";
+          } catch (e) {
+            console.warn("Failed to retrieve invoice for refund PDF:", e.message);
+          }
+        }
+
         if (customerEmail) {
           await base44.functions.invoke("sendCustomerEmail", {
             type: "refund",
@@ -132,6 +143,7 @@ Deno.serve(async (req) => {
             refundId: refund.id,
             reason: refund.reason || "",
             chargeId: charge.id,
+            invoicePdfUrl,
           });
         }
       } catch (e) {

@@ -13,6 +13,7 @@ Deno.serve(async (req) => {
     const {
       type, email, name, amount, currency, planLabel, transactionId,
       paymentMethod, refundId, originalTransactionId, reason, chargeId,
+      invoicePdfUrl,
     } = body;
 
     if (!email || !type) {
@@ -73,6 +74,7 @@ Deno.serve(async (req) => {
         transactionId: transactionId || '—',
         paymentMethod: paymentMethod || 'Credit/Debit Card',
         dateStr,
+        invoicePdfUrl: invoicePdfUrl || '',
       });
     } else if (type === 'refund') {
       subject = `Refund Confirmation — ${Number(amount).toFixed(2)} ${currency || 'USD'}`;
@@ -84,6 +86,7 @@ Deno.serve(async (req) => {
         originalTransactionId: originalTransactionId || '—',
         refundId: refundId || '—',
         reason: reason || '',
+        invoicePdfUrl: invoicePdfUrl || '',
       });
     } else {
       return Response.json({ error: 'Invalid type. Use "receipt" or "refund".' }, { status: 400 });
@@ -134,7 +137,7 @@ Deno.serve(async (req) => {
 });
 
 function buildReceiptHtml(data) {
-  const { customerName, planLabel, amount, currency, transactionId, paymentMethod, dateStr } = data;
+  const { customerName, planLabel, amount, currency, transactionId, paymentMethod, dateStr, invoicePdfUrl } = data;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -194,6 +197,15 @@ function buildReceiptHtml(data) {
           </td>
         </tr>
 
+        ${invoicePdfUrl ? `
+        <!-- Invoice PDF Download -->
+        <tr>
+          <td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;text-align:center;">
+            <a href="${escapeHtml(invoicePdfUrl)}" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:14px;font-weight:800;text-decoration:none;padding:14px 40px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">📄 Download Invoice PDF</a>
+            <p style="margin:10px 0 0;font-size:11px;color:#555;">Click the button above to download your official invoice</p>
+          </td>
+        </tr>` : ''}
+
         <!-- Seller Info (US receipt law requirement) -->
         <tr>
           <td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;background:#0d0d0d;">
@@ -201,7 +213,7 @@ function buildReceiptHtml(data) {
             <p style="margin:0;font-size:13px;color:#888;line-height:1.7;">
               <strong style="color:#F5F5F5;">The Movement — Roye Gold</strong><br/>
               Digital fitness &amp; movement training services<br/>
-              Contact: support@themovement.com
+              Contact: move@royegold.com
             </p>
           </td>
         </tr>
@@ -225,7 +237,7 @@ function buildReceiptHtml(data) {
 }
 
 function buildRefundHtml(data) {
-  const { customerName, refundAmount, currency, dateStr, originalTransactionId, refundId, reason } = data;
+  const { customerName, refundAmount, currency, dateStr, originalTransactionId, refundId, reason, invoicePdfUrl } = data;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -294,6 +306,15 @@ function buildRefundHtml(data) {
           </td>
         </tr>
 
+        ${invoicePdfUrl ? `
+        <!-- Invoice PDF Download -->
+        <tr>
+          <td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;text-align:center;">
+            <a href="${escapeHtml(invoicePdfUrl)}" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:14px;font-weight:800;text-decoration:none;padding:14px 40px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">📄 Download Invoice PDF</a>
+            <p style="margin:10px 0 0;font-size:11px;color:#555;">Click the button above to download your updated invoice</p>
+          </td>
+        </tr>` : ''}
+
         <!-- Seller Info -->
         <tr>
           <td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;">
@@ -301,7 +322,7 @@ function buildRefundHtml(data) {
             <p style="margin:0;font-size:13px;color:#888;line-height:1.7;">
               <strong style="color:#F5F5F5;">The Movement — Roye Gold</strong><br/>
               Digital fitness &amp; movement training services<br/>
-              Contact: support@themovement.com
+              Contact: move@royegold.com
             </p>
           </td>
         </tr>

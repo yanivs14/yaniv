@@ -411,6 +411,18 @@ Deno.serve(async (req) => {
           }
         }
 
+        // Try to retrieve Stripe invoice PDF
+        let invoicePdfUrl = "";
+        if (session.invoice) {
+          try {
+            const invoice = await stripe.invoices.retrieve(session.invoice);
+            invoicePdfUrl = invoice.invoice_pdf || "";
+            console.log("Invoice PDF URL retrieved:", invoicePdfUrl ? "yes" : "no");
+          } catch (e) {
+            console.warn("Failed to retrieve invoice for PDF:", e.message);
+          }
+        }
+
         await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
           type: "receipt",
           email: customerEmail,
@@ -421,6 +433,7 @@ Deno.serve(async (req) => {
           transactionId,
           paymentMethod,
           chargeId: session.id,
+          invoicePdfUrl,
         });
       } catch (e) {
         console.error("Failed to send receipt email:", e.message);

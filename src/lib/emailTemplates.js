@@ -8,7 +8,7 @@ const SELLER_INFO = `
       <p style="margin:0;font-size:13px;color:#888;line-height:1.7;">
         <strong style="color:#F5F5F5;">The Movement — Roye Gold</strong><br/>
         Digital fitness &amp; movement training services<br/>
-        Contact: support@themovement.com
+        Contact: move@royegold.com
       </p>
     </td>
   </tr>`;
@@ -53,6 +53,12 @@ export const EMAIL_TEMPLATES = [
             <tr><td style="padding:9px 0;"><span style="color:#666;font-size:11px;display:block;margin-bottom:2px;">TRANSACTION ID</span><span style="color:#888;font-size:12px;font-family:monospace;word-break:break-all;">cs_test_a1b2c3d4e5f6g7h8i9j0</span></td></tr>
           </table>
         </td></tr>
+        <tr>
+          <td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;text-align:center;">
+            <a href="#" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:14px;font-weight:800;text-decoration:none;padding:14px 40px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">📄 Download Invoice PDF</a>
+            <p style="margin:10px 0 0;font-size:11px;color:#555;">Click the button above to download your official invoice</p>
+          </td>
+        </tr>
         ${SELLER_INFO}
         ${FOOTER("05/07/2026, 14:30")}
       </table>
@@ -93,12 +99,16 @@ export const EMAIL_TEMPLATES = [
             Your refund of <strong style="color:#00fff7;">$35.00 USD</strong> has been processed and will appear on your original payment method within <strong style="color:#F5F5F5;">5-10 business days</strong>. The exact timeline depends on your bank or card issuer.
           </p>
         </td></tr>
+        <tr><td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;text-align:center;">
+          <a href="#" target="_blank" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:14px;font-weight:800;text-decoration:none;padding:14px 40px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">📄 Download Invoice PDF</a>
+          <p style="margin:10px 0 0;font-size:11px;color:#555;">Click the button above to download your updated invoice</p>
+        </td></tr>
         <tr><td style="padding:20px 24px;border-bottom:1px solid #1a1a1a;">
           <p style="margin:0 0 8px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;">Seller Information</p>
           <p style="margin:0;font-size:13px;color:#888;line-height:1.7;">
             <strong style="color:#F5F5F5;">The Movement — Roye Gold</strong><br/>
             Digital fitness &amp; movement training services<br/>
-            Contact: support@themovement.com
+            Contact: move@royegold.com
           </p>
         </td></tr>
         <tr><td style="padding:20px 24px;text-align:center;">
