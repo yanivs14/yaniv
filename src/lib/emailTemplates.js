@@ -1,4 +1,5 @@
 // Static preview HTML for all transactional & notification emails the system sends.
+// Templates: receipt, refund, welcome_skool, booking, lead confirmation, promotion, admin notification.
 // Each template uses sample data so the admin can preview the visual design.
 
 const SELLER_INFO = `

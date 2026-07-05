@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import SettingToggle from "@/components/admin/email/SettingToggle";
+// Toggles: auto lead email, receipt, refund, welcome+skool
 
 const AUTOMATIONS = [
   {
