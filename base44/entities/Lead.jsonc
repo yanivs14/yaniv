@@ -50,6 +50,19 @@
     "notes": {
       "type": "string",
       "description": "Admin notes about this lead"
+    },
+    "meeting_scheduled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether a Calendly meeting is scheduled"
+    },
+    "meeting_date": {
+      "type": "string",
+      "description": "Upcoming Calendly meeting date (ISO)"
+    },
+    "meeting_name": {
+      "type": "string",
+      "description": "Calendly event name"
     }
   },
   "required": [

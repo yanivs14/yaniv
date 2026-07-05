@@ -1,0 +1,69 @@
+{
+  "name": "CalendlyTracking",
+  "type": "object",
+  "properties": {
+    "event_uuid": {
+      "type": "string",
+      "description": "Calendly event UUID"
+    },
+    "invitee_email": {
+      "type": "string",
+      "description": "Invitee email"
+    },
+    "invitee_name": {
+      "type": "string",
+      "description": "Invitee name"
+    },
+    "event_name": {
+      "type": "string",
+      "description": "Calendly event name"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Meeting start time (ISO)"
+    },
+    "formatted_time": {
+      "type": "string",
+      "description": "Human-readable meeting time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "booked",
+        "cancelled"
+      ],
+      "default": "booked",
+      "description": "Whether meeting is booked or cancelled"
+    },
+    "admin_notified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether admin was notified about this event"
+    }
+  },
+  "required": [
+    "event_uuid"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
