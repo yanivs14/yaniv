@@ -109,6 +109,35 @@ Deno.serve(async (req) => {
       const refund = await stripe.refunds.create(refundParams);
       console.log(`Refund created: ${refund.id} | $${(refund.amount / 100).toFixed(2)} | by admin ${user.email}`);
 
+      // Send refund email to customer
+      try {
+        const charge = await stripe.charges.retrieve(refund.charge);
+        let customerEmail = "";
+        let customerName = "Customer";
+        if (charge.customer) {
+          const customer = await stripe.customers.retrieve(charge.customer);
+          customerEmail = customer?.email || "";
+          customerName = customer?.name || customer?.email || "Customer";
+        }
+        if (!customerEmail) customerEmail = charge.billing_details?.email || "";
+
+        if (customerEmail) {
+          await base44.functions.invoke("sendCustomerEmail", {
+            type: "refund",
+            email: customerEmail,
+            name: customerName,
+            amount: refund.amount / 100,
+            currency: refund.currency.toUpperCase(),
+            originalTransactionId: charge.payment_intent || charge.id,
+            refundId: refund.id,
+            reason: refund.reason || "",
+            chargeId: charge.id,
+          });
+        }
+      } catch (e) {
+        console.warn("Failed to send refund email:", e.message);
+      }
+
       return Response.json({
         success: true,
         refund: {

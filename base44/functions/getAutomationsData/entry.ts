@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const [calendlyTracking, skoolUploads, emailLogs, leadSettings] = await Promise.all([
       base44.asServiceRole.entities.CalendlyTracking.list('-created_date', 30).catch(() => []),
       base44.asServiceRole.entities.SkoolUpload.list('-created_date', 10).catch(() => []),
-      base44.asServiceRole.entities.EmailLog.list('-created_date', 30).catch(() => []),
+      base44.asServiceRole.entities.EmailLog.list('-created_date', 50).catch(() => []),
       base44.asServiceRole.entities.LeadSettings.list().catch(() => []),
     ]);
 

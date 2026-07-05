@@ -168,6 +168,49 @@ Deno.serve(async (req) => {
       return await handleChurn(stripe, event.data.object);
     }
 
+    if (event.type === "charge.refunded") {
+      const charge = event.data.object;
+      const refundAmount = charge.amount_refunded ? charge.amount_refunded / 100 : 0;
+      const currency = charge.currency?.toUpperCase() || "USD";
+      const chargeId = charge.id;
+
+      let customerEmail = "";
+      let customerName = "Customer";
+
+      if (charge.customer) {
+        try {
+          const customer = await stripe.customers.retrieve(charge.customer);
+          customerEmail = customer?.email || "";
+          customerName = customer?.name || customer?.email || "Customer";
+        } catch (e) {
+          console.warn("Customer retrieve for refund failed:", e.message);
+        }
+      }
+      if (!customerEmail) customerEmail = charge.billing_details?.email || "";
+
+      const refundObj = charge.refunds?.data?.[0] || {};
+
+      if (customerEmail) {
+        try {
+          await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
+            type: "refund",
+            email: customerEmail,
+            name: customerName,
+            amount: refundAmount,
+            currency,
+            originalTransactionId: charge.payment_intent || chargeId,
+            refundId: refundObj.id || chargeId,
+            reason: refundObj.reason || "",
+            chargeId,
+          });
+        } catch (e) {
+          console.error("Failed to send refund email:", e.message);
+        }
+      }
+
+      return Response.json({ received: true, processed: true, refund: customerEmail });
+    }
+
     if (event.type !== "checkout.session.completed") {
       return Response.json({ received: true, skipped: event.type });
     }
@@ -347,6 +390,40 @@ Deno.serve(async (req) => {
         console.log(`Admin email sent to ${adminEmail}`);
       } catch (e) {
         console.error(`Failed to send admin email to ${adminEmail}:`, e.message);
+      }
+    }
+
+    // Send receipt email to customer
+    if (customerEmail) {
+      try {
+        let paymentMethod = "Credit/Debit Card";
+        if (session.payment_intent) {
+          try {
+            const pi = await stripe.paymentIntents.retrieve(session.payment_intent);
+            const charge = pi.charges?.data?.[0];
+            if (charge?.payment_method_details?.card) {
+              const card = charge.payment_method_details.card;
+              const brand = card.brand ? card.brand.charAt(0).toUpperCase() + card.brand.slice(1) : "Card";
+              paymentMethod = `${brand} •••• ${card.last4 || ""}`;
+            }
+          } catch (e) {
+            console.warn("Failed to get charge details for receipt:", e.message);
+          }
+        }
+
+        await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
+          type: "receipt",
+          email: customerEmail,
+          name: customerName,
+          amount,
+          currency,
+          planLabel,
+          transactionId,
+          paymentMethod,
+          chargeId: session.id,
+        });
+      } catch (e) {
+        console.error("Failed to send receipt email:", e.message);
       }
     }
 

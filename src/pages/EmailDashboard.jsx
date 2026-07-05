@@ -79,24 +79,28 @@ export default function EmailDashboard() {
     setLoadingData(false);
   }, []);
 
-  const handleToggleAutoEmail = useCallback(async (enabled) => {
+  const handleToggleSetting = useCallback((fieldName) => async (enabled) => {
     try {
       if (leadSettings?.id) {
         const updated = await base44.entities.LeadSettings.update(leadSettings.id, {
-          auto_email_enabled: enabled,
+          [fieldName]: enabled,
         });
         setLeadSettings(updated);
       } else {
         const created = await base44.entities.LeadSettings.create({
-          auto_email_enabled: enabled,
+          [fieldName]: enabled,
           recipient_emails: [],
         });
         setLeadSettings(created);
       }
     } catch (e) {
-      console.error("Failed to update auto email setting:", e);
+      console.error(`Failed to update ${fieldName}:`, e);
     }
   }, [leadSettings]);
+
+  const handleToggleAutoEmail = useMemo(() => handleToggleSetting("auto_email_enabled"), [handleToggleSetting]);
+  const handleToggleReceiptEmails = useMemo(() => handleToggleSetting("receipt_emails_enabled"), [handleToggleSetting]);
+  const handleToggleRefundEmails = useMemo(() => handleToggleSetting("refund_emails_enabled"), [handleToggleSetting]);
 
   const loadMeetings = useCallback(async () => {
     setLoadingMeetings(true);
@@ -351,7 +355,12 @@ export default function EmailDashboard() {
                   )}
                   {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
                   {activeTab === "automations" && (
-                    <AutomationsTab leadSettings={leadSettings} onToggleAutoEmail={handleToggleAutoEmail} />
+                    <AutomationsTab
+                      leadSettings={leadSettings}
+                      onToggleAutoEmail={handleToggleAutoEmail}
+                      onToggleReceiptEmails={handleToggleReceiptEmails}
+                      onToggleRefundEmails={handleToggleRefundEmails}
+                    />
                   )}
                 </motion.div>
               </AnimatePresence>

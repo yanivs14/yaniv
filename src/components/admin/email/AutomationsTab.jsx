@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 import {
   RefreshCw, Zap, Webhook, Clock, Mail, Users, CreditCard, Calendar,
   CheckCircle, XCircle, Activity, Database, Cloud, ChevronDown, ChevronUp,
+  Receipt, RotateCcw, FileText,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
+import SettingToggle from "@/components/admin/email/SettingToggle";
 
 const AUTOMATIONS = [
   {
@@ -104,7 +105,7 @@ const STRIPE_EVENT_LABELS = {
   "payment_intent.succeeded": "Payment Succeeded",
 };
 
-export default function AutomationsTab({ leadSettings, onToggleAutoEmail }) {
+export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onToggleReceiptEmails, onToggleRefundEmails }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
@@ -126,6 +127,7 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail }) {
   const skoolUploads = data?.skool_uploads || [];
   const emailLogs = data?.email_logs || [];
   const stripeEvents = data?.stripe_events || [];
+  const receiptRefundLogs = emailLogs.filter(l => l.template_name === "receipt" || l.template_name === "refund");
 
   return (
     <div className="space-y-5">
@@ -180,9 +182,35 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail }) {
             })}
           </div>
 
-          {/* Auto Email Toggle */}
-          <div>
-            <AutoEmailToggle settings={leadSettings} onToggle={onToggleAutoEmail} />
+          {/* Settings Toggles */}
+          <div className="space-y-2.5">
+            <SettingToggle
+              title="Auto Lead Email"
+              description="Confirmation email to new leads"
+              enabled={leadSettings?.auto_email_enabled !== false}
+              onToggle={onToggleAutoEmail}
+              icon={Zap}
+              iconColor="text-teal-600"
+              iconBg="bg-teal-50"
+            />
+            <SettingToggle
+              title="Payment Receipt Emails"
+              description="Sent to customers after checkout"
+              enabled={leadSettings?.receipt_emails_enabled !== false}
+              onToggle={onToggleReceiptEmails}
+              icon={Receipt}
+              iconColor="text-indigo-600"
+              iconBg="bg-indigo-50"
+            />
+            <SettingToggle
+              title="Refund Notification Emails"
+              description="Sent to customers on refund"
+              enabled={leadSettings?.refund_emails_enabled !== false}
+              onToggle={onToggleRefundEmails}
+              icon={RotateCcw}
+              iconColor="text-amber-600"
+              iconBg="bg-amber-50"
+            />
           </div>
 
           {/* Logs sections */}
@@ -276,6 +304,46 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail }) {
                       <span className="text-[10px] text-slate-400 flex-shrink-0">{formatTime(log.created_date)}</span>
                     </div>
                   ))}
+                </div>
+              )}
+            </LogSection>
+
+            {/* Receipt & Refund Emails */}
+            <LogSection
+              title="Receipt & Refund Emails"
+              icon={FileText}
+              iconColor="text-indigo-600"
+              iconBg="bg-indigo-50"
+              count={receiptRefundLogs.length}
+              expanded={expandedSection === "receipts"}
+              onToggle={() => setExpandedSection(expandedSection === "receipts" ? null : "receipts")}
+            >
+              {receiptRefundLogs.length === 0 ? (
+                <p className="text-xs text-slate-400 text-center py-4">No receipt or refund emails sent yet</p>
+              ) : (
+                <div className="space-y-1.5">
+                  {receiptRefundLogs.map((log, i) => {
+                    const isRefund = log.template_name === "refund";
+                    return (
+                      <div key={log.id || i} className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${log.status === "sent" ? "bg-emerald-500" : "bg-red-400"}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-body text-slate-900 truncate flex items-center gap-1.5">
+                            {isRefund ? <RotateCcw className="w-3 h-3 text-amber-500 flex-shrink-0" /> : <Receipt className="w-3 h-3 text-indigo-500 flex-shrink-0" />}
+                            {log.recipient_name || log.recipient_email}
+                          </p>
+                          <p className="text-[10px] text-slate-400 truncate">{log.subject || "—"}</p>
+                        </div>
+                        <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${isRefund ? "bg-amber-100 text-amber-700" : "bg-indigo-100 text-indigo-700"}`}>
+                          {isRefund ? "Refund" : "Receipt"}
+                        </span>
+                        <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${log.status === "sent" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`}>
+                          {log.status}
+                        </span>
+                        <span className="text-[10px] text-slate-400 flex-shrink-0">{formatTime(log.created_date)}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </LogSection>
