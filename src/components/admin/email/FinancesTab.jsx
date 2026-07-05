@@ -189,20 +189,20 @@ export default function FinancesTab() {
       {skoolMeta ? (
         <div className="space-y-2 mb-4">
           <div className="bg-white border border-amber-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <FileText className="w-4 h-4 text-amber-600" />
+            <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+              <FileText className="w-4.5 h-4.5 text-amber-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-body font-semibold text-slate-900 truncate">{skoolMeta.fileName}</p>
-              <p className="text-[10px] text-slate-400 flex items-center gap-1">
-                <Clock className="w-2.5 h-2.5" />
+              <p className="text-sm font-body font-semibold text-slate-900 truncate">{skoolMeta.fileName}</p>
+              <p className="text-xs text-slate-400 flex items-center gap-1">
+                <Clock className="w-3 h-3" />
                 Uploaded {new Date(skoolMeta.uploadedAt).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                 <span className="text-amber-600 ml-1">· Active</span>
               </p>
             </div>
             <button
               onClick={handleRestore}
-              className="flex items-center gap-1.5 text-[11px] font-body text-slate-500 hover:text-red-500 border border-slate-200 hover:border-red-300 rounded-lg px-2.5 py-1.5 transition-colors flex-shrink-0"
+              className="flex items-center gap-1.5 text-xs font-body text-slate-500 hover:text-red-500 border border-slate-200 hover:border-red-300 rounded-lg px-2.5 py-1.5 transition-colors flex-shrink-0"
             >
               <Undo2 className="w-3.5 h-3.5" />
               Restore
@@ -210,7 +210,7 @@ export default function FinancesTab() {
           </div>
           {skoolHistory.filter(u => !u.is_active).length > 0 && (
             <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-sm">
-              <p className="text-[9px] text-slate-400 uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
               <div className="space-y-1">
                 {skoolHistory.filter(u => !u.is_active).map(u => (
                   <button
@@ -218,12 +218,12 @@ export default function FinancesTab() {
                     onClick={() => handleActivate(u.id)}
                     className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
                   >
-                    <FileText className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                    <span className="text-[11px] text-slate-600 truncate flex-1">{u.file_name}</span>
-                    <span className="text-[9px] text-slate-400 flex-shrink-0">
+                    <FileText className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    <span className="text-xs text-slate-600 truncate flex-1">{u.file_name}</span>
+                    <span className="text-[10px] text-slate-400 flex-shrink-0">
                       {new Date(u.created_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
                     </span>
-                    <RotateCcw className="w-3 h-3 text-teal-600 flex-shrink-0" />
+                    <RotateCcw className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -235,7 +235,7 @@ export default function FinancesTab() {
           <SkoolUpload onSkoolData={handleSkoolData} />
           {skoolHistory.length > 0 && (
             <div className="bg-white border border-slate-200 rounded-xl p-2 shadow-sm">
-              <p className="text-[9px] text-slate-400 uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wide px-1 pb-1.5">Previous uploads</p>
               <div className="space-y-1">
                 {skoolHistory.map(u => (
                   <button
@@ -243,12 +243,12 @@ export default function FinancesTab() {
                     onClick={() => handleActivate(u.id)}
                     className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
                   >
-                    <FileText className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                    <span className="text-[11px] text-slate-600 truncate flex-1">{u.file_name}</span>
-                    <span className="text-[9px] text-slate-400 flex-shrink-0">
+                    <FileText className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    <span className="text-xs text-slate-600 truncate flex-1">{u.file_name}</span>
+                    <span className="text-[10px] text-slate-400 flex-shrink-0">
                       {new Date(u.created_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
                     </span>
-                    <RotateCcw className="w-3 h-3 text-teal-600 flex-shrink-0" />
+                    <RotateCcw className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -270,19 +270,19 @@ export default function FinancesTab() {
               className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm"
             >
               <div className="flex items-center gap-2 mb-1.5">
-                <div className={`w-7 h-7 rounded-lg ${s.bg} flex items-center justify-center`}>
-                  <Icon className={`w-3.5 h-3.5 ${s.color}`} />
+                <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center`}>
+                  <Icon className={`w-4 h-4 ${s.color}`} />
                 </div>
-                <p className="text-[10px] text-slate-500 font-body">{s.label}</p>
+                <p className="text-xs text-slate-500 font-body">{s.label}</p>
                 {s.change !== undefined && s.change !== 0 && (
-                  <span className={`ml-auto text-[10px] font-bold flex items-center gap-0.5 ${s.change > 0 ? "text-emerald-600" : "text-red-500"}`}>
-                    {s.change > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  <span className={`ml-auto text-xs font-bold flex items-center gap-0.5 ${s.change > 0 ? "text-emerald-600" : "text-red-500"}`}>
+                    {s.change > 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
                     {Math.abs(s.change).toFixed(0)}%
                   </span>
                 )}
               </div>
-              <p className="font-body text-xl font-bold text-slate-900 leading-none">{s.value}</p>
-              <p className="text-[9px] text-slate-400 mt-1">{s.sub}</p>
+              <p className="font-body text-2xl font-bold text-slate-900 leading-none">{s.value}</p>
+              <p className="text-[11px] text-slate-400 mt-1">{s.sub}</p>
             </motion.div>
           );
         })}
@@ -291,14 +291,14 @@ export default function FinancesTab() {
       {/* Revenue chart */}
       {monthlyData.length > 0 && (
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-xs font-body font-semibold text-slate-900 mb-3">Revenue — Last 6 Months</p>
+          <p className="text-sm font-body font-semibold text-slate-900 mb-3">Revenue — Last 6 Months</p>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
-              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-              <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
+              <YAxis tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
               <Tooltip
                 cursor={{ fill: "rgba(13,148,136,0.05)" }}
-                contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }}
+                contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "13px" }}
                 labelStyle={{ color: "#475569" }}
                 formatter={(value, name) => [name === "revenue" ? formatMoneyDetailed(value) : value, name === "revenue" ? "Revenue" : "Transactions"]}
               />
@@ -315,7 +315,7 @@ export default function FinancesTab() {
       {/* Plan breakdown */}
       {planBreakdown.length > 0 && (
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-xs font-body font-semibold text-slate-900 mb-3">Customers by Plan</p>
+          <p className="text-sm font-body font-semibold text-slate-900 mb-3">Customers by Plan</p>
           <div className="space-y-2.5">
             {planBreakdown.map(([plan, count], idx) => {
               const maxCount = planBreakdown[0][1];
@@ -323,8 +323,8 @@ export default function FinancesTab() {
               return (
                 <div key={plan}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] text-slate-600 font-body truncate pr-2">{plan}</span>
-                    <span className="text-[11px] font-bold text-slate-900 flex-shrink-0">{count}</span>
+                    <span className="text-sm text-slate-600 font-body truncate pr-2">{plan}</span>
+                    <span className="text-sm font-bold text-slate-900 flex-shrink-0">{count}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <motion.div
@@ -344,23 +344,23 @@ export default function FinancesTab() {
 
       {/* Quick stats */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-        <p className="text-xs font-body font-semibold text-slate-900 mb-3">Key Metrics</p>
+        <p className="text-sm font-body font-semibold text-slate-900 mb-3">Key Metrics</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
-            <p className="text-[10px] text-slate-400">Churn Rate</p>
-            <p className="text-sm font-bold text-red-500">{(financials.churn_rate || 0).toFixed(1)}%</p>
+            <p className="text-xs text-slate-400">Churn Rate</p>
+            <p className="text-lg font-bold text-red-500">{(financials.churn_rate || 0).toFixed(1)}%</p>
           </div>
           <div>
-            <p className="text-[10px] text-slate-400">Paying Customers</p>
-            <p className="text-sm font-bold text-emerald-600">{stats.paying_customers || 0}</p>
+            <p className="text-xs text-slate-400">Paying Customers</p>
+            <p className="text-lg font-bold text-emerald-600">{stats.paying_customers || 0}</p>
           </div>
           <div>
-            <p className="text-[10px] text-slate-400">Churned</p>
-            <p className="text-sm font-bold text-red-500">{stats.churned || 0}</p>
+            <p className="text-xs text-slate-400">Churned</p>
+            <p className="text-lg font-bold text-red-500">{stats.churned || 0}</p>
           </div>
           <div>
-            <p className="text-[10px] text-slate-400">Net Revenue</p>
-            <p className="text-sm font-bold text-teal-600">{formatMoney((financials.total_revenue || 0) - (financials.total_refunded || 0))}</p>
+            <p className="text-xs text-slate-400">Net Revenue</p>
+            <p className="text-lg font-bold text-teal-600">{formatMoney((financials.total_revenue || 0) - (financials.total_refunded || 0))}</p>
           </div>
         </div>
       </div>

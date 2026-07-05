@@ -44,6 +44,7 @@ export default function CrmContacts() {
   const [stripeLoading, setStripeLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [sourceFilter, setSourceFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [stripeAction, setStripeAction] = useState(null);
@@ -87,6 +88,7 @@ export default function CrmContacts() {
       if (filter === "past" && !c.is_churned) return false;
       if (filter === "leads" && (c.is_paying_customer || c.is_churned)) return false;
       if (filter === "refunded" && !c.is_refunded) return false;
+      if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
       if (search) {
         const q = search.toLowerCase();
         return (c.email || "").toLowerCase().includes(q) ||
@@ -95,9 +97,9 @@ export default function CrmContacts() {
       }
       return true;
     });
-  }, [contacts, search, filter]);
+  }, [contacts, search, filter, sourceFilter]);
 
-  useEffect(() => { setCurrentPage(1); }, [search, filter]);
+  useEffect(() => { setCurrentPage(1); }, [search, filter, sourceFilter]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const pagedContacts = useMemo(() => {
@@ -138,25 +140,25 @@ export default function CrmContacts() {
           const Icon = s.icon;
           return (
             <div key={i} className="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm">
-              <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-1.5`}>
-                <Icon className={`w-4 h-4 ${s.color}`} />
+              <div className={`w-9 h-9 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-1.5`}>
+                <Icon className={`w-4.5 h-4.5 ${s.color}`} />
               </div>
-              <p className="font-body text-xl font-bold text-slate-900 leading-none">{s.value}</p>
-              <p className="text-[10px] text-slate-500 mt-0.5">{s.label}</p>
+              <p className="font-body text-base md:text-2xl font-bold text-slate-900 leading-none">{s.value}</p>
+              <p className="text-[11px] text-slate-500 mt-0.5">{s.label}</p>
             </div>
           );
         })}
       </div>
 
       {/* Platform indicators */}
-      <div className="flex items-center gap-3 mb-3 text-[11px] text-slate-500 px-1">
+      <div className="flex items-center gap-3 mb-3 text-xs text-slate-500 px-1">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Kit {stats.in_kit || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-500"></span> HubSpot {stats.in_hubspot || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Emails {stats.total_emails_sent || 0}</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-indigo-500"></span> Stripe {stats.in_stripe || 0}</span>
         <span className="ml-auto flex items-center gap-2">
           {stripeLoading && (
-            <span className="flex items-center gap-1 text-[11px] text-teal-600">
+            <span className="flex items-center gap-1 text-xs text-teal-600">
               <div className="w-2.5 h-2.5 border border-teal-600 border-t-transparent rounded-full animate-spin" />
               Loading Stripe…
             </span>
@@ -178,13 +180,32 @@ export default function CrmContacts() {
         />
       </div>
 
+      {/* Source filter */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3" style={{ scrollbarWidth: "none" }}>
+        <button
+          onClick={() => setSourceFilter("all")}
+          className={`flex-shrink-0 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${sourceFilter === "all" ? "bg-slate-700 text-white border-slate-700" : "bg-white text-slate-600 border-slate-300 hover:border-slate-400"}`}
+        >
+          All Sources
+        </button>
+        {Object.entries(SOURCE_LABELS).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setSourceFilter(key)}
+            className={`flex-shrink-0 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${sourceFilter === key ? "bg-slate-700 text-white border-slate-700" : "bg-white text-slate-600 border-slate-300 hover:border-slate-400"}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Filter tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-3" style={{ scrollbarWidth: "none" }}>
         {filterTabs.map(f => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`flex-shrink-0 text-xs font-body px-3 py-1.5 rounded-full border transition-colors ${filter === f.key ? "bg-teal-600 text-white border-teal-600" : "bg-white text-slate-600 border-slate-300 hover:border-teal-400"}`}
+            className={`flex-shrink-0 text-sm font-body px-3.5 py-1.5 rounded-full border transition-colors ${filter === f.key ? "bg-teal-600 text-white border-teal-600" : "bg-white text-slate-600 border-slate-300 hover:border-teal-400"}`}
           >
             {f.label} ({f.count})
           </button>
@@ -204,7 +225,7 @@ export default function CrmContacts() {
         {/* Desktop table */}
         <div className="hidden md:block bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
           {/* Header */}
-          <div className="grid grid-cols-[1.8fr_2.5fr_0.8fr_1.5fr_0.7fr_0.9fr_0.4fr] gap-2 px-3 py-2.5 text-[10px] uppercase tracking-wide text-slate-500 font-body font-semibold border-b border-slate-200 bg-slate-50">
+          <div className="grid grid-cols-[1.8fr_2.5fr_0.8fr_1.5fr_0.7fr_0.9fr_0.4fr] gap-2 px-3 py-2.5 text-xs uppercase tracking-wide text-slate-500 font-body font-semibold border-b border-slate-200 bg-slate-50">
             <span>Name</span>
             <span>Email</span>
             <span>Source</span>
@@ -225,13 +246,13 @@ export default function CrmContacts() {
                     className={`w-full grid grid-cols-[1.8fr_2.5fr_0.8fr_1.5fr_0.7fr_0.9fr_0.4fr] gap-2 px-3 py-2.5 items-center text-left hover:bg-slate-50 transition-colors ${expanded ? "bg-teal-50/30" : ""}`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold ${statusColor}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${statusColor}`}>
                         {(c.name || c.email || "?")[0].toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-body font-semibold text-slate-900 truncate flex items-center gap-1">
+                        <p className="text-sm font-body font-semibold text-slate-900 truncate flex items-center gap-1">
                           {c.name || "Unknown"}
-                          {c.is_paying_customer && <Crown className="w-2.5 h-2.5 text-emerald-500 flex-shrink-0" />}
+                          {c.is_paying_customer && <Crown className="w-3 h-3 text-emerald-500 flex-shrink-0" />}
                         </p>
                         <div className="flex items-center gap-1.5">
                           {c.kit_id && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" title="Kit" />}
@@ -240,19 +261,19 @@ export default function CrmContacts() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-xs text-slate-600 font-body truncate">{c.email}</span>
-                    <span className={`text-[10px] font-body px-1.5 py-0.5 rounded-full border inline-block w-fit ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
+                    <span className="text-sm text-slate-600 font-body truncate">{c.email}</span>
+                    <span className={`text-xs font-body px-2 py-0.5 rounded-full border inline-block w-fit ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
                       {SOURCE_LABELS[c.source] || c.source}
                     </span>
-                    <span className="text-[11px] text-teal-600 font-body truncate">{c.purchase_plan || "—"}</span>
-                    <span className="text-xs text-emerald-600 font-body text-right font-semibold">{formatMoney(c.total_paid)}</span>
-                    <span className="text-[11px] text-slate-400 font-body text-right">{formatDate(c.created_date)}</span>
+                    <span className="text-sm text-teal-600 font-body truncate">{c.purchase_plan || "—"}</span>
+                    <span className="text-sm text-emerald-600 font-body text-right font-semibold">{formatMoney(c.total_paid)}</span>
+                    <span className="text-xs text-slate-400 font-body text-right">{formatDate(c.created_date)}</span>
                     <span className="flex justify-end">
-                      {expanded ? <ChevronUp className="w-3.5 h-3.5 text-slate-400" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-400" />}
+                      {expanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                     </span>
                   </button>
                   {expanded && (
-                    <div className="px-3 py-3 bg-slate-50 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-xs font-body">
+                    <div className="px-3 py-3 bg-slate-50 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-sm font-body">
                       {c.phone && (
                         <div className="flex items-center gap-1.5 text-slate-600"><Phone className="w-3 h-3 text-slate-400" /> {c.phone}</div>
                       )}
