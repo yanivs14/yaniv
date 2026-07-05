@@ -65,7 +65,7 @@ const AuthenticatedApp = () => {
         <Route path="/inner-circle" element={<InnerCircle />} />
         <Route path="/MOVEMENT7PREP" element={<Movement7Prep />} />
         <Route path="/promotion" element={<Promotion />} />
-        <Route path="/email-dashboard" element={<EmailDashboard />} />
+        <Route path="/crm" element={<EmailDashboard />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />

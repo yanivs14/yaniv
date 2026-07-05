@@ -107,14 +107,6 @@ export default function CrmContacts() {
     return filtered.slice(start, start + pageSize);
   }, [filtered, currentPage]);
 
-  const statCards = [
-    { label: "Total", value: stats.total_contacts || 0, icon: Users, color: "text-slate-700", bg: "bg-slate-100" },
-    { label: "Active", value: activeCount, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Past", value: pastCount, icon: XCircle, color: "text-red-500", bg: "bg-red-50" },
-    { label: "Leads", value: leadsCount, icon: TrendingUp, color: "text-teal-600", bg: "bg-teal-50" },
-    { label: "Refunded", value: refundedCount, icon: RotateCcw, color: "text-amber-600", bg: "bg-amber-50" },
-  ];
-
   const filterTabs = [
     { key: "all", label: "All", count: contacts.length },
     { key: "active", label: "Active", count: activeCount },
@@ -134,22 +126,6 @@ export default function CrmContacts() {
 
   return (
     <div>
-      {/* Stats */}
-      <div className="grid grid-cols-5 gap-2.5 mb-3">
-        {statCards.map((s, i) => {
-          const Icon = s.icon;
-          return (
-            <div key={i} className="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm">
-              <div className={`w-9 h-9 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-1.5`}>
-                <Icon className={`w-4.5 h-4.5 ${s.color}`} />
-              </div>
-              <p className="font-body text-base md:text-2xl font-bold text-slate-900 leading-none">{s.value}</p>
-              <p className="text-[11px] text-slate-500 mt-0.5">{s.label}</p>
-            </div>
-          );
-        })}
-      </div>
-
       {/* Platform indicators */}
       <div className="flex items-center gap-3 mb-3 text-xs text-slate-500 px-1">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Kit {stats.in_kit || 0}</span>

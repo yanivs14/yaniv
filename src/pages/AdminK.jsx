@@ -1126,7 +1126,7 @@ export default function AdminK() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/email-dashboard" className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors whitespace-nowrap">
+            <Link to="/crm" className="flex items-center gap-1.5 text-xs bg-[#1a1a1a] border border-[#2a2a2a] text-off-white px-3 py-2 rounded-lg hover:border-orange-red hover:text-orange-red transition-colors whitespace-nowrap">
               <Mail className="w-3.5 h-3.5" /> CRM
             </Link>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-red/10 border border-orange-red/30">

@@ -10,6 +10,7 @@ import AutoEmailToggle from "@/components/admin/email/AutoEmailToggle";
 import CrmContacts from "@/components/admin/email/CrmContacts";
 import FinancesTab from "@/components/admin/email/FinancesTab";
 import AutomationsTab from "@/components/admin/email/AutomationsTab";
+import EmailPreviewTab from "@/components/admin/email/EmailPreviewTab";
 
 const TABS = [
   { key: "crm", label: "CRM", icon: Users },
@@ -18,6 +19,7 @@ const TABS = [
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
   { key: "automations", label: "Automations", icon: Zap },
+  { key: "email_preview", label: "Email Preview", icon: MailCheck },
 ];
 
 function AuthGate() {
@@ -354,6 +356,7 @@ export default function EmailDashboard() {
                     />
                   )}
                   {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
+                  {activeTab === "email_preview" && <EmailPreviewTab />}
                   {activeTab === "automations" && (
                     <AutomationsTab
                       leadSettings={leadSettings}
