@@ -586,6 +586,23 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Auto-invite to Skool community (replaces Zapier)
+    if (customerEmail) {
+      try {
+        const skoolWebhookUrl = Deno.env.get("SKOOL_WEBHOOK_URL");
+        if (skoolWebhookUrl) {
+          const skoolRes = await fetch(`${skoolWebhookUrl}?email=${encodeURIComponent(customerEmail)}`);
+          if (skoolRes.ok) {
+            console.log(`Skool invite sent: ${customerEmail} [${skoolRes.status}]`);
+          } else {
+            console.warn(`Skool invite failed: ${customerEmail} [${skoolRes.status}] ${await skoolRes.text()}`);
+          }
+        }
+      } catch (skoolErr) {
+        console.warn("Skool invite error (non-critical):", skoolErr.message);
+      }
+    }
+
     // Update Lead entity to mark as converted
     if (matchedLead) {
       try {
