@@ -157,16 +157,16 @@ export const EMAIL_TEMPLATES = [
           </table>
         </td></tr>
         <tr><td class="cta-pad" style="padding:0 32px 34px;" align="center">
-          <a href="https://www.skool.com/the-movement-roye-gold" target="_blank" class="cta-btn" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:16px;font-weight:800;text-decoration:none;padding:16px 48px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">Join the Community →</a>
+          <a href="https://www.skool.com/move" target="_blank" class="cta-btn" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:16px;font-weight:800;text-decoration:none;padding:16px 48px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">Join the Community →</a>
           <p style="margin:12px 0 0;font-size:11px;color:#555;line-height:1.5;">Use the same email address to be recognized automatically</p>
         </td></tr>
-        <tr><td class="body-pad" style="padding:0 32px 28px;">
+        <tr><td class="body-pad" style="padding:0 32px 28px;text-align:center;">
           <p style="margin:0 0 16px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;font-weight:600;">What's waiting for you inside:</p>
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">240+ adaptive training sessions</span></td></tr>
-            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Daily practice &amp; challenges</span></td></tr>
-            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Strength, mobility, control &amp; longevity tracks</span></td></tr>
-            <tr><td style="padding:8px 0;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Direct support from Roye Gold &amp; the community</span></td></tr>
+          <table cellpadding="0" cellspacing="0" align="center" style="margin:0 auto;">
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;text-align:center;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">240+ adaptive training sessions</span></td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;text-align:center;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Daily practice &amp; challenges</span></td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;text-align:center;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Strength, mobility, control &amp; longevity tracks</span></td></tr>
+            <tr><td style="padding:8px 0;text-align:center;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Direct support from Roye Gold &amp; the community</span></td></tr>
           </table>
         </td></tr>
         <tr><td style="padding:20px 32px;border-top:1px solid #1a1a1a;text-align:center;">
