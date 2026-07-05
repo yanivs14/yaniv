@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw, DollarSign, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -25,7 +25,7 @@ function AuthGate() {
         <div className="w-16 h-16 bg-white border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
           <Lock className="w-7 h-7 text-teal-600" />
         </div>
-        <p className="font-heading text-3xl font-bold text-slate-900 uppercase tracking-tight mb-2">Admin Only</p>
+        <p className="font-body text-3xl font-bold text-slate-900 uppercase tracking-tight mb-2">Admin Only</p>
         <p className="font-body text-sm text-slate-500 mb-8">Sign in as an admin to manage emails.</p>
         <button
           onClick={() => base44.auth.redirectToLogin(window.location.href)}
@@ -220,19 +220,6 @@ export default function EmailDashboard() {
 
   if (!user || user.role !== "admin") return <AuthGate />;
 
-  const totalRecipients = recipients.length;
-  const totalSent = logs.filter(l => l.status === "sent").length;
-  const totalFailed = logs.filter(l => l.status === "failed").length;
-  const successRate = totalSent + totalFailed > 0 ? Math.round((totalSent / (totalSent + totalFailed)) * 100) : 0;
-  const totalMeetings = Object.values(meetingsMap).reduce((sum, arr) => sum + arr.length, 0);
-
-  const stats = [
-    { label: "Recipients", value: totalRecipients, icon: Users, color: "text-teal-600", bg: "bg-teal-50" },
-    { label: "Emails Sent", value: totalSent, icon: MailCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Upcoming Calls", value: loadingMeetings ? "…" : totalMeetings, icon: CalendarClock, color: "text-teal-600", bg: "bg-teal-50" },
-    { label: "Success Rate", value: `${successRate}%`, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-  ];
-
   return (
     <div className="min-h-screen bg-slate-50 flex font-body">
       {/* Sidebar — desktop */}
@@ -241,7 +228,7 @@ export default function EmailDashboard() {
           <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center">
             <LayoutDashboard className="w-4.5 h-4.5 text-white" />
           </div>
-          <h1 className="font-heading text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
+          <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
@@ -285,43 +272,25 @@ export default function EmailDashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <div className="lg:hidden h-14 border-b border-slate-200 bg-white flex items-center justify-between px-4 flex-shrink-0">
+        <div className="lg:hidden sticky top-0 z-30 h-14 border-b border-slate-200 bg-white/95 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <Link to="/admin-k" className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </Link>
-            <h1 className="font-heading text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
+            <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
           </div>
           <button onClick={() => base44.auth.logout("/admin-k")} className="text-slate-400 hover:text-red-500 transition-colors p-2">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-4 lg:p-6 border-b border-slate-200 bg-white">
-          {stats.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <div key={i} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
-                <div className={`w-10 h-10 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0`}>
-                  <Icon className={`w-5 h-5 ${s.color}`} />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-heading text-xl font-bold text-slate-900 leading-none">{s.value}</p>
-                  <p className="text-xs text-slate-500 mt-0.5 truncate">{s.label}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
         {/* Auto email toggle */}
-        <div className="px-4 lg:px-6 pt-4">
+        <div className="px-3 sm:px-4 lg:px-6 pt-4">
           <AutoEmailToggle settings={leadSettings} onToggle={handleToggleAutoEmail} />
         </div>
 
         {/* Mobile tab navigation */}
-        <div className="lg:hidden flex border-b border-slate-200 bg-white overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        <div className="lg:hidden sticky top-14 z-20 flex border-b border-slate-200 bg-white/95 backdrop-blur-sm overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none" }}>
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -345,7 +314,7 @@ export default function EmailDashboard() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl mx-auto px-4 lg:px-6 py-5 pb-24">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 pb-24">
             {loadingData ? (
               <div className="flex items-center justify-center py-20">
                 <div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />

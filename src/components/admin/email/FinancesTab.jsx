@@ -171,7 +171,7 @@ export default function FinancesTab() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-heading text-base font-bold text-slate-900 uppercase tracking-tight">Financial Overview</h2>
+        <h2 className="font-body text-base font-bold text-slate-900 uppercase tracking-tight">Financial Overview</h2>
         <span className="flex items-center gap-2">
           {stripeLoading && (
             <span className="flex items-center gap-1 text-[10px] text-teal-600">
@@ -281,7 +281,7 @@ export default function FinancesTab() {
                   </span>
                 )}
               </div>
-              <p className="font-heading text-xl font-bold text-slate-900 leading-none">{s.value}</p>
+              <p className="font-body text-xl font-bold text-slate-900 leading-none">{s.value}</p>
               <p className="text-[9px] text-slate-400 mt-1">{s.sub}</p>
             </motion.div>
           );

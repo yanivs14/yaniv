@@ -75,6 +75,7 @@ export default function CrmContacts() {
   const stats = data?.stats || {};
 
   const activeCount = useMemo(() => contacts.filter(c => c.is_paying_customer && !c.is_churned).length, [contacts]);
+  const payingCount = useMemo(() => contacts.filter(c => c.is_paying_customer).length, [contacts]);
   const pastCount = useMemo(() => contacts.filter(c => c.is_churned).length, [contacts]);
   const leadsCount = useMemo(() => contacts.filter(c => !c.is_paying_customer && !c.is_churned).length, [contacts]);
   const refundedCount = useMemo(() => contacts.filter(c => c.is_refunded).length, [contacts]);
@@ -82,6 +83,7 @@ export default function CrmContacts() {
   const filtered = useMemo(() => {
     return contacts.filter(c => {
       if (filter === "active" && !(c.is_paying_customer && !c.is_churned)) return false;
+      if (filter === "paying" && !c.is_paying_customer) return false;
       if (filter === "past" && !c.is_churned) return false;
       if (filter === "leads" && (c.is_paying_customer || c.is_churned)) return false;
       if (filter === "refunded" && !c.is_refunded) return false;
@@ -114,6 +116,7 @@ export default function CrmContacts() {
   const filterTabs = [
     { key: "all", label: "All", count: contacts.length },
     { key: "active", label: "Active", count: activeCount },
+    { key: "paying", label: "Paying", count: payingCount },
     { key: "past", label: "Past", count: pastCount },
     { key: "leads", label: "Leads", count: leadsCount },
     { key: "refunded", label: "Refunded", count: refundedCount },
@@ -138,7 +141,7 @@ export default function CrmContacts() {
               <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center mx-auto mb-1.5`}>
                 <Icon className={`w-4 h-4 ${s.color}`} />
               </div>
-              <p className="font-heading text-xl font-bold text-slate-900 leading-none">{s.value}</p>
+              <p className="font-body text-xl font-bold text-slate-900 leading-none">{s.value}</p>
               <p className="text-[10px] text-slate-500 mt-0.5">{s.label}</p>
             </div>
           );

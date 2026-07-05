@@ -78,7 +78,7 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
       <div className="py-12">
         <div className="flex flex-col items-center text-center">
           <Loader className="w-10 h-10 text-teal-600 animate-spin mb-6" />
-          <p className="font-heading text-lg font-bold text-slate-900 uppercase mb-1">Sending Emails...</p>
+          <p className="font-body text-lg font-bold text-slate-900 uppercase mb-1">Sending Emails...</p>
           <p className="text-xs text-slate-500 mb-6">
             Batch {progress.batch} of {progress.totalBatches} · {progress.current} / {progress.total} processed
           </p>
@@ -106,20 +106,20 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
           <div className="w-14 h-14 bg-teal-50 border border-teal-200 rounded-full flex items-center justify-center mb-5">
             <CheckCircle className="w-7 h-7 text-teal-600" />
           </div>
-          <p className="font-heading text-xl font-bold text-slate-900 uppercase mb-2">Campaign Complete</p>
+          <p className="font-body text-xl font-bold text-slate-900 uppercase mb-2">Campaign Complete</p>
           <div className="flex gap-6 mt-4">
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold text-teal-600">{results.sent}</p>
+              <p className="font-body text-2xl font-bold text-teal-600">{results.sent}</p>
               <p className="text-xs text-slate-500">Sent</p>
             </div>
             {results.failed > 0 && (
               <div className="text-center">
-                <p className="font-heading text-2xl font-bold text-red-500">{results.failed}</p>
+                <p className="font-body text-2xl font-bold text-red-500">{results.failed}</p>
                 <p className="text-xs text-slate-500">Failed</p>
               </div>
             )}
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold text-slate-900">{results.total}</p>
+              <p className="font-body text-2xl font-bold text-slate-900">{results.total}</p>
               <p className="text-xs text-slate-500">Total</p>
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
             <p className="text-sm text-slate-600 font-body mb-1">
               You're about to send the <span className="text-slate-900 font-semibold">{templateType === "promotion" ? "Promotion" : "Custom"}</span> email to:
             </p>
-            <p className="font-heading text-2xl font-bold text-teal-600 mb-1">{selectedRecipients.length}</p>
+            <p className="font-body text-2xl font-bold text-teal-600 mb-1">{selectedRecipients.length}</p>
             <p className="text-xs text-slate-500 mb-5">recipient{selectedRecipients.length !== 1 ? "s" : ""}</p>
             <div className="flex gap-2">
               <button

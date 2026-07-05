@@ -84,7 +84,7 @@ export default function StripeActionModal({ contact, action, onClose, onSuccess 
               <TitleIcon className={`w-4 h-4 ${isCancel ? "text-red-500" : "text-amber-600"}`} />
             </div>
             <div>
-              <h3 className="text-sm font-heading font-bold text-slate-900 uppercase tracking-tight">
+              <h3 className="text-sm font-body font-bold text-slate-900 uppercase tracking-tight">
                 {isCancel ? "Cancel Subscription" : "Refund Payment"}
               </h3>
               <p className="text-[10px] text-slate-400">{contact.email}</p>

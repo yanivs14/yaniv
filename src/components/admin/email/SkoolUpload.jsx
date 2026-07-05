@@ -110,17 +110,17 @@ export default function SkoolUpload({ onSkoolData }) {
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-slate-50 rounded-lg p-2.5 text-center">
               <DollarSign className="w-3.5 h-3.5 text-emerald-600 mx-auto mb-1" />
-              <p className="text-sm font-bold text-emerald-600 font-heading leading-none">{formatMoney(result.financials.total_revenue)}</p>
+              <p className="text-sm font-bold text-emerald-600 font-body leading-none">{formatMoney(result.financials.total_revenue)}</p>
               <p className="text-[9px] text-slate-400 mt-0.5">Revenue</p>
             </div>
             <div className="bg-slate-50 rounded-lg p-2.5 text-center">
               <Users className="w-3.5 h-3.5 text-teal-600 mx-auto mb-1" />
-              <p className="text-sm font-bold text-teal-600 font-heading leading-none">{result.stats.active_members}</p>
+              <p className="text-sm font-bold text-teal-600 font-body leading-none">{result.stats.active_members}</p>
               <p className="text-[9px] text-slate-400 mt-0.5">Active</p>
             </div>
             <div className="bg-slate-50 rounded-lg p-2.5 text-center">
               <X className="w-3.5 h-3.5 text-red-500 mx-auto mb-1" />
-              <p className="text-sm font-bold text-red-500 font-heading leading-none">{result.stats.churned_members}</p>
+              <p className="text-sm font-bold text-red-500 font-body leading-none">{result.stats.churned_members}</p>
               <p className="text-[9px] text-slate-400 mt-0.5">Churned</p>
             </div>
           </div>
