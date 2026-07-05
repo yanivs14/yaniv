@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe,
   RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw,
-  CheckCircle2, XCircle, DollarSign, Ban,
+  CheckCircle2, XCircle, DollarSign, Ban, Calendar, Repeat, CreditCard,
 } from "lucide-react";
 import StripeActionModal from "@/components/admin/email/StripeActionModal";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
@@ -31,6 +31,13 @@ function formatDate(dateStr) {
   const d = new Date(dateStr);
   if (isNaN(d)) return "—";
   return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function formatMonthKey(key) {
+  const [y, m] = key.split("-");
+  return `${MONTH_NAMES[parseInt(m) - 1]} ${y}`;
 }
 
 function formatMoney(n) {
@@ -288,6 +295,29 @@ export default function CrmContacts() {
                       {c.emails_sent > 0 && (
                         <div className="text-slate-600 flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400" /> {c.emails_sent} sent</div>
                       )}
+                      {c.payment_months?.length > 0 && (
+                        <div className="col-span-2 md:col-span-4 mt-2 pt-2 border-t border-slate-200">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <Repeat className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-slate-400 text-xs">Subscription:</span>
+                            <span className={`text-xs font-semibold ${c.is_recurring ? "text-teal-600" : "text-slate-600"}`}>
+                              {c.is_recurring ? "Recurring" : "One-time"}
+                            </span>
+                            <span className="text-slate-300">·</span>
+                            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-slate-600 text-xs">
+                              {c.payment_months.length} {c.payment_months.length === 1 ? "month" : "months"} paid
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {c.payment_months.map(m => (
+                              <span key={m} className="text-[10px] font-body px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                                {formatMonthKey(m)}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {c.stripe_customer_id && (
                         <div className="flex items-center gap-2 col-span-2 md:col-span-4 mt-2 pt-2 border-t border-slate-200">
                           {c.is_paying_customer && !c.is_churned && (
@@ -360,6 +390,26 @@ export default function CrmContacts() {
                     {c.total_paid > 0 && <div><span className="text-slate-400">Total:</span> <span className="text-emerald-600 font-semibold">${c.total_paid.toFixed(2)}</span>{c.total_refunded > 0 && <span className="text-amber-600"> · Ref: ${c.total_refunded.toFixed(2)}</span>}</div>}
                     {c.last_email_date && <div><span className="text-slate-400">Last email:</span> {formatDate(c.last_email_date)}</div>}
                     <div className="text-slate-400">Added: {formatDate(c.created_date)}</div>
+                    {c.payment_months?.length > 0 && (
+                      <div className="pt-2 mt-1 border-t border-slate-200">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <Repeat className="w-3 h-3 text-slate-400" />
+                          <span className="text-slate-400">Subscription:</span>
+                          <span className={`font-semibold ${c.is_recurring ? "text-teal-600" : "text-slate-600"}`}>
+                            {c.is_recurring ? "Recurring" : "One-time"}
+                          </span>
+                          <span className="text-slate-300">·</span>
+                          <span className="text-slate-600">{c.payment_months.length} {c.payment_months.length === 1 ? "month" : "months"} paid</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {c.payment_months.map(m => (
+                            <span key={m} className="text-[10px] font-body px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                              {formatMonthKey(m)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {c.stripe_customer_id && (
                       <div className="flex items-center gap-2 pt-2 mt-1 border-t border-slate-200">
                         {c.is_paying_customer && !c.is_churned && (

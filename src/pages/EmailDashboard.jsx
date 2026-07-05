@@ -48,6 +48,10 @@ function AuthGate() {
 export default function EmailDashboard() {
   const [user, setUser] = useState(undefined);
   const [activeTab, setActiveTab] = useState("crm");
+
+  useEffect(() => {
+    document.title = "CRM | Roye Gold";
+  }, []);
   const [leads, setLeads] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [logs, setLogs] = useState([]);

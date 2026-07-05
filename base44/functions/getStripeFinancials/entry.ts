@@ -87,6 +87,7 @@ Deno.serve(async (req) => {
             is_paying: false,
             is_churned: false,
             is_refunded: false,
+            is_recurring: false,
             plan: '',
             subscription_status: '',
             subscription_start: null,
@@ -95,6 +96,7 @@ Deno.serve(async (req) => {
             last_payment_date: null,
             total_paid: 0,
             total_refunded: 0,
+            payment_months: [],
           };
           stripeMap[email] = data;
         }
@@ -107,6 +109,7 @@ Deno.serve(async (req) => {
         if (isActive) {
           data.is_paying = true;
           data.is_churned = false;
+          data.is_recurring = true;
           data.subscription_status = sub.status;
           data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
           if (!data.plan) data.plan = subPlan;
@@ -117,6 +120,7 @@ Deno.serve(async (req) => {
           }
         } else if (isCanceled && !data.is_paying) {
           data.is_churned = true;
+          data.is_recurring = price?.recurring?.interval === 'month';
           data.subscription_status = sub.status;
           data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
           data.subscription_canceled = sub.canceled_at ? new Date(sub.canceled_at * 1000).toISOString() : null;
@@ -154,6 +158,7 @@ Deno.serve(async (req) => {
             is_paying: false,
             is_churned: false,
             is_refunded: false,
+            is_recurring: false,
             plan: '',
             subscription_status: '',
             subscription_start: null,
@@ -162,6 +167,7 @@ Deno.serve(async (req) => {
             last_payment_date: null,
             total_paid: 0,
             total_refunded: 0,
+            payment_months: [],
           };
           stripeMap[email] = data;
         }
@@ -172,6 +178,10 @@ Deno.serve(async (req) => {
 
         data.total_paid += charge.amount / 100;
         financials.total_revenue += netAmount;
+
+        if (!data.payment_months.includes(chargeMonthKey)) {
+          data.payment_months.push(chargeMonthKey);
+        }
 
         if (charge.amount_refunded > 0) {
           data.total_refunded += charge.amount_refunded / 100;

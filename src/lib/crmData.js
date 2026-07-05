@@ -130,6 +130,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
         is_paying_customer: sd.is_paying,
         is_churned: sd.is_churned,
         is_refunded: sd.is_refunded,
+        is_recurring: sd.is_recurring || false,
         purchase_plan: sd.plan || c.purchase_plan || "",
         subscription_status: sd.subscription_status || "",
         subscription_canceled: sd.subscription_canceled || null,
@@ -137,6 +138,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
         last_payment_date: sd.last_payment_date || null,
         total_paid: sd.total_paid || 0,
         total_refunded: sd.total_refunded || 0,
+        payment_months: sd.payment_months || [],
       };
     }
     return c;
@@ -153,6 +155,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
       is_paying_customer: sd.is_paying,
       is_churned: sd.is_churned,
       is_refunded: sd.is_refunded,
+      is_recurring: sd.is_recurring || false,
       purchase_plan: sd.plan || "",
       subscription_status: sd.subscription_status || "",
       subscription_canceled: sd.subscription_canceled || null,
@@ -160,6 +163,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
       last_payment_date: sd.last_payment_date || null,
       total_paid: sd.total_paid || 0,
       total_refunded: sd.total_refunded || 0,
+      payment_months: sd.payment_months || [],
       created_date: sd.first_payment_date || sd.subscription_start || null,
     };
     // Remove falsy values
