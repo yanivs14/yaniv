@@ -14,6 +14,9 @@ function formatIsraelTime(dateStr) {
 const TEMPLATE_LABELS = {
   promotion: { label: "Promotion", icon: Zap, color: "text-teal-600", bg: "bg-teal-50", border: "border-teal-200" },
   custom: { label: "Custom", icon: FileText, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
+  receipt: { label: "Receipt", icon: FileText, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-200" },
+  refund: { label: "Refund", icon: FileText, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
+  welcome_skool: { label: "Welcome", icon: Zap, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-200" },
 };
 
 export default function EmailHistory({ logs, loading }) {

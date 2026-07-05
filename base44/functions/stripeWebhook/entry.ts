@@ -438,6 +438,20 @@ Deno.serve(async (req) => {
       } catch (e) {
         console.error("Failed to send receipt email:", e.message);
       }
+
+      // Send welcome + Skool registration email to customer
+      try {
+        await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
+          type: "welcome_skool",
+          email: customerEmail,
+          name: customerName,
+          planLabel,
+          transactionId,
+          chargeId: session.id,
+        });
+      } catch (e) {
+        console.error("Failed to send welcome_skool email:", e.message);
+      }
     }
 
     // Sync to HubSpot — direct API call (non-blocking)

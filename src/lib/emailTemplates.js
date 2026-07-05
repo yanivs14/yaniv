@@ -124,6 +124,63 @@ export const EMAIL_TEMPLATES = [
 </body></html>`,
   },
   {
+    id: "welcome_skool",
+    name: "Welcome + Join Skool",
+    description: "Sent to customers after purchase with a button to join the Skool community",
+    trigger: "checkout.session.completed",
+    subject: "Welcome to The Movement, John! Join the Community →",
+    color: "text-purple-600",
+    bg: "bg-purple-50",
+    html: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{margin:0;padding:0;}table{border-collapse:collapse;}@media only screen and (max-width:480px){.email-card{border-radius:14px!important;}.hero-pad{padding:32px 22px 12px!important;}.body-pad{padding:0 22px 28px!important;}.cta-pad{padding:0 22px 32px!important;}.hero-h1{font-size:26px!important;line-height:1.15!important;}.cta-btn{padding:15px 40px!important;font-size:15px!important;}}</style></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:24px 12px;">
+    <tr><td align="center">
+      <table class="email-card" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#111111;border-radius:18px;border:1px solid #1a1a1a;overflow:hidden;">
+        <tr><td style="padding:28px 32px;border-bottom:1px solid #1a1a1a;">
+          <p style="margin:0;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:3px;font-weight:600;">The Movement</p>
+          <p style="margin:5px 0 0;font-size:22px;font-weight:900;color:#00fff7;letter-spacing:1.5px;text-transform:uppercase;">Roye Gold</p>
+        </td></tr>
+        <tr><td class="hero-pad" style="padding:40px 32px 12px;">
+          <p style="margin:0 0 18px;font-size:15px;color:#00fff7;line-height:1.5;font-weight:600;">You're officially in, John.</p>
+          <h1 class="hero-h1" style="margin:0 0 16px;font-size:31px;font-weight:900;color:#F5F5F5;line-height:1.12;text-transform:uppercase;letter-spacing:-0.5px;">Welcome to The Movement</h1>
+          <p style="margin:0 0 14px;font-size:16px;color:#C8C8C8;line-height:1.6;">Thank you for your purchase of <strong style="color:#00fff7;">The Movement Membership</strong>. Your journey to better movement starts now.</p>
+          <p style="margin:0;font-size:15px;color:#888;line-height:1.6;">The next step? Join our private Skool community — where you'll get full access to training sessions, daily practice, challenges, and direct support from Roye Gold and the community.</p>
+        </td></tr>
+        <tr><td style="padding:0 32px 20px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d1515;border:1px solid rgba(0,255,247,0.15);border-radius:16px;">
+            <tr><td style="padding:24px 22px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:10px;color:#00fff7;text-transform:uppercase;letter-spacing:2.5px;font-weight:700;">🎓 Your Private Community</p>
+              <p style="margin:0;font-size:19px;font-weight:700;color:#F5F5F5;line-height:1.35;">Register on Skool with the same email you used to purchase</p>
+              <p style="margin:8px 0 0;font-size:13px;color:#888;line-height:1.5;">john@example.com</p>
+            </td></tr>
+          </table>
+        </td></tr>
+        <tr><td class="cta-pad" style="padding:0 32px 34px;" align="center">
+          <a href="https://www.skool.com/the-movement-roye-gold" target="_blank" class="cta-btn" style="display:inline-block;background:#00fff7;color:#0a0a0a;font-size:16px;font-weight:800;text-decoration:none;padding:16px 48px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;">Join the Community →</a>
+          <p style="margin:12px 0 0;font-size:11px;color:#555;line-height:1.5;">Use the same email address to be recognized automatically</p>
+        </td></tr>
+        <tr><td class="body-pad" style="padding:0 32px 28px;">
+          <p style="margin:0 0 16px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:2px;font-weight:600;">What's waiting for you inside:</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">240+ adaptive training sessions</span></td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Daily practice &amp; challenges</span></td></tr>
+            <tr><td style="padding:8px 0;border-bottom:1px solid #1a1a1a;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Strength, mobility, control &amp; longevity tracks</span></td></tr>
+            <tr><td style="padding:8px 0;"><span style="color:#00fff7;font-size:13px;">&#10003;</span>&nbsp;&nbsp;<span style="color:#C8C8C8;font-size:13px;">Direct support from Roye Gold &amp; the community</span></td></tr>
+          </table>
+        </td></tr>
+        <tr><td style="padding:20px 32px;border-top:1px solid #1a1a1a;text-align:center;">
+          <p style="margin:0 0 6px;font-size:11px;color:#444;line-height:1.6;">
+            Need help? Just reply to this email — we've got you.<br/>
+            Contact: move@royegold.com
+          </p>
+          <p style="margin:6px 0 0;font-size:11px;color:#444;">© 2026 The Movement by Roye Gold</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`,
+  },
+  {
     id: "booking_confirmation",
     name: "Booking Confirmation",
     description: "Sent to customers after scheduling a Calendly call",

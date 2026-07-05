@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   RefreshCw, Zap, Webhook, Clock, Mail, Users, CreditCard, Calendar,
   CheckCircle, XCircle, Activity, Database, Cloud, ChevronDown, ChevronUp,
-  Receipt, RotateCcw, FileText,
+  Receipt, RotateCcw, FileText, Sparkles,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import SettingToggle from "@/components/admin/email/SettingToggle";
@@ -105,7 +105,7 @@ const STRIPE_EVENT_LABELS = {
   "payment_intent.succeeded": "Payment Succeeded",
 };
 
-export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onToggleReceiptEmails, onToggleRefundEmails }) {
+export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onToggleReceiptEmails, onToggleRefundEmails, onToggleSkoolWelcome }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
@@ -127,7 +127,7 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onTogg
   const skoolUploads = data?.skool_uploads || [];
   const emailLogs = data?.email_logs || [];
   const stripeEvents = data?.stripe_events || [];
-  const receiptRefundLogs = emailLogs.filter(l => l.template_name === "receipt" || l.template_name === "refund");
+  const receiptRefundLogs = emailLogs.filter(l => l.template_name === "receipt" || l.template_name === "refund" || l.template_name === "welcome_skool");
 
   return (
     <div className="space-y-5">
@@ -210,6 +210,15 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onTogg
               icon={RotateCcw}
               iconColor="text-amber-600"
               iconBg="bg-amber-50"
+            />
+            <SettingToggle
+              title="Welcome + Join Skool Email"
+              description="Sent to customers after purchase with Skool registration link"
+              enabled={leadSettings?.skool_welcome_email_enabled !== false}
+              onToggle={onToggleSkoolWelcome}
+              icon={Sparkles}
+              iconColor="text-purple-600"
+              iconBg="bg-purple-50"
             />
           </div>
 
@@ -310,7 +319,7 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onTogg
 
             {/* Receipt & Refund Emails */}
             <LogSection
-              title="Receipt & Refund Emails"
+              title="Transaction & Welcome Emails"
               icon={FileText}
               iconColor="text-indigo-600"
               iconBg="bg-indigo-50"
@@ -319,23 +328,27 @@ export default function AutomationsTab({ leadSettings, onToggleAutoEmail, onTogg
               onToggle={() => setExpandedSection(expandedSection === "receipts" ? null : "receipts")}
             >
               {receiptRefundLogs.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-4">No receipt or refund emails sent yet</p>
+                <p className="text-xs text-slate-400 text-center py-4">No transactional emails sent yet</p>
               ) : (
                 <div className="space-y-1.5">
                   {receiptRefundLogs.map((log, i) => {
                     const isRefund = log.template_name === "refund";
+                    const isWelcome = log.template_name === "welcome_skool";
+                    const badgeLabel = isRefund ? "Refund" : isWelcome ? "Welcome" : "Receipt";
+                    const badgeClass = isRefund ? "bg-amber-100 text-amber-700" : isWelcome ? "bg-purple-100 text-purple-700" : "bg-indigo-100 text-indigo-700";
+                    const logIcon = isRefund ? <RotateCcw className="w-3 h-3 text-amber-500 flex-shrink-0" /> : isWelcome ? <Sparkles className="w-3 h-3 text-purple-500 flex-shrink-0" /> : <Receipt className="w-3 h-3 text-indigo-500 flex-shrink-0" />;
                     return (
                       <div key={log.id || i} className="flex items-center gap-3 bg-slate-50 rounded-lg px-3 py-2">
                         <div className={`w-2 h-2 rounded-full flex-shrink-0 ${log.status === "sent" ? "bg-emerald-500" : "bg-red-400"}`} />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-body text-slate-900 truncate flex items-center gap-1.5">
-                            {isRefund ? <RotateCcw className="w-3 h-3 text-amber-500 flex-shrink-0" /> : <Receipt className="w-3 h-3 text-indigo-500 flex-shrink-0" />}
+                            {logIcon}
                             {log.recipient_name || log.recipient_email}
                           </p>
                           <p className="text-[10px] text-slate-400 truncate">{log.subject || "—"}</p>
                         </div>
-                        <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${isRefund ? "bg-amber-100 text-amber-700" : "bg-indigo-100 text-indigo-700"}`}>
-                          {isRefund ? "Refund" : "Receipt"}
+                        <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${badgeClass}`}>
+                          {badgeLabel}
                         </span>
                         <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${log.status === "sent" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`}>
                           {log.status}

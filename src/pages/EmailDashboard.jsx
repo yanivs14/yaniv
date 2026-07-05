@@ -103,6 +103,7 @@ export default function EmailDashboard() {
   const handleToggleAutoEmail = useMemo(() => handleToggleSetting("auto_email_enabled"), [handleToggleSetting]);
   const handleToggleReceiptEmails = useMemo(() => handleToggleSetting("receipt_emails_enabled"), [handleToggleSetting]);
   const handleToggleRefundEmails = useMemo(() => handleToggleSetting("refund_emails_enabled"), [handleToggleSetting]);
+  const handleToggleSkoolWelcome = useMemo(() => handleToggleSetting("skool_welcome_email_enabled"), [handleToggleSetting]);
 
   const loadMeetings = useCallback(async () => {
     setLoadingMeetings(true);
@@ -363,6 +364,7 @@ export default function EmailDashboard() {
                       onToggleAutoEmail={handleToggleAutoEmail}
                       onToggleReceiptEmails={handleToggleReceiptEmails}
                       onToggleRefundEmails={handleToggleRefundEmails}
+                      onToggleSkoolWelcome={handleToggleSkoolWelcome}
                     />
                   )}
                 </motion.div>
