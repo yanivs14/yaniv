@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw, DollarSign } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, Mail, CheckCircle, XCircle, MailCheck, ListChecks, CalendarClock, RefreshCw, DollarSign, LayoutDashboard } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -20,20 +20,20 @@ const TABS = [
 
 function AuthGate() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Lock className="w-7 h-7 text-orange-red" />
+        <div className="w-16 h-16 bg-white border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+          <Lock className="w-7 h-7 text-teal-600" />
         </div>
-        <p className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">Admin Only</p>
-        <p className="font-body text-sm text-white-muted mb-8">Sign in as an admin to manage emails.</p>
+        <p className="font-heading text-3xl font-bold text-slate-900 uppercase tracking-tight mb-2">Admin Only</p>
+        <p className="font-body text-sm text-slate-500 mb-8">Sign in as an admin to manage emails.</p>
         <button
           onClick={() => base44.auth.redirectToLogin(window.location.href)}
-          className="w-full flex items-center justify-center gap-3 bg-off-white text-[#0a0a0a] font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors"
+          className="w-full flex items-center justify-center gap-3 bg-teal-600 text-white font-body text-sm font-semibold py-3.5 rounded-xl hover:bg-teal-700 transition-colors shadow-sm"
         >
           Sign in to continue
         </button>
-        <Link to="/admin-k" className="mt-4 inline-flex items-center gap-1.5 text-sm text-white-muted hover:text-off-white transition-colors">
+        <Link to="/admin-k" className="mt-4 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to admin
         </Link>
       </div>
@@ -115,7 +115,6 @@ export default function EmailDashboard() {
     }
   }, [user, loadData, loadMeetings]);
 
-  // Build unified recipients list (deduplicated by email)
   const recipients = useMemo(() => {
     const map = new Map();
     leads.forEach(l => {
@@ -149,7 +148,6 @@ export default function EmailDashboard() {
     return Array.from(map.values());
   }, [leads, subscribers]);
 
-  // Build a map of email → email log summary (count, last date, templates)
   const emailLogMap = useMemo(() => {
     const map = new Map();
     logs.forEach(l => {
@@ -214,15 +212,14 @@ export default function EmailDashboard() {
 
   if (user === undefined) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-orange-red border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user || user.role !== "admin") return <AuthGate />;
 
-  // Stats
   const totalRecipients = recipients.length;
   const totalSent = logs.filter(l => l.status === "sent").length;
   const totalFailed = logs.filter(l => l.status === "failed").length;
@@ -230,138 +227,188 @@ export default function EmailDashboard() {
   const totalMeetings = Object.values(meetingsMap).reduce((sum, arr) => sum + arr.length, 0);
 
   const stats = [
-    { label: "Recipients", value: totalRecipients, icon: Users, color: "text-orange-red" },
-    { label: "Emails Sent", value: totalSent, icon: MailCheck, color: "text-green-400" },
-    { label: "Upcoming Calls", value: loadingMeetings ? "…" : totalMeetings, icon: CalendarClock, color: "text-orange-red" },
-    { label: "Success Rate", value: `${successRate}%`, icon: CheckCircle, color: "text-orange-red" },
+    { label: "Recipients", value: totalRecipients, icon: Users, color: "text-teal-600", bg: "bg-teal-50" },
+    { label: "Emails Sent", value: totalSent, icon: MailCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Upcoming Calls", value: loadingMeetings ? "…" : totalMeetings, icon: CalendarClock, color: "text-teal-600", bg: "bg-teal-50" },
+    { label: "Success Rate", value: `${successRate}%`, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col font-body">
-      {/* Header */}
-      <div className="h-14 border-b border-[#1e1e1e] flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <Link to="/admin-k" className="w-9 h-9 flex items-center justify-center rounded-xl bg-[#1a1a1a] text-white-muted hover:text-off-white transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <h1 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">Email Hub</h1>
+    <div className="min-h-screen bg-slate-50 flex font-body">
+      {/* Sidebar — desktop */}
+      <aside className="hidden lg:flex flex-col w-60 bg-white border-r border-slate-200 flex-shrink-0">
+        <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200">
+          <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center">
+            <LayoutDashboard className="w-4.5 h-4.5 text-white" />
+          </div>
+          <h1 className="font-heading text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
         </div>
-        <button onClick={() => base44.auth.logout("/admin-k")} className="text-white-muted hover:text-orange-red transition-colors p-2">
-          <LogOut className="w-4 h-4" />
-        </button>
-      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 sm:p-4 border-b border-[#1e1e1e]">
-        {stats.map((s, i) => {
-          const Icon = s.icon;
-          return (
-            <div key={i} className="flex items-center gap-2.5 bg-[#111] border border-[#2a2a2a] rounded-xl p-3">
-              <Icon className={`w-5 h-5 ${s.color} flex-shrink-0`} />
-              <div className="min-w-0">
-                <p className="font-heading text-lg font-bold text-off-white leading-none">{s.value}</p>
-                <p className="text-[10px] text-white-muted mt-0.5 truncate">{s.label}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Auto email toggle */}
-      <div className="px-3 sm:px-4 pt-3">
-        <AutoEmailToggle settings={leadSettings} onToggle={handleToggleAutoEmail} />
-      </div>
-
-      {/* Tab navigation */}
-      <div className="flex border-b border-[#1e1e1e]">
-        {TABS.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setActiveTab(key)}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-body transition-colors border-b-2 ${activeTab === key ? "text-orange-red border-orange-red" : "text-white-muted hover:text-off-white border-transparent"}`}
-          >
-            <Icon className="w-4 h-4" />
-            {label}
-            {key === "recipients" && selectedIds.size > 0 && (
-              <span className="ml-1 bg-orange-red text-dark-bg text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {selectedIds.size}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-5 pb-24">
-          {loadingData ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="w-6 h-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-              >
-                {activeTab === "crm" && (
-                  <CrmContacts />
-                )}
-                {activeTab === "finances" && (
-                  <FinancesTab />
-                )}
-                {activeTab === "recipients" && (
-                  <RecipientList
-                    recipients={recipients}
-                    selectedIds={selectedIds}
-                    onToggle={toggleId}
-                    onToggleAll={toggleAll}
-                    onClear={clearSelection}
-                    emailLogMap={emailLogMap}
-                    meetingsMap={meetingsMap}
-                    loadingMeetings={loadingMeetings}
-                    onRefreshMeetings={loadMeetings}
-                  />
-                )}
-                {activeTab === "compose" && (
-                  <ComposeEmail
-                    selectedRecipients={selectedRecipients}
-                    onSent={handleSent}
-                    onGoToRecipients={() => setActiveTab("recipients")}
-                  />
-                )}
-                {activeTab === "history" && (
-                  <EmailHistory logs={logs} loading={false} />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          )}
-        </div>
-      </div>
-
-      {/* Sticky bottom bar when recipients selected */}
-      {selectedIds.size > 0 && activeTab !== "compose" && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#2a2a2a] bg-[#0f0f0f]/95 backdrop-blur-sm">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <ListChecks className="w-4 h-4 text-orange-red" />
-              <span className="text-sm text-off-white font-body">
-                <span className="font-bold text-orange-red">{selectedIds.size}</span> selected
-              </span>
-            </div>
+        <nav className="flex-1 p-3 space-y-1">
+          {TABS.map(({ key, label, icon: Icon }) => (
             <button
-              onClick={() => setActiveTab("compose")}
-              className="flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold px-6 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors"
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-body font-medium transition-colors ${
+                activeTab === key
+                  ? "bg-teal-50 text-teal-700"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              }`}
             >
-              Compose
-              <Send className="w-3.5 h-3.5" />
+              <Icon className="w-4.5 h-4.5" />
+              {label}
+              {key === "recipients" && selectedIds.size > 0 && (
+                <span className="ml-auto bg-teal-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {selectedIds.size}
+                </span>
+              )}
             </button>
+          ))}
+        </nav>
+
+        <div className="p-3 border-t border-slate-200 space-y-1">
+          <Link
+            to="/admin-k"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-body text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="w-4.5 h-4.5" /> Back to Admin
+          </Link>
+          <button
+            onClick={() => base44.auth.logout("/admin-k")}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-body text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="w-4.5 h-4.5" /> Logout
+          </button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile header */}
+        <div className="lg:hidden h-14 border-b border-slate-200 bg-white flex items-center justify-between px-4 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <Link to="/admin-k" className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <h1 className="font-heading text-lg font-bold text-slate-900 uppercase tracking-tight">Email Hub</h1>
+          </div>
+          <button onClick={() => base44.auth.logout("/admin-k")} className="text-slate-400 hover:text-red-500 transition-colors p-2">
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-4 lg:p-6 border-b border-slate-200 bg-white">
+          {stats.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={i} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
+                <div className={`w-10 h-10 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className={`w-5 h-5 ${s.color}`} />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-heading text-xl font-bold text-slate-900 leading-none">{s.value}</p>
+                  <p className="text-xs text-slate-500 mt-0.5 truncate">{s.label}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Auto email toggle */}
+        <div className="px-4 lg:px-6 pt-4">
+          <AutoEmailToggle settings={leadSettings} onToggle={handleToggleAutoEmail} />
+        </div>
+
+        {/* Mobile tab navigation */}
+        <div className="lg:hidden flex border-b border-slate-200 bg-white overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          {TABS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 text-xs font-body font-medium transition-colors border-b-2 ${
+                activeTab === key
+                  ? "text-teal-600 border-teal-600"
+                  : "text-slate-500 hover:text-slate-900 border-transparent"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+              {key === "recipients" && selectedIds.size > 0 && (
+                <span className="ml-1 bg-teal-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {selectedIds.size}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 lg:px-6 py-5 pb-24">
+            {loadingData ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {activeTab === "crm" && <CrmContacts />}
+                  {activeTab === "finances" && <FinancesTab />}
+                  {activeTab === "recipients" && (
+                    <RecipientList
+                      recipients={recipients}
+                      selectedIds={selectedIds}
+                      onToggle={toggleId}
+                      onToggleAll={toggleAll}
+                      onClear={clearSelection}
+                      emailLogMap={emailLogMap}
+                      meetingsMap={meetingsMap}
+                      loadingMeetings={loadingMeetings}
+                      onRefreshMeetings={loadMeetings}
+                    />
+                  )}
+                  {activeTab === "compose" && (
+                    <ComposeEmail
+                      selectedRecipients={selectedRecipients}
+                      onSent={handleSent}
+                      onGoToRecipients={() => setActiveTab("recipients")}
+                    />
+                  )}
+                  {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Sticky bottom bar when recipients selected */}
+        {selectedIds.size > 0 && activeTab !== "compose" && (
+          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-sm shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4 text-teal-600" />
+                <span className="text-sm text-slate-700 font-body">
+                  <span className="font-bold text-teal-600">{selectedIds.size}</span> selected
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTab("compose")}
+                className="flex items-center gap-2 bg-teal-600 text-white font-body text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+              >
+                Compose
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

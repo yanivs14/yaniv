@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Mail, MailCheck } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 
 export default function AutoEmailToggle({ settings, onToggle }) {
   const [loading, setLoading] = useState(false);
@@ -16,16 +15,16 @@ export default function AutoEmailToggle({ settings, onToggle }) {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 bg-[#111] border border-[#2a2a2a] rounded-xl p-3">
+    <div className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
       <div className="flex items-center gap-2.5 min-w-0">
         {enabled ? (
-          <MailCheck className="w-5 h-5 text-orange-red flex-shrink-0" />
+          <MailCheck className="w-5 h-5 text-teal-600 flex-shrink-0" />
         ) : (
-          <Mail className="w-5 h-5 text-white-dim flex-shrink-0" />
+          <Mail className="w-5 h-5 text-slate-400 flex-shrink-0" />
         )}
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-off-white truncate">Auto Confirmation Email</p>
-          <p className="text-[10px] text-white-muted truncate">
+          <p className="text-sm font-semibold text-slate-900 truncate">Auto Confirmation Email</p>
+          <p className="text-xs text-slate-500 truncate">
             {enabled ? "Sending to new leads" : "Disabled — no auto emails sent"}
           </p>
         </div>
@@ -34,11 +33,11 @@ export default function AutoEmailToggle({ settings, onToggle }) {
         onClick={handleToggle}
         disabled={loading}
         className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 disabled:opacity-50 ${
-          enabled ? "bg-orange-red" : "bg-[#333]"
+          enabled ? "bg-teal-600" : "bg-slate-300"
         }`}
       >
         <span
-          className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+          className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
             enabled ? "translate-x-5" : "translate-x-0.5"
           }`}
         />

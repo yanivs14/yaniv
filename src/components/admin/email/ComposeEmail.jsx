@@ -58,11 +58,13 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
   if (selectedRecipients.length === 0 && !results) {
     return (
       <div className="text-center py-16">
-        <Mail className="w-12 h-12 text-white-dim mx-auto mb-4" />
-        <p className="font-body text-sm text-white-muted mb-4">No recipients selected yet.</p>
+        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Mail className="w-8 h-8 text-slate-400" />
+        </div>
+        <p className="font-body text-sm text-slate-500 mb-4">No recipients selected yet.</p>
         <button
           onClick={onGoToRecipients}
-          className="inline-flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 transition-colors font-medium"
         >
           Go to Recipients <ChevronRight className="w-4 h-4" />
         </button>
@@ -75,21 +77,21 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
     return (
       <div className="py-12">
         <div className="flex flex-col items-center text-center">
-          <Loader className="w-10 h-10 text-orange-red animate-spin mb-6" />
-          <p className="font-heading text-lg font-bold text-off-white uppercase mb-1">Sending Emails...</p>
-          <p className="text-xs text-white-muted mb-6">
+          <Loader className="w-10 h-10 text-teal-600 animate-spin mb-6" />
+          <p className="font-heading text-lg font-bold text-slate-900 uppercase mb-1">Sending Emails...</p>
+          <p className="text-xs text-slate-500 mb-6">
             Batch {progress.batch} of {progress.totalBatches} · {progress.current} / {progress.total} processed
           </p>
           <div className="w-full max-w-sm">
-            <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-orange-red rounded-full transition-all duration-300"
+                className="h-full bg-teal-600 rounded-full transition-all duration-300"
                 style={{ width: `${pct}%` }}
               />
             </div>
             <div className="flex justify-between mt-2 text-xs">
-              <span className="text-orange-red">{progress.sent} sent</span>
-              {progress.failed > 0 && <span className="text-red-400">{progress.failed} failed</span>}
+              <span className="text-teal-600 font-medium">{progress.sent} sent</span>
+              {progress.failed > 0 && <span className="text-red-500 font-medium">{progress.failed} failed</span>}
             </div>
           </div>
         </div>
@@ -101,29 +103,29 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
     return (
       <div className="py-12">
         <div className="flex flex-col items-center text-center">
-          <div className="w-14 h-14 bg-orange-red/10 border border-orange-red/30 rounded-full flex items-center justify-center mb-5">
-            <CheckCircle className="w-7 h-7 text-orange-red" />
+          <div className="w-14 h-14 bg-teal-50 border border-teal-200 rounded-full flex items-center justify-center mb-5">
+            <CheckCircle className="w-7 h-7 text-teal-600" />
           </div>
-          <p className="font-heading text-xl font-bold text-off-white uppercase mb-2">Campaign Complete</p>
-          <div className="flex gap-4 mt-4">
+          <p className="font-heading text-xl font-bold text-slate-900 uppercase mb-2">Campaign Complete</p>
+          <div className="flex gap-6 mt-4">
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold text-orange-red">{results.sent}</p>
-              <p className="text-xs text-white-muted">Sent</p>
+              <p className="font-heading text-2xl font-bold text-teal-600">{results.sent}</p>
+              <p className="text-xs text-slate-500">Sent</p>
             </div>
             {results.failed > 0 && (
               <div className="text-center">
-                <p className="font-heading text-2xl font-bold text-red-400">{results.failed}</p>
-                <p className="text-xs text-white-muted">Failed</p>
+                <p className="font-heading text-2xl font-bold text-red-500">{results.failed}</p>
+                <p className="text-xs text-slate-500">Failed</p>
               </div>
             )}
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold text-off-white">{results.total}</p>
-              <p className="text-xs text-white-muted">Total</p>
+              <p className="font-heading text-2xl font-bold text-slate-900">{results.total}</p>
+              <p className="text-xs text-slate-500">Total</p>
             </div>
           </div>
           <button
             onClick={() => { setResults(null); }}
-            className="mt-8 inline-flex items-center gap-2 text-sm bg-orange-red text-dark-bg font-body font-semibold px-6 py-3 rounded-full hover:bg-orange-red-hover transition-colors"
+            className="mt-8 inline-flex items-center gap-2 text-sm bg-teal-600 text-white font-body font-semibold px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
           >
             Send Another Campaign
           </button>
@@ -133,49 +135,49 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
   }
 
   return (
-    <div>
+    <div className="max-w-3xl">
       {/* Selected count */}
       <div className="flex items-center justify-between mb-5">
-        <p className="text-sm text-white-muted font-body">
-          <span className="text-orange-red font-bold">{selectedRecipients.length}</span> recipient{selectedRecipients.length !== 1 ? "s" : ""} selected
+        <p className="text-sm text-slate-600 font-body">
+          <span className="text-teal-600 font-bold">{selectedRecipients.length}</span> recipient{selectedRecipients.length !== 1 ? "s" : ""} selected
         </p>
         <button
           onClick={onGoToRecipients}
-          className="text-xs text-white-muted hover:text-orange-red transition-colors"
+          className="text-xs text-slate-500 hover:text-teal-600 transition-colors"
         >
           Edit selection
         </button>
       </div>
 
       {/* Template selector */}
-      <p className="text-xs text-white-muted font-body font-semibold uppercase tracking-wider mb-3">Email Template</p>
+      <p className="text-xs text-slate-600 font-body font-semibold uppercase tracking-wider mb-3">Email Template</p>
       <div className="grid grid-cols-2 gap-3 mb-5">
         <button
           onClick={() => setTemplateType("promotion")}
-          className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${templateType === "promotion" ? "border-orange-red bg-orange-red/5" : "border-[#2a2a2a] bg-[#111] hover:border-[#3a3a3a]"}`}
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${templateType === "promotion" ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500/20" : "border-slate-200 bg-white hover:border-slate-300"}`}
         >
-          <Zap className={`w-5 h-5 ${templateType === "promotion" ? "text-orange-red" : "text-white-muted"}`} />
-          <span className={`text-xs font-body font-semibold ${templateType === "promotion" ? "text-off-white" : "text-white-muted"}`}>Promotion Email</span>
-          <span className="text-[10px] text-white-dim text-center">Uses current promo page content</span>
+          <Zap className={`w-5 h-5 ${templateType === "promotion" ? "text-teal-600" : "text-slate-400"}`} />
+          <span className={`text-xs font-body font-semibold ${templateType === "promotion" ? "text-slate-900" : "text-slate-600"}`}>Promotion Email</span>
+          <span className="text-[10px] text-slate-400 text-center">Uses current promo page content</span>
         </button>
         <button
           onClick={() => setTemplateType("custom")}
-          className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${templateType === "custom" ? "border-orange-red bg-orange-red/5" : "border-[#2a2a2a] bg-[#111] hover:border-[#3a3a3a]"}`}
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${templateType === "custom" ? "border-teal-500 bg-teal-50 ring-1 ring-teal-500/20" : "border-slate-200 bg-white hover:border-slate-300"}`}
         >
-          <FileText className={`w-5 h-5 ${templateType === "custom" ? "text-orange-red" : "text-white-muted"}`} />
-          <span className={`text-xs font-body font-semibold ${templateType === "custom" ? "text-off-white" : "text-white-muted"}`}>Custom Email</span>
-          <span className="text-[10px] text-white-dim text-center">Write your own subject & body</span>
+          <FileText className={`w-5 h-5 ${templateType === "custom" ? "text-teal-600" : "text-slate-400"}`} />
+          <span className={`text-xs font-body font-semibold ${templateType === "custom" ? "text-slate-900" : "text-slate-600"}`}>Custom Email</span>
+          <span className="text-[10px] text-slate-400 text-center">Write your own subject & body</span>
         </button>
       </div>
 
       {/* Campaign name */}
       <div className="mb-4">
-        <label className="block text-xs text-white-muted mb-1.5 font-body">Campaign Name (optional)</label>
+        <label className="block text-xs text-slate-600 mb-1.5 font-body">Campaign Name (optional)</label>
         <input
           value={campaignName}
           onChange={e => setCampaignName(e.target.value)}
           placeholder="e.g. June 2026 Promo"
-          className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl px-3 py-2.5 text-sm text-off-white font-body placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
+          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 font-body placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
         />
       </div>
 
@@ -183,25 +185,25 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
       {templateType === "custom" && (
         <div className="space-y-4 mb-6">
           <div>
-            <label className="block text-xs text-white-muted mb-1.5 font-body">Subject Line</label>
+            <label className="block text-xs text-slate-600 mb-1.5 font-body">Subject Line</label>
             <input
               value={subject}
               onChange={e => setSubject(e.target.value)}
               placeholder="Enter email subject..."
-              className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl px-3 py-2.5 text-sm text-off-white font-body placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 font-body placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
             />
           </div>
           <div>
-            <label className="block text-xs text-white-muted mb-1.5 font-body">
+            <label className="block text-xs text-slate-600 mb-1.5 font-body">
               Email Body (HTML supported)
             </label>
-            <p className="text-[10px] text-white-dim mb-2">Use <code className="text-orange-red">{"{{name}}"}</code> to insert the recipient's first name.</p>
+            <p className="text-[10px] text-slate-400 mb-2">Use <code className="text-teal-600 bg-teal-50 px-1 py-0.5 rounded">{"{{name}}"}</code> to insert the recipient's first name.</p>
             <textarea
               value={body}
               onChange={e => setBody(e.target.value)}
               rows={8}
               placeholder="<h2>Hi {{name}},</h2><p>Here's something special for you...</p>"
-              className="w-full bg-[#111] border border-[#2a2a2a] rounded-xl px-3 py-3 text-sm text-off-white font-body placeholder-white-dim focus:outline-none focus:border-orange-red transition-colors resize-y"
+              className="w-full bg-white border border-slate-300 rounded-xl px-3 py-3 text-sm text-slate-900 font-body placeholder-slate-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm resize-y"
             />
           </div>
         </div>
@@ -209,13 +211,13 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
 
       {/* Promotion info */}
       {templateType === "promotion" && (
-        <div className="mb-6 p-4 rounded-xl border border-[#2a2a2a] bg-[#0d0d0d]">
+        <div className="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50">
           <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs text-off-white font-body font-semibold mb-1">Promotion Email Preview</p>
-              <p className="text-xs text-white-muted leading-relaxed">
-                This will send the current promotion page email — personalized with each recipient's name, including the promo video poster, pricing, and CTA button linking to <span className="text-orange-red">/promotion</span>.
+              <p className="text-xs text-slate-900 font-body font-semibold mb-1">Promotion Email Preview</p>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                This will send the current promotion page email — personalized with each recipient's name, including the promo video poster, pricing, and CTA button linking to <span className="text-teal-600 font-medium">/promotion</span>.
               </p>
             </div>
           </div>
@@ -226,7 +228,7 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
       <button
         onClick={() => setConfirmOpen(true)}
         disabled={templateType === "custom" && (!subject.trim() || !body.trim())}
-        className="w-full flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 bg-teal-600 text-white font-body text-sm font-bold py-3.5 rounded-xl hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
       >
         <Send className="w-4 h-4" />
         Send to {selectedRecipients.length} Recipient{selectedRecipients.length !== 1 ? "s" : ""}
@@ -234,32 +236,32 @@ export default function ComposeEmail({ selectedRecipients, onSent, onGoToRecipie
 
       {/* Confirmation modal */}
       {confirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={e => e.target === e.currentTarget && setConfirmOpen(false)}>
-          <div className="w-full max-w-sm bg-dark-surface border border-dark-border rounded-2xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" onClick={e => e.target === e.currentTarget && setConfirmOpen(false)}>
+          <div className="w-full max-w-sm bg-white border border-slate-200 rounded-2xl p-6 shadow-xl">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-orange-red/10 border border-orange-red/30 rounded-full flex items-center justify-center">
-                <Send className="w-5 h-5 text-orange-red" />
+              <div className="w-10 h-10 bg-teal-50 border border-teal-200 rounded-full flex items-center justify-center">
+                <Send className="w-5 h-5 text-teal-600" />
               </div>
               <div>
-                <p className="font-body text-sm font-bold text-off-white">Confirm Send</p>
-                <p className="text-xs text-white-muted">This cannot be undone.</p>
+                <p className="font-body text-sm font-bold text-slate-900">Confirm Send</p>
+                <p className="text-xs text-slate-500">This cannot be undone.</p>
               </div>
             </div>
-            <p className="text-sm text-white-muted font-body mb-1">
-              You're about to send the <span className="text-off-white font-semibold">{templateType === "promotion" ? "Promotion" : "Custom"}</span> email to:
+            <p className="text-sm text-slate-600 font-body mb-1">
+              You're about to send the <span className="text-slate-900 font-semibold">{templateType === "promotion" ? "Promotion" : "Custom"}</span> email to:
             </p>
-            <p className="font-heading text-2xl font-bold text-orange-red mb-1">{selectedRecipients.length}</p>
-            <p className="text-xs text-white-muted mb-5">recipient{selectedRecipients.length !== 1 ? "s" : ""}</p>
+            <p className="font-heading text-2xl font-bold text-teal-600 mb-1">{selectedRecipients.length}</p>
+            <p className="text-xs text-slate-500 mb-5">recipient{selectedRecipients.length !== 1 ? "s" : ""}</p>
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmOpen(false)}
-                className="flex-1 text-xs text-white-muted bg-[#1a1a1a] border border-[#2a2a2a] py-3 rounded-full hover:text-off-white transition-colors"
+                className="flex-1 text-xs text-slate-600 bg-slate-100 border border-slate-200 py-3 rounded-lg hover:bg-slate-200 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSend}
-                className="flex-1 text-xs font-bold bg-orange-red text-dark-bg py-3 rounded-full hover:bg-orange-red-hover transition-colors"
+                className="flex-1 text-xs font-bold bg-teal-600 text-white py-3 rounded-lg hover:bg-teal-700 transition-colors"
               >
                 Send Now
               </button>
