@@ -4,6 +4,7 @@ import {
   Send, Layers, ChevronDown, ChevronUp, Search, Inbox, Calendar,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import KitSubscriberEmails from "@/components/admin/email/KitSubscriberEmails";
 
 function formatTime(dateStr) {
   if (!dateStr) return "—";
@@ -471,6 +472,9 @@ export default function KitTab() {
           </div>
         </div>
       )}
+
+      {/* Subscriber Email History — search any subscriber to see their email timeline */}
+      <KitSubscriberEmails />
     </div>
   );
 }
