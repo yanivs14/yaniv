@@ -287,10 +287,10 @@ export default function EmailDashboard() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 h-full">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative z-10">
 
         {/* Mobile tab navigation */}
-        <div className="lg:hidden flex-shrink-0 flex border-b border-slate-200 bg-white overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+        <div className="lg:hidden flex-shrink-0 flex border-b border-slate-200 bg-white overflow-x-auto overflow-y-hidden shadow-sm relative z-20" style={{ scrollbarWidth: "none" }}>
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -314,7 +314,7 @@ export default function EmailDashboard() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto relative z-10">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 pb-24">
             {loadingData ? (
               <div className="flex items-center justify-center py-20">
@@ -324,10 +324,10 @@ export default function EmailDashboard() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
                 >
                   {activeTab === "crm" && <CrmContacts meetingsMap={meetingsMap} loadingMeetings={loadingMeetings} onGoToCalendly={() => setActiveTab("calendly")} />}
                   {activeTab === "finances" && <FinancesTab />}
