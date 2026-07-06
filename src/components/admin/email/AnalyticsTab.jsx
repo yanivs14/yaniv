@@ -16,8 +16,8 @@ const CARDS = [
   { key: "trends", number: 3, title: "Trend Over Time", subtitle: "Jul '24 → today, monthly", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-50" },
   { key: "subscriptions", number: 4, title: "Subscription & Pricing", subtitle: "Monthly / Annual / Untagged", icon: PieChart, color: "text-amber-600", bg: "bg-amber-50" },
   { key: "funnel", number: 5, title: "Landing Page Funnel", subtitle: "Visit → Quiz → Lead → Purchase", icon: Filter, color: "text-emerald-600", bg: "bg-emerald-50" },
-  { key: "traffic", number: 6, title: "Traffic Channels", subtitle: "Per-channel ROI", icon: MapPin, color: "text-indigo-600", bg: "bg-indigo-50" },
-  { key: "creative", number: 7, title: "Creative Leaderboard", subtitle: "What messaging wins", icon: Flag, color: "text-rose-600", bg: "bg-rose-50" },
+  { key: "traffic", number: 6, title: "Traffic Channel Performance", subtitle: "Per-channel ROI", icon: MapPin, color: "text-indigo-600", bg: "bg-indigo-50" },
+  { key: "creative", number: 7, title: "Creative & Messaging Leaderboard", subtitle: "What messaging wins", icon: Flag, color: "text-rose-600", bg: "bg-rose-50" },
 ];
 
 export default function AnalyticsTab() {
