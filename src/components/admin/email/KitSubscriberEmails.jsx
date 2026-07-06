@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Mail, Layers, Tag, Calendar, RefreshCw, Inbox, User, Users,
@@ -89,6 +89,16 @@ export default function KitSubscriberEmails({ broadcasts = [] }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [expandedSeq, setExpandedSeq] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+
+  // Load recent per-subscriber email activity on mount
+  useEffect(() => {
+    base44.functions.invoke("getKitRecentActivity", {})
+      .then(res => setRecentActivity(res.data?.recent_activity || []))
+      .catch(e => console.error("Failed to load recent activity:", e))
+      .finally(() => setActivityLoading(false));
+  }, []);
 
   const handleSearch = useCallback(async (e) => {
     e.preventDefault();
@@ -152,6 +162,53 @@ export default function KitSubscriberEmails({ broadcasts = [] }) {
           {loading ? "..." : "Search"}
         </button>
       </form>
+
+      {/* Recent per-subscriber email activity — 15 most recent emails sent to specific people */}
+      {!loading && !data && (
+        <div>
+          <p className="text-xs font-body font-bold text-slate-700 mb-1.5 px-1">
+            Recent Emails Sent to Subscribers
+            {recentActivity.length > 0 && <span className="text-slate-400 font-normal ml-1">({recentActivity.length})</span>}
+          </p>
+          {activityLoading ? (
+            <div className="flex items-center gap-2 py-4">
+              <div className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-slate-400 font-body">Loading recent activity...</span>
+            </div>
+          ) : recentActivity.length === 0 ? (
+            <div className="text-center py-4">
+              <Inbox className="w-8 h-8 text-slate-300 mx-auto mb-1" />
+              <p className="text-xs text-slate-400 font-body">No recent subscriber emails found</p>
+            </div>
+          ) : (
+            <div className="space-y-1.5">
+              {recentActivity.map((item, i) => (
+                <div key={i} className="flex items-start gap-2.5 bg-white border border-slate-200 rounded-lg p-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-purple-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-body font-medium text-slate-900 truncate">{item.email_subject}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                      <span className="text-[9px] font-body px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-200">
+                        {item.sequence_name}
+                        {item.position != null && ` · #${item.position + 1}`}
+                      </span>
+                      <span className="text-[10px] text-slate-400 flex items-center gap-0.5">
+                        <Calendar className="w-2.5 h-2.5" /> {formatTime(item.sent_date)}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-500 mt-0.5 truncate">
+                      <User className="w-2.5 h-2.5 inline mr-0.5" />
+                      {item.subscriber_name || "Unknown"} · {item.subscriber_email}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Default view — last 20 sent broadcasts (shown when no search performed) */}
       {!loading && !data && recentBroadcasts.length > 0 && (
