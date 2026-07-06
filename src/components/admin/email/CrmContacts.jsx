@@ -158,6 +158,11 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                (c.phone || "").includes(q);
       }
       return true;
+    })
+    .sort((a, b) => {
+      const da = a.created_date ? new Date(a.created_date).getTime() : 0;
+      const db = b.created_date ? new Date(b.created_date).getTime() : 0;
+      return db - da;
     });
   }, [contacts, search, filter, sourceFilter]);
 
