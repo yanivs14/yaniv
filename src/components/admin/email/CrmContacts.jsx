@@ -83,11 +83,25 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
   const contacts = data?.contacts || [];
   const stats = data?.stats || {};
 
-  const activeCount = useMemo(() => contacts.filter(c => c.is_paying_customer && !c.is_churned).length, [contacts]);
-  const payingCount = useMemo(() => contacts.filter(c => c.is_paying_customer).length, [contacts]);
-  const pastCount = useMemo(() => contacts.filter(c => c.is_churned).length, [contacts]);
-  const leadsCount = useMemo(() => contacts.filter(c => !c.is_paying_customer && !c.is_churned).length, [contacts]);
-  const refundedCount = useMemo(() => contacts.filter(c => c.is_refunded).length, [contacts]);
+  // Subset after source + search filter (but before status filter) so pill counts reflect the selected source
+  const sourceFiltered = useMemo(() => {
+    return contacts.filter(c => {
+      if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        return (c.email || "").toLowerCase().includes(q) ||
+               (c.name || "").toLowerCase().includes(q) ||
+               (c.phone || "").includes(q);
+      }
+      return true;
+    });
+  }, [contacts, search, sourceFilter]);
+
+  const activeCount = useMemo(() => sourceFiltered.filter(c => c.is_paying_customer && !c.is_churned).length, [sourceFiltered]);
+  const payingCount = useMemo(() => sourceFiltered.filter(c => c.is_paying_customer).length, [sourceFiltered]);
+  const pastCount = useMemo(() => sourceFiltered.filter(c => c.is_churned).length, [sourceFiltered]);
+  const leadsCount = useMemo(() => sourceFiltered.filter(c => !c.is_paying_customer && !c.is_churned).length, [sourceFiltered]);
+  const refundedCount = useMemo(() => sourceFiltered.filter(c => c.is_refunded).length, [sourceFiltered]);
 
   const filtered = useMemo(() => {
     return contacts.filter(c => {
@@ -116,7 +130,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
   }, [filtered, currentPage]);
 
   const filterTabs = [
-    { key: "all", label: "All", count: contacts.length },
+    { key: "all", label: "All", count: sourceFiltered.length },
     { key: "active", label: "Active", count: activeCount },
     { key: "paying", label: "Paying", count: payingCount },
     { key: "past", label: "Past", count: pastCount },
