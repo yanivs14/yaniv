@@ -35,7 +35,7 @@ export async function activateSkoolUpload(uploadId) {
   return res.data?.upload;
 }
 
-export function mergeSkoolIntoCrm(crmData, skoolData) {
+export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   if (!skoolData?.skoolMap) return crmData;
 
   const existingEmails = new Set(crmData.contacts.map(c => c.email.toLowerCase()));
@@ -77,10 +77,28 @@ export function mergeSkoolIntoCrm(crmData, skoolData) {
   crmData.stats.total_contacts = crmData.contacts.length;
   crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
 
+  // Filter Skool financials by date range if provided
+  const sf = skoolData.financials || {};
+  let skoolRevenue = sf.total_revenue || 0;
+  let skoolMonthly = sf.monthly_data || {};
+
+  if (dateRange) {
+    const fromKey = dateRange.created_after ? dateRange.created_after.replace(/-/g, '').slice(0, 6) : '000000';
+    const toKey = dateRange.created_before ? dateRange.created_before.replace(/-/g, '').slice(0, 6) : '999999';
+    const filtered = {};
+    skoolRevenue = 0;
+    for (const [key, val] of Object.entries(sf.monthly_data || {})) {
+      const compact = key.replace(/-/g, '');
+      if (compact >= fromKey && compact <= toKey) {
+        filtered[key] = val;
+        skoolRevenue += val.revenue || 0;
+      }
+    }
+    skoolMonthly = filtered;
+  }
+
   // Merge Skool financials — create a NEW object so React detects the change (useMemo)
   const oldFin = crmData.financials || {};
-  const sf = skoolData.financials || {};
-  const skoolRevenue = sf.total_revenue || 0;
 
   const now = new Date();
   const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -96,7 +114,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData) {
   let thisMonthTx = oldFin.this_month_transactions || 0;
   let lastMonthRev = oldFin.last_month_revenue || 0;
   let lastMonthTx = oldFin.last_month_transactions || 0;
-  for (const [key, val] of Object.entries(sf.monthly_data || {})) {
+  for (const [key, val] of Object.entries(skoolMonthly)) {
     if (!combinedMonthly[key]) combinedMonthly[key] = { revenue: 0, transactions: 0 };
     combinedMonthly[key].revenue += val.revenue || 0;
     combinedMonthly[key].transactions += val.transactions || 0;

@@ -64,9 +64,9 @@ export default function FinancesTab() {
     setData(prev => {
       if (!prev) return prev;
       preSkoolSnapshot.current = JSON.parse(JSON.stringify(prev));
-      return mergeSkoolIntoCrm({ ...prev }, skoolResult);
+      return mergeSkoolIntoCrm({ ...prev }, skoolResult, dateRange);
     });
-  }, []);
+  }, [dateRange]);
 
   const handleSkoolData = useCallback(async (skoolResult) => {
     const fileName = skoolResult.fileName || "skool.csv";

@@ -154,18 +154,26 @@ Deno.serve(async (req) => {
       const endOfDay = new Date(createdBefore + 'T23:59:59');
       createdFilter.lte = Math.floor(endOfDay.getTime() / 1000);
     }
+    // Build customer_id → email lookup from subscriptions (avoids expanding customer on every charge)
+    const customerIdToEmail = {};
+    for (const [em, d] of Object.entries(stripeMap)) {
+      if (d.stripe_customer_id) customerIdToEmail[d.stripe_customer_id] = em;
+    }
+
     let chargeHasMore = true;
     let chargeStartingAfter = null;
     let chargePageCount = 0;
     while (chargeHasMore && chargePageCount < 50) {
-      const params = { limit: 100, created: createdFilter };
+      const params = { limit: 100, created: createdFilter, expand: ['data.customer'] };
       if (chargeStartingAfter) params.starting_after = chargeStartingAfter;
       const charges = await stripe.charges.list(params);
 
       for (const charge of charges.data) {
         if (!charge.paid) continue;
+        if (charge.refunded) continue; // fully refunded charges — skip (we track refunds separately)
 
-        const email = charge.billing_details?.email?.toLowerCase().trim();
+        // Use billing_details email, then expanded customer email, then customer_id lookup
+        const email = (charge.billing_details?.email || charge.customer?.email || (charge.customer && typeof charge.customer === 'string' ? customerIdToEmail[charge.customer] : '') || '').toLowerCase().trim();
         if (!email) continue;
 
         let data = stripeMap[email];
@@ -194,7 +202,7 @@ Deno.serve(async (req) => {
         const chargeMonthKey = `${chargeDate.getFullYear()}-${String(chargeDate.getMonth() + 1).padStart(2, '0')}`;
         const netAmount = (charge.amount - charge.amount_refunded) / 100;
 
-        data.total_paid += charge.amount / 100;
+        data.total_paid += netAmount;
         financials.total_revenue += netAmount;
 
         if (!data.payment_months.includes(chargeMonthKey)) {
