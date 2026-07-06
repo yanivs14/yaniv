@@ -43,6 +43,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized — admin only' }, { status: 403 });
     }
 
+    let body = {};
+    try { body = await req.json(); } catch {}
+    const createdAfter = body.created_after;
+    const createdBefore = body.created_before;
+    const hasDateFilter = !!createdAfter || !!createdBefore;
+
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     const stripeMap = {};
     const financials = {
@@ -107,18 +113,20 @@ Deno.serve(async (req) => {
         const subPlan = sub.metadata?.plan ? (PLAN_LABELS[sub.metadata.plan] || sub.metadata.plan) : inferPlanFromPrice(price);
 
         if (isActive) {
-          data.is_paying = true;
-          data.is_churned = false;
-          data.is_recurring = true;
-          data.subscription_status = sub.status;
-          data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
-          if (!data.plan) data.plan = subPlan;
+          if (!hasDateFilter) {
+            data.is_paying = true;
+            data.is_churned = false;
+            data.is_recurring = true;
+            data.subscription_status = sub.status;
+            data.subscription_start = sub.start_date ? new Date(sub.start_date * 1000).toISOString() : null;
+            if (!data.plan) data.plan = subPlan;
+          }
           if (price?.recurring?.interval === 'month') {
             financials.mrr += price.unit_amount / 100;
           } else if (price?.recurring?.interval === 'year') {
             financials.mrr += (price.unit_amount / 100) / 12;
           }
-        } else if (isCanceled && !data.is_paying) {
+        } else if (isCanceled && !data.is_paying && !hasDateFilter) {
           data.is_churned = true;
           data.is_recurring = price?.recurring?.interval === 'month';
           data.subscription_status = sub.status;
@@ -134,13 +142,23 @@ Deno.serve(async (req) => {
     }
     console.log(`Stripe: fetched subscriptions, ${Object.keys(stripeMap).length} contacts so far`);
 
-    // 2. List charges from last 24 months (payment dates, refunds, revenue)
-    const twoYearsAgo = Math.floor((Date.now() - 730 * 24 * 60 * 60 * 1000) / 1000);
+    // 2. List charges — date range filter or default 3-year lookback
+    const defaultLookback = Math.floor((Date.now() - 1095 * 24 * 60 * 60 * 1000) / 1000);
+    const createdFilter = {};
+    if (createdAfter) {
+      createdFilter.gte = Math.floor(new Date(createdAfter + 'T00:00:00').getTime() / 1000);
+    } else {
+      createdFilter.gte = defaultLookback;
+    }
+    if (createdBefore) {
+      const endOfDay = new Date(createdBefore + 'T23:59:59');
+      createdFilter.lte = Math.floor(endOfDay.getTime() / 1000);
+    }
     let chargeHasMore = true;
     let chargeStartingAfter = null;
     let chargePageCount = 0;
     while (chargeHasMore && chargePageCount < 50) {
-      const params = { limit: 100, created: { gte: twoYearsAgo } };
+      const params = { limit: 100, created: createdFilter };
       if (chargeStartingAfter) params.starting_after = chargeStartingAfter;
       const charges = await stripe.charges.list(params);
 
@@ -223,9 +241,11 @@ Deno.serve(async (req) => {
     console.log(`Stripe: processed charges, ${Object.keys(stripeMap).length} total contacts`);
 
     const sortedMonths = Object.entries(financials.monthly_data)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .slice(-6);
-    financials.monthly_data = Object.fromEntries(sortedMonths);
+      .sort(([a], [b]) => a.localeCompare(b));
+    financials.monthly_data = Object.fromEntries(
+      hasDateFilter ? sortedMonths : sortedMonths.slice(-6)
+    );
+    financials.date_filtered = hasDateFilter;
 
     // Compute stats
     const allContacts = Object.values(stripeMap);

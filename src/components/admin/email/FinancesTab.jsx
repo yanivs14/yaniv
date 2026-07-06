@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar, Undo2, FileText, Clock } from "lucide-react";
 import {
@@ -37,6 +37,26 @@ export default function FinancesTab() {
   const [skoolMeta, setSkoolMeta] = useState(null);
   const [skoolHistory, setSkoolHistory] = useState([]);
   const preSkoolSnapshot = useRef(null);
+  const [filterYear, setFilterYear] = useState("all");
+  const [fromMonth, setFromMonth] = useState("all");
+  const [toMonth, setToMonth] = useState("all");
+  const isFirstLoad = useRef(true);
+
+  const currentYear = new Date().getFullYear();
+  const availableYears = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3].filter(y => y >= 2022);
+
+  const dateRange = useMemo(() => {
+    if (filterYear === "all") return null;
+    const y = parseInt(filterYear);
+    let fromM = fromMonth === "all" ? 0 : parseInt(fromMonth);
+    let toM = toMonth === "all" ? 11 : parseInt(toMonth);
+    if (fromM > toM) { const tmp = fromM; fromM = toM; toM = tmp; }
+    const lastDay = new Date(y, toM + 1, 0).getDate();
+    return {
+      created_after: `${y}-${String(fromM + 1).padStart(2, "0")}-01`,
+      created_before: `${y}-${String(toM + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`,
+    };
+  }, [filterYear, fromMonth, toMonth]);
 
   const applySkool = useCallback((skoolResult, meta) => {
     setSkoolData(skoolResult);
@@ -102,7 +122,7 @@ export default function FinancesTab() {
     }
   }, [applySkool]);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (stripeRange) => {
     setLoading(true);
     try {
       const crmData = await fetchCrmOnly();
@@ -110,7 +130,7 @@ export default function FinancesTab() {
       setLoading(false);
       setStripeLoading(true);
       try {
-        const stripeData = await fetchStripeOnly();
+        const stripeData = await fetchStripeOnly(stripeRange);
         setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
       } catch (e) {
         console.error("Stripe enrich failed:", e);
@@ -136,7 +156,15 @@ export default function FinancesTab() {
     }
   }, [applySkool]);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => { loadData(null); }, [loadData]);
+
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+    loadData(dateRange);
+  }, [dateRange, loadData]);
 
   if (loading) {
     return (
@@ -160,7 +188,18 @@ export default function FinancesTab() {
     ? ((financials.this_month_revenue - financials.last_month_revenue) / financials.last_month_revenue) * 100
     : 0;
 
-  const mainCards = [
+  const isFiltered = financials.date_filtered;
+  const totalTransactions = Object.values(financials.monthly_data || {}).reduce((sum, m) => sum + (m.transactions || 0), 0);
+  const netRevenue = (financials.total_revenue || 0) - (financials.total_refunded || 0);
+
+  const mainCards = isFiltered ? [
+    { label: "Revenue in Range", value: formatMoney(financials.total_revenue), sub: `${totalTransactions} transactions`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "MRR", value: formatMoney(financials.mrr), sub: "Current recurring", icon: Activity, color: "text-teal-600", bg: "bg-teal-50" },
+    { label: "Avg Revenue / Customer", value: formatMoney(financials.arpu), sub: `${stats.paying_customers || 0} in range`, icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50" },
+    { label: "Net Revenue", value: formatMoney(netRevenue), sub: "After refunds", icon: Crown, color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "Total Refunded", value: formatMoney(financials.total_refunded), sub: `${stats.refunded || 0} customers`, icon: RotateCcw, color: "text-red-500", bg: "bg-red-50" },
+    { label: "Transactions", value: totalTransactions, sub: "In selected range", icon: Calendar, color: "text-blue-600", bg: "bg-blue-50" },
+  ] : [
     { label: "Revenue This Month", value: formatMoney(financials.this_month_revenue), sub: `${financials.this_month_transactions || 0} transactions`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50", change: revenueChange },
     { label: "Last Month", value: formatMoney(financials.last_month_revenue), sub: `${financials.last_month_transactions || 0} transactions`, icon: Calendar, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "MRR", value: formatMoney(financials.mrr), sub: "Monthly recurring", icon: Activity, color: "text-teal-600", bg: "bg-teal-50" },
@@ -258,6 +297,49 @@ export default function FinancesTab() {
         </div>
       )}
 
+      {/* Date range filter */}
+      <div className="bg-white border border-slate-200 rounded-xl p-3 mb-4 shadow-sm">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <span className="text-[11px] text-slate-400 font-body font-medium uppercase tracking-wide">Range</span>
+          <select
+            value={filterYear}
+            onChange={e => setFilterYear(e.target.value)}
+            className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+          >
+            <option value="all">All Years</option>
+            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+          {filterYear !== "all" && (
+            <>
+              <select
+                value={fromMonth}
+                onChange={e => setFromMonth(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+              >
+                <option value="all">From: Any</option>
+                {MONTH_NAMES.map((m, i) => <option key={i} value={i}>{m}</option>)}
+              </select>
+              <span className="text-slate-300 text-xs">→</span>
+              <select
+                value={toMonth}
+                onChange={e => setToMonth(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+              >
+                <option value="all">To: Any</option>
+                {MONTH_NAMES.map((m, i) => <option key={i} value={i}>{m}</option>)}
+              </select>
+              <button
+                onClick={() => { setFilterYear("all"); setFromMonth("all"); setToMonth("all"); }}
+                className="text-xs text-teal-600 hover:underline font-body ml-auto"
+              >
+                Clear
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+
       {/* Main stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 mb-4">
         {mainCards.map((s, i) => {
@@ -295,7 +377,7 @@ export default function FinancesTab() {
       {/* Revenue chart */}
       {monthlyData.length > 0 && (
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-sm font-body font-semibold text-slate-900 mb-3">Revenue — Last 6 Months</p>
+          <p className="text-sm font-body font-semibold text-slate-900 mb-3">{isFiltered ? "Revenue — Selected Range" : "Revenue — Last 6 Months"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />

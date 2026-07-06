@@ -1,0 +1,55 @@
+{
+  "name": "MeetingNote",
+  "type": "object",
+  "properties": {
+    "event_uuid": {
+      "type": "string",
+      "description": "Calendly event UUID"
+    },
+    "invitee_email": {
+      "type": "string",
+      "description": "Invitee email"
+    },
+    "invitee_name": {
+      "type": "string",
+      "description": "Invitee name"
+    },
+    "event_name": {
+      "type": "string",
+      "description": "Calendly event name"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Meeting start time (ISO)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes for this meeting (supports RTL/Hebrew)"
+    }
+  },
+  "required": [
+    "event_uuid"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

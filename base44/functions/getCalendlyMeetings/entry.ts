@@ -24,15 +24,31 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Could not fetch Calendly user' }, { status: 500 });
     }
 
-    // Fetch upcoming events (next 30 days)
+    // Fetch events from 12 months ago to 30 days ahead (includes past/history)
     const now = new Date();
+    const startTime = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
     const endTime = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-    const evRes = await fetch(
-      `https://api.calendly.com/scheduled_events?user=${encodeURIComponent(userUri)}&status=active&min_start_time=${encodeURIComponent(now.toISOString())}&max_start_time=${encodeURIComponent(endTime.toISOString())}&count=100`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
-    const evData = await evRes.json();
-    const events = evData.collection || [];
+
+    // Paginate through all events
+    let allEvents = [];
+    let nextPageToken = null;
+    let pageCount = 0;
+    while (pageCount < 10) {
+      let url = `https://api.calendly.com/scheduled_events?user=${encodeURIComponent(userUri)}&status=active&min_start_time=${encodeURIComponent(startTime.toISOString())}&max_start_time=${encodeURIComponent(endTime.toISOString())}&count=100`;
+      if (nextPageToken) url += `&page_token=${encodeURIComponent(nextPageToken)}`;
+      const evRes = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!evRes.ok) {
+        console.warn(`Calendly events page ${pageCount} failed: ${evRes.status}`);
+        break;
+      }
+      const evData = await evRes.json();
+      allEvents = allEvents.concat(evData.collection || []);
+      nextPageToken = evData.pagination?.next_page_token;
+      if (!nextPageToken) break;
+      pageCount++;
+    }
+    const events = allEvents;
+    console.log(`Calendly: fetched ${events.length} events from ${startTime.toISOString().slice(0, 10)} to ${endTime.toISOString().slice(0, 10)}`);
 
     // For each event, fetch invitees and build email → meetings map
     const meetingsByEmail = {};
@@ -52,7 +68,6 @@ Deno.serve(async (req) => {
         const invitees = invData.collection || [];
 
         const startDate = new Date(ev.start_time);
-        const endDate = new Date(ev.end_time);
         const formatted = startDate.toLocaleString('en-GB', {
           timeZone: 'Asia/Jerusalem',
           day: '2-digit', month: '2-digit', year: 'numeric',
@@ -101,7 +116,7 @@ Deno.serve(async (req) => {
       totalWithInvitees: Object.keys(meetingsByEmail).length,
     });
   } catch (error) {
-    console.error('getCalendlyMeetings error:', error.message);
+    console.error("getCalendlyMeetings error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

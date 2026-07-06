@@ -5,8 +5,13 @@ export async function fetchCrmOnly() {
   return res.data;
 }
 
-export async function fetchStripeOnly() {
-  const res = await base44.functions.invoke("getStripeFinancials", {});
+export async function fetchStripeOnly(dateRange) {
+  const payload = {};
+  if (dateRange) {
+    payload.created_after = dateRange.created_after;
+    payload.created_before = dateRange.created_before;
+  }
+  const res = await base44.functions.invoke("getStripeFinancials", payload);
   return res.data;
 }
 

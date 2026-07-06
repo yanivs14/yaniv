@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Calendar, Clock, Video, RefreshCw, Search, Users, CalendarDays,
-  CalendarClock, MapPin, ExternalLink, AlertCircle,
+  CalendarClock, MapPin, ExternalLink, AlertCircle, History,
 } from "lucide-react";
+import MeetingNotes from "@/components/admin/email/MeetingNotes";
+import { base44 } from "@/api/base44Client";
 
 function formatDateLabel(dateStr) {
   const d = new Date(dateStr);
@@ -61,6 +63,31 @@ function getRelativeBadge(dateStr) {
 export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [notesMap, setNotesMap] = useState({});
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const res = await base44.functions.invoke("manageMeetingNote", { action: "load" });
+        setNotesMap(res.data?.notesMap || {});
+      } catch (e) {
+        console.error("Failed to load meeting notes:", e);
+      }
+    };
+    loadNotes();
+  }, []);
+
+  const handleNoteSaved = (eventUuid, noteText) => {
+    setNotesMap(prev => ({ ...prev, [eventUuid]: { ...prev[eventUuid], notes: noteText } }));
+  };
+
+  const handleNoteDeleted = (eventUuid) => {
+    setNotesMap(prev => {
+      const next = { ...prev };
+      delete next[eventUuid];
+      return next;
+    });
+  };
 
   const allMeetings = useMemo(() => {
     if (!meetingsMap) return [];
@@ -83,6 +110,7 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
       if (filter === "today" && diffHours >= 24) return false;
       if (filter === "week" && diffHours >= 7 * 24) return false;
       if (filter === "upcoming" && diffHours < 0) return false;
+      if (filter === "past" && diffHours >= 0) return false;
 
       if (search) {
         const q = search.toLowerCase();
@@ -99,7 +127,8 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
     const todayCount = allMeetings.filter(m => (new Date(m.start_time) - now) / (1000 * 60 * 60) < 24 && new Date(m.start_time) > now).length;
     const weekCount = allMeetings.filter(m => (new Date(m.start_time) - now) / (1000 * 60 * 60) < 7 * 24 && new Date(m.start_time) > now).length;
     const total = allMeetings.filter(m => new Date(m.start_time) > now).length;
-    return { today: todayCount, week: weekCount, total };
+    const past = allMeetings.filter(m => new Date(m.start_time) < now).length;
+    return { today: todayCount, week: weekCount, total, past };
   }, [allMeetings]);
 
   const grouped = useMemo(() => {
@@ -113,16 +142,18 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
   }, [filtered]);
 
   const statCards = [
+    { label: "Upcoming", value: stats.total, icon: CalendarClock, color: "text-teal-600", bg: "bg-teal-50" },
     { label: "Today", value: stats.today, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
     { label: "This Week", value: stats.week, icon: CalendarDays, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Upcoming", value: stats.total, icon: CalendarClock, color: "text-teal-600", bg: "bg-teal-50" },
+    { label: "Past", value: stats.past, icon: History, color: "text-slate-600", bg: "bg-slate-100" },
   ];
 
   const filterTabs = [
     { key: "all", label: "All" },
+    { key: "upcoming", label: "Upcoming" },
     { key: "today", label: "Today" },
     { key: "week", label: "This Week" },
-    { key: "upcoming", label: "Upcoming" },
+    { key: "past", label: "Past" },
   ];
 
   return (
@@ -141,7 +172,7 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
       ) : (
         <>
           {/* Stat cards */}
-          <div className="grid grid-cols-3 gap-2.5 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-4">
             {statCards.map((s, i) => {
               const Icon = s.icon;
               return (
@@ -272,6 +303,16 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
                                   </a>
                                 )}
                               </div>
+                              <MeetingNotes
+                                event_uuid={m.event_uuid}
+                                invitee_email={m.invitee_email}
+                                invitee_name={m.invitee_name}
+                                event_name={m.event_name}
+                                start_time={m.start_time}
+                                existingNote={notesMap[m.event_uuid]?.notes}
+                                onSaved={handleNoteSaved}
+                                onDeleted={handleNoteDeleted}
+                              />
                             </div>
                           </div>
                         </div>
