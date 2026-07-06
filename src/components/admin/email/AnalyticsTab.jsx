@@ -25,7 +25,7 @@ export default function AnalyticsTab() {
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-
+  // Analytics dashboard — live data from Stripe, Skool, Kit
   const loadData = useCallback(async () => {
     setLoading(true);
     setSelectedCard(null);
