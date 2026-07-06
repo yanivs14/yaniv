@@ -60,7 +60,7 @@ export default function ExecutiveOverview({ contacts, financials, stats }) {
   const skoolActive = stats.in_skool || 0;
   const stripeActive = useMemo(() => contacts.filter(c => c.stripe_customer_id && c.is_paying_customer && !c.is_churned).length, [contacts]);
   const totalActive = stats.paying_customers || 0;
-  const innerCircle = useMemo(() => contacts.filter(c => (c.purchase_plan || "").toLowerCase().includes("inner circle")).length, [contacts]);
+  const innerCircle = useMemo(() => contacts.filter(c => c.source === "inner_circle" && c.is_paying_customer && !c.is_churned).length, [contacts]);
   const mrr = financials.mrr || 0;
   const arr = mrr * 12;
   const mtdNewUsers = useMemo(() => contacts.filter(c => isThisMonth(c.first_payment_date)).length, [contacts]);
@@ -78,9 +78,9 @@ export default function ExecutiveOverview({ contacts, financials, stats }) {
       <div>
         <p className="text-[11px] text-slate-400 uppercase tracking-wide font-body font-semibold mb-2">Platform Active Members</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <MetricCard label="Skool Active" value={skoolActive.toLocaleString()} delay={0} />
-          <MetricCard label="Stripe Active" value={stripeActive.toLocaleString()} delay={0.05} />
-          <MetricCard label="Total Active (Dedup)" value={totalActive.toLocaleString()} status="green" footer="Deduplicated across all platforms" delay={0.1} />
+          <MetricCard label="Total Active (Dedup)" value={totalActive.toLocaleString()} status="green" footer="Deduplicated across all platforms" delay={0} />
+          <MetricCard label="Skool Active" value={skoolActive.toLocaleString()} delay={0.05} />
+          <MetricCard label="Stripe Active" value={stripeActive.toLocaleString()} delay={0.1} />
           <MetricCard label="Inner Circle" value={innerCircle} delay={0.15} />
         </div>
       </div>

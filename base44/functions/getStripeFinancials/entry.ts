@@ -250,9 +250,7 @@ Deno.serve(async (req) => {
 
     const sortedMonths = Object.entries(financials.monthly_data)
       .sort(([a], [b]) => a.localeCompare(b));
-    financials.monthly_data = Object.fromEntries(
-      hasDateFilter ? sortedMonths : sortedMonths.slice(-6)
-    );
+    financials.monthly_data = Object.fromEntries(sortedMonths);
     financials.date_filtered = hasDateFilter;
 
     // Compute stats
