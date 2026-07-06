@@ -238,7 +238,7 @@ export default function EmailDashboard() {
   if (!user || user.role !== "admin") return <AuthGate />;
 
   return (
-    <div className="h-[100dvh] bg-slate-50 flex font-body overflow-hidden">
+    <div className="h-[100svh] bg-slate-50 flex font-body overflow-hidden">
       {/* Sidebar — desktop */}
       <aside className="hidden lg:flex flex-col w-60 bg-white border-r border-slate-200 flex-shrink-0">
         <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200">
