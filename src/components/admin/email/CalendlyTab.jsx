@@ -97,7 +97,7 @@ export default function CalendlyTab({ meetingsMap, loading, onRefresh }) {
         list.push({ ...m, email });
       });
     }
-    list.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+    list.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
     return list;
   }, [meetingsMap]);
 

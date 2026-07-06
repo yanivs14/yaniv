@@ -77,45 +77,55 @@ export function mergeSkoolIntoCrm(crmData, skoolData) {
   crmData.stats.total_contacts = crmData.contacts.length;
   crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
 
-  // Merge Skool financials INTO the main financials so all cards reflect combined data
-  if (!crmData.financials) crmData.financials = {};
+  // Merge Skool financials — create a NEW object so React detects the change (useMemo)
+  const oldFin = crmData.financials || {};
   const sf = skoolData.financials || {};
   const skoolRevenue = sf.total_revenue || 0;
 
-  crmData.financials.total_revenue = (crmData.financials.total_revenue || 0) + skoolRevenue;
-  crmData.financials.skool_revenue = skoolRevenue;
-  crmData.financials.skool_active = skoolData.stats.active_members;
-  crmData.financials.skool_churned = skoolData.stats.churned_members;
-
-  // Merge monthly data
   const now = new Date();
   const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
 
-  const combinedMonthly = { ...(crmData.financials.monthly_data || {}) };
+  // Build merged monthly data in a fresh object
+  const combinedMonthly = {};
+  for (const [key, val] of Object.entries(oldFin.monthly_data || {})) {
+    combinedMonthly[key] = { revenue: val.revenue || 0, transactions: val.transactions || 0 };
+  }
+  let thisMonthRev = oldFin.this_month_revenue || 0;
+  let thisMonthTx = oldFin.this_month_transactions || 0;
+  let lastMonthRev = oldFin.last_month_revenue || 0;
+  let lastMonthTx = oldFin.last_month_transactions || 0;
   for (const [key, val] of Object.entries(sf.monthly_data || {})) {
     if (!combinedMonthly[key]) combinedMonthly[key] = { revenue: 0, transactions: 0 };
     combinedMonthly[key].revenue += val.revenue || 0;
     combinedMonthly[key].transactions += val.transactions || 0;
     if (key === thisMonthKey) {
-      crmData.financials.this_month_revenue = (crmData.financials.this_month_revenue || 0) + (val.revenue || 0);
-      crmData.financials.this_month_transactions = (crmData.financials.this_month_transactions || 0) + (val.transactions || 0);
+      thisMonthRev += val.revenue || 0;
+      thisMonthTx += val.transactions || 0;
     } else if (key === lastMonthKey) {
-      crmData.financials.last_month_revenue = (crmData.financials.last_month_revenue || 0) + (val.revenue || 0);
-      crmData.financials.last_month_transactions = (crmData.financials.last_month_transactions || 0) + (val.transactions || 0);
+      lastMonthRev += val.revenue || 0;
+      lastMonthTx += val.transactions || 0;
     }
   }
-  // Sort and keep last 6 months
   const sortedMonths = Object.entries(combinedMonthly)
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(-6);
-  crmData.financials.monthly_data = Object.fromEntries(sortedMonths);
 
-  // Recalculate ARPU with combined customers
-  crmData.financials.arpu = crmData.stats.paying_customers > 0
-    ? crmData.financials.total_revenue / crmData.stats.paying_customers
-    : 0;
+  const totalRev = (oldFin.total_revenue || 0) + skoolRevenue;
+  crmData.financials = {
+    ...oldFin,
+    total_revenue: totalRev,
+    skool_revenue: skoolRevenue,
+    skool_active: skoolData.stats.active_members,
+    skool_churned: skoolData.stats.churned_members,
+    this_month_revenue: thisMonthRev,
+    this_month_transactions: thisMonthTx,
+    last_month_revenue: lastMonthRev,
+    last_month_transactions: lastMonthTx,
+    monthly_data: Object.fromEntries(sortedMonths),
+    arpu: crmData.stats.paying_customers > 0 ? totalRev / crmData.stats.paying_customers : 0,
+  };
 
   return crmData;
 }
