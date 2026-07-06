@@ -18,12 +18,38 @@ Deno.serve(async (req) => {
       "X-Kit-Api-Key": kitKey,
     };
 
-    // Fetch broadcasts (with stats) — most recent first
+    // 1) Fetch broadcasts list (metadata)
     const broadcastsRes = await fetch("https://api.kit.com/v4/broadcasts?sort_order=desc&per_page=50", { headers });
     const broadcastsData = broadcastsRes.ok ? await broadcastsRes.json() : { broadcasts: [] };
-    const broadcasts = (broadcastsData?.broadcasts || []).map(b => {
+    const broadcastsMeta = broadcastsData?.broadcasts || [];
+
+    // 2) Fetch broadcast STATS from the dedicated stats endpoint (paginated)
+    const statsMap = new Map();
+    try {
+      let afterCursor = null;
+      for (let page = 0; page < 10; page++) {
+        const url = afterCursor
+          ? `https://api.kit.com/v4/broadcasts/stats?per_page=1000&after=${afterCursor}`
+          : `https://api.kit.com/v4/broadcasts/stats?per_page=1000`;
+        const statsRes = await fetch(url, { headers });
+        if (!statsRes.ok) break;
+        const statsData = await statsRes.json();
+        for (const b of (statsData?.broadcasts || [])) {
+          statsMap.set(b.id, b.stats || {});
+        }
+        if (!statsData?.pagination?.has_next_page) break;
+        afterCursor = statsData?.pagination?.end_cursor;
+        if (!afterCursor) break;
+      }
+    } catch (e) {
+      console.warn("Failed to fetch broadcast stats:", e.message);
+    }
+
+    // 3) Merge: broadcasts list + stats
+    const broadcasts = broadcastsMeta.map(b => {
       const sentAt = b.sent_at || b.send_at;
       const isSent = !!sentAt && new Date(sentAt) < new Date();
+      const st = statsMap.get(b.id) || {};
       return {
         id: b.id,
         subject: b.subject || "(no subject)",
@@ -36,13 +62,13 @@ Deno.serve(async (req) => {
         thumbnail_url: b.thumbnail_url || null,
         public: b.public || false,
         stats: {
-          recipients: b.stats?.recipients || 0,
-          opens: b.stats?.opens || 0,
-          open_rate: b.stats?.open_rate || 0,
-          clicks: b.stats?.clicks || 0,
-          click_rate: b.stats?.click_rate || 0,
-          unsubscribes: b.stats?.unsubscribes || 0,
-          total_clicks: b.stats?.total_clicks || 0,
+          recipients: st.recipients || 0,
+          opens: st.emails_opened || 0,
+          open_rate: (st.open_rate || 0) / 100,
+          clicks: st.total_clicks || 0,
+          click_rate: (st.click_rate || 0) / 100,
+          unsubscribes: st.unsubscribes || 0,
+          total_clicks: st.total_clicks || 0,
         },
       };
     });
@@ -65,30 +91,27 @@ Deno.serve(async (req) => {
       ? aggregate.total_clicks / aggregate.total_recipients
       : 0;
 
-    // Fetch sequences (with subscriber counts)
-    const sequencesRes = await fetch("https://api.kit.com/v4/sequences?per_page=50", { headers });
-    const sequencesData = sequencesRes.ok ? await sequencesRes.json() : { sequences: [] };
-    const sequences = (sequencesData?.sequences || []).map(s => ({
-      id: s.id,
-      name: s.name || "Untitled",
-      created_at: s.created_at,
-      subscribers: s.subscribers || 0,
-      thumbnail_url: s.thumbnail_url || null,
-    }));
-
-    // Fetch subscriber count (Kit v4 uses cursor pagination, no total field — count first page)
+    // 4) Fetch total subscriber count — paginate through all (BEFORE sequence calls to avoid rate limits)
     let subscriberCount = 0;
     try {
-      const subRes = await fetch("https://api.kit.com/v4/subscribers?per_page=1000&sort_order=desc", { headers });
-      if (subRes.ok) {
+      let afterCursor = null;
+      for (let page = 0; page < 50; page++) {
+        const base = "https://api.kit.com/v4/subscribers?per_page=1000";
+        const url = afterCursor ? `${base}&after=${afterCursor}` : base;
+        const subRes = await fetch(url, { headers });
+        if (!subRes.ok) { console.warn("subRes not ok:", subRes.status); break; }
         const subData = await subRes.json();
-        subscriberCount = (subData?.subscribers || []).length;
+        const subs = subData?.subscribers || [];
+        subscriberCount += subs.length;
+        if (!subData?.pagination?.has_next_page || subs.length === 0) break;
+        afterCursor = subData?.pagination?.end_cursor;
+        if (!afterCursor) break;
       }
     } catch (e) {
       console.warn("Failed to fetch subscriber count:", e.message);
     }
 
-    // Fetch tags count
+    // 5) Fetch tags (paginated)
     let tagCount = 0;
     let tags = [];
     try {
@@ -110,6 +133,51 @@ Deno.serve(async (req) => {
       console.warn("Failed to fetch tags:", e.message);
     }
 
+    // 6) Fetch sequences list
+    const sequencesRes = await fetch("https://api.kit.com/v4/sequences?per_page=100", { headers });
+    const sequencesData = sequencesRes.ok ? await sequencesRes.json() : { sequences: [] };
+    const seqList = (sequencesData?.sequences || []).slice(0, 50);
+
+    // 7) Fetch subscriber count per sequence (in parallel, capped at 50)
+    const sequences = await Promise.all(seqList.map(async (s) => {
+      let subCount = 0;
+      try {
+        const subRes = await fetch(
+          `https://api.kit.com/v4/sequences/${s.id}/subscribers?per_page=500`,
+          { headers }
+        );
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          const subs = subData?.subscribers || [];
+          subCount = subs.length;
+          if (subs.length === 500 && subData?.pagination?.has_next_page) {
+            let cursor = subData?.pagination?.end_cursor;
+            while (cursor) {
+              const nextRes = await fetch(
+                `https://api.kit.com/v4/sequences/${s.id}/subscribers?per_page=500&after=${cursor}`,
+                { headers }
+              );
+              if (!nextRes.ok) break;
+              const nextData = await nextRes.json();
+              const nextSubs = nextData?.subscribers || [];
+              subCount += nextSubs.length;
+              if (!nextData?.pagination?.has_next_page || nextSubs.length === 0) break;
+              cursor = nextData?.pagination?.end_cursor;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn(`Failed to fetch subscribers for sequence ${s.id}:`, e.message);
+      }
+      return {
+        id: s.id,
+        name: s.name || "Untitled",
+        created_at: s.created_at,
+        subscribers: subCount,
+        thumbnail_url: s.thumbnail_url || null,
+      };
+    }));
+
     return Response.json({
       summary: {
         total_subscribers: subscriberCount,
@@ -120,7 +188,7 @@ Deno.serve(async (req) => {
         total_unsubscribes: aggregate.total_unsubscribes,
         avg_open_rate,
         avg_click_rate,
-        total_sequences: sequences.length,
+        total_sequences: sequencesData?.sequences?.length || 0,
         total_tags: tagCount,
       },
       broadcasts,
