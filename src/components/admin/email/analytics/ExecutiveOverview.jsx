@@ -45,7 +45,7 @@ function SparklineCard({ title, data, dataKey, color, delay }) {
         <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
           <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
           <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={{ r: 2, fill: color }} />
-          <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "11px" }} />
+          <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "11px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} />
         </LineChart>
       </ResponsiveContainer>
       <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400">

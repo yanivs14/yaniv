@@ -41,7 +41,7 @@ export default function TrendOverTime({ contacts, financials }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
               <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} formatter={v => [`$${v.toLocaleString()}`, "Net Cash Flow"]} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} formatter={v => [`$${v.toLocaleString()}`, "Net Cash Flow"]} />
               <Line type="monotone" dataKey="netCashFlow" stroke="#007a78" strokeWidth={2.5} dot={{ r: 3, fill: "#007a78" }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
@@ -55,7 +55,7 @@ export default function TrendOverTime({ contacts, financials }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
               <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} formatter={v => `$${v.toLocaleString()}`} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} formatter={v => `$${v.toLocaleString()}`} />
               <Legend wrapperStyle={{ fontSize: "11px" }} />
               <Bar dataKey="revenue" name="Revenue" fill="#337ab7" radius={[3, 3, 0, 0]} />
               <Bar dataKey="refunds" name="Refunds" fill="#d9534f" radius={[3, 3, 0, 0]} />
@@ -79,7 +79,7 @@ export default function TrendOverTime({ contacts, financials }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
               <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} formatter={v => [`$${v.toLocaleString()}`, "MRR"]} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} formatter={v => [`$${v.toLocaleString()}`, "MRR"]} />
               <Line type="monotone" dataKey="mrr" stroke="#007a78" strokeWidth={2.5} dot={{ r: 3, fill: "#007a78" }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
@@ -93,7 +93,7 @@ export default function TrendOverTime({ contacts, financials }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
               <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} formatter={v => `$${v.toLocaleString()}`} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} formatter={v => `$${v.toLocaleString()}`} />
               <Legend wrapperStyle={{ fontSize: "11px" }} />
               <Bar dataKey="mrrMonthly" name="Monthly" stackId="a" fill={PLAN_COLORS.monthly} />
               <Bar dataKey="mrrAnnual" name="Annual" stackId="a" fill={PLAN_COLORS.annual} />
@@ -111,7 +111,7 @@ export default function TrendOverTime({ contacts, financials }) {
                 <Pie data={planPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} innerRadius={40} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false} style={{ fontSize: "10px" }}>
                   {planPieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} formatter={v => `$${v.toLocaleString()}`} />
+                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} formatter={v => `$${v.toLocaleString()}`} />
                 <Legend wrapperStyle={{ fontSize: "11px" }} />
               </PieChart>
             </ResponsiveContainer>
@@ -120,7 +120,7 @@ export default function TrendOverTime({ contacts, financials }) {
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
                 <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} />
+                <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} />
                 <Bar dataKey="activeMembers" name="Active Members" fill="#007a78" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -136,7 +136,7 @@ export default function TrendOverTime({ contacts, financials }) {
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
               <YAxis yAxisId="left" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: "New Signups", angle: -90, position: "insideLeft", style: { fontSize: "10px", fill: "#94a3b8" } }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v.toFixed(0)}%`} label={{ value: "Cancellations", angle: 90, position: "insideRight", style: { fontSize: "10px", fill: "#94a3b8" } }} />
-              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} />
+              <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} />
               <Legend wrapperStyle={{ fontSize: "11px" }} />
               <Bar yAxisId="left" dataKey="newSignups" name="New Signups" fill="#5cb85c" radius={[3, 3, 0, 0]} />
               <Line yAxisId="right" type="monotone" dataKey="cancellationRate" name="Cancellation Rate" stroke="#d9534f" strokeWidth={2.5} dot={{ r: 3, fill: "#d9534f" }} />
