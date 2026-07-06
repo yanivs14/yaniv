@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar, Mail } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -12,6 +12,7 @@ import FinancesTab from "@/components/admin/email/FinancesTab";
 import AutomationsTab from "@/components/admin/email/AutomationsTab";
 import EmailPreviewTab from "@/components/admin/email/EmailPreviewTab";
 import CalendlyTab from "@/components/admin/email/CalendlyTab";
+import KitTab from "@/components/admin/email/KitTab";
 
 const TABS = [
   { key: "crm", label: "CRM", icon: Users },
@@ -20,6 +21,7 @@ const TABS = [
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
   { key: "calendly", label: "Calendly", icon: Calendar },
+  { key: "kit", label: "Kit", icon: Mail },
   { key: "automations", label: "Automations", icon: Zap },
   { key: "email_preview", label: "Email Preview", icon: MailCheck },
 ];
@@ -369,6 +371,7 @@ export default function EmailDashboard() {
                       onRefresh={loadMeetings}
                     />
                   )}
+                  {activeTab === "kit" && <KitTab />}
                   {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
                   {activeTab === "email_preview" && <EmailPreviewTab />}
                   {activeTab === "automations" && (
