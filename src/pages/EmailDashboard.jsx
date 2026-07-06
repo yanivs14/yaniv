@@ -288,23 +288,10 @@ export default function EmailDashboard() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile header */}
-        <div className="lg:hidden sticky top-0 z-30 h-14 border-b border-slate-200 bg-white/95 backdrop-blur-sm flex items-center justify-between px-4 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <Link to="/admin-k" className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <h1 className="font-body text-lg font-bold text-slate-900 uppercase tracking-tight">CRM</h1>
-          </div>
-          <button onClick={() => base44.auth.logout("/admin-k")} className="text-slate-400 hover:text-red-500 transition-colors p-2">
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-
 
 
         {/* Mobile tab navigation */}
-        <div className="lg:hidden sticky top-14 z-20 flex border-b border-slate-200 bg-white/95 backdrop-blur-sm overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none" }}>
+        <div className="lg:hidden sticky top-0 z-30 flex border-b border-slate-200 bg-white/95 backdrop-blur-sm overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none" }}>
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
