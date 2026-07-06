@@ -238,7 +238,7 @@ export default function EmailDashboard() {
   if (!user || user.role !== "admin") return <AuthGate />;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-body">
+    <div className="h-screen bg-slate-50 flex font-body overflow-hidden">
       {/* Sidebar — desktop */}
       <aside className="hidden lg:flex flex-col w-60 bg-white border-r border-slate-200 flex-shrink-0">
         <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200">
@@ -287,11 +287,10 @@ export default function EmailDashboard() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-
+      <div className="flex-1 flex flex-col min-w-0 h-full">
 
         {/* Mobile tab navigation */}
-        <div className="lg:hidden sticky top-0 z-30 flex border-b border-slate-200 bg-white overflow-x-auto shadow-sm overscroll-x-contain" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}>
+        <div className="lg:hidden flex-shrink-0 flex border-b border-slate-200 bg-white overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
