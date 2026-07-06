@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Crown, Users, UserMinus, TrendingUp, Mail, Phone, Globe,
   RefreshCw, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, RotateCcw,
@@ -8,7 +8,6 @@ import {
 import StripeActionModal from "@/components/admin/email/StripeActionModal";
 import UpcomingMeetingsBanner from "@/components/admin/email/UpcomingMeetingsBanner";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
-import { useToast } from "@/components/ui/use-toast";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -76,7 +75,6 @@ function formatMoney(n) {
 }
 
 export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalendly }) {
-  const { toast } = useToast();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
@@ -86,12 +84,17 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
   const [expandedId, setExpandedId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [stripeAction, setStripeAction] = useState(null);
+  const [copyToast, setCopyToast] = useState(null);
   const pageSize = 50;
 
   const copyToClipboard = (e, text) => {
     e.stopPropagation();
     navigator.clipboard.writeText(text).then(() => {
-      toast({ title: "Copied", description: text });
+      const id = Date.now();
+      setCopyToast({ id, text });
+      setTimeout(() => {
+        setCopyToast(prev => prev?.id === id ? null : prev);
+      }, 1500);
     });
   };
 
@@ -561,6 +564,22 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
           onClose={() => setStripeAction(null)}
           onSuccess={() => { setStripeAction(null); loadData(); }}
         />
+      )}
+
+      {copyToast && (
+        <AnimatePresence>
+          <motion.div
+            key={copyToast.id}
+            initial={{ opacity: 0, y: 8, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+            transition={{ duration: 0.18 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-2 bg-slate-900/95 backdrop-blur-sm text-white px-3.5 py-2 rounded-full shadow-lg"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" />
+            <span className="text-xs font-medium truncate max-w-[200px]">{copyToast.text}</span>
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   );
