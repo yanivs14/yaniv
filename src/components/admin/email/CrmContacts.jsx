@@ -6,6 +6,7 @@ import {
   CheckCircle2, XCircle, DollarSign, Ban, Calendar, Repeat, CreditCard,
 } from "lucide-react";
 import StripeActionModal from "@/components/admin/email/StripeActionModal";
+import UpcomingMeetingsBanner from "@/components/admin/email/UpcomingMeetingsBanner";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
 
 const SOURCE_LABELS = {
@@ -45,7 +46,7 @@ function formatMoney(n) {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
 
-export default function CrmContacts() {
+export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalendly }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
@@ -133,6 +134,9 @@ export default function CrmContacts() {
 
   return (
     <div>
+      {/* Upcoming meetings alert */}
+      <UpcomingMeetingsBanner meetingsMap={meetingsMap} onViewAll={onGoToCalendly} />
+
       {/* Platform indicators */}
       <div className="flex items-center gap-3 mb-3 text-xs text-slate-500 px-1">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Kit {stats.in_kit || 0}</span>
