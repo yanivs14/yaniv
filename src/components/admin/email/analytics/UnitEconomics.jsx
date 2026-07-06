@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { formatMoney, isThisMonth, computeMonthlyTrend } from "@/components/admin/email/analytics/helpers";
 
 function StatusDot({ status }) {
@@ -108,21 +108,31 @@ export default function UnitEconomics({ contacts, financials, stats }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.45 }} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-slate-500 font-body mb-2">MRR Trend (13 mo)</p>
-          <ResponsiveContainer width="100%" height={60}>
-            <LineChart data={trend}>
-              <Line type="monotone" dataKey="mrr" stroke="#0d9488" strokeWidth={2} dot={false} />
+          <ResponsiveContainer width="100%" height={80}>
+            <LineChart data={trend} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+              <Line type="monotone" dataKey="mrr" stroke="#0d9488" strokeWidth={2} dot={{ r: 2, fill: "#0d9488" }} />
               <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "11px" }} />
             </LineChart>
           </ResponsiveContainer>
+          <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400">
+            <span>{trend[0]?.month || "—"}</span>
+            <span>{trend[trend.length - 1]?.month || "—"}</span>
+          </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.5 }} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
           <p className="text-xs text-slate-500 font-body mb-2">Total Active Members (13 mo)</p>
-          <ResponsiveContainer width="100%" height={60}>
-            <LineChart data={trend}>
-              <Line type="monotone" dataKey="activeMembers" stroke="#c79810" strokeWidth={2} dot={false} />
+          <ResponsiveContainer width="100%" height={80}>
+            <LineChart data={trend} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+              <Line type="monotone" dataKey="activeMembers" stroke="#c79810" strokeWidth={2} dot={{ r: 2, fill: "#c79810" }} />
               <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "11px" }} />
             </LineChart>
           </ResponsiveContainer>
+          <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400">
+            <span>{trend[0]?.month || "—"}</span>
+            <span>{trend[trend.length - 1]?.month || "—"}</span>
+          </div>
         </motion.div>
       </div>
 

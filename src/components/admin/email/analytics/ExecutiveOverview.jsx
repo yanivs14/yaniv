@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { formatMoney, isToday, isThisMonth, computeMonthlyTrend } from "@/components/admin/email/analytics/helpers";
 
 function StatusDot({ status }) {
@@ -28,15 +28,30 @@ function MetricCard({ label, value, status, footer, delay }) {
 }
 
 function SparklineCard({ title, data, dataKey, color, delay }) {
+  const last = data[data.length - 1] || {};
+  const first = data[0] || {};
+  const change = first[dataKey] !== undefined && last[dataKey] !== undefined ? last[dataKey] - first[dataKey] : 0;
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay }} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-      <p className="text-xs text-slate-500 font-body mb-2">{title}</p>
-      <ResponsiveContainer width="100%" height={60}>
-        <LineChart data={data}>
-          <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={false} />
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs text-slate-500 font-body">{title}</p>
+        {change !== 0 && (
+          <span className={`text-[10px] font-bold ${change > 0 ? "text-emerald-600" : "text-red-500"}`}>
+            {change > 0 ? "↑" : "↓"} {Math.abs(change).toLocaleString()}
+          </span>
+        )}
+      </div>
+      <ResponsiveContainer width="100%" height={80}>
+        <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
+          <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+          <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2} dot={{ r: 2, fill: color }} />
           <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "6px", fontSize: "11px" }} />
         </LineChart>
       </ResponsiveContainer>
+      <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400">
+        <span>{first.month || "—"}</span>
+        <span>{last.month || "—"}</span>
+      </div>
     </motion.div>
   );
 }
