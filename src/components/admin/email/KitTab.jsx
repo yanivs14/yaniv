@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   RefreshCw, Mail, Users, MousePointerClick, Eye, UserMinus, Tag,
-  Send, TrendingUp, Layers, ChevronDown, ChevronUp, Search, Inbox, Calendar,
+  Send, Layers, ChevronDown, ChevronUp, Search, Inbox, Calendar,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
@@ -31,6 +30,21 @@ function formatNumber(n) {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+function computeDateRange(year, fromMonth, toMonth) {
+  if (year === "all") return null;
+  const y = parseInt(year);
+  let fromM = fromMonth === "all" ? 0 : parseInt(fromMonth);
+  let toM = toMonth === "all" ? 11 : parseInt(toMonth);
+  if (fromM > toM) { const tmp = fromM; fromM = toM; toM = tmp; }
+  const lastDay = new Date(y, toM + 1, 0).getDate();
+  return {
+    startDate: new Date(y, fromM, 1),
+    endDate: new Date(y, toM, lastDay, 23, 59, 59),
+    created_after: `${y}-${String(fromM + 1).padStart(2, "0")}-01`,
+    created_before: `${y}-${String(toM + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`,
+  };
+}
+
 function StatCard({ icon: Icon, label, value, sublabel, color, bg }) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
@@ -51,12 +65,16 @@ function StatCard({ icon: Icon, label, value, sublabel, color, bg }) {
 export default function KitTab() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tagData, setTagData] = useState(null);
+  const [tagLoading, setTagLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
-  const [analyticsYear, setAnalyticsYear] = useState("all");
-  const [analyticsMonth, setAnalyticsMonth] = useState("all");
-  const [broadcastYear, setBroadcastYear] = useState("all");
+
+  // Unified filter state — controls both analytics and broadcasts
+  const [filterYear, setFilterYear] = useState("all");
+  const [fromMonth, setFromMonth] = useState("all");
+  const [toMonth, setToMonth] = useState("all");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -74,6 +92,7 @@ export default function KitTab() {
   const summary = data?.summary || {};
   const broadcasts = data?.broadcasts || [];
   const sequences = data?.sequences || [];
+  const baseTags = data?.tags || [];
 
   const availableYears = useMemo(() => {
     const years = new Set();
@@ -87,18 +106,33 @@ export default function KitTab() {
     return Array.from(years).sort((a, b) => b - a);
   }, [broadcasts]);
 
-  // Analytics summary — recomputed from broadcasts matching year+month filter
+  const dateRange = useMemo(
+    () => computeDateRange(filterYear, fromMonth, toMonth),
+    [filterYear, fromMonth, toMonth]
+  );
+
+  const hasDateFilter = filterYear !== "all";
+
+  // Load date-filtered tag counts when date filter changes
+  useEffect(() => {
+    if (!dateRange) { setTagData(null); return; }
+    setTagLoading(true);
+    base44.functions.invoke("getKitTagCounts", {
+      created_after: dateRange.created_after,
+      created_before: dateRange.created_before,
+    })
+      .then(res => setTagData(res.data))
+      .catch(e => { console.error("Failed to load tag counts:", e); setTagData(null); })
+      .finally(() => setTagLoading(false));
+  }, [dateRange?.created_after, dateRange?.created_before]);
+
+  // Analytics summary — broadcast stats filtered by date range
   const analyticsSummary = useMemo(() => {
-    const yearNum = analyticsYear !== "all" ? parseInt(analyticsYear) : null;
-    const monthNum = analyticsMonth !== "all" ? parseInt(analyticsMonth) : null;
     const matching = broadcasts.filter(b => {
       if (!b.is_sent) return false;
-      const dateStr = b.sent_at || b.created_at;
-      if (!dateStr) return false;
-      const d = new Date(dateStr);
-      if (yearNum && d.getFullYear() !== yearNum) return false;
-      if (monthNum !== null && d.getMonth() !== monthNum) return false;
-      return true;
+      if (!dateRange) return true;
+      const d = new Date(b.sent_at || b.created_at);
+      return d >= dateRange.startDate && d <= dateRange.endDate;
     });
     const agg = matching.reduce((acc, b) => {
       acc.recipients += b.stats?.recipients || 0;
@@ -109,7 +143,7 @@ export default function KitTab() {
       return acc;
     }, { recipients: 0, opens: 0, clicks: 0, unsubscribes: 0, sent: 0 });
     return {
-      ...summary,
+      total_subscribers: tagData?.total_subscribers ?? summary.total_subscribers,
       total_broadcasts_sent: agg.sent,
       total_recipients: agg.recipients,
       total_opens: agg.opens,
@@ -117,36 +151,47 @@ export default function KitTab() {
       total_unsubscribes: agg.unsubscribes,
       avg_open_rate: agg.recipients > 0 ? agg.opens / agg.recipients : 0,
       avg_click_rate: agg.recipients > 0 ? agg.clicks / agg.recipients : 0,
+      total_sequences: summary.total_sequences,
+      total_tags: summary.total_tags,
     };
-  }, [broadcasts, summary, analyticsYear, analyticsMonth]);
+  }, [broadcasts, summary, dateRange, tagData]);
 
-  // Broadcasts list — filtered by year (independent from analytics filter)
-  const yearFilteredBroadcasts = useMemo(() => {
-    if (broadcastYear === "all") return broadcasts;
-    const yearNum = parseInt(broadcastYear);
+  // Broadcasts list — filtered by same date range + search + status
+  const dateFilteredBroadcasts = useMemo(() => {
+    if (!dateRange) return broadcasts;
     return broadcasts.filter(b => {
-      const dateStr = b.sent_at || b.created_at;
-      if (!dateStr) return false;
-      return new Date(dateStr).getFullYear() === yearNum;
+      const d = new Date(b.sent_at || b.created_at);
+      return d >= dateRange.startDate && d <= dateRange.endDate;
     });
-  }, [broadcasts, broadcastYear]);
+  }, [broadcasts, dateRange]);
 
-  const filteredBroadcasts = yearFilteredBroadcasts.filter(b => {
-    if (filter === "sent" && !b.is_sent) return false;
-    if (filter === "draft" && b.is_sent) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (b.subject || "").toLowerCase().includes(q) ||
-             (b.description || "").toLowerCase().includes(q);
-    }
-    return true;
-  });
+  const filteredBroadcasts = useMemo(() => {
+    return dateFilteredBroadcasts.filter(b => {
+      if (filter === "sent" && !b.is_sent) return false;
+      if (filter === "draft" && b.is_sent) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        return (b.subject || "").toLowerCase().includes(q) ||
+               (b.description || "").toLowerCase().includes(q);
+      }
+      return true;
+    });
+  }, [dateFilteredBroadcasts, filter, search]);
 
-  const filterTabs = [
-    { key: "all", label: "All", count: yearFilteredBroadcasts.length },
-    { key: "sent", label: "Sent", count: yearFilteredBroadcasts.filter(b => b.is_sent).length },
-    { key: "draft", label: "Drafts", count: yearFilteredBroadcasts.filter(b => !b.is_sent).length },
-  ];
+  const filterTabs = useMemo(() => [
+    { key: "all", label: "All", count: dateFilteredBroadcasts.length },
+    { key: "sent", label: "Sent", count: dateFilteredBroadcasts.filter(b => b.is_sent).length },
+    { key: "draft", label: "Drafts", count: dateFilteredBroadcasts.filter(b => !b.is_sent).length },
+  ], [dateFilteredBroadcasts]);
+
+  // Tags to display — date-filtered if available, else total
+  const displayTags = tagData?.tags || baseTags;
+
+  const clearFilters = () => {
+    setFilterYear("all");
+    setFromMonth("all");
+    setToMonth("all");
+  };
 
   if (loading) {
     return (
@@ -181,30 +226,46 @@ export default function KitTab() {
         </button>
       </div>
 
-      {/* Date filter for analytics */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-        <select
-          value={analyticsYear}
-          onChange={e => setAnalyticsYear(e.target.value)}
-          className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
-        >
-          <option value="all">All Years</option>
-          {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
-        </select>
-        <select
-          value={analyticsMonth}
-          onChange={e => setAnalyticsMonth(e.target.value)}
-          className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
-        >
-          <option value="all">All Months</option>
-          {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
-        </select>
-        {(analyticsYear !== "all" || analyticsMonth !== "all") && (
-          <button onClick={() => { setAnalyticsYear("all"); setAnalyticsMonth("all"); }} className="text-xs text-teal-600 hover:underline font-body">
-            Clear
-          </button>
-        )}
+      {/* Unified date filter — controls analytics + broadcasts + tags */}
+      <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <span className="text-[11px] text-slate-400 font-body font-medium uppercase tracking-wide">Range</span>
+          <select
+            value={filterYear}
+            onChange={e => setFilterYear(e.target.value)}
+            className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+          >
+            <option value="all">All Years</option>
+            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+          {hasDateFilter && (
+            <>
+              <select
+                value={fromMonth}
+                onChange={e => setFromMonth(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+              >
+                <option value="all">From: Any</option>
+                {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
+              </select>
+              <span className="text-slate-300 text-xs">→</span>
+              <select
+                value={toMonth}
+                onChange={e => setToMonth(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+              >
+                <option value="all">To: Any</option>
+                {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
+              </select>
+            </>
+          )}
+          {hasDateFilter && (
+            <button onClick={clearFilters} className="text-xs text-teal-600 hover:underline font-body ml-auto">
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Summary stats */}
@@ -222,27 +283,48 @@ export default function KitTab() {
         <StatCard icon={Tag} label="Tags" value={formatNumber(analyticsSummary.total_tags)} color="text-orange-600" bg="bg-orange-50" />
       </div>
 
-      {/* Broadcasts section */}
-      <div>
-        <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">Recent Broadcasts</h3>
-
-        {/* Year filter */}
-        <div className="flex items-center gap-2 mb-2.5">
-          <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-          <select
-            value={broadcastYear}
-            onChange={e => setBroadcastYear(e.target.value)}
-            className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
-          >
-            <option value="all">All Years</option>
-            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-          {broadcastYear !== "all" && (
-            <button onClick={() => setBroadcastYear("all")} className="text-xs text-teal-600 hover:underline font-body">
-              Clear
-            </button>
-          )}
+      {/* Tags section — subscriber counts per tag (date-filtered) */}
+      {displayTags.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-2 px-1">
+            <div className="flex items-center gap-2">
+              <h3 className="font-body text-sm font-bold text-slate-700">Tags</h3>
+              {hasDateFilter && (
+                <span className="text-[10px] text-teal-600 font-body bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                  {dateRange ? `${MONTHS[parseInt(fromMonth === "all" ? 0 : fromMonth)]}–${MONTHS[parseInt(toMonth === "all" ? 11 : toMonth)]} ${filterYear}` : filterYear}
+                </span>
+              )}
+            </div>
+            {tagLoading && (
+              <div className="w-3 h-3 border border-teal-600 border-t-transparent rounded-full animate-spin" />
+            )}
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {displayTags.map(t => (
+              <div key={t.id} className="bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
+                  <Tag className="w-3.5 h-3.5 text-orange-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-body font-medium text-slate-600 truncate">{t.name}</p>
+                  <p className="text-sm font-body font-bold text-slate-900">{formatNumber(t.subscriber_count)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Broadcasts section — filtered by same date range */}
+      <div>
+        <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">
+          Recent Broadcasts
+          {hasDateFilter && (
+            <span className="text-[10px] text-slate-400 font-normal ml-1">
+              ({dateFilteredBroadcasts.length} in range)
+            </span>
+          )}
+        </h3>
 
         {/* Search */}
         <div className="relative mb-2.5">
@@ -286,7 +368,6 @@ export default function KitTab() {
                     className="w-full text-left p-3 hover:bg-slate-50 transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      {/* Thumbnail */}
                       <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
                         {b.thumbnail_url ? (
                           <img src={b.thumbnail_url} alt="" className="w-full h-full object-cover" />
@@ -304,7 +385,6 @@ export default function KitTab() {
                         <p className="text-[10px] text-slate-400 mt-0.5">
                           {isSent ? formatTime(b.sent_at) : `Created ${formatTime(b.created_at)}`}
                         </p>
-                        {/* Inline stats */}
                         {isSent && (
                           <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                             <span className="flex items-center gap-1 text-[10px] text-slate-500">
@@ -359,10 +439,12 @@ export default function KitTab() {
         )}
       </div>
 
-      {/* Sequences section */}
+      {/* Sequences section — accurate subscriber_count from API */}
       {sequences.length > 0 && (
         <div>
-          <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">Sequences</h3>
+          <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">
+            Sequences <span className="text-slate-400 font-normal">({formatNumber(summary.total_sequences)} total)</span>
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {sequences.map((s, i) => (
               <div key={s.id || i} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex items-center gap-3">
@@ -371,8 +453,19 @@ export default function KitTab() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-body font-semibold text-slate-900 truncate">{s.name}</p>
-                  <p className="text-[10px] text-slate-400">{formatNumber(s.subscribers)} subscribers</p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-[10px] text-slate-400">{formatNumber(s.subscribers)} subscribers</p>
+                    {s.email_count > 0 && (
+                      <span className="text-[10px] text-slate-300">·</span>
+                    )}
+                    {s.email_count > 0 && (
+                      <p className="text-[10px] text-slate-400">{s.email_count} emails</p>
+                    )}
+                  </div>
                 </div>
+                <span className={`text-[10px] font-body px-2 py-0.5 rounded-full flex-shrink-0 ${s.active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                  {s.active ? "Active" : "Inactive"}
+                </span>
               </div>
             ))}
           </div>
