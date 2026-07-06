@@ -81,11 +81,11 @@ export default function TrafficChannels({ contacts, financials }) {
               <thead>
                 <tr className="bg-slate-900 text-xs text-slate-300 uppercase tracking-wide">
                   <th className="text-left py-2.5 px-4 font-semibold">Channel</th>
-                  <th className="text-right py-2.5 px-4 font-semibold">Visits</th>
-                  <th className="text-right py-2.5 px-4 font-semibold">CAC</th>
+                  <th className="text-right py-2.5 px-4 font-semibold">Leads</th>
+                  <th className="text-right py-2.5 px-4 font-semibold">Paying</th>
+                  <th className="text-right py-2.5 px-4 font-semibold">Revenue</th>
+                  <th className="text-right py-2.5 px-4 font-semibold">Conv. Rate</th>
                   <th className="text-right py-2.5 px-4 font-semibold">ARPU</th>
-                  <th className="text-right py-2.5 px-4 font-semibold">LTV</th>
-                  <th className="text-right py-2.5 px-4 font-semibold">LTV:CAC</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,10 +98,14 @@ export default function TrafficChannels({ contacts, financials }) {
                       </span>
                     </td>
                     <td className="py-2.5 px-4 text-right text-slate-700">{s.leads.toLocaleString()}</td>
-                    <td className="py-2.5 px-4 text-right text-slate-400">—</td>
+                    <td className="py-2.5 px-4 text-right text-emerald-600 font-semibold">{s.paying.toLocaleString()}</td>
+                    <td className="py-2.5 px-4 text-right text-slate-700">{formatMoney(s.revenue)}</td>
+                    <td className="py-2.5 px-4 text-right">
+                      <span className={`font-semibold ${s.conversionRate >= 10 ? "text-emerald-600" : s.conversionRate >= 3 ? "text-amber-600" : "text-slate-400"}`}>
+                        {s.conversionRate.toFixed(1)}%
+                      </span>
+                    </td>
                     <td className="py-2.5 px-4 text-right text-slate-700">{formatMoney(s.arpu)}</td>
-                    <td className="py-2.5 px-4 text-right text-slate-700">{formatMoney(ltv)}</td>
-                    <td className="py-2.5 px-4 text-right text-slate-400">—</td>
                   </tr>
                 ))}
               </tbody>
