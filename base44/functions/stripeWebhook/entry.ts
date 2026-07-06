@@ -661,24 +661,6 @@ Deno.serve(async (req) => {
             console.warn("Kit create failed:", kitCreateRes.status, await kitCreateRes.text());
           }
 
-          try {
-            const formsRes = await fetch("https://api.kit.com/v4/forms", { headers: kitHeaders });
-            const formsData = await formsRes.json();
-            const form = formsData?.forms?.[0];
-            if (form) {
-              const formSubRes = await fetch(`https://api.kit.com/v4/forms/${form.id}/subscribers`, {
-                method: "POST",
-                headers: kitHeaders,
-                body: JSON.stringify({ email_address: customerEmail, first_name: kitNameParts[0] || customerName || "", fields: kitFields }),
-              });
-              if (formSubRes.ok && !kitSubscriberId) {
-                kitSubscriberId = (await formSubRes.json())?.subscriber?.id;
-              }
-            }
-          } catch (formErr) {
-            console.warn("Kit form subscribe error:", formErr.message);
-          }
-
           // Tag subscriber with plan tag
           if (kitSubscriberId) {
             const planTag = plan === "annual" ? "Annual" : plan === "handstand_course" ? "Handstand Course" : "Monthly-Active";
