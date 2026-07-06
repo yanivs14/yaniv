@@ -302,6 +302,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         >
                           {c.name || "Unknown"}
                           {c.is_paying_customer && <Crown className="w-3 h-3 text-emerald-500 flex-shrink-0" />}
+                          {c.is_refunded && <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200 flex-shrink-0">REFUNDED</span>}
                         </p>
                         <div className="flex items-center gap-1.5">
                           {c.kit_id && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" title="Kit" />}
@@ -354,6 +355,9 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                       )}
                       {c.subscription_canceled && (
                         <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDateTime(c.subscription_canceled)}</div>
+                      )}
+                      {c.is_refunded && (
+                        <div className="text-red-600"><span className="text-slate-400">Refunded:</span> ${c.total_refunded?.toFixed(2) || 0}</div>
                       )}
                       {c.total_paid > 0 && (
                         <div className="text-slate-600"><span className="text-slate-400">Total:</span> <span className="text-emerald-600 font-semibold">${c.total_paid.toFixed(2)}</span>
@@ -442,6 +446,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         </p>
                         {c.is_paying_customer && <Crown className="w-3 h-3 text-emerald-500" />}
                         {c.is_churned && <span className="text-[10px] text-red-500">Churned</span>}
+                        {c.is_refunded && <span className="text-[9px] font-body font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200">REFUNDED</span>}
                         <span className={`text-[10px] font-body px-2 py-0.5 rounded-full border ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
                           {SOURCE_LABELS[c.source] || c.source}
                         </span>
@@ -472,6 +477,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                     {c.first_payment_date && <div><span className="text-slate-400">First pay:</span> {formatDateTime(c.first_payment_date)}</div>}
                     {c.last_payment_date && <div><span className="text-slate-400">Last pay:</span> {formatDateTime(c.last_payment_date)}</div>}
                     {c.subscription_canceled && <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDateTime(c.subscription_canceled)}</div>}
+                    {c.is_refunded && <div className="text-red-600"><span className="text-slate-400">Refunded:</span> ${c.total_refunded?.toFixed(2) || 0}</div>}
                     {c.total_paid > 0 && <div><span className="text-slate-400">Total:</span> <span className="text-emerald-600 font-semibold">${c.total_paid.toFixed(2)}</span>{c.total_refunded > 0 && <span className="text-amber-600"> · Ref: ${c.total_refunded.toFixed(2)}</span>}</div>}
                     {c.last_email_date && <div><span className="text-slate-400">Last email:</span> {formatDateTime(c.last_email_date)}</div>}
                     <div className="text-slate-400">Added: {formatDateTime(c.created_date)}</div>
