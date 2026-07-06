@@ -180,7 +180,6 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
     { key: "paying", label: "Paying", count: payingCount },
     { key: "past", label: "Past", count: pastCount },
     { key: "leads", label: "Leads", count: leadsCount },
-    { key: "refunded", label: "Refunded", count: refundedCount },
   ];
 
   if (loading) {
