@@ -219,6 +219,11 @@ export default function RecipientList({ recipients, selectedIds, onToggle, onTog
                     {r.phone && r.phone !== "-" && (
                       <span className="text-[10px] text-slate-400">📱 {r.phone}</span>
                     )}
+                    {r.date && (
+                      <span className="flex items-center gap-1 text-[10px] text-slate-400">
+                        <Clock className="w-3 h-3" /> {formatDate(r.date)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </button>

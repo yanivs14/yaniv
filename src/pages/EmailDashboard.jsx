@@ -289,33 +289,9 @@ export default function EmailDashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 h-full relative z-10">
 
-        {/* Mobile tab navigation */}
-        <div className="lg:hidden flex-shrink-0 flex border-b border-slate-200 bg-white overflow-x-auto overflow-y-hidden shadow-sm relative z-20" style={{ scrollbarWidth: "none" }}>
-          {TABS.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => setActiveTab(key)}
-              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
-              className={`flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 text-xs font-body font-medium transition-colors border-b-2 ${
-                activeTab === key
-                  ? "text-teal-600 border-teal-600"
-                  : "text-slate-500 hover:text-slate-900 border-transparent"
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-              {key === "recipients" && selectedIds.size > 0 && (
-                <span className="ml-1 bg-teal-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                  {selectedIds.size}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
         {/* Content */}
         <div className="flex-1 overflow-y-auto relative z-10">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 pb-24">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 pb-20 lg:pb-6">
             {loadingData ? (
               <div className="flex items-center justify-center py-20">
                 <div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin" />
@@ -376,9 +352,33 @@ export default function EmailDashboard() {
           </div>
         </div>
 
+        {/* Mobile bottom tab navigation */}
+        <div className="lg:hidden flex-shrink-0 flex border-t border-slate-200 bg-white overflow-x-auto overflow-y-hidden shadow-sm relative z-20 pb-[env(safe-area-inset-bottom)]" style={{ scrollbarWidth: "none" }}>
+          {TABS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
+              className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-body font-medium transition-colors border-t-2 ${
+                activeTab === key
+                  ? "text-teal-600 border-teal-600"
+                  : "text-slate-500 border-transparent"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span className="truncate max-w-full px-0.5">{label}</span>
+              {key === "recipients" && selectedIds.size > 0 && (
+                <span className="absolute top-1 right-1/4 bg-teal-600 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  {selectedIds.size}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
         {/* Sticky bottom bar when recipients selected */}
         {selectedIds.size > 0 && activeTab !== "compose" && (
-          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-sm shadow-lg">
+          <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-sm shadow-lg lg:bottom-0 bottom-[49px]">
             <div className="max-w-7xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <ListChecks className="w-4 h-4 text-teal-600" />

@@ -34,6 +34,34 @@ function formatDate(dateStr) {
   return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function formatDateTime(dateStr) {
+  if (!dateStr) return "—";
+  let normalized = String(dateStr);
+  if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized)) normalized = normalized + "Z";
+  const d = new Date(normalized);
+  if (isNaN(d)) return "—";
+  return d.toLocaleString("en-GB", {
+    timeZone: "Asia/Jerusalem",
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+    hour12: false,
+  }).replace(",", "");
+}
+
+function formatDateTimeShort(dateStr) {
+  if (!dateStr) return "—";
+  let normalized = String(dateStr);
+  if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(normalized)) normalized = normalized + "Z";
+  const d = new Date(normalized);
+  if (isNaN(d)) return "—";
+  return d.toLocaleString("en-GB", {
+    timeZone: "Asia/Jerusalem",
+    day: "2-digit", month: "2-digit",
+    hour: "2-digit", minute: "2-digit",
+    hour12: false,
+  }).replace(",", "");
+}
+
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function formatMonthKey(key) {
@@ -268,7 +296,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                     </span>
                     <span className="text-sm text-teal-600 font-body truncate">{c.purchase_plan || "—"}</span>
                     <span className="text-sm text-emerald-600 font-body text-right font-semibold">{formatMoney(c.total_paid)}</span>
-                    <span className="text-xs text-slate-400 font-body text-right">{formatDate(c.created_date)}</span>
+                    <span className="text-xs text-slate-400 font-body text-right whitespace-nowrap">{formatDateTimeShort(c.created_date)}</span>
                     <span className="flex justify-end">
                       {expanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                     </span>
@@ -294,13 +322,13 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         <div className="text-slate-600"><span className="text-slate-400">Sub:</span> {c.subscription_status}</div>
                       )}
                       {c.first_payment_date && (
-                        <div className="text-slate-600"><span className="text-slate-400">First pay:</span> {formatDate(c.first_payment_date)}</div>
+                        <div className="text-slate-600"><span className="text-slate-400">First pay:</span> {formatDateTime(c.first_payment_date)}</div>
                       )}
                       {c.last_payment_date && (
-                        <div className="text-slate-600"><span className="text-slate-400">Last pay:</span> {formatDate(c.last_payment_date)}</div>
+                        <div className="text-slate-600"><span className="text-slate-400">Last pay:</span> {formatDateTime(c.last_payment_date)}</div>
                       )}
                       {c.subscription_canceled && (
-                        <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDate(c.subscription_canceled)}</div>
+                        <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDateTime(c.subscription_canceled)}</div>
                       )}
                       {c.total_paid > 0 && (
                         <div className="text-slate-600"><span className="text-slate-400">Total:</span> <span className="text-emerald-600 font-semibold">${c.total_paid.toFixed(2)}</span>
@@ -308,10 +336,13 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         </div>
                       )}
                       {c.last_email_date && (
-                        <div className="text-slate-600"><span className="text-slate-400">Last email:</span> {formatDate(c.last_email_date)}</div>
+                        <div className="text-slate-600"><span className="text-slate-400">Last email:</span> {formatDateTime(c.last_email_date)}</div>
                       )}
                       {c.emails_sent > 0 && (
                         <div className="text-slate-600 flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400" /> {c.emails_sent} sent</div>
+                      )}
+                      {c.created_date && (
+                        <div className="text-slate-600"><span className="text-slate-400">Added:</span> {formatDateTime(c.created_date)}</div>
                       )}
                       {c.payment_months?.length > 0 && (
                         <div className="col-span-2 md:col-span-4 mt-2 pt-2 border-t border-slate-200">
@@ -389,6 +420,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                         {c.purchase_plan && <span className="text-[10px] text-teal-600 truncate max-w-[140px]">{c.purchase_plan}</span>}
                         {c.total_paid > 0 && <span className="text-[10px] text-emerald-600 font-semibold">${c.total_paid.toFixed(0)}</span>}
+                        <span className="text-[10px] text-slate-400 whitespace-nowrap">{formatDateTimeShort(c.created_date)}</span>
                       </div>
                     </div>
                     {expanded ? <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0 mt-1" /> : <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0 mt-1" />}
@@ -402,12 +434,12 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                     {c.kit_lifecycle && <div><span className="text-slate-400">Kit:</span> {c.kit_lifecycle}</div>}
                     {c.hubspot_lifecycle && <div><span className="text-slate-400">HubSpot:</span> {c.hubspot_lifecycle}</div>}
                     {c.subscription_status && <div><span className="text-slate-400">Sub:</span> {c.subscription_status}</div>}
-                    {c.first_payment_date && <div><span className="text-slate-400">First pay:</span> {formatDate(c.first_payment_date)}</div>}
-                    {c.last_payment_date && <div><span className="text-slate-400">Last pay:</span> {formatDate(c.last_payment_date)}</div>}
-                    {c.subscription_canceled && <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDate(c.subscription_canceled)}</div>}
+                    {c.first_payment_date && <div><span className="text-slate-400">First pay:</span> {formatDateTime(c.first_payment_date)}</div>}
+                    {c.last_payment_date && <div><span className="text-slate-400">Last pay:</span> {formatDateTime(c.last_payment_date)}</div>}
+                    {c.subscription_canceled && <div className="text-red-500"><span className="text-slate-400">Canceled:</span> {formatDateTime(c.subscription_canceled)}</div>}
                     {c.total_paid > 0 && <div><span className="text-slate-400">Total:</span> <span className="text-emerald-600 font-semibold">${c.total_paid.toFixed(2)}</span>{c.total_refunded > 0 && <span className="text-amber-600"> · Ref: ${c.total_refunded.toFixed(2)}</span>}</div>}
-                    {c.last_email_date && <div><span className="text-slate-400">Last email:</span> {formatDate(c.last_email_date)}</div>}
-                    <div className="text-slate-400">Added: {formatDate(c.created_date)}</div>
+                    {c.last_email_date && <div><span className="text-slate-400">Last email:</span> {formatDateTime(c.last_email_date)}</div>}
+                    <div className="text-slate-400">Added: {formatDateTime(c.created_date)}</div>
                     {c.payment_months?.length > 0 && (
                       <div className="pt-2 mt-1 border-t border-slate-200">
                         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
