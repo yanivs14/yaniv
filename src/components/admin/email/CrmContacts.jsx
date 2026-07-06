@@ -102,14 +102,17 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
     setLoading(true);
     try {
       const crmData = await fetchCrmOnly();
-      setData(crmData);
+      // Keep previous data (including Stripe-enriched contacts) visible during refresh
+      // until the new Stripe data arrives — prevents Stripe-only contacts from disappearing
+      setData(prev => prev || crmData);
       setLoading(false);
       setStripeLoading(true);
       try {
         const stripeData = await fetchStripeOnly();
-        setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
+        setData(mergeStripeIntoCrm({ ...crmData }, stripeData));
       } catch (e) {
         console.error("Stripe enrich failed:", e);
+        setData(crmData);
       }
       setStripeLoading(false);
     } catch (e) {
