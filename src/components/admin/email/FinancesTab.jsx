@@ -6,6 +6,7 @@ import {
   fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
 } from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
+import FinanceSourceBreakdown from "@/components/admin/email/FinanceSourceBreakdown";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -287,6 +288,9 @@ export default function FinancesTab() {
           );
         })}
       </div>
+
+      {/* Revenue by source + additional metrics */}
+      <FinanceSourceBreakdown data={data} />
 
       {/* Revenue chart */}
       {monthlyData.length > 0 && (
