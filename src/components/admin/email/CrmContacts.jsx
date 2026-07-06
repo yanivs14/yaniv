@@ -8,6 +8,7 @@ import {
 import StripeActionModal from "@/components/admin/email/StripeActionModal";
 import UpcomingMeetingsBanner from "@/components/admin/email/UpcomingMeetingsBanner";
 import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
+import { useToast } from "@/components/ui/use-toast";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -75,6 +76,7 @@ function formatMoney(n) {
 }
 
 export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalendly }) {
+  const { toast } = useToast();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
@@ -85,6 +87,13 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
   const [currentPage, setCurrentPage] = useState(1);
   const [stripeAction, setStripeAction] = useState(null);
   const pageSize = 50;
+
+  const copyToClipboard = (e, text) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text).then(() => {
+      toast({ title: "Copied", description: text });
+    });
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -279,7 +288,10 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         {(c.name || c.email || "?")[0].toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-body font-semibold text-slate-900 truncate flex items-center gap-1">
+                        <p
+                          onClick={(e) => copyToClipboard(e, c.name || "Unknown")}
+                          className="text-sm font-body font-semibold text-slate-900 truncate flex items-center gap-1 cursor-pointer hover:text-teal-600 transition-colors"
+                        >
                           {c.name || "Unknown"}
                           {c.is_paying_customer && <Crown className="w-3 h-3 text-emerald-500 flex-shrink-0" />}
                         </p>
@@ -290,7 +302,12 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                         </div>
                       </div>
                     </div>
-                    <span className="text-sm text-slate-600 font-body truncate">{c.email}</span>
+                    <span
+                      onClick={(e) => copyToClipboard(e, c.email)}
+                      className="text-sm text-slate-600 font-body truncate cursor-pointer hover:text-teal-600 transition-colors"
+                    >
+                      {c.email}
+                    </span>
                     <span className={`text-xs font-body px-2 py-0.5 rounded-full border inline-block w-fit ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
                       {SOURCE_LABELS[c.source] || c.source}
                     </span>
@@ -409,14 +426,24 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <p className="text-sm font-body font-semibold text-slate-900 truncate">{c.name || "Unknown"}</p>
+                        <p
+                          onClick={(e) => { e.stopPropagation(); copyToClipboard(e, c.name || "Unknown"); }}
+                          className="text-sm font-body font-semibold text-slate-900 truncate cursor-pointer hover:text-teal-600 transition-colors"
+                        >
+                          {c.name || "Unknown"}
+                        </p>
                         {c.is_paying_customer && <Crown className="w-3 h-3 text-emerald-500" />}
                         {c.is_churned && <span className="text-[10px] text-red-500">Churned</span>}
                         <span className={`text-[10px] font-body px-2 py-0.5 rounded-full border ${SOURCE_COLORS[c.source] || SOURCE_COLORS.quiz}`}>
                           {SOURCE_LABELS[c.source] || c.source}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 truncate">{c.email}</p>
+                      <p
+                        onClick={(e) => { e.stopPropagation(); copyToClipboard(e, c.email); }}
+                        className="text-xs text-slate-500 truncate cursor-pointer hover:text-teal-600 transition-colors"
+                      >
+                        {c.email}
+                      </p>
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                         {c.purchase_plan && <span className="text-[10px] text-teal-600 truncate max-w-[140px]">{c.purchase_plan}</span>}
                         {c.total_paid > 0 && <span className="text-[10px] text-emerald-600 font-semibold">${c.total_paid.toFixed(0)}</span>}
