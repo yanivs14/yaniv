@@ -170,7 +170,7 @@ Deno.serve(async (req) => {
 
       for (const charge of charges.data) {
         if (!charge.paid) continue;
-        if (charge.refunded) continue; // fully refunded charges — skip (we track refunds separately)
+        // Fully refunded charges are still processed so the customer appears in the CRM (marked as refunded)
 
         // Use billing_details email, then expanded customer email, then customer_id lookup
         const email = (charge.billing_details?.email || charge.customer?.email || (charge.customer && typeof charge.customer === 'string' ? customerIdToEmail[charge.customer] : '') || '').toLowerCase().trim();
