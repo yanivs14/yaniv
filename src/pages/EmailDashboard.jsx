@@ -291,7 +291,7 @@ export default function EmailDashboard() {
 
 
         {/* Mobile tab navigation */}
-        <div className="lg:hidden sticky top-0 z-30 flex border-b border-slate-200 bg-white/95 backdrop-blur-sm overflow-x-auto shadow-sm" style={{ scrollbarWidth: "none" }}>
+        <div className="lg:hidden sticky top-0 z-30 flex border-b border-slate-200 bg-white overflow-x-auto shadow-sm overscroll-x-contain" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}>
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
