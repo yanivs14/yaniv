@@ -238,7 +238,7 @@ export default function EmailDashboard() {
   if (!user || user.role !== "admin") return <AuthGate />;
 
   return (
-    <div className="h-screen bg-slate-50 flex font-body overflow-hidden">
+    <div className="h-[100dvh] bg-slate-50 flex font-body overflow-hidden">
       {/* Sidebar — desktop */}
       <aside className="hidden lg:flex flex-col w-60 bg-white border-r border-slate-200 flex-shrink-0">
         <div className="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200">
@@ -295,6 +295,7 @@ export default function EmailDashboard() {
             <button
               key={key}
               onClick={() => setActiveTab(key)}
+              style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
               className={`flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-3 text-xs font-body font-medium transition-colors border-b-2 ${
                 activeTab === key
                   ? "text-teal-600 border-teal-600"
