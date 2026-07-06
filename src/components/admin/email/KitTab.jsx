@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   RefreshCw, Mail, Users, MousePointerClick, Eye, UserMinus, Tag,
-  Send, TrendingUp, Layers, ChevronDown, ChevronUp, Search, Inbox,
+  Send, TrendingUp, Layers, ChevronDown, ChevronUp, Search, Inbox, Calendar,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
@@ -29,6 +29,8 @@ function formatNumber(n) {
   return n.toLocaleString("en-US");
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 function StatCard({ icon: Icon, label, value, sublabel, color, bg }) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm">
@@ -52,6 +54,9 @@ export default function KitTab() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState(null);
+  const [analyticsYear, setAnalyticsYear] = useState("all");
+  const [analyticsMonth, setAnalyticsMonth] = useState("all");
+  const [broadcastYear, setBroadcastYear] = useState("all");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -70,7 +75,63 @@ export default function KitTab() {
   const broadcasts = data?.broadcasts || [];
   const sequences = data?.sequences || [];
 
-  const filteredBroadcasts = broadcasts.filter(b => {
+  const availableYears = useMemo(() => {
+    const years = new Set();
+    broadcasts.forEach(b => {
+      const dateStr = b.sent_at || b.created_at;
+      if (dateStr) {
+        const year = new Date(dateStr).getFullYear();
+        if (!isNaN(year)) years.add(year);
+      }
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  }, [broadcasts]);
+
+  // Analytics summary — recomputed from broadcasts matching year+month filter
+  const analyticsSummary = useMemo(() => {
+    const yearNum = analyticsYear !== "all" ? parseInt(analyticsYear) : null;
+    const monthNum = analyticsMonth !== "all" ? parseInt(analyticsMonth) : null;
+    const matching = broadcasts.filter(b => {
+      if (!b.is_sent) return false;
+      const dateStr = b.sent_at || b.created_at;
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      if (yearNum && d.getFullYear() !== yearNum) return false;
+      if (monthNum !== null && d.getMonth() !== monthNum) return false;
+      return true;
+    });
+    const agg = matching.reduce((acc, b) => {
+      acc.recipients += b.stats?.recipients || 0;
+      acc.opens += b.stats?.opens || 0;
+      acc.clicks += b.stats?.clicks || 0;
+      acc.unsubscribes += b.stats?.unsubscribes || 0;
+      acc.sent += 1;
+      return acc;
+    }, { recipients: 0, opens: 0, clicks: 0, unsubscribes: 0, sent: 0 });
+    return {
+      ...summary,
+      total_broadcasts_sent: agg.sent,
+      total_recipients: agg.recipients,
+      total_opens: agg.opens,
+      total_clicks: agg.clicks,
+      total_unsubscribes: agg.unsubscribes,
+      avg_open_rate: agg.recipients > 0 ? agg.opens / agg.recipients : 0,
+      avg_click_rate: agg.recipients > 0 ? agg.clicks / agg.recipients : 0,
+    };
+  }, [broadcasts, summary, analyticsYear, analyticsMonth]);
+
+  // Broadcasts list — filtered by year (independent from analytics filter)
+  const yearFilteredBroadcasts = useMemo(() => {
+    if (broadcastYear === "all") return broadcasts;
+    const yearNum = parseInt(broadcastYear);
+    return broadcasts.filter(b => {
+      const dateStr = b.sent_at || b.created_at;
+      if (!dateStr) return false;
+      return new Date(dateStr).getFullYear() === yearNum;
+    });
+  }, [broadcasts, broadcastYear]);
+
+  const filteredBroadcasts = yearFilteredBroadcasts.filter(b => {
     if (filter === "sent" && !b.is_sent) return false;
     if (filter === "draft" && b.is_sent) return false;
     if (search) {
@@ -82,9 +143,9 @@ export default function KitTab() {
   });
 
   const filterTabs = [
-    { key: "all", label: "All", count: broadcasts.length },
-    { key: "sent", label: "Sent", count: broadcasts.filter(b => b.is_sent).length },
-    { key: "draft", label: "Drafts", count: broadcasts.filter(b => !b.is_sent).length },
+    { key: "all", label: "All", count: yearFilteredBroadcasts.length },
+    { key: "sent", label: "Sent", count: yearFilteredBroadcasts.filter(b => b.is_sent).length },
+    { key: "draft", label: "Drafts", count: yearFilteredBroadcasts.filter(b => !b.is_sent).length },
   ];
 
   if (loading) {
@@ -120,24 +181,68 @@ export default function KitTab() {
         </button>
       </div>
 
+      {/* Date filter for analytics */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+        <select
+          value={analyticsYear}
+          onChange={e => setAnalyticsYear(e.target.value)}
+          className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+        >
+          <option value="all">All Years</option>
+          {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+        <select
+          value={analyticsMonth}
+          onChange={e => setAnalyticsMonth(e.target.value)}
+          className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+        >
+          <option value="all">All Months</option>
+          {MONTHS.map((m, i) => <option key={i} value={i}>{m}</option>)}
+        </select>
+        {(analyticsYear !== "all" || analyticsMonth !== "all") && (
+          <button onClick={() => { setAnalyticsYear("all"); setAnalyticsMonth("all"); }} className="text-xs text-teal-600 hover:underline font-body">
+            Clear
+          </button>
+        )}
+      </div>
+
       {/* Summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-        <StatCard icon={Users} label="Subscribers" value={formatNumber(summary.total_subscribers)} color="text-teal-600" bg="bg-teal-50" />
-        <StatCard icon={Send} label="Broadcasts Sent" value={formatNumber(summary.total_broadcasts_sent)} color="text-indigo-600" bg="bg-indigo-50" />
-        <StatCard icon={Eye} label="Avg Open Rate" value={formatPercent(summary.avg_open_rate)} sublabel={`${formatNumber(summary.total_opens)} opens`} color="text-emerald-600" bg="bg-emerald-50" />
-        <StatCard icon={MousePointerClick} label="Avg Click Rate" value={formatPercent(summary.avg_click_rate)} sublabel={`${formatNumber(summary.total_clicks)} clicks`} color="text-amber-600" bg="bg-amber-50" />
+        <StatCard icon={Users} label="Subscribers" value={formatNumber(analyticsSummary.total_subscribers)} color="text-teal-600" bg="bg-teal-50" />
+        <StatCard icon={Send} label="Broadcasts Sent" value={formatNumber(analyticsSummary.total_broadcasts_sent)} color="text-indigo-600" bg="bg-indigo-50" />
+        <StatCard icon={Eye} label="Avg Open Rate" value={formatPercent(analyticsSummary.avg_open_rate)} sublabel={`${formatNumber(analyticsSummary.total_opens)} opens`} color="text-emerald-600" bg="bg-emerald-50" />
+        <StatCard icon={MousePointerClick} label="Avg Click Rate" value={formatPercent(analyticsSummary.avg_click_rate)} sublabel={`${formatNumber(analyticsSummary.total_clicks)} clicks`} color="text-amber-600" bg="bg-amber-50" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-        <StatCard icon={Mail} label="Total Recipients" value={formatNumber(summary.total_recipients)} color="text-slate-600" bg="bg-slate-100" />
-        <StatCard icon={UserMinus} label="Unsubscribes" value={formatNumber(summary.total_unsubscribes)} color="text-red-600" bg="bg-red-50" />
-        <StatCard icon={Layers} label="Sequences" value={formatNumber(summary.total_sequences)} color="text-purple-600" bg="bg-purple-50" />
-        <StatCard icon={Tag} label="Tags" value={formatNumber(summary.total_tags)} color="text-orange-600" bg="bg-orange-50" />
+        <StatCard icon={Mail} label="Total Recipients" value={formatNumber(analyticsSummary.total_recipients)} color="text-slate-600" bg="bg-slate-100" />
+        <StatCard icon={UserMinus} label="Unsubscribes" value={formatNumber(analyticsSummary.total_unsubscribes)} color="text-red-600" bg="bg-red-50" />
+        <StatCard icon={Layers} label="Sequences" value={formatNumber(analyticsSummary.total_sequences)} color="text-purple-600" bg="bg-purple-50" />
+        <StatCard icon={Tag} label="Tags" value={formatNumber(analyticsSummary.total_tags)} color="text-orange-600" bg="bg-orange-50" />
       </div>
 
       {/* Broadcasts section */}
       <div>
         <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">Recent Broadcasts</h3>
+
+        {/* Year filter */}
+        <div className="flex items-center gap-2 mb-2.5">
+          <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+          <select
+            value={broadcastYear}
+            onChange={e => setBroadcastYear(e.target.value)}
+            className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
+          >
+            <option value="all">All Years</option>
+            {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+          {broadcastYear !== "all" && (
+            <button onClick={() => setBroadcastYear("all")} className="text-xs text-teal-600 hover:underline font-body">
+              Clear
+            </button>
+          )}
+        </div>
 
         {/* Search */}
         <div className="relative mb-2.5">
