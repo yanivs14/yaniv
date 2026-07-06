@@ -1,10 +1,15 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search, Mail, Layers, Tag, Calendar, RefreshCw, Inbox, User,
+  Search, Mail, Layers, Tag, Calendar, RefreshCw, Inbox, User, Users,
   ChevronDown, ChevronUp, Send, Clock, AlertCircle,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+
+function formatNumber(n) {
+  if (!n) return "0";
+  return n.toLocaleString("en-US");
+}
 
 function formatTime(dateStr) {
   if (!dateStr) return "—";
@@ -78,7 +83,7 @@ const TYPE_META = {
   sequence: { label: "Sequence", color: "bg-purple-50 text-purple-700 border-purple-200", icon: Layers },
 };
 
-export default function KitSubscriberEmails() {
+export default function KitSubscriberEmails({ broadcasts = [] }) {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
@@ -108,6 +113,13 @@ export default function KitSubscriberEmails() {
   ) : [];
 
   const subscriber = data?.subscriber;
+
+  // Last 20 sent broadcasts — shown by default before any search
+  const recentBroadcasts = useMemo(() => {
+    return broadcasts
+      .filter(b => b.is_sent)
+      .slice(0, 20);
+  }, [broadcasts]);
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
@@ -140,6 +152,38 @@ export default function KitSubscriberEmails() {
           {loading ? "..." : "Search"}
         </button>
       </form>
+
+      {/* Default view — last 20 sent broadcasts (shown when no search performed) */}
+      {!loading && !data && recentBroadcasts.length > 0 && (
+        <div>
+          <p className="text-xs font-body font-bold text-slate-700 mb-1.5 px-1">
+            Last 20 Emails Sent
+          </p>
+          <div className="space-y-1.5">
+            {recentBroadcasts.map((b, i) => (
+              <div key={b.id || i} className="flex items-start gap-2.5 bg-white border border-slate-200 rounded-lg p-2.5">
+                <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                  <Send className="w-3.5 h-3.5 text-indigo-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-body font-medium text-slate-900 truncate">{b.subject}</p>
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <span className="text-[10px] text-slate-400 flex items-center gap-0.5">
+                      <Calendar className="w-2.5 h-2.5" /> {formatTime(b.sent_at)}
+                    </span>
+                    <span className="text-[10px] text-slate-500 flex items-center gap-0.5">
+                      <Users className="w-2.5 h-2.5" /> {formatNumber(b.stats?.recipients || 0)} recipients
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-400 font-body text-center mt-2">
+            Search a subscriber above to see their full email history
+          </p>
+        </div>
+      )}
 
       {/* Loading state */}
       {loading && (

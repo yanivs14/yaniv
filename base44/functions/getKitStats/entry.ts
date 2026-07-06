@@ -8,6 +8,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Unauthorized" }, { status: 403 });
     }
 
+    const body = await req.json().catch(() => ({}));
+    const targetYear = body.target_year;
+    const yearBoundary = (targetYear && targetYear !== "all")
+      ? new Date(parseInt(targetYear), 0, 1)
+      : null;
+
     const kitKey = Deno.env.get("API_Key_kit");
     if (!kitKey) {
       return Response.json({ error: "Missing Kit API key" }, { status: 500 });
@@ -33,6 +39,12 @@ Deno.serve(async (req) => {
         if (!data?.pagination?.has_next_page) break;
         afterCursor = data?.pagination?.end_cursor;
         if (!afterCursor) break;
+        // Stop if oldest broadcast in this page is before the target year
+        if (yearBoundary && data?.broadcasts?.length > 0) {
+          const lastB = data.broadcasts[data.broadcasts.length - 1];
+          const lastDate = new Date(lastB.sent_at || lastB.send_at || lastB.created_at);
+          if (!isNaN(lastDate) && lastDate < yearBoundary) break;
+        }
       }
     } catch (e) {
       console.warn("Failed to fetch broadcasts:", e.message);
@@ -51,6 +63,11 @@ Deno.serve(async (req) => {
         const statsData = await statsRes.json();
         for (const b of (statsData?.broadcasts || [])) {
           statsMap.set(b.id, b.stats || {});
+        }
+        // Stop early if we have stats for all broadcasts we need
+        if (broadcastsMeta.length > 0) {
+          const allFound = broadcastsMeta.every(b => statsMap.has(b.id));
+          if (allFound) break;
         }
         if (!statsData?.pagination?.has_next_page) break;
         afterCursor = statsData?.pagination?.end_cursor;

@@ -73,30 +73,33 @@ export default function KitTab() {
   const [expandedId, setExpandedId] = useState(null);
 
   // Unified filter state — controls both analytics and broadcasts
-  const [filterYear, setFilterYear] = useState("all");
+  const [filterYear, setFilterYear] = useState(String(new Date().getFullYear()));
   const [fromMonth, setFromMonth] = useState("all");
   const [toMonth, setToMonth] = useState("all");
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("getKitStats", {});
+      const target_year = filterYear === "all" ? "all" : parseInt(filterYear);
+      const res = await base44.functions.invoke("getKitStats", { target_year });
       setData(res.data);
     } catch (e) {
       console.error("Failed to load Kit stats:", e);
     }
     setLoading(false);
-  }, []);
+  }, [filterYear]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
   const summary = data?.summary || {};
   const broadcasts = data?.broadcasts || [];
-  const sequences = data?.sequences || [];
+  const sequences = (data?.sequences || []).filter(s => s.subscribers > 0);
   const baseTags = data?.tags || [];
 
   const availableYears = useMemo(() => {
     const years = new Set();
+    const cy = new Date().getFullYear();
+    for (let y = cy; y >= cy - 3; y--) years.add(y);
     broadcasts.forEach(b => {
       const dateStr = b.sent_at || b.created_at;
       if (dateStr) {
@@ -189,7 +192,7 @@ export default function KitTab() {
   const displayTags = tagData?.tags || baseTags;
 
   const clearFilters = () => {
-    setFilterYear("all");
+    setFilterYear(String(new Date().getFullYear()));
     setFromMonth("all");
     setToMonth("all");
   };
@@ -444,7 +447,7 @@ export default function KitTab() {
       {sequences.length > 0 && (
         <div>
           <h3 className="font-body text-sm font-bold text-slate-700 mb-2 px-1">
-            Sequences <span className="text-slate-400 font-normal">({formatNumber(summary.total_sequences)} total)</span>
+            Sequences <span className="text-slate-400 font-normal">({sequences.length} with subscribers)</span>
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {sequences.map((s, i) => (
@@ -474,7 +477,7 @@ export default function KitTab() {
       )}
 
       {/* Subscriber Email History — search any subscriber to see their email timeline */}
-      <KitSubscriberEmails />
+      <KitSubscriberEmails broadcasts={broadcasts} />
     </div>
   );
 }
