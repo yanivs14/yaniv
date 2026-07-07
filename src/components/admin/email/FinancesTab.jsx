@@ -46,20 +46,28 @@ export default function FinancesTab() {
   const [toMonth, setToMonth] = useState("all");
 
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth(); // 0-indexed
   const availableYears = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3].filter(y => y >= 2022);
+
+  // When a specific year is selected, cap months at the current month if it's the current year
+  const maxMonth = filterYear !== "all" && parseInt(filterYear) === currentYear ? currentMonth : 11;
 
   const dateRange = useMemo(() => {
     if (filterYear === "all") return null;
     const y = parseInt(filterYear);
     let fromM = fromMonth === "all" ? 0 : parseInt(fromMonth);
-    let toM = toMonth === "all" ? 11 : parseInt(toMonth);
+    let toM = toMonth === "all" ? maxMonth : parseInt(toMonth);
+    // Clamp to maxMonth (prevents future months)
+    if (fromM > maxMonth) fromM = maxMonth;
+    if (toM > maxMonth) toM = maxMonth;
+    // Ensure from <= to
     if (fromM > toM) { const tmp = fromM; fromM = toM; toM = tmp; }
     const lastDay = new Date(y, toM + 1, 0).getDate();
     return {
       created_after: `${y}-${String(fromM + 1).padStart(2, "0")}-01`,
       created_before: `${y}-${String(toM + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`,
     };
-  }, [filterYear, fromMonth, toMonth]);
+  }, [filterYear, fromMonth, toMonth, maxMonth]);
 
   const applySkool = useCallback((skoolResult, meta) => {
     setSkoolData(skoolResult);
@@ -335,7 +343,7 @@ export default function FinancesTab() {
                 className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
               >
                 <option value="all">From: Any</option>
-                {MONTH_NAMES.map((m, i) => <option key={i} value={i}>{m}</option>)}
+                {MONTH_NAMES.map((m, i) => i <= maxMonth && <option key={i} value={i} disabled={toMonth !== "all" && i > parseInt(toMonth)}>{m}</option>)}
               </select>
               <span className="text-slate-300 text-xs">→</span>
               <select
@@ -344,7 +352,7 @@ export default function FinancesTab() {
                 className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-body text-slate-700 focus:outline-none focus:border-teal-500 shadow-sm cursor-pointer"
               >
                 <option value="all">To: Any</option>
-                {MONTH_NAMES.map((m, i) => <option key={i} value={i}>{m}</option>)}
+                {MONTH_NAMES.map((m, i) => i <= maxMonth && <option key={i} value={i} disabled={fromMonth !== "all" && i < parseInt(fromMonth)}>{m}</option>)}
               </select>
               <button
                 onClick={() => { setFilterYear("all"); setFromMonth("all"); setToMonth("all"); }}
