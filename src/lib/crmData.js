@@ -135,7 +135,18 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   if (!crmData.financials) crmData.financials = {};
   crmData.financials.skool_active = skoolData.stats.active_members;
   crmData.financials.skool_churned = skoolData.stats.churned_members;
-  crmData.financials.skool_revenue = skoolData.financials?.total_revenue || 0;
+
+  // Compute Skool revenue — respect date filter when provided
+  const skoolMonthly = skoolData.financials?.monthly_data || {};
+  let skoolRev = skoolData.financials?.total_revenue || 0;
+  if (dateRange) {
+    const fromKey = dateRange.created_after?.slice(0, 7);
+    const toKey = dateRange.created_before?.slice(0, 7);
+    skoolRev = Object.entries(skoolMonthly)
+      .filter(([key]) => (!fromKey || key >= fromKey) && (!toKey || key <= toKey))
+      .reduce((sum, [, m]) => sum + (m.revenue || 0), 0);
+  }
+  crmData.financials.skool_revenue = skoolRev;
 
   return crmData;
 }
