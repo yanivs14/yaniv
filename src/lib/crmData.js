@@ -85,6 +85,51 @@ export async function activateSkoolUpload(uploadId) {
   return res.data?.upload;
 }
 
+export function filterStripeFinancials(stripeData, dateRange) {
+  if (!dateRange || !stripeData?.financials) return stripeData;
+
+  const fromKey = dateRange.created_after?.slice(0, 7);
+  const toKey = dateRange.created_before?.slice(0, 7);
+
+  const f = stripeData.financials;
+  let totalRev = 0;
+  let totalRefunded = 0;
+  let totalTransactions = 0;
+
+  for (const [key, m] of Object.entries(f.monthly_data || {})) {
+    const inRange = (!fromKey || key >= fromKey) && (!toKey || key <= toKey);
+    if (inRange) {
+      totalRev += m.revenue || 0;
+      totalRefunded += m.refunds || 0;
+      totalTransactions += m.transactions || 0;
+    }
+  }
+
+  f.total_revenue = totalRev;
+  f.total_refunded = totalRefunded;
+  f.date_filtered = true;
+
+  // Count paying customers and refunded in range from per-contact payment_months
+  let payingInRange = 0;
+  let refundedInRange = 0;
+  for (const contact of Object.values(stripeData.stripeMap || {})) {
+    const months = contact.payment_months || [];
+    const hasInRange = months.some(m => (!fromKey || m >= fromKey) && (!toKey || m <= toKey));
+    if (hasInRange) {
+      payingInRange++;
+      if (contact.total_refunded > 0) refundedInRange++;
+    }
+  }
+  stripeData.stats = {
+    ...stripeData.stats,
+    paying_customers: payingInRange,
+    refunded: refundedInRange,
+  };
+  f.arpu = payingInRange > 0 ? totalRev / payingInRange : 0;
+
+  return stripeData;
+}
+
 export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   if (!skoolData?.skoolMap) return crmData;
 

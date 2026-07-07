@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { motion } from "framer-motion";
 import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCcw, Activity, Calendar, Undo2, FileText, Clock } from "lucide-react";
 import {
-  fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm,
+  fetchCrmOnly, fetchStripeOnly, filterStripeFinancials, mergeStripeIntoCrm, mergeSkoolIntoCrm,
   fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
   clearCrmCache, getCachedAt,
 } from "@/lib/crmData";
@@ -44,7 +44,6 @@ export default function FinancesTab() {
   const [filterYear, setFilterYear] = useState("all");
   const [fromMonth, setFromMonth] = useState("all");
   const [toMonth, setToMonth] = useState("all");
-  const isFirstLoad = useRef(true);
 
   const currentYear = new Date().getFullYear();
   const availableYears = [currentYear, currentYear - 1, currentYear - 2, currentYear - 3].filter(y => y >= 2022);
@@ -126,7 +125,7 @@ export default function FinancesTab() {
     }
   }, [applySkool]);
 
-  const loadData = useCallback(async (stripeRange, force = false) => {
+  const loadData = useCallback(async (force = false) => {
     if (force) clearCrmCache();
     setLoading(true);
     try {
@@ -158,8 +157,11 @@ export default function FinancesTab() {
       setLoading(false);
       setStripeLoading(true);
       try {
-        const stripeData = await fetchStripeOnly(stripeRange, force);
-        setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
+        // Always fetch unfiltered Stripe data (cached after first load).
+        // Date filtering is applied client-side — no redundant Stripe API calls.
+        const stripeData = await fetchStripeOnly(null, force);
+        const filteredStripe = dateRange ? filterStripeFinancials(stripeData, dateRange) : stripeData;
+        setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, filteredStripe) : prev);
       } catch (e) {
         console.error("Stripe enrich failed:", e);
       }
@@ -171,13 +173,8 @@ export default function FinancesTab() {
   }, [dateRange]);
 
   useEffect(() => {
-    if (isFirstLoad.current) {
-      isFirstLoad.current = false;
-      loadData(null);
-      return;
-    }
-    loadData(dateRange);
-  }, [dateRange, loadData]);
+    loadData();
+  }, [loadData]);
 
   if (loading) {
     return (
@@ -236,7 +233,7 @@ export default function FinancesTab() {
             </span>
           )}
           <CacheTimestamp cachedAt={cachedAt} />
-          <button onClick={() => { loadData(null, true); setCachedAt(getCachedAt()); }} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <button onClick={() => { loadData(true); setCachedAt(getCachedAt()); }} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </span>
