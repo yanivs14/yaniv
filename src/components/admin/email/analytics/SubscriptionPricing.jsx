@@ -22,7 +22,7 @@ export default function SubscriptionPricing({ contacts, financials }) {
 
   const periods = useMemo(() => generatePeriods(dateFrom, dateTo, interval), [dateFrom, dateTo, interval]);
   const userTrend = useMemo(() => computePlanUserTrend(contacts, periods, interval), [contacts, periods, interval]);
-  const revTrend = useMemo(() => computePlanRevenueTrend(financials.daily_data, financials.product_monthly, periods, interval), [financials, periods, interval]);
+  const revTrend = useMemo(() => computePlanRevenueTrend(financials.daily_data, financials.product_monthly, financials.monthly_data, periods, interval), [financials, periods, interval]);
 
   const planSummary = useMemo(() => {
     const summary = {};
@@ -47,7 +47,7 @@ export default function SubscriptionPricing({ contacts, financials }) {
     const compPeriods = generatePeriods(comp.from, comp.to, interval);
     return {
       userTrend: computePlanUserTrend(contacts, compPeriods, interval),
-      revTrend: computePlanRevenueTrend(financials.daily_data, financials.product_monthly, compPeriods, interval),
+      revTrend: computePlanRevenueTrend(financials.daily_data, financials.product_monthly, financials.monthly_data, compPeriods, interval),
     };
   }, [comparison, dateFrom, dateTo, interval, contacts, financials]);
 

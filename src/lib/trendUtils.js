@@ -182,31 +182,35 @@ export function isAnnualBilling(planStr) {
 
 export function computePlanUserTrend(contacts, periods, interval) {
   const planData = contacts
+    .filter(c => c.is_paying_customer)
     .map(c => ({
-      join: normalizeDate(c.first_payment_date),
+      join: normalizeDate(c.first_payment_date || c.created_date),
       churn: normalizeDate(c.subscription_canceled),
+      isChurnedNoDate: c.is_churned && !c.subscription_canceled,
       plan: categorizeSubscriptionPlan(c.purchase_plan),
     }))
     .filter(cd => cd.join);
 
   const cats = Object.keys(SUB_PLAN_CATEGORIES);
 
+  const isActive = (cd, p) => cd.join <= p.end && !cd.isChurnedNoDate && (!cd.churn || cd.churn > p.end);
+
   return periods.map(p => {
     const result = { period: p.key, label: formatPeriodLabel(p.key, interval) };
     for (const cat of cats) {
       const inCat = planData.filter(cd => cd.plan === cat);
-      result[`${cat}_active`] = inCat.filter(cd => cd.join <= p.end && (!cd.churn || cd.churn > p.end)).length;
+      result[`${cat}_active`] = inCat.filter(cd => isActive(cd, p)).length;
       result[`${cat}_new`] = inCat.filter(cd => cd.join >= p.start && cd.join <= p.end).length;
       result[`${cat}_churned`] = inCat.filter(cd => cd.churn && cd.churn >= p.start && cd.churn <= p.end).length;
     }
-    result.total_active = planData.filter(cd => cd.join <= p.end && (!cd.churn || cd.churn > p.end)).length;
+    result.total_active = planData.filter(cd => isActive(cd, p)).length;
     result.total_new = planData.filter(cd => cd.join >= p.start && cd.join <= p.end).length;
     result.total_churned = planData.filter(cd => cd.churn && cd.churn >= p.start && cd.churn <= p.end).length;
     return result;
   });
 }
 
-export function computePlanRevenueTrend(dailyData, productMonthly, periods, interval) {
+export function computePlanRevenueTrend(dailyData, productMonthly, monthlyData, periods, interval) {
   const cats = Object.keys(SUB_PLAN_CATEGORIES);
 
   return periods.map(p => {
@@ -231,6 +235,18 @@ export function computePlanRevenueTrend(dailyData, productMonthly, periods, inte
       result[`${cat}_revenue`] = Math.round(rev);
       total += rev;
     }
+
+    if (total === 0 && (interval === "monthly" || interval === "yearly")) {
+      if (interval === "monthly") {
+        const md = monthlyData?.[p.key];
+        if (md) total = md.revenue || md.net || 0;
+      } else {
+        for (const [mk, md] of Object.entries(monthlyData || {})) {
+          if (mk.startsWith(p.key)) total += md.revenue || md.net || 0;
+        }
+      }
+    }
+
     result.total_revenue = Math.round(total);
     return result;
   });
