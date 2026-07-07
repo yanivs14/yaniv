@@ -172,6 +172,81 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No valid month rows parsed' }, { status: 400 });
     }
 
+    // --- Parse "Costs & Expenses (Past)" sheet for detailed line items ---
+    const expensesSheetName = workbook.SheetNames.find(n => n.includes('Costs & Expenses (Past)') || n.includes('Costs & Expenses Past'));
+    let expenses = { categories: {}, monthly: {}, line_items: [] };
+    if (expensesSheetName) {
+      const expSheet = workbook.Sheets[expensesSheetName];
+      const expRows = XLSX.utils.sheet_to_json(expSheet, { header: 1, raw: true });
+      if (expRows.length >= 2) {
+        const expHeaders = expRows[0];
+        // Find month columns (col 3 onward, until TOTAL)
+        const monthCols = [];
+        for (let c = 3; c < expHeaders.length; c++) {
+          const mk = parseMonthLabel(expHeaders[c]);
+          if (mk) monthCols.push({ col: c, monthKey: mk });
+        }
+
+        const USD_RATE = 0.727;
+
+        for (let i = 1; i < expRows.length; i++) {
+          const row = expRows[i];
+          const category = String(row[0] || '').trim();
+          const tool = String(row[1] || '').trim();
+          if (!category && !tool) continue;
+
+          const lineItem = { category, tool, monthly: {}, total_usd: 0 };
+
+          for (const { col, monthKey } of monthCols) {
+            const cadVal = num(row[col]);
+            const usdVal = Math.round(cadVal * USD_RATE * 100) / 100;
+            if (usdVal !== 0) {
+              lineItem.monthly[monthKey] = usdVal;
+              lineItem.total_usd += usdVal;
+
+              if (!expenses.categories[category]) {
+                expenses.categories[category] = { total_usd: 0, monthly: {}, line_items: [] };
+              }
+              expenses.categories[category].total_usd += usdVal;
+              expenses.categories[category].monthly[monthKey] = (expenses.categories[category].monthly[monthKey] || 0) + usdVal;
+
+              if (!expenses.monthly[monthKey]) expenses.monthly[monthKey] = 0;
+              expenses.monthly[monthKey] += usdVal;
+            }
+          }
+
+          if (lineItem.total_usd > 0) {
+            expenses.line_items.push(lineItem);
+            if (expenses.categories[category]) {
+              expenses.categories[category].line_items.push({ tool, total_usd: lineItem.total_usd });
+            }
+          }
+        }
+      }
+      console.log(`Expenses: parsed ${expenses.line_items.length} line items across ${Object.keys(expenses.monthly).length} months`);
+    }
+
+    // --- Parse "Raw Balance STR" sheet for monthly Stripe fees ---
+    const balanceSheetName = workbook.SheetNames.find(n => n.includes('Raw Balance STR') || n.includes('Raw Balance'));
+    let stripeFees = {};
+    if (balanceSheetName) {
+      const balSheet = workbook.Sheets[balanceSheetName];
+      const balRows = XLSX.utils.sheet_to_json(balSheet, { header: 1, raw: true });
+      if (balRows.length >= 2) {
+        const balHeaders = balRows[0];
+        const balMonthCol = findColIndex(balHeaders, ['month']);
+        const balFeesCol = findColIndex(balHeaders, ['stripe fees']);
+
+        for (let i = 1; i < balRows.length; i++) {
+          const row = balRows[i];
+          const monthKey = parseMonthLabel(row[balMonthCol]);
+          if (!monthKey) continue;
+          stripeFees[monthKey] = Math.abs(num(row[balFeesCol]));
+        }
+      }
+      console.log(`Stripe fees: parsed ${Object.keys(stripeFees).length} months`);
+    }
+
     // --- Store in FinancialReport entity ---
     // Deactivate previous active reports
     const existing = await base44.asServiceRole.entities.FinancialReport.filter({ is_active: true });
@@ -185,10 +260,15 @@ Deno.serve(async (req) => {
       file_name: fileName,
       data: {
         monthly,
+        expenses,
+        stripe_fees: stripeFees,
         metadata: {
           months_count: successCount,
           start_month: sortedKeys[0],
           end_month: sortedKeys[sortedKeys.length - 1],
+          expense_line_items: expenses.line_items.length,
+          expense_months: Object.keys(expenses.monthly).length,
+          stripe_fee_months: Object.keys(stripeFees).length,
         },
       },
       is_active: true,
@@ -200,6 +280,8 @@ Deno.serve(async (req) => {
       months_parsed: successCount,
       start_month: sortedKeys[0],
       end_month: sortedKeys[sortedKeys.length - 1],
+      expense_line_items: expenses.line_items.length,
+      stripe_fee_months: Object.keys(stripeFees).length,
       sample: monthly[sortedKeys[0]],
     });
   } catch (error) {

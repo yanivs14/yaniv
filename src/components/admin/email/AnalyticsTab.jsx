@@ -9,6 +9,8 @@ import SubscriptionPricing from "@/components/admin/email/analytics/Subscription
 import LandingFunnel from "@/components/admin/email/analytics/LandingFunnel";
 import TrafficChannels from "@/components/admin/email/analytics/TrafficChannels";
 import CreativeLeaderboard from "@/components/admin/email/analytics/CreativeLeaderboard";
+import ProfitLossReport from "@/components/admin/email/analytics/ProfitLossReport";
+import { Wallet } from "lucide-react";
 
 const CARDS = [
   { key: "executive", number: 1, title: "Executive Overview", subtitle: "Dashboard — Business Overview", icon: Users, color: "text-teal-600", bg: "bg-teal-50" },
@@ -17,7 +19,8 @@ const CARDS = [
   { key: "subscriptions", number: 4, title: "Subscription & Pricing", subtitle: "Monthly / Annual / Untagged", icon: PieChart, color: "text-amber-600", bg: "bg-amber-50" },
   { key: "funnel", number: 5, title: "Landing Page Funnel", subtitle: "Visit → Quiz → Lead → Purchase", icon: Filter, color: "text-emerald-600", bg: "bg-emerald-50" },
   { key: "traffic", number: 6, title: "Traffic Channel Performance", subtitle: "Per-channel ROI", icon: MapPin, color: "text-indigo-600", bg: "bg-indigo-50" },
-  { key: "creative", number: 7, title: "Creative & Messaging Leaderboard", subtitle: "What messaging wins", icon: Flag, color: "text-rose-600", bg: "bg-rose-50" },
+  { key: "pnl", number: 7, title: "Profit & Loss", subtitle: "Revenue − Expenses − Fees = Net", icon: Wallet, color: "text-teal-600", bg: "bg-teal-50" },
+  { key: "creative", number: 8, title: "Creative & Messaging Leaderboard", subtitle: "What messaging wins", icon: Flag, color: "text-rose-600", bg: "bg-rose-50" },
 ];
 
 export default function AnalyticsTab() {
@@ -93,6 +96,7 @@ export default function AnalyticsTab() {
             {selectedCard === "subscriptions" && <SubscriptionPricing contacts={contacts} financials={financials} stats={stats} />}
             {selectedCard === "funnel" && <LandingFunnel contacts={contacts} financials={financials} stats={stats} />}
             {selectedCard === "traffic" && <TrafficChannels contacts={contacts} financials={financials} stats={stats} />}
+            {selectedCard === "pnl" && <ProfitLossReport financials={financials} />}
             {selectedCard === "creative" && <CreativeLeaderboard contacts={contacts} financials={financials} stats={stats} />}
           </motion.div>
         </AnimatePresence>
