@@ -248,16 +248,16 @@ export default function ProfitLossReport({ financials }) {
         <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
           <p className="text-sm font-body font-semibold text-slate-900 mb-3">Operating Expenses by Category</p>
           <div className="space-y-2.5">
-            {categoryBreakdown.map(([cat, data], idx) => {
+            {categoryBreakdown.map((item, idx) => {
               const maxTotal = categoryBreakdown[0].total;
-              const pct = maxTotal > 0 ? (data.total / maxTotal) * 100 : 0;
-              const shareOfTotal = totals.expenses > 0 ? (data.total / totals.expenses) * 100 : 0;
+              const pct = maxTotal > 0 ? (item.total / maxTotal) * 100 : 0;
+              const shareOfTotal = totals.expenses > 0 ? (item.total / totals.expenses) * 100 : 0;
               return (
-                <div key={cat}>
+                <div key={item.category}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-600 font-body">{cat}</span>
+                    <span className="text-sm text-slate-600 font-body">{item.category}</span>
                     <span className="text-sm font-bold text-slate-900 flex-shrink-0">
-                      {formatMoney(data.total)}
+                      {formatMoney(item.total)}
                       <span className="text-[10px] text-slate-400 ml-1.5 font-normal">({shareOfTotal.toFixed(0)}%)</span>
                     </span>
                   </div>
