@@ -7,7 +7,8 @@ import {
 } from "lucide-react";
 import StripeActionModal from "@/components/admin/email/StripeActionModal";
 import UpcomingMeetingsBanner from "@/components/admin/email/UpcomingMeetingsBanner";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm } from "@/lib/crmData";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, clearCrmCache, getCachedAt } from "@/lib/crmData";
+import CacheTimestamp from "@/components/admin/email/CacheTimestamp";
 
 const SOURCE_LABELS = {
   quiz: "Quiz",
@@ -85,6 +86,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
   const [currentPage, setCurrentPage] = useState(1);
   const [stripeAction, setStripeAction] = useState(null);
   const [copyToast, setCopyToast] = useState(null);
+  const [cachedAt, setCachedAt] = useState(getCachedAt());
   const pageSize = 50;
 
   const copyToClipboard = (e, text) => {
@@ -98,17 +100,19 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
     });
   };
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (force = false) => {
+    if (force) clearCrmCache();
     setLoading(true);
     try {
-      const crmData = await fetchCrmOnly();
+      const crmData = await fetchCrmOnly(force);
+      setCachedAt(getCachedAt());
       // Keep previous data (including Stripe-enriched contacts) visible during refresh
       // until the new Stripe data arrives — prevents Stripe-only contacts from disappearing
       setData(prev => prev || crmData);
       setLoading(false);
       setStripeLoading(true);
       try {
-        const stripeData = await fetchStripeOnly();
+        const stripeData = await fetchStripeOnly(null, force);
         setData(mergeStripeIntoCrm({ ...crmData }, stripeData));
       } catch (e) {
         console.error("Stripe enrich failed:", e);
@@ -212,7 +216,8 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
               Loading Stripe…
             </span>
           )}
-          <button onClick={loadData} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <CacheTimestamp cachedAt={cachedAt} />
+          <button onClick={() => { loadData(true); setCachedAt(getCachedAt()); }} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </span>
@@ -576,7 +581,7 @@ export default function CrmContacts({ meetingsMap, loadingMeetings, onGoToCalend
           contact={stripeAction.contact}
           action={stripeAction.action}
           onClose={() => setStripeAction(null)}
-          onSuccess={() => { setStripeAction(null); loadData(); }}
+          onSuccess={() => { setStripeAction(null); loadData(true); }}
         />
       )}
 
