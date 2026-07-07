@@ -191,10 +191,13 @@ Deno.serve(async (req) => {
 
         for (let i = 1; i < expRows.length; i++) {
           const row = expRows[i];
-          const category = String(row[0] || '').trim();
-          const tool = String(row[1] || '').trim();
-          if (!category && !tool) continue;
+          const rawCategory = String(row[0] || '').replace(/[\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
+          const tool = String(row[1] || '').replace(/[\r\n]/g, ' ').replace(/\s+/g, ' ').trim();
+          // Skip subtotal / total rows — they double-count the category above
+          if (/sub\s*-?\s*total|subtotal|^total$/i.test(rawCategory)) continue;
+          if (!rawCategory && !tool) continue;
 
+          const category = rawCategory;
           const lineItem = { category, tool, monthly: {}, total_usd: 0 };
 
           for (const { col, monthKey } of monthCols) {
