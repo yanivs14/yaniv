@@ -35,6 +35,20 @@ function inferPlanFromCharge(charge) {
   return charge.description || 'One-time payment';
 }
 
+function categorizeProduct(planLabel, amount) {
+  const lower = (planLabel || '').toLowerCase();
+  if (lower.includes('inner circle')) return 'inner_circle';
+  if (lower.includes('handstand')) return 'handstand';
+  if (lower.includes('annual') || lower.includes('yearly') || lower.includes('year')) return 'annual';
+  if (lower.includes('monthly') || lower.includes('month') || lower.includes('promo') || lower.includes('special') || lower.includes('returning') || lower.includes('movement system') || lower.includes('movement membership')) return 'monthly';
+  if (lower.includes('one-time') || lower.includes('one_time')) return 'one_time';
+  if (amount === 35 || amount === 25 || amount === 28) return 'monthly';
+  if (amount === 250 || amount === 239.88 || amount === 240 || amount === 150 || amount === 200 || amount === 160) return 'annual';
+  if (amount === 97) return 'handstand';
+  if (amount === 350) return 'inner_circle';
+  return 'other';
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -60,6 +74,9 @@ Deno.serve(async (req) => {
       last_month_transactions: 0,
       mrr: 0,
       monthly_data: {},
+      daily_data: {},
+      product_monthly: {},
+      plan_transfers: [],
     };
 
     if (!stripeKey) {
@@ -201,6 +218,41 @@ Deno.serve(async (req) => {
         const chargeDate = new Date(charge.created * 1000);
         const chargeMonthKey = `${chargeDate.getFullYear()}-${String(chargeDate.getMonth() + 1).padStart(2, '0')}`;
         const netAmount = (charge.amount - charge.amount_refunded) / 100;
+        const grossAmt = charge.amount / 100;
+        const refundAmt = charge.amount_refunded / 100;
+
+        // Track daily data
+        const dayKey = chargeDate.toISOString().slice(0, 10);
+        if (!financials.daily_data[dayKey]) {
+          financials.daily_data[dayKey] = { gross: 0, refunds: 0, net: 0, transactions: 0, products: {} };
+        }
+        financials.daily_data[dayKey].gross += grossAmt;
+        financials.daily_data[dayKey].refunds += refundAmt;
+        financials.daily_data[dayKey].net += netAmount;
+        financials.daily_data[dayKey].transactions += 1;
+
+        // Track product breakdown
+        const chargePlan = inferPlanFromCharge(charge);
+        const prodCat = categorizeProduct(chargePlan, grossAmt);
+        if (!financials.daily_data[dayKey].products[prodCat]) {
+          financials.daily_data[dayKey].products[prodCat] = { gross: 0, net: 0, transactions: 0 };
+        }
+        financials.daily_data[dayKey].products[prodCat].gross += grossAmt;
+        financials.daily_data[dayKey].products[prodCat].net += netAmount;
+        financials.daily_data[dayKey].products[prodCat].transactions += 1;
+
+        if (!financials.product_monthly[prodCat]) financials.product_monthly[prodCat] = {};
+        if (!financials.product_monthly[prodCat][chargeMonthKey]) {
+          financials.product_monthly[prodCat][chargeMonthKey] = { gross: 0, refunds: 0, net: 0, transactions: 0 };
+        }
+        financials.product_monthly[prodCat][chargeMonthKey].gross += grossAmt;
+        financials.product_monthly[prodCat][chargeMonthKey].refunds += refundAmt;
+        financials.product_monthly[prodCat][chargeMonthKey].net += netAmount;
+        financials.product_monthly[prodCat][chargeMonthKey].transactions += 1;
+
+        // Track charge plan timeline per customer for transfer detection
+        if (!data._chargePlans) data._chargePlans = [];
+        data._chargePlans.push({ date: chargeDate.toISOString(), cat: prodCat });
 
         data.total_paid += netAmount;
         financials.total_revenue += netAmount;
@@ -223,10 +275,12 @@ Deno.serve(async (req) => {
         }
 
         if (!financials.monthly_data[chargeMonthKey]) {
-          financials.monthly_data[chargeMonthKey] = { revenue: 0, transactions: 0 };
+          financials.monthly_data[chargeMonthKey] = { revenue: 0, transactions: 0, gross: 0, refunds: 0 };
         }
         financials.monthly_data[chargeMonthKey].revenue += netAmount;
         financials.monthly_data[chargeMonthKey].transactions += 1;
+        financials.monthly_data[chargeMonthKey].gross += grossAmt;
+        financials.monthly_data[chargeMonthKey].refunds += refundAmt;
 
         if (chargeMonthKey === thisMonthKey) {
           financials.this_month_revenue += netAmount;
@@ -436,6 +490,21 @@ Deno.serve(async (req) => {
     financials.churn_rate = stats.paying_customers + stats.churned > 0
       ? (stats.churned / (stats.paying_customers + stats.churned)) * 100 : 0;
     financials.plan_breakdown = planBreakdown;
+
+    // Detect plan transfers (upgrades/downgrades)
+    for (const [email, d] of Object.entries(stripeMap)) {
+      if (d._chargePlans && d._chargePlans.length >= 2) {
+        const sorted = d._chargePlans.sort((a, b) => new Date(a.date) - new Date(b.date));
+        let prevCat = null;
+        for (const cp of sorted) {
+          if (prevCat && prevCat !== cp.cat) {
+            financials.plan_transfers.push({ email, from: prevCat, to: cp.cat, date: cp.date });
+          }
+          prevCat = cp.cat;
+        }
+      }
+      delete d._chargePlans;
+    }
 
     return Response.json({ stripeMap, financials, stats });
   } catch (error) {
