@@ -29,6 +29,7 @@ import EmailDashboard from './pages/EmailDashboard';
 import ThankYou from './pages/ThankYou';
 import Unsubscribe from './pages/Unsubscribe';
 import HandstandLanding from './pages/HandstandLanding';
+import HsPre from './pages/HsPre';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />
+        <Route path="/hspre" element={<HsPre />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
