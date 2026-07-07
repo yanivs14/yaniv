@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Percent, TrendingUp, PieChart, Filter, MapPin, Flag, ArrowLeft, RefreshCw } from "lucide-react";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm, clearCrmCache } from "@/lib/crmData";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm, clearCrmCache, getCachedAt } from "@/lib/crmData";
+import CacheTimestamp from "@/components/admin/email/CacheTimestamp";
 import ExecutiveOverview from "@/components/admin/email/analytics/ExecutiveOverview";
 import UnitEconomics from "@/components/admin/email/analytics/UnitEconomics";
 import TrendOverTime from "@/components/admin/email/analytics/TrendOverTime";
@@ -28,6 +29,7 @@ export default function AnalyticsTab() {
   const [loading, setLoading] = useState(true);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cachedAt, setCachedAt] = useState(getCachedAt());
   // Analytics dashboard — live data from Stripe, Skool, Kit
   const loadData = useCallback(async (force = false) => {
     if (force) clearCrmCache();
@@ -35,6 +37,7 @@ export default function AnalyticsTab() {
     setSelectedCard(null);
     try {
       const crmData = await fetchCrmOnly(force);
+      setCachedAt(getCachedAt());
       let merged = crmData;
       try {
         const uploads = await fetchSkoolUploads(force);
@@ -116,7 +119,8 @@ export default function AnalyticsTab() {
               Loading Stripe…
             </span>
           )}
-          <button onClick={() => loadData(true)} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <CacheTimestamp cachedAt={cachedAt} />
+          <button onClick={() => { loadData(true); setCachedAt(getCachedAt()); }} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </span>

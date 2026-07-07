@@ -4,11 +4,12 @@ import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCc
 import {
   fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm,
   fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
-  clearCrmCache,
+  clearCrmCache, getCachedAt,
 } from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
 import FinancialReportUpload from "@/components/admin/email/FinancialReportUpload";
 import FinanceSourceBreakdown from "@/components/admin/email/FinanceSourceBreakdown";
+import CacheTimestamp from "@/components/admin/email/CacheTimestamp";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -38,6 +39,7 @@ export default function FinancesTab() {
   const [skoolData, setSkoolData] = useState(null);
   const [skoolMeta, setSkoolMeta] = useState(null);
   const [skoolHistory, setSkoolHistory] = useState([]);
+  const [cachedAt, setCachedAt] = useState(getCachedAt());
   const preSkoolSnapshot = useRef(null);
   const [filterYear, setFilterYear] = useState("all");
   const [fromMonth, setFromMonth] = useState("all");
@@ -129,6 +131,7 @@ export default function FinancesTab() {
     setLoading(true);
     try {
       const crmData = await fetchCrmOnly(force);
+      setCachedAt(getCachedAt());
 
       // Merge Skool into CRM data synchronously (before setData) — avoids
       // race conditions with async setData updaters that were dropping
@@ -233,7 +236,8 @@ export default function FinancesTab() {
               Loading Stripe…
             </span>
           )}
-          <button onClick={() => loadData(null, true)} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <CacheTimestamp cachedAt={cachedAt} />
+          <button onClick={() => { loadData(null, true); setCachedAt(getCachedAt()); }} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </span>

@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 // Shared in-memory cache — prevents re-fetching CRM/Stripe/Skool data on every tab switch.
 // Both FinancesTab and AnalyticsTab call the same fetch functions, so the first tab
 // to load populates the cache and the second tab gets instant results.
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 5 * 60 * 60 * 1000; // 5 hours
 const _cache = { crm: null, stripe: null, skool: null, ts: 0 };
 
 function clone(obj) {
@@ -15,6 +15,10 @@ export function clearCrmCache() {
   _cache.stripe = null;
   _cache.skool = null;
   _cache.ts = 0;
+}
+
+export function getCachedAt() {
+  return _cache.ts || null;
 }
 
 export async function fetchCrmOnly(force = false) {
