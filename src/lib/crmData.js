@@ -80,11 +80,12 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
   crmData.stats.inner_circle = crmData.contacts.filter(c => c.is_inner_circle && c.is_paying_customer && !c.is_churned).length;
 
-  // Skool financials are NOT merged into revenue — Stripe is the single source of truth for payments.
-  // Skool data is used only for contact enrichment (member status, plan, IC identification).
+  // Skool revenue is tracked separately so it appears in the Revenue by Source breakdown.
+  // Stripe remains the source of truth for site payments — these don't overlap.
   if (!crmData.financials) crmData.financials = {};
   crmData.financials.skool_active = skoolData.stats.active_members;
   crmData.financials.skool_churned = skoolData.stats.churned_members;
+  crmData.financials.skool_revenue = skoolData.financials?.total_revenue || 0;
 
   return crmData;
 }
@@ -160,9 +161,11 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
   // Stripe is the single source of truth for revenue — preserves skool_active/skool_churned from prior merge
   const prevSkoolActive = crmData.financials?.skool_active;
   const prevSkoolChurned = crmData.financials?.skool_churned;
+  const prevSkoolRevenue = crmData.financials?.skool_revenue;
   crmData.financials = { ...stripeData.financials };
   if (prevSkoolActive != null) crmData.financials.skool_active = prevSkoolActive;
   if (prevSkoolChurned != null) crmData.financials.skool_churned = prevSkoolChurned;
+  if (prevSkoolRevenue != null) crmData.financials.skool_revenue = prevSkoolRevenue;
 
   return crmData;
 }
