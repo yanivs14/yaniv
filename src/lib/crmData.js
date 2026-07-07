@@ -108,13 +108,15 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   // Build merged monthly data in a fresh object
   const combinedMonthly = {};
   for (const [key, val] of Object.entries(oldFin.monthly_data || {})) {
-    combinedMonthly[key] = { revenue: val.revenue || 0, transactions: val.transactions || 0 };
+    combinedMonthly[key] = { ...val, revenue: val.revenue || 0, transactions: val.transactions || 0 };
   }
   let thisMonthRev = oldFin.this_month_revenue || 0;
   let thisMonthTx = oldFin.this_month_transactions || 0;
   let lastMonthRev = oldFin.last_month_revenue || 0;
   let lastMonthTx = oldFin.last_month_transactions || 0;
   for (const [key, val] of Object.entries(skoolMonthly)) {
+    // Skip historical months — they already have authoritative combined data from the Excel report
+    if (combinedMonthly[key]?.is_historical) continue;
     if (!combinedMonthly[key]) combinedMonthly[key] = { revenue: 0, transactions: 0 };
     combinedMonthly[key].revenue += val.revenue || 0;
     combinedMonthly[key].transactions += val.transactions || 0;
@@ -127,8 +129,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
     }
   }
   const sortedMonths = Object.entries(combinedMonthly)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .slice(-6);
+    .sort(([a], [b]) => a.localeCompare(b));
 
   const totalRev = (oldFin.total_revenue || 0) + skoolRevenue;
   crmData.financials = {

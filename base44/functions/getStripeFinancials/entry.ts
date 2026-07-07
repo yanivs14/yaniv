@@ -374,6 +374,43 @@ Deno.serve(async (req) => {
       console.error("Migration processing failed:", e.message);
     }
 
+    // 4. Merge historical data from FinancialReport (Excel import)
+    // The Excel contains authoritative combined SKL+STRP monthly data for months
+    // before the Stripe migration (Apr 2026). This replaces migration backfill estimates.
+    try {
+      const reports = await base44.asServiceRole.entities.FinancialReport.filter({ is_active: true });
+      if (reports.length > 0) {
+        const report = reports[0];
+        const historicalMonthly = report.data?.monthly || {};
+
+        for (const [monthKey, histData] of Object.entries(historicalMonthly)) {
+          // Only override months before April 2026 (live data takes precedence after)
+          if (monthKey < '2026-04') {
+            financials.monthly_data[monthKey] = {
+              revenue: histData.revenue || 0,
+              transactions: histData.new_signups || 0,
+              active_members: histData.active_members || 0,
+              mrr: histData.mrr || 0,
+              new_signups: histData.new_signups || 0,
+              churned: histData.churned || 0,
+              monthly_plan_revenue: histData.monthly_plan_revenue || 0,
+              annual_plan_revenue: histData.annual_plan_revenue || 0,
+              is_historical: true,
+            };
+          }
+        }
+
+        // Recalculate total_revenue from all monthly data
+        financials.total_revenue = Object.values(financials.monthly_data).reduce(
+          (sum, m) => sum + (m.revenue || 0), 0
+        );
+
+        console.log(`Historical: merged ${Object.keys(historicalMonthly).length} months from FinancialReport`);
+      }
+    } catch (e) {
+      console.error("Historical merge failed:", e.message);
+    }
+
     const sortedMonths = Object.entries(financials.monthly_data)
       .sort(([a], [b]) => a.localeCompare(b));
     financials.monthly_data = Object.fromEntries(sortedMonths);

@@ -1,0 +1,44 @@
+{
+  "name": "FinancialReport",
+  "type": "object",
+  "properties": {
+    "file_name": {
+      "type": "string",
+      "description": "Name of the uploaded financial report Excel file"
+    },
+    "data": {
+      "type": "object",
+      "description": "Parsed financial report data \u2014 monthly aggregates from Business Overview + MRR sheets"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this report is currently merged into the dashboard"
+    }
+  },
+  "required": [
+    "file_name"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

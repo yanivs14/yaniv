@@ -62,13 +62,18 @@ export function computeMonthlyTrend(contacts, financials) {
   }
 
   for (const [key, val] of Object.entries(financials.monthly_data || {})) {
-    if (monthlyMap[key]) monthlyMap[key].mrr = Math.round(val.revenue || 0);
+    if (monthlyMap[key]) monthlyMap[key].mrr = Math.round(val.mrr || val.revenue || 0);
   }
 
   for (const key of months) {
     const [y, m] = key.split("-").map(Number);
     const monthEnd = new Date(y, m, 0, 23, 59, 59);
-    monthlyMap[key].activeMembers = customerDates.filter(cd => cd.join <= monthEnd && (!cd.churn || cd.churn > monthEnd)).length;
+    const histData = financials.monthly_data?.[key];
+    if (histData?.is_historical && histData.active_members != null) {
+      monthlyMap[key].activeMembers = histData.active_members;
+    } else {
+      monthlyMap[key].activeMembers = customerDates.filter(cd => cd.join <= monthEnd && (!cd.churn || cd.churn > monthEnd)).length;
+    }
   }
 
   return months.map(key => ({ key, month: monthLabel(key), mrr: monthlyMap[key].mrr, activeMembers: monthlyMap[key].activeMembers }));
@@ -109,7 +114,7 @@ export function computeFullTrend(contacts, financials) {
   for (const [key, val] of Object.entries(financials.monthly_data || {})) {
     if (monthlyMap[key]) {
       monthlyMap[key].revenue = Math.round(val.revenue || 0);
-      monthlyMap[key].mrr = Math.round(val.revenue || 0);
+      monthlyMap[key].mrr = Math.round(val.mrr || val.revenue || 0);
     }
   }
 
@@ -118,16 +123,28 @@ export function computeFullTrend(contacts, financials) {
     const monthStart = new Date(y, m - 1, 1);
     const monthEnd = new Date(y, m, 0, 23, 59, 59);
 
-    const activeThisMonth = customerDates.filter(cd => cd.join <= monthEnd && (!cd.churn || cd.churn > monthEnd));
-    monthlyMap[key].activeMembers = activeThisMonth.length;
+    const histData = financials.monthly_data?.[key];
 
-    monthlyMap[key].newSignups = customerDates.filter(cd =>
-      cd.join >= monthStart && cd.join <= monthEnd
-    ).length;
+    const activeThisMonth = histData?.is_historical
+      ? customerDates.filter(cd => cd.join <= monthEnd && (!cd.churn || cd.churn > monthEnd))
+      : customerDates.filter(cd => cd.join <= monthEnd && (!cd.churn || cd.churn > monthEnd));
 
-    monthlyMap[key].cancellations = customerDates.filter(cd =>
-      cd.churn && cd.churn >= monthStart && cd.churn <= monthEnd
-    ).length;
+    if (histData?.is_historical) {
+      // Use authoritative data from the Excel report for historical months
+      monthlyMap[key].activeMembers = histData.active_members || 0;
+      monthlyMap[key].newSignups = histData.new_signups || 0;
+      monthlyMap[key].cancellations = histData.churned || 0;
+    } else {
+      monthlyMap[key].activeMembers = activeThisMonth.length;
+
+      monthlyMap[key].newSignups = customerDates.filter(cd =>
+        cd.join >= monthStart && cd.join <= monthEnd
+      ).length;
+
+      monthlyMap[key].cancellations = customerDates.filter(cd =>
+        cd.churn && cd.churn >= monthStart && cd.churn <= monthEnd
+      ).length;
+    }
 
     const activeAtStart = customerDates.filter(cd => cd.join < monthStart && (!cd.churn || cd.churn >= monthStart)).length;
     monthlyMap[key].cancellationRate = activeAtStart > 0 ? (monthlyMap[key].cancellations / activeAtStart) * 100 : 0;

@@ -6,6 +6,7 @@ import {
   fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
 } from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
+import FinancialReportUpload from "@/components/admin/email/FinancialReportUpload";
 import FinanceSourceBreakdown from "@/components/admin/email/FinanceSourceBreakdown";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
@@ -176,11 +177,14 @@ export default function FinancesTab() {
 
   const financials = data?.financials || {};
   const stats = data?.stats || {};
-  const monthlyData = Object.entries(financials.monthly_data || {}).map(([key, val]) => ({
-    month: monthLabel(key),
-    revenue: Math.round(val.revenue),
-    transactions: val.transactions,
-  }));
+  const monthlyData = Object.entries(financials.monthly_data || {})
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-12)
+    .map(([key, val]) => ({
+      month: monthLabel(key),
+      revenue: Math.round(val.revenue),
+      transactions: val.transactions,
+    }));
   const planBreakdown = Object.entries(financials.plan_breakdown || {})
     .sort((a, b) => b[1] - a[1]);
 
@@ -224,6 +228,9 @@ export default function FinancesTab() {
           </button>
         </span>
       </div>
+
+      {/* Historical financial report upload */}
+      <FinancialReportUpload onReportParsed={() => loadData(null)} />
 
       {/* Skool integration bar */}
       {skoolMeta ? (
@@ -377,7 +384,7 @@ export default function FinancesTab() {
       {/* Revenue chart */}
       {monthlyData.length > 0 && (
         <div className="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-sm font-body font-semibold text-slate-900 mb-3">{isFiltered ? "Revenue — Selected Range" : "Revenue — Last 6 Months"}</p>
+          <p className="text-sm font-body font-semibold text-slate-900 mb-3">{isFiltered ? "Revenue — Selected Range" : "Revenue — Last 12 Months"}</p>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
               <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
