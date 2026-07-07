@@ -127,6 +127,28 @@ export default function FinancesTab() {
     setLoading(true);
     try {
       const crmData = await fetchCrmOnly();
+
+      // Merge Skool into CRM data synchronously (before setData) — avoids
+      // race conditions with async setData updaters that were dropping
+      // Skool-only contacts from the source breakdown table.
+      try {
+        const uploads = await fetchSkoolUploads();
+        setSkoolHistory(uploads);
+        const active = uploads.find(u => u.is_active);
+        if (active?.data) {
+          setSkoolData(active.data);
+          setSkoolMeta({
+            id: active.id,
+            fileName: active.file_name,
+            uploadedAt: active.created_date,
+          });
+          preSkoolSnapshot.current = JSON.parse(JSON.stringify(crmData));
+          mergeSkoolIntoCrm(crmData, active.data, dateRange);
+        }
+      } catch (e) {
+        console.error("Skool load from DB failed:", e);
+      }
+
       setData(crmData);
       setLoading(false);
       setStripeLoading(true);
@@ -137,25 +159,11 @@ export default function FinancesTab() {
         console.error("Stripe enrich failed:", e);
       }
       setStripeLoading(false);
-      try {
-        const uploads = await fetchSkoolUploads();
-        setSkoolHistory(uploads);
-        const active = uploads.find(u => u.is_active);
-        if (active?.data) {
-          applySkool(active.data, {
-            id: active.id,
-            fileName: active.file_name,
-            uploadedAt: active.created_date,
-          });
-        }
-      } catch (e) {
-        console.error("Skool load from DB failed:", e);
-      }
     } catch (e) {
       console.error("Finances load failed:", e);
       setLoading(false);
     }
-  }, [applySkool]);
+  }, [dateRange]);
 
   useEffect(() => { loadData(null); }, [loadData]);
 
