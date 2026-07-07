@@ -148,3 +148,90 @@ export function pctChange(current, previous) {
   if (!previous || previous === 0) return null;
   return ((current - previous) / previous) * 100;
 }
+
+// ============ Subscription Plan Analytics ============
+
+export const SUB_PLAN_CATEGORIES = {
+  monthly: { label: "Monthly", short: "Monthly", color: "#0d9488" },
+  annual: { label: "Annual / Yearly", short: "Annual", color: "#f59e0b" },
+  one_time: { label: "One-Time", short: "One-Time", color: "#6366f1" },
+  inner_circle: { label: "Inner Circle", short: "IC", color: "#8b5cf6" },
+  handstand: { label: "Handstand", short: "Handstand", color: "#ec4899" },
+  other: { label: "Other", short: "Other", color: "#94a3b8" },
+};
+
+export function categorizeSubscriptionPlan(planStr) {
+  const lower = (planStr || "").toLowerCase();
+  if (lower.includes("inner circle")) return "inner_circle";
+  if (lower.includes("handstand")) return "handstand";
+  if (lower.includes("year") || lower.includes("annual")) return "annual";
+  if (lower.includes("month") || lower.includes("promo") || lower.includes("special") || lower.includes("returning") || lower.includes("movement")) return "monthly";
+  if (lower.includes("one-time") || lower.includes("one_time")) return "one_time";
+  return "other";
+}
+
+export function getPlanPrice(planStr) {
+  const match = (planStr || "").match(/\$(\d+(?:\.\d+)?)/);
+  return match ? parseFloat(match[1]) : 0;
+}
+
+export function isAnnualBilling(planStr) {
+  const lower = (planStr || "").toLowerCase();
+  return lower.includes("year") || lower.includes("annual");
+}
+
+export function computePlanUserTrend(contacts, periods, interval) {
+  const planData = contacts
+    .map(c => ({
+      join: normalizeDate(c.first_payment_date),
+      churn: normalizeDate(c.subscription_canceled),
+      plan: categorizeSubscriptionPlan(c.purchase_plan),
+    }))
+    .filter(cd => cd.join);
+
+  const cats = Object.keys(SUB_PLAN_CATEGORIES);
+
+  return periods.map(p => {
+    const result = { period: p.key, label: formatPeriodLabel(p.key, interval) };
+    for (const cat of cats) {
+      const inCat = planData.filter(cd => cd.plan === cat);
+      result[`${cat}_active`] = inCat.filter(cd => cd.join <= p.end && (!cd.churn || cd.churn > p.end)).length;
+      result[`${cat}_new`] = inCat.filter(cd => cd.join >= p.start && cd.join <= p.end).length;
+      result[`${cat}_churned`] = inCat.filter(cd => cd.churn && cd.churn >= p.start && cd.churn <= p.end).length;
+    }
+    result.total_active = planData.filter(cd => cd.join <= p.end && (!cd.churn || cd.churn > p.end)).length;
+    result.total_new = planData.filter(cd => cd.join >= p.start && cd.join <= p.end).length;
+    result.total_churned = planData.filter(cd => cd.churn && cd.churn >= p.start && cd.churn <= p.end).length;
+    return result;
+  });
+}
+
+export function computePlanRevenueTrend(dailyData, productMonthly, periods, interval) {
+  const cats = Object.keys(SUB_PLAN_CATEGORIES);
+
+  return periods.map(p => {
+    const result = { period: p.key, label: formatPeriodLabel(p.key, interval) };
+    let total = 0;
+    for (const cat of cats) {
+      let rev = 0;
+      if (interval === "monthly" || interval === "yearly") {
+        const months = productMonthly?.[cat] || {};
+        for (const [mk, md] of Object.entries(months)) {
+          const matches = interval === "monthly" ? mk === p.key : mk.startsWith(p.key);
+          if (matches) rev += md.net || 0;
+        }
+      } else {
+        for (const [dayKey, dd] of Object.entries(dailyData || {})) {
+          const dayDate = new Date(dayKey + "T00:00:00");
+          if (dayDate >= p.start && dayDate <= p.end) {
+            rev += dd.products?.[cat]?.net || 0;
+          }
+        }
+      }
+      result[`${cat}_revenue`] = Math.round(rev);
+      total += rev;
+    }
+    result.total_revenue = Math.round(total);
+    return result;
+  });
+}

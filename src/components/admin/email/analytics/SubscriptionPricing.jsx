@@ -1,195 +1,123 @@
-import React, { useMemo } from "react";
-import { motion } from "framer-motion";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { categorizePlan, formatMoney } from "@/components/admin/email/analytics/helpers";
-
-const CATEGORY_META = {
-  monthly: { label: "Monthly", color: "#006d6d" },
-  annual: { label: "Annual", color: "#c69c33" },
-  untagged: { label: "Untagged", color: "#aab8c2" },
-};
-
-const PRICING_TIERS = [
-  { tier: "Monthly", monthly: "$35", annualMoEq: "$35" },
-  { tier: "Promo", monthly: "$25", annualMoEq: "$25" },
-  { tier: "Annual", monthly: "—", annualMoEq: "$20.83" },
-  { tier: "Handstand Course", monthly: "—", annualMoEq: "$97 (one-time)" },
-  { tier: "Inner Circle", monthly: "—", annualMoEq: "$350 (one-time)" },
-];
+import React, { useState, useMemo } from "react";
+import SubscriptionControls from "./subscription/SubscriptionControls";
+import PlanSummaryCards from "./subscription/PlanSummaryCards";
+import PlanTrendChart from "./subscription/PlanTrendChart";
+import PlanBreakdownCards from "./subscription/PlanBreakdownCards";
+import PlanDetailTable from "./subscription/PlanDetailTable";
+import ExportButton from "./ExportButton";
+import {
+  generatePeriods, getComparisonRange,
+  computePlanUserTrend, computePlanRevenueTrend,
+  SUB_PLAN_CATEGORIES,
+} from "@/lib/trendUtils";
 
 export default function SubscriptionPricing({ contacts, financials }) {
-  const breakdown = useMemo(() => {
-    const cats = { monthly: { users: 0, revenue: 0 }, annual: { users: 0, revenue: 0 }, untagged: { users: 0, revenue: 0 } };
-    for (const c of contacts) {
-      if (!c.is_paying_customer) continue;
-      const cat = categorizePlan(c.purchase_plan);
-      cats[cat].users += 1;
-      cats[cat].revenue += c.total_paid || 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const [dateFrom, setDateFrom] = useState("2024-07-01");
+  const [dateTo, setDateTo] = useState(today);
+  const [interval, setInterval] = useState("monthly");
+  const [comparison, setComparison] = useState(false);
+  const [chartType, setChartType] = useState("bar");
+  const [metric, setMetric] = useState("users");
+
+  const periods = useMemo(() => generatePeriods(dateFrom, dateTo, interval), [dateFrom, dateTo, interval]);
+  const userTrend = useMemo(() => computePlanUserTrend(contacts, periods, interval), [contacts, periods, interval]);
+  const revTrend = useMemo(() => computePlanRevenueTrend(financials.daily_data, financials.product_monthly, periods, interval), [financials, periods, interval]);
+
+  const planSummary = useMemo(() => {
+    const summary = {};
+    const lastUser = userTrend[userTrend.length - 1] || {};
+    for (const cat of Object.keys(SUB_PLAN_CATEGORIES)) {
+      summary[cat] = {
+        active: lastUser[`${cat}_active`] || 0,
+        revenue: revTrend.reduce((s, r) => s + (r[`${cat}_revenue`] || 0), 0),
+        newSignups: userTrend.reduce((s, u) => s + (u[`${cat}_new`] || 0), 0),
+        churned: userTrend.reduce((s, u) => s + (u[`${cat}_churned`] || 0), 0),
+      };
     }
-    return cats;
-  }, [contacts]);
+    return summary;
+  }, [userTrend, revTrend]);
 
-  const totalUsers = breakdown.monthly.users + breakdown.annual.users + breakdown.untagged.users;
+  const totalRevenue = revTrend.reduce((s, r) => s + (r.total_revenue || 0), 0);
+  const totalActive = (userTrend[userTrend.length - 1] || {}).total_active || 0;
 
-  const pieData = useMemo(() => [
-    { name: "Monthly", value: breakdown.monthly.users, color: CATEGORY_META.monthly.color },
-    { name: "Annual", value: breakdown.annual.users, color: CATEGORY_META.annual.color },
-    { name: "Untagged", value: breakdown.untagged.users, color: CATEGORY_META.untagged.color },
-  ].filter(d => d.value > 0), [breakdown]);
+  const compData = useMemo(() => {
+    if (!comparison) return null;
+    const comp = getComparisonRange(dateFrom, dateTo);
+    const compPeriods = generatePeriods(comp.from, comp.to, interval);
+    return {
+      userTrend: computePlanUserTrend(contacts, compPeriods, interval),
+      revTrend: computePlanRevenueTrend(financials.daily_data, financials.product_monthly, compPeriods, interval),
+    };
+  }, [comparison, dateFrom, dateTo, interval, contacts, financials]);
 
-  const planBreakdown = useMemo(() => {
-    return Object.entries(financials.plan_breakdown || {})
-      .sort((a, b) => b[1] - a[1])
-      .map(([plan, count]) => ({ plan, count, category: categorizePlan(plan) }));
-  }, [financials]);
+  const exportRaw = useMemo(() => {
+    return userTrend.map((u, i) => {
+      const r = revTrend[i] || {};
+      const row = { period: u.label };
+      for (const cat of Object.keys(SUB_PLAN_CATEGORIES)) {
+        row[`${cat}_active`] = u[`${cat}_active`] || 0;
+        row[`${cat}_new`] = u[`${cat}_new`] || 0;
+        row[`${cat}_churned`] = u[`${cat}_churned`] || 0;
+        row[`${cat}_revenue`] = r[`${cat}_revenue`] || 0;
+      }
+      row.total_active = u.total_active || 0;
+      row.total_revenue = r.total_revenue || 0;
+      return row;
+    });
+  }, [userTrend, revTrend]);
 
-  const totalRevenue = breakdown.monthly.revenue + breakdown.annual.revenue + breakdown.untagged.revenue;
-  const monthlyPct = totalUsers > 0 ? (breakdown.monthly.users / totalUsers) * 100 : 0;
-  const annualPct = totalUsers > 0 ? (breakdown.annual.users / totalUsers) * 100 : 0;
-  const untaggedPct = totalUsers > 0 ? (breakdown.untagged.users / totalUsers) * 100 : 0;
+  const exportSummary = useMemo(() => {
+    return Object.entries(SUB_PLAN_CATEGORIES).map(([key, meta]) => {
+      const s = planSummary[key] || {};
+      return {
+        plan: meta.label,
+        active_users: s.active || 0,
+        revenue: Math.round(s.revenue || 0),
+        new_signups: s.newSignups || 0,
+        churned: s.churned || 0,
+        net_growth: (s.newSignups || 0) - (s.churned || 0),
+        arpu: s.active > 0 ? (s.revenue / s.active).toFixed(2) : 0,
+      };
+    });
+  }, [planSummary]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      {/* Left: Donut Chart */}
-      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-        <p className="text-sm font-body font-bold text-slate-900 mb-1">Billing Mix</p>
-        <p className="text-xs text-slate-400 mb-4">% of active users</p>
-        <ResponsiveContainer width="100%" height={200}>
-          <PieChart>
-            <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} innerRadius={45} label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false} style={{ fontSize: "11px", fontWeight: "bold" }}>
-              {pieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-            </Pie>
-            <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "12px" }} labelStyle={{ color: "#1e293b", fontWeight: 600 }} itemStyle={{ color: "#475569" }} />
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="flex items-center justify-center gap-4 mt-2 flex-wrap">
-          {pieData.map((d) => (
-            <div key={d.name} className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm" style={{ backgroundColor: d.color }} />
-              <span className="text-xs text-slate-600 font-body">{d.name}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
-          {Object.entries(breakdown).map(([key, val]) => {
-            const meta = CATEGORY_META[key];
-            const pct = totalUsers > 0 ? (val.users / totalUsers) * 100 : 0;
-            return (
-              <div key={key} className="flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-body">{meta.label}</span>
-                <span className="font-bold text-slate-900">{val.users} ({pct.toFixed(0)}%)</span>
-              </div>
-            );
-          })}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-            <span className="text-slate-500 font-body">ARPU</span>
-            <span className="font-bold text-teal-600">{formatMoney(financials.arpu, 2)}</span>
-          </div>
-        </div>
+    <div className="space-y-4">
+      <SubscriptionControls
+        dateFrom={dateFrom} dateTo={dateTo} interval={interval} comparison={comparison}
+        chartType={chartType} metric={metric}
+        onDateFromChange={setDateFrom} onDateToChange={setDateTo}
+        onIntervalChange={setInterval} onComparisonChange={setComparison}
+        onChartTypeChange={setChartType} onMetricChange={setMetric}
+      />
+
+      <div className="flex justify-end gap-2">
+        <ExportButton data={exportRaw} filename="subscription_raw_trend" label="Export Raw Data" />
+        <ExportButton data={exportSummary} filename="subscription_summary" label="Export Summary" />
       </div>
 
-      {/* Middle: Pricing Tables */}
-      <div className="space-y-4">
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="bg-slate-900 px-4 py-2.5">
-            <p className="text-sm font-body font-bold text-white">Current Plans</p>
-          </div>
-          <table className="w-full text-sm font-body">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-xs text-slate-400 uppercase">
-                <th className="text-left py-2 px-3">Tier</th>
-                <th className="text-right py-2 px-3">Monthly</th>
-                <th className="text-right py-2 px-3">Annual (mo-eq)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PRICING_TIERS.map((row) => (
-                <tr key={row.tier} className="border-b border-slate-100">
-                  <td className="py-2 px-3 text-slate-700">{row.tier}</td>
-                  <td className="py-2 px-3 text-right text-slate-600">{row.monthly}</td>
-                  <td className="py-2 px-3 text-right text-slate-600">{row.annualMoEq}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <PlanSummaryCards planSummary={planSummary} totalRevenue={totalRevenue} totalActive={totalActive} />
 
-        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="bg-slate-900 px-4 py-2.5">
-            <p className="text-sm font-body font-bold text-white">Revenue by Plan Type</p>
-          </div>
-          <div className="p-3 space-y-2">
-            {Object.entries(breakdown).map(([key, val]) => {
-              const meta = CATEGORY_META[key];
-              const pct = totalRevenue > 0 ? (val.revenue / totalRevenue) * 100 : 0;
-              return (
-                <div key={key}>
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-slate-600 font-body">{meta.label}</span>
-                    <span className="font-bold text-slate-900">{formatMoney(val.revenue)} ({pct.toFixed(0)}%)</span>
-                  </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} className="h-full rounded-full" style={{ backgroundColor: meta.color }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <PlanTrendChart
+        userTrend={userTrend} revTrend={revTrend}
+        chartType={chartType} metric={metric}
+        compUserTrend={compData?.userTrend} compRevTrend={compData?.revTrend}
+      />
 
-      {/* Right: What To Do Here */}
-      <div className="bg-teal-50 border border-teal-200 rounded-xl p-4">
-        <p className="text-xs font-bold text-teal-800 uppercase tracking-wide mb-3">What to do here</p>
-        <ul className="space-y-2.5 text-sm text-slate-600 font-body">
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>Untagged % rising month over month = a data-hygiene problem, not a pricing one — flag it.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>Annual mix % (industry norm) = room to push annual harder at checkout and in win-back flows.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>Every price change should show up here within one billing cycle — use it to validate pricing tests.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>Legacy/grandfathered cohorts should shrink to zero as migration completes — track that decline here.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>Breakdown over time and trends per monthly, annual and per pricing point.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-teal-600 mt-0.5">•</span>
-            <span>ARPU, and % of monthly vs annual.</span>
-          </li>
+      <PlanBreakdownCards planSummary={planSummary} userTrend={userTrend} revTrend={revTrend} metric={metric} />
+
+      <PlanDetailTable contacts={contacts} dateFrom={dateFrom} dateTo={dateTo} />
+
+      <div className="bg-slate-100 border border-slate-200 rounded-xl p-4">
+        <p className="text-sm font-body font-bold text-slate-900 mb-2">Data Sources & Notes</p>
+        <ul className="space-y-1.5 text-sm text-slate-600 font-body">
+          <li>• <strong>User counts:</strong> Computed from CRM contacts using Stripe first_payment_date & subscription_canceled — shows active, new signups, and churned per period.</li>
+          <li>• <strong>Revenue:</strong> From Stripe charges (product_monthly). Per-plan revenue is available from Apr 2026 onward (post-migration). Historical months show aggregate only.</li>
+          <li>• <strong>Plan categorization:</strong> Yearly and Annual plans are combined into one "Annual / Yearly" category. Monthly, Promo, and Returning Movers are combined into "Monthly".</li>
+          <li>• <strong>Total Paid:</strong> Cumulative (all-time) per contact, not period-specific.</li>
+          <li>• <strong>Comparison:</strong> When enabled, dashed line shows the previous equivalent period's total.</li>
         </ul>
-      </div>
-
-      {/* Full width: Customers by Plan detail */}
-      <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-        <p className="text-sm font-body font-bold text-slate-900 mb-3">Customers by Plan (Detailed Breakdown)</p>
-        <div className="space-y-2">
-          {planBreakdown.map(({ plan, count, category }, idx) => {
-            const maxCount = planBreakdown[0]?.count || 1;
-            const pct = (count / maxCount) * 100;
-            const meta = CATEGORY_META[category];
-            return (
-              <div key={plan}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-slate-600 font-body truncate pr-2">{plan}</span>
-                  <span className="text-sm font-bold text-slate-900 flex-shrink-0">{count}</span>
-                </div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.5, delay: idx * 0.05 }} className="h-full rounded-full" style={{ backgroundColor: meta.color }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </div>
   );
