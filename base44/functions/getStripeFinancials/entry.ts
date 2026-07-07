@@ -248,6 +248,132 @@ Deno.serve(async (req) => {
     }
     console.log(`Stripe: processed charges, ${Object.keys(stripeMap).length} total contacts`);
 
+    // 3. Process migration CSV — backfill historical revenue for migrated subscriptions
+    // The migration file contains 294 subscriptions imported on April 30, 2026.
+    // These subscriptions exist in Stripe but have no charges before the migration date.
+    // We use billing_cycle_anchor + price interval to estimate original start dates
+    // and backfill monthly revenue for pre-migration months.
+    const MIGRATION_CSV_URL = "https://media.base44.com/files/public/6a0c583766eb003a373061f3/5358d4f5b_migration_v38.csv";
+    let migrationStats = { rows: 0, backfilled_contacts: 0, backfilled_revenue: 0 };
+    try {
+      const csvResponse = await fetch(MIGRATION_CSV_URL);
+      const csvText = await csvResponse.text();
+      const lines = csvText.trim().split('\n');
+      const headers = lines[0].split(',');
+
+      const migrationRows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',');
+        const row = {};
+        for (let j = 0; j < headers.length; j++) {
+          row[headers[j].trim()] = (values[j] || '').trim();
+        }
+        if (row.customer && row['items.0.price'] && !row.processing_error) {
+          migrationRows.push(row);
+        }
+      }
+      migrationStats.rows = migrationRows.length;
+
+      // Fetch unique price IDs from Stripe (only ~8 unique IDs)
+      const uniquePriceIds = [...new Set(migrationRows.map(r => r['items.0.price']))];
+      const priceCache = {};
+      for (const priceId of uniquePriceIds) {
+        try {
+          const price = await stripe.prices.retrieve(priceId);
+          priceCache[priceId] = {
+            amount: price.unit_amount / 100,
+            interval: price.recurring?.interval || 'one_time',
+            interval_count: price.recurring?.interval_count || 1,
+          };
+        } catch (e) {
+          console.log(`Migration: failed to fetch price ${priceId}: ${e.message}`);
+        }
+      }
+
+      // Build customer_id → email lookup from stripeMap
+      const custIdToEmail = {};
+      for (const [em, d] of Object.entries(stripeMap)) {
+        if (d.stripe_customer_id) custIdToEmail[d.stripe_customer_id] = em;
+      }
+
+      const migrationDate = new Date(1777663568 * 1000); // April 30, 2026
+
+      for (const row of migrationRows) {
+        const priceInfo = priceCache[row['items.0.price']];
+        if (!priceInfo || priceInfo.interval === 'one_time') continue;
+
+        const anchorTs = parseInt(row.billing_cycle_anchor);
+        if (!anchorTs) continue;
+        const anchorDate = new Date(anchorTs * 1000);
+
+        // Calculate billing period length in months
+        const intervalMonths = priceInfo.interval === 'year'
+          ? 12 * priceInfo.interval_count
+          : priceInfo.interval_count;
+
+        // Monthly MRR for this subscription
+        const monthlyMrr = priceInfo.amount / intervalMonths;
+
+        // Estimated original start = billing_cycle_anchor - 1 billing period
+        // (the anchor is the next payment date, so the current period started 1 period before)
+        const estimatedStart = new Date(anchorDate);
+        estimatedStart.setMonth(estimatedStart.getMonth() - intervalMonths);
+
+        // Only backfill if estimated start is before migration date
+        if (estimatedStart >= migrationDate) continue;
+
+        const email = custIdToEmail[row.customer];
+        if (!email) continue;
+
+        const data = stripeMap[email];
+        if (!data) continue;
+
+        // Update first_payment_date if estimated start is earlier
+        if (!data.first_payment_date || estimatedStart < new Date(data.first_payment_date)) {
+          data.first_payment_date = estimatedStart.toISOString();
+        }
+
+        // Backfill monthly revenue for pre-migration months
+        let currentMonth = new Date(estimatedStart.getFullYear(), estimatedStart.getMonth(), 1);
+        const migrationMonthStart = new Date(migrationDate.getFullYear(), migrationDate.getMonth(), 1);
+
+        while (currentMonth < migrationMonthStart) {
+          const monthKey = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`;
+
+          // Pre-migration months have no charge data — always add (cumulative across all migrated subs)
+          if (!financials.monthly_data[monthKey]) {
+            financials.monthly_data[monthKey] = { revenue: 0, transactions: 0 };
+          }
+          financials.monthly_data[monthKey].revenue += monthlyMrr;
+          financials.monthly_data[monthKey].transactions += 1;
+          financials.total_revenue += monthlyMrr;
+          data.total_paid += monthlyMrr;
+          migrationStats.backfilled_revenue += monthlyMrr;
+
+          if (!data.payment_months.includes(monthKey)) {
+            data.payment_months.push(monthKey);
+          }
+
+          currentMonth.setMonth(currentMonth.getMonth() + 1);
+        }
+
+        // Mark as paying if not already (migrated subscriptions should be active)
+        if (!data.is_paying && !data.is_churned) {
+          data.is_paying = true;
+          data.is_recurring = true;
+          if (!data.plan) {
+            data.plan = inferPlanFromPrice({ unit_amount: priceInfo.amount * 100, recurring: { interval: priceInfo.interval, interval_count: priceInfo.interval_count } });
+          }
+        }
+
+        migrationStats.backfilled_contacts++;
+      }
+
+      console.log(`Migration: ${migrationStats.rows} rows, ${migrationStats.backfilled_contacts} backfilled, $${migrationStats.backfilled_revenue.toFixed(2)} revenue`);
+    } catch (e) {
+      console.error("Migration processing failed:", e.message);
+    }
+
     const sortedMonths = Object.entries(financials.monthly_data)
       .sort(([a], [b]) => a.localeCompare(b));
     financials.monthly_data = Object.fromEntries(sortedMonths);
