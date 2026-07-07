@@ -4,6 +4,7 @@ import { DollarSign, TrendingUp, TrendingDown, Users, RefreshCw, Crown, RotateCc
 import {
   fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, mergeSkoolIntoCrm,
   fetchSkoolUploads, saveSkoolUpload, restoreSkoolUpload, activateSkoolUpload,
+  clearCrmCache,
 } from "@/lib/crmData";
 import SkoolUpload from "@/components/admin/email/SkoolUpload";
 import FinancialReportUpload from "@/components/admin/email/FinancialReportUpload";
@@ -123,16 +124,17 @@ export default function FinancesTab() {
     }
   }, [applySkool]);
 
-  const loadData = useCallback(async (stripeRange) => {
+  const loadData = useCallback(async (stripeRange, force = false) => {
+    if (force) clearCrmCache();
     setLoading(true);
     try {
-      const crmData = await fetchCrmOnly();
+      const crmData = await fetchCrmOnly(force);
 
       // Merge Skool into CRM data synchronously (before setData) — avoids
       // race conditions with async setData updaters that were dropping
       // Skool-only contacts from the source breakdown table.
       try {
-        const uploads = await fetchSkoolUploads();
+        const uploads = await fetchSkoolUploads(force);
         setSkoolHistory(uploads);
         const active = uploads.find(u => u.is_active);
         if (active?.data) {
@@ -153,7 +155,7 @@ export default function FinancesTab() {
       setLoading(false);
       setStripeLoading(true);
       try {
-        const stripeData = await fetchStripeOnly(stripeRange);
+        const stripeData = await fetchStripeOnly(stripeRange, force);
         setData(prev => prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev);
       } catch (e) {
         console.error("Stripe enrich failed:", e);
@@ -231,7 +233,7 @@ export default function FinancesTab() {
               Loading Stripe…
             </span>
           )}
-          <button onClick={loadData} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <button onClick={() => loadData(null, true)} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </span>

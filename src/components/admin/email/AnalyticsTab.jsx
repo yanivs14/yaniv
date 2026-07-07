@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Percent, TrendingUp, PieChart, Filter, MapPin, Flag, ArrowLeft, RefreshCw } from "lucide-react";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm } from "@/lib/crmData";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm, clearCrmCache } from "@/lib/crmData";
 import ExecutiveOverview from "@/components/admin/email/analytics/ExecutiveOverview";
 import UnitEconomics from "@/components/admin/email/analytics/UnitEconomics";
 import TrendOverTime from "@/components/admin/email/analytics/TrendOverTime";
@@ -29,14 +29,15 @@ export default function AnalyticsTab() {
   const [stripeLoading, setStripeLoading] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   // Analytics dashboard — live data from Stripe, Skool, Kit
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (force = false) => {
+    if (force) clearCrmCache();
     setLoading(true);
     setSelectedCard(null);
     try {
-      const crmData = await fetchCrmOnly();
+      const crmData = await fetchCrmOnly(force);
       let merged = crmData;
       try {
-        const uploads = await fetchSkoolUploads();
+        const uploads = await fetchSkoolUploads(force);
         const active = uploads.find(u => u.is_active);
         if (active?.data) merged = mergeSkoolIntoCrm({ ...merged }, active.data, null);
       } catch {}
@@ -44,7 +45,7 @@ export default function AnalyticsTab() {
       setLoading(false);
       setStripeLoading(true);
       try {
-        const stripeData = await fetchStripeOnly();
+        const stripeData = await fetchStripeOnly(null, force);
         setData(prev => (prev ? mergeStripeIntoCrm({ ...prev }, stripeData) : prev));
       } catch (e) {
         console.error("Stripe enrich failed:", e);
@@ -115,7 +116,7 @@ export default function AnalyticsTab() {
               Loading Stripe…
             </span>
           )}
-          <button onClick={loadData} className="text-slate-400 hover:text-teal-600 transition-colors">
+          <button onClick={() => loadData(true)} className="text-slate-400 hover:text-teal-600 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </span>

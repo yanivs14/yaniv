@@ -1,23 +1,58 @@
 import { base44 } from "@/api/base44Client";
 
-export async function fetchCrmOnly() {
-  const res = await base44.functions.invoke("getCrmDashboard", {});
-  return res.data;
+// Shared in-memory cache — prevents re-fetching CRM/Stripe/Skool data on every tab switch.
+// Both FinancesTab and AnalyticsTab call the same fetch functions, so the first tab
+// to load populates the cache and the second tab gets instant results.
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const _cache = { crm: null, stripe: null, skool: null, ts: 0 };
+
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }
 
-export async function fetchStripeOnly(dateRange) {
+export function clearCrmCache() {
+  _cache.crm = null;
+  _cache.stripe = null;
+  _cache.skool = null;
+  _cache.ts = 0;
+}
+
+export async function fetchCrmOnly(force = false) {
+  if (!force && _cache.crm && Date.now() - _cache.ts < CACHE_TTL) {
+    return clone(_cache.crm);
+  }
+  const res = await base44.functions.invoke("getCrmDashboard", {});
+  _cache.crm = res.data;
+  _cache.ts = Date.now();
+  return clone(_cache.crm);
+}
+
+export async function fetchStripeOnly(dateRange, force = false) {
+  // Only cache unfiltered (default) requests — date-filtered requests are per-tab
+  if (!dateRange && !force && _cache.stripe && Date.now() - _cache.ts < CACHE_TTL) {
+    return clone(_cache.stripe);
+  }
   const payload = {};
   if (dateRange) {
     payload.created_after = dateRange.created_after;
     payload.created_before = dateRange.created_before;
   }
   const res = await base44.functions.invoke("getStripeFinancials", payload);
+  if (!dateRange) {
+    _cache.stripe = res.data;
+    _cache.ts = Date.now();
+  }
   return res.data;
 }
 
-export async function fetchSkoolUploads() {
+export async function fetchSkoolUploads(force = false) {
+  if (!force && _cache.skool && Date.now() - _cache.ts < CACHE_TTL) {
+    return clone(_cache.skool);
+  }
   const res = await base44.functions.invoke("manageSkoolUpload", { action: "load" });
-  return res.data?.uploads || [];
+  _cache.skool = res.data?.uploads || [];
+  _cache.ts = Date.now();
+  return clone(_cache.skool);
 }
 
 export async function saveSkoolUpload(fileName, data) {
