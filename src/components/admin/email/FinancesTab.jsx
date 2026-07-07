@@ -170,11 +170,10 @@ export default function FinancesTab() {
     }
   }, [dateRange]);
 
-  useEffect(() => { loadData(null); }, [loadData]);
-
   useEffect(() => {
     if (isFirstLoad.current) {
       isFirstLoad.current = false;
+      loadData(null);
       return;
     }
     loadData(dateRange);

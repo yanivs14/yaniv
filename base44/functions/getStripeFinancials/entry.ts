@@ -454,15 +454,23 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Recalculate total_revenue from all monthly data
-        financials.total_revenue = Object.values(financials.monthly_data).reduce(
-          (sum, m) => sum + (m.revenue || 0), 0
-        );
-
         console.log(`Historical: merged ${Object.keys(historicalMonthly).length} months from FinancialReport`);
       }
     } catch (e) {
       console.error("Historical merge failed:", e.message);
+    }
+
+    // Recalculate total_revenue from monthly data — respect date filter when active
+    if (hasDateFilter) {
+      const fromKey = createdAfter ? createdAfter.slice(0, 7) : null;
+      const toKey = createdBefore ? createdBefore.slice(0, 7) : null;
+      financials.total_revenue = Object.entries(financials.monthly_data)
+        .filter(([key]) => (!fromKey || key >= fromKey) && (!toKey || key <= toKey))
+        .reduce((sum, [, m]) => sum + (m.revenue || 0), 0);
+    } else {
+      financials.total_revenue = Object.values(financials.monthly_data).reduce(
+        (sum, m) => sum + (m.revenue || 0), 0
+      );
     }
 
     const sortedMonths = Object.entries(financials.monthly_data)
