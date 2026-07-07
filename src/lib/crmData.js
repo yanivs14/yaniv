@@ -49,6 +49,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
         is_paying_customer: c.is_paying_customer || sd.is_paying,
         is_churned: c.is_churned || sd.is_churned,
         purchase_plan: c.purchase_plan || sd.skool_plan || "",
+        is_inner_circle: c.is_inner_circle || /inner\s*circle/i.test(sd.skool_plan || ""),
       };
     }
     return c;
@@ -63,6 +64,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
       is_paying_customer: sd.is_paying,
       is_churned: sd.is_churned,
       purchase_plan: sd.skool_plan || "",
+      is_inner_circle: /inner\s*circle/i.test(sd.skool_plan || ""),
       created_date: sd.skool_joined || null,
     };
     for (const k of Object.keys(contact)) {
@@ -76,75 +78,13 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
   crmData.stats.churned = crmData.contacts.filter(c => c.is_churned).length;
   crmData.stats.total_contacts = crmData.contacts.length;
   crmData.stats.in_skool = Object.keys(skoolData.skoolMap).length;
+  crmData.stats.inner_circle = crmData.contacts.filter(c => c.is_inner_circle && c.is_paying_customer && !c.is_churned).length;
 
-  // Filter Skool financials by date range if provided
-  const sf = skoolData.financials || {};
-  let skoolRevenue = sf.total_revenue || 0;
-  let skoolMonthly = sf.monthly_data || {};
-
-  if (dateRange) {
-    const fromKey = dateRange.created_after ? dateRange.created_after.replace(/-/g, '').slice(0, 6) : '000000';
-    const toKey = dateRange.created_before ? dateRange.created_before.replace(/-/g, '').slice(0, 6) : '999999';
-    const filtered = {};
-    skoolRevenue = 0;
-    for (const [key, val] of Object.entries(sf.monthly_data || {})) {
-      const compact = key.replace(/-/g, '');
-      if (compact >= fromKey && compact <= toKey) {
-        filtered[key] = val;
-        skoolRevenue += val.revenue || 0;
-      }
-    }
-    skoolMonthly = filtered;
-  }
-
-  // Merge Skool financials — create a NEW object so React detects the change (useMemo)
-  const oldFin = crmData.financials || {};
-
-  const now = new Date();
-  const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}`;
-
-  // Build merged monthly data in a fresh object
-  const combinedMonthly = {};
-  for (const [key, val] of Object.entries(oldFin.monthly_data || {})) {
-    combinedMonthly[key] = { ...val, revenue: val.revenue || 0, transactions: val.transactions || 0 };
-  }
-  let thisMonthRev = oldFin.this_month_revenue || 0;
-  let thisMonthTx = oldFin.this_month_transactions || 0;
-  let lastMonthRev = oldFin.last_month_revenue || 0;
-  let lastMonthTx = oldFin.last_month_transactions || 0;
-  for (const [key, val] of Object.entries(skoolMonthly)) {
-    // Skip historical months — they already have authoritative combined data from the Excel report
-    if (combinedMonthly[key]?.is_historical) continue;
-    if (!combinedMonthly[key]) combinedMonthly[key] = { revenue: 0, transactions: 0 };
-    combinedMonthly[key].revenue += val.revenue || 0;
-    combinedMonthly[key].transactions += val.transactions || 0;
-    if (key === thisMonthKey) {
-      thisMonthRev += val.revenue || 0;
-      thisMonthTx += val.transactions || 0;
-    } else if (key === lastMonthKey) {
-      lastMonthRev += val.revenue || 0;
-      lastMonthTx += val.transactions || 0;
-    }
-  }
-  const sortedMonths = Object.entries(combinedMonthly)
-    .sort(([a], [b]) => a.localeCompare(b));
-
-  const totalRev = (oldFin.total_revenue || 0) + skoolRevenue;
-  crmData.financials = {
-    ...oldFin,
-    total_revenue: totalRev,
-    skool_revenue: skoolRevenue,
-    skool_active: skoolData.stats.active_members,
-    skool_churned: skoolData.stats.churned_members,
-    this_month_revenue: thisMonthRev,
-    this_month_transactions: thisMonthTx,
-    last_month_revenue: lastMonthRev,
-    last_month_transactions: lastMonthTx,
-    monthly_data: Object.fromEntries(sortedMonths),
-    arpu: crmData.stats.paying_customers > 0 ? totalRev / crmData.stats.paying_customers : 0,
-  };
+  // Skool financials are NOT merged into revenue — Stripe is the single source of truth for payments.
+  // Skool data is used only for contact enrichment (member status, plan, IC identification).
+  if (!crmData.financials) crmData.financials = {};
+  crmData.financials.skool_active = skoolData.stats.active_members;
+  crmData.financials.skool_churned = skoolData.stats.churned_members;
 
   return crmData;
 }
@@ -166,6 +106,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
         is_refunded: sd.is_refunded,
         is_recurring: sd.is_recurring || false,
         purchase_plan: sd.plan || c.purchase_plan || "",
+        is_inner_circle: c.is_inner_circle || /inner\s*circle/i.test(sd.plan || "") || (sd.total_paid >= 350 && !sd.is_recurring),
         subscription_status: sd.subscription_status || "",
         subscription_canceled: sd.subscription_canceled || null,
         first_payment_date: sd.first_payment_date || null,
@@ -191,6 +132,7 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
       is_refunded: sd.is_refunded,
       is_recurring: sd.is_recurring || false,
       purchase_plan: sd.plan || "",
+      is_inner_circle: /inner\s*circle/i.test(sd.plan || "") || (sd.total_paid >= 350 && !sd.is_recurring),
       subscription_status: sd.subscription_status || "",
       subscription_canceled: sd.subscription_canceled || null,
       first_payment_date: sd.first_payment_date || null,
@@ -213,7 +155,14 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
   crmData.stats.refunded = crmData.contacts.filter(c => c.is_refunded).length;
   crmData.stats.in_stripe = crmData.contacts.filter(c => c.stripe_customer_id).length;
   crmData.stats.total_contacts = crmData.contacts.length;
-  crmData.financials = stripeData.financials;
+  crmData.stats.inner_circle = crmData.contacts.filter(c => c.is_inner_circle && c.is_paying_customer && !c.is_churned).length;
+
+  // Stripe is the single source of truth for revenue — preserves skool_active/skool_churned from prior merge
+  const prevSkoolActive = crmData.financials?.skool_active;
+  const prevSkoolChurned = crmData.financials?.skool_churned;
+  crmData.financials = { ...stripeData.financials };
+  if (prevSkoolActive != null) crmData.financials.skool_active = prevSkoolActive;
+  if (prevSkoolChurned != null) crmData.financials.skool_churned = prevSkoolChurned;
 
   return crmData;
 }

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { formatMoney, isThisMonth, computeMonthlyTrend } from "@/components/admin/email/analytics/helpers";
+import ExportButton from "./ExportButton";
 
 function StatusDot({ status }) {
   if (!status) return null;
@@ -62,6 +63,7 @@ export default function UnitEconomics({ contacts, financials, stats }) {
   const netRevPerCustomer = stats.paying_customers > 0 ? (financials.total_revenue - financials.total_refunded) / stats.paying_customers : 0;
 
   const trend = useMemo(() => computeMonthlyTrend(contacts, financials).slice(-13), [contacts, financials]);
+  const exportData = trend.map(t => ({ month: t.month, mrr: Math.round(t.mrr), active_members: t.activeMembers }));
 
   const cacStatus = cac === null ? "gray" : cac <= 30 ? "green" : "gold";
   const ratioStatus = ltvCacRatio === null ? "gray" : ltvCacRatio >= 3 ? "green" : "gold";
@@ -71,6 +73,10 @@ export default function UnitEconomics({ contacts, financials, stats }) {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end mb-2">
+        <ExportButton data={exportData} filename="unit_economics" label="Export" />
+      </div>
+
       {/* Ad Spend Input */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
         <label className="block text-xs text-slate-500 font-body mb-2">Monthly Ad Spend (for CAC calculation)</label>
@@ -93,16 +99,10 @@ export default function UnitEconomics({ contacts, financials, stats }) {
         <MetricCard label="Blended LTV" value={formatMoney(ltv, 0)} delay={0.05} />
         <MetricCard label="LTV : CAC Ratio" value={ltvCacRatio !== null ? `${ltvCacRatio.toFixed(1)}x` : "—"} status={ratioStatus} footer="above 3.0x min" delay={0.1} />
         <MetricCard label="CAC Payback" value={cacPayback !== null ? `${cacPayback.toFixed(1)} mo` : "—"} status={paybackStatus} footer="under 6mo target" delay={0.15} />
-        <MetricCard label="Monthly Churn" value={`${churnRate.toFixed(1)}%`} status={churnStatus} footer="vs 9.2% industry" delay={0.2} />
-        <MetricCard label="Blended ARPU" value={formatMoney(arpu, 2)} status={arpuStatus} footer="above $14 median" delay={0.25} />
+        <MetricCard label="Blended ARPU" value={formatMoney(arpu, 2)} status={arpuStatus} footer="Revenue / paying customer" delay={0.2} />
       </div>
 
-      {/* Additional Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <MetricCard label="Avg Total Paid" value={formatMoney(avgTotalPaid, 2)} footer="Across all paying customers" delay={0.3} />
-        <MetricCard label="Net Rev / Customer" value={formatMoney(netRevPerCustomer, 2)} footer="After refunds" delay={0.35} />
-        <MetricCard label="Refund Rate" value={`${refundRate.toFixed(1)}%`} footer={`${formatMoney(financials.total_refunded)} refunded`} delay={0.4} />
-      </div>
+      {/* Additional metrics moved to Screen 1 (Executive Overview) */}
 
       {/* Trend Sparklines */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
