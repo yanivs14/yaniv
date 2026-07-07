@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 // Both FinancesTab and AnalyticsTab call the same fetch functions, so the first tab
 // to load populates the cache and the second tab gets instant results.
 const CACHE_TTL = 5 * 60 * 60 * 1000; // 5 hours
-const _cache = { crm: null, stripe: null, skool: null, ts: 0 };
+const _cache = { crm: null, stripe: null, stripeFiltered: {}, skool: null, ts: 0 };
 
 function clone(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -13,6 +13,7 @@ function clone(obj) {
 export function clearCrmCache() {
   _cache.crm = null;
   _cache.stripe = null;
+  _cache.stripeFiltered = {};
   _cache.skool = null;
   _cache.ts = 0;
 }
@@ -32,19 +33,29 @@ export async function fetchCrmOnly(force = false) {
 }
 
 export async function fetchStripeOnly(dateRange, force = false) {
-  // Only cache unfiltered (default) requests — date-filtered requests are per-tab
-  if (!dateRange && !force && _cache.stripe && Date.now() - _cache.ts < CACHE_TTL) {
-    return clone(_cache.stripe);
+  const cacheKey = dateRange ? `${dateRange.created_after}_${dateRange.created_before}` : null;
+
+  if (!force) {
+    if (!cacheKey && _cache.stripe && Date.now() - _cache.ts < CACHE_TTL) {
+      return clone(_cache.stripe);
+    }
+    if (cacheKey && _cache.stripeFiltered[cacheKey] && Date.now() - _cache.stripeFiltered[cacheKey].ts < CACHE_TTL) {
+      return clone(_cache.stripeFiltered[cacheKey].data);
+    }
   }
+
   const payload = {};
   if (dateRange) {
     payload.created_after = dateRange.created_after;
     payload.created_before = dateRange.created_before;
   }
   const res = await base44.functions.invoke("getStripeFinancials", payload);
-  if (!dateRange) {
+
+  if (!cacheKey) {
     _cache.stripe = res.data;
     _cache.ts = Date.now();
+  } else {
+    _cache.stripeFiltered[cacheKey] = { data: res.data, ts: Date.now() };
   }
   return res.data;
 }

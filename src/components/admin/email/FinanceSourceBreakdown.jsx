@@ -27,9 +27,13 @@ export default function FinanceSourceBreakdown({ data }) {
 
   // Revenue by source — Skool vs Stripe vs other
   const sourceRevenue = useMemo(() => {
-    const skoolRev = financials.skool_revenue || 0;
-    const stripeRev = Math.max(0, (financials.total_revenue || 0) - skoolRev);
-    const total = financials.total_revenue || 0;
+    const isFiltered = financials.date_filtered;
+    // When date-filtered, total_revenue comes entirely from Stripe (Skool revenue isn't filtered)
+    const skoolRev = isFiltered ? 0 : (financials.skool_revenue || 0);
+    const stripeRev = isFiltered
+      ? (financials.total_revenue || 0)
+      : Math.max(0, (financials.total_revenue || 0) - skoolRev);
+    const total = stripeRev + skoolRev;
 
     return [
       { key: "skool", label: "Skool", revenue: skoolRev, pct: total > 0 ? (skoolRev / total) * 100 : 0 },
