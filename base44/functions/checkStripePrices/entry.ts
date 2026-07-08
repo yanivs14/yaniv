@@ -7,7 +7,7 @@ const ALL_PRICES = [
   { id: "price_1TZC114T8Uo6bhpdlJzK5jt4", label: "Membership — Monthly $35", source: "createCheckout", plan: "monthly" },
   { id: "price_1Tndsr4T8Uo6bhpd4wTA4Q8F", label: "Membership — Annual $250", source: "createCheckout", plan: "annual" },
   { id: "price_1Th6Ap4T8Uo6bhpdZQd9Idsx", label: "Membership — Promo", source: "createCheckout", plan: "promo" },
-  { id: "price_1To1QR4T8Uo6bhpdQiRQf3F0", label: "Handstand Course", source: "createHandstandCheckout", plan: "handstand_course" },
+  { id: "price_1Tr1EW4T8Uo6bhpdyQUUaqg9", label: "Handstand Course", source: "createHandstandCheckout", plan: "handstand_course" },
   { id: "price_1TjKfZ4T8Uo6bhpdGD4MKCBW", label: "Movement7 Prep — Monthly", source: "createMovement7Checkout", plan: "monthly" },
   { id: "price_1TjKfZ4T8Uo6bhpdHWYJf0dw", label: "Movement7 Prep — Annual", source: "createMovement7Checkout", plan: "annual" },
 ];

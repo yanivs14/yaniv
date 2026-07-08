@@ -1,6 +1,6 @@
 import Stripe from "npm:stripe@14";
 
-const HANDSTAND_PRICE_ID = "price_1To1QR4T8Uo6bhpdQiRQf3F0";
+const HANDSTAND_PRICE_ID = "price_1Tr1EW4T8Uo6bhpdyQUUaqg9";
 
 Deno.serve(async (req) => {
   try {
