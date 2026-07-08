@@ -1,67 +1,27 @@
 import { Layers, Scale, Move, Crown, Zap, Wrench } from "lucide-react";
 
-const PHASES = [
-  {
-    number: "01",
-    icon: Layers,
-    title: "The Foundation Phase",
-    description:
-      "Building the absolute core essentials of handbalancing — mastering your body line alignment to unlock effortless balance over raw muscle strain.",
-  },
-  {
-    number: "02",
-    icon: Scale,
-    title: "Balance Phase",
-    description:
-      "Applying endurance protocols to wall drills while learning the specific entry mechanics to find and hold your freestanding handstand.",
-  },
-  {
-    number: "03",
-    icon: Move,
-    title: "Movement Phase",
-    description:
-      "Practicing foundational shapes inside the handstand to deepen your control and prepare your shoulders for more complex patterns.",
-  },
-  {
-    number: "04",
-    icon: Crown,
-    title: "Specialist Phase",
-    description:
-      "Achieving strict mastery over advanced shapes and conditioning the body for the elite transition toward the one-arm handstand.",
-  },
-];
+const PHASE_ICONS = [Layers, Scale, Move, Crown];
+const EXTRA_ICONS = [Zap, Wrench];
 
-const EXTRAS = [
-  {
-    icon: Zap,
-    title: "Handstand Elements",
-    description:
-      "Training advanced, dynamic transitions with a focus on active mobility and movement efficiency, transforming your handstand into a functional platform for complex elements.",
-  },
-  {
-    icon: Wrench,
-    title: "Toolbox",
-    description:
-      "Your go-to repository for supplementary work, covering joint preparation, wrist warm-ups, and the essential mobility drills needed to support your practice.",
-  },
-];
+export default function HsPreProgram({ content }) {
+  const c = content || {};
+  const phases = c.phases || [];
+  const extras = c.extras || [];
 
-export default function HsPreProgram() {
   return (
     <section id="program" className="py-24 px-6 max-w-5xl mx-auto">
       <div className="text-center mb-16">
-        <span className="text-[#00fff7] text-sm font-body uppercase tracking-[0.3em]">The Program</span>
-        <h2 className="font-heading text-5xl md:text-6xl font-extrabold uppercase mt-3">
-          Four Phases to Mastery
+        <h2 className="font-heading text-5xl md:text-6xl font-extrabold uppercase">
+          {c.programTitle}
         </h2>
       </div>
 
       <div className="grid gap-5">
-        {PHASES.map((phase) => {
-          const Icon = phase.icon;
+        {phases.map((phase, i) => {
+          const Icon = PHASE_ICONS[i] || Layers;
           return (
             <div
-              key={phase.number}
+              key={i}
               className="group flex gap-6 p-7 rounded-xl bg-[#161616] border border-[#2A2A2A] hover:border-[#00fff7]/40 transition-colors"
             >
               <div className="flex-shrink-0 flex flex-col items-center gap-3">
@@ -80,11 +40,11 @@ export default function HsPreProgram() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-5 mt-5">
-        {EXTRAS.map((item) => {
-          const Icon = item.icon;
+        {extras.map((item, i) => {
+          const Icon = EXTRA_ICONS[i] || Zap;
           return (
             <div
-              key={item.title}
+              key={i}
               className="p-7 rounded-xl bg-gradient-to-br from-[#1C1C1C] to-[#161616] border border-[#2A2A2A] hover:border-[#00fff7]/40 transition-colors"
             >
               <div className="w-12 h-12 rounded-full bg-[#00fff7]/10 flex items-center justify-center mb-4">
