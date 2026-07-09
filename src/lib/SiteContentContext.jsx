@@ -111,6 +111,18 @@ const DEFAULT_CONTENT = {
       "Priority access to new releases",
       "Annual member perks & content",
     ],
+    innerCircleTitle: "Roye, Maxed Out.",
+    innerCircleDescription: "The most personal experience we offer – everything in Monthly/Annual, plus Roye's direct guidance, every step of the way.",
+    innerCircleFeatures: [
+      "Everything in Monthly/Annual",
+      "Personalized plan for your body & goals",
+      "Weekly live feedback with Roye",
+      "Ongoing adjustments as you progress",
+      "Direct support, every step",
+      "Limited spots - serious members only",
+    ],
+    innerCircleCta: "Apply to Inner Circle",
+    innerCircleFootnote: "Starts with a private consultation.",
   },
   finalCta: {
     eyebrow: "The only question",

@@ -98,7 +98,6 @@ export default function HomeBackup() {
       <BuiltForEveryoneSection />
       <BeforeAfterCarousel />
       <PillarsSection />
-      <HowItFlowsSection />
       <MarqueeBanner />
       {/* #who */}
       <DegradingSection />
@@ -108,6 +107,7 @@ export default function HomeBackup() {
       {/* Video testimonials below before/after carousel */}
       {/* #pricing */}
       <PricingSection />
+      <HowItFlowsSection />
       {/* #inner-circle */}
       <InnerCircleSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>

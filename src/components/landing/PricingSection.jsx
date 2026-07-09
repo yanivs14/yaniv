@@ -5,6 +5,7 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { trackPricingViewed, track, getGaClientId } from "@/lib/analytics";
 import { useSectionTracking } from "@/hooks/useSectionTracking";
+import InnerCirclePricingCard from "./InnerCirclePricingCard";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
@@ -15,7 +16,7 @@ async function startCheckout(plan) {
   }
   _checkoutInProgress = true;
   try {
-    track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['monthly', 'annual'], page_state: 'pricing_section' });
+    track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['monthly', 'annual', 'inner_circle'], page_state: 'pricing_section' });
     const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {
@@ -139,6 +140,8 @@ function AnnualCard({ c, mobile = false }) {
 
 }
 
+const MOBILE_TABS = ["annual", "monthly", "innerCircle"];
+
 export default function PricingSection() {
   const { content } = useSiteContent();
   const scrollRef = useRef();
@@ -147,19 +150,18 @@ export default function PricingSection() {
 
   useEffect(() => {
     if (content?.pricing) {
-      trackPricingViewed(["annual", "monthly"], "pricing_section");
+      trackPricingViewed(["annual", "monthly", "inner_circle"], "pricing_section");
     }
   }, [content]);
 
-  // Detect scroll position to sync toggle
+  // Detect scroll position to sync toggle (3 cards)
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const onScroll = () => {
-      const midpoint = el.scrollLeft + el.offsetWidth / 2;
       const cardWidth = el.offsetWidth * 0.82;
       const idx = Math.round(el.scrollLeft / (cardWidth + 16));
-      setActiveTab(idx === 0 ? "annual" : "monthly");
+      setActiveTab(MOBILE_TABS[idx] || "annual");
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
@@ -167,7 +169,7 @@ export default function PricingSection() {
 
   const scrollTo = (plan) => {
     setActiveTab(plan);
-    const idx = plan === "annual" ? 0 : 1;
+    const idx = MOBILE_TABS.indexOf(plan);
     const el = scrollRef.current;
     if (!el) return;
     const cardWidth = el.offsetWidth * 0.82;
@@ -195,10 +197,15 @@ export default function PricingSection() {
           <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
         </motion.div>
 
-        {/* Desktop grid */}
-        <div className="hidden md:grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-          <AnnualCard c={c} />
-          <MonthlyCard c={c} />
+        {/* Desktop: Monthly + Annual larger, Inner Circle compact below */}
+        <div className="hidden md:block">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
+            <AnnualCard c={c} />
+            <MonthlyCard c={c} />
+          </div>
+          <div className="mt-6 max-w-4xl mx-auto">
+            <InnerCirclePricingCard c={c} />
+          </div>
         </div>
 
         {/* Mobile slider */}
@@ -208,15 +215,18 @@ export default function PricingSection() {
             <div className="flex bg-dark-bg border border-dark-border rounded-full p-1 gap-1">
               <button
                 onClick={() => scrollTo("annual")}
-                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
-                
+                className={`px-4 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "annual" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
                 Annual
               </button>
               <button
                 onClick={() => scrollTo("monthly")}
-                className={`px-5 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
-                
+                className={`px-4 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "monthly" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
                 Monthly
+              </button>
+              <button
+                onClick={() => scrollTo("innerCircle")}
+                className={`px-4 py-2 rounded-full font-body text-sm font-semibold transition-colors ${activeTab === "innerCircle" ? "bg-orange-red text-dark-bg" : "text-white-muted"}`}>
+                Inner Circle
               </button>
             </div>
           </div>
@@ -224,6 +234,7 @@ export default function PricingSection() {
           <div ref={scrollRef} className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-1" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
             <AnnualCard c={c} mobile />
             <MonthlyCard c={c} mobile />
+            <InnerCirclePricingCard c={c} mobile />
           </div>
         </div>
 

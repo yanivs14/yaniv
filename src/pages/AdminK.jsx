@@ -330,6 +330,18 @@ function SectionEditor({ sectionKey }) {
         onChange={(arr) => update("pricing", "annualFeatures", arr)}
         addLabel="Add feature"
       />
+
+      <p className="text-xs text-white-muted font-body font-semibold mt-6 mb-3">Inner Circle Package</p>
+      {f("innerCircleTitle", "Title (e.g. Roye, Maxed Out.)")}
+      <Field label="Description" value={data.innerCircleDescription} onChange={v => update("pricing", "innerCircleDescription", v)} multiline />
+      {f("innerCircleCta", "CTA Button Text")}
+      {f("innerCircleFootnote", "Footnote (below CTA)")}
+      <p className="text-xs text-white-muted font-body mb-2">Inner Circle Features</p>
+      <DraggableFeatureList
+        features={data.innerCircleFeatures || []}
+        onChange={(arr) => update("pricing", "innerCircleFeatures", arr)}
+        addLabel="Add feature"
+      />
     </div>
   );
 
