@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 
 export default function HsPreLeadForm({ content }) {
   const c = content || {};
-  const [form, setForm] = useState({ full_name: "", email: "", password: "", phone: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", phone: "" });
   const [status, setStatus] = useState(null); // null | 'loading' | 'success' | 'error'
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -37,13 +37,12 @@ export default function HsPreLeadForm({ content }) {
         phone: form.phone.trim(),
         source: "hspre",
         quiz_section: "lead_form",
-        quiz_answers: { password: form.password },
         browser_language,
         utms,
       });
 
       setStatus("success");
-      setForm({ full_name: "", email: "", password: "", phone: "" });
+      setForm({ full_name: "", email: "", phone: "" });
     } catch (err) {
       console.error("Lead form submission failed:", err);
       setStatus("error");
@@ -91,14 +90,6 @@ export default function HsPreLeadForm({ content }) {
           value={form.email}
           onChange={handleChange}
           placeholder="Email *"
-          className={inputClass}
-        />
-        <input
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          placeholder="Password"
           className={inputClass}
         />
         <input
