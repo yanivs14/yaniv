@@ -12,15 +12,8 @@
     },
     "status": {
       "type": "string",
-      "enum": [
-        "backlog",
-        "todo",
-        "in_progress",
-        "review",
-        "done"
-      ],
       "default": "todo",
-      "description": "Kanban column status"
+      "description": "Kanban column id"
     },
     "priority": {
       "type": "string",

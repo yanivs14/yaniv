@@ -31,7 +31,8 @@ export default function TaskCard({ task, index, onClick, onDelete }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => onClick(task)}
-          className={`group bg-white rounded-lg border border-slate-200 p-3 shadow-sm cursor-pointer hover:border-teal-300 hover:shadow-md transition-all ${
+          dir="rtl"
+          className={`group bg-white rounded-lg border border-slate-200 p-3 shadow-sm cursor-pointer hover:border-teal-300 hover:shadow-md transition-all font-hebrew ${
             snapshot.isDragging ? "shadow-lg ring-2 ring-teal-400 rotate-1" : ""
           }`}
         >

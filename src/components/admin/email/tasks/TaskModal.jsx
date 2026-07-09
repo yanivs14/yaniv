@@ -8,14 +8,6 @@ const PRIORITIES = [
   { value: "urgent", label: "Urgent" },
 ];
 
-const STATUSES = [
-  { value: "backlog", label: "Backlog" },
-  { value: "todo", label: "To Do" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "review", label: "Review" },
-  { value: "done", label: "Done" },
-];
-
 const LABEL_OPTIONS = [
   { text: "Design", color: "purple" },
   { text: "Marketing", color: "blue" },
@@ -31,10 +23,10 @@ const LABEL_COLORS = {
   blue: "bg-blue-500", purple: "bg-purple-500", teal: "bg-teal-500",
 };
 
-export default function TaskModal({ task, defaultStatus, onSave, onClose, onDelete }) {
+export default function TaskModal({ task, defaultStatus, columns, onSave, onClose, onDelete }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("todo");
+  const [status, setStatus] = useState("");
   const [priority, setPriority] = useState("medium");
   const [dueDate, setDueDate] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
@@ -45,15 +37,15 @@ export default function TaskModal({ task, defaultStatus, onSave, onClose, onDele
     if (task) {
       setTitle(task.title || "");
       setDescription(task.description || "");
-      setStatus(task.status || "todo");
+      setStatus(task.status || columns[0]?.id || "todo");
       setPriority(task.priority || "medium");
       setDueDate(task.due_date || "");
       setAssignedTo(task.assigned_to || "");
       setLabels(task.labels || []);
     } else {
-      setStatus(defaultStatus || "todo");
+      setStatus(defaultStatus || columns[0]?.id || "todo");
     }
-  }, [task, defaultStatus]);
+  }, [task, defaultStatus, columns]);
 
   const toggleLabel = (labelStr) => {
     setLabels(prev =>
@@ -84,7 +76,8 @@ export default function TaskModal({ task, defaultStatus, onSave, onClose, onDele
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        dir="rtl"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto font-hebrew"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -143,7 +136,7 @@ export default function TaskModal({ task, defaultStatus, onSave, onClose, onDele
                 onChange={e => setStatus(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-body text-slate-800 focus:outline-none focus:border-teal-500 cursor-pointer"
               >
-                {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                {columns.map(col => <option key={col.id} value={col.id}>{col.title}</option>)}
               </select>
             </div>
             <div>
@@ -202,7 +195,6 @@ export default function TaskModal({ task, defaultStatus, onSave, onClose, onDele
                 );
               })}
             </div>
-            {/* Active custom labels */}
             {labels.filter(l => !LABEL_OPTIONS.some(o => `${o.text}:${o.color}` === l)).length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-2">
                 {labels.filter(l => !LABEL_OPTIONS.some(o => `${o.text}:${o.color}` === l)).map((l, i) => {
