@@ -26,13 +26,9 @@ export default function BeforeAfterCarousel() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-3">{c.eyebrow || "Real Results"}</p>
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {c.headline || "Real Results, Real Members"}
           </h2>
-          {c.subtitle && (
-            <p className="mt-4 font-body text-base text-white-muted max-w-2xl mx-auto">{c.subtitle}</p>
-          )}
         </motion.div>
 
         {items.length > 0 ? (
@@ -104,6 +100,13 @@ export default function BeforeAfterCarousel() {
             <p className="font-body text-sm text-white-dim">No before & after photos yet</p>
           </div>
         )}
+        {/* 94% stat */}
+        <div className="mt-10 flex justify-center">
+          <div className="inline-flex items-center gap-4 bg-dark-surface border border-dark-border rounded-2xl px-8 py-5">
+            <span className="font-heading text-5xl lg:text-6xl font-bold text-orange-red leading-none">94%</span>
+            <span className="font-body text-sm text-white-muted leading-tight max-w-[140px]">feel a shift in week one</span>
+          </div>
+        </div>
       </div>
     </section>
   );

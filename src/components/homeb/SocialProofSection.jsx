@@ -4,9 +4,9 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 export default function SocialProofSection() {
   const { content } = useSiteContent();
   const stats = content.homebSocialProof?.stats || [
-    { value: "1.5M", label: "Followers of Roye" },
+    { value: "1.5M+", label: "Social Media Followers" },
     { value: "1k+", label: "Guided Videos" },
-    { value: "15", label: "Years Coaching Members" },
+    { value: "15+", label: "Years Coaching Members" },
     { value: "1st", label: "Official Movement School in the World" },
   ];
 

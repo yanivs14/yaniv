@@ -78,7 +78,6 @@ export default function HeroSection() {
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   >
                     {c.ctaSecondary}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   </motion.a>
                 </div>
 

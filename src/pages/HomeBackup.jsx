@@ -10,8 +10,6 @@ import BackToTop from "../components/BackToTop";
 import NewsletterPopup from "../components/landing/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
-import ComparisonSection from "../components/homeb/ComparisonSection";
-import BuiltForEveryoneSection from "../components/homeb/BuiltForEveryoneSection";
 import BeforeAfterCarousel from "../components/homeb/BeforeAfterCarousel";
 
 const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
@@ -89,8 +87,6 @@ export default function HomeBackup() {
       <HeroSection />
       <SocialProofSection />
       <SeeInsideSection />
-      <ComparisonSection />
-      <BuiltForEveryoneSection />
       <BeforeAfterCarousel />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />

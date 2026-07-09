@@ -208,14 +208,14 @@ const DEFAULT_CONTENT = {
   },
   homebSocialProof: {
     stats: [
-      { value: "1.5M", label: "Followers of Roye" },
+      { value: "1.5M+", label: "Social Media Followers" },
       { value: "1k+", label: "Guided Videos" },
-      { value: "15", label: "Years Coaching Members" },
+      { value: "15+", label: "Years Coaching Members" },
       { value: "1st", label: "Official Movement School in the World" },
     ],
   },
   homebSeeInside: {
-    eyebrow: "See Inside",
+    eyebrow: "This is what you're joining",
     headline: "See How It Works",
     steps: ["Watch it", "Try it", "Share it", "Personal Feedback"],
     videoUrl: "",
