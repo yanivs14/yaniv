@@ -5,10 +5,7 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 import { trackPurchase } from "@/lib/analytics";
 import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
-import MarqueeBanner from "../components/landing/MarqueeBanner";
-import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import PricingSection from "../components/landing/PricingSection";
-import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import BackToTop from "../components/BackToTop";
 import NewsletterPopup from "../components/landing/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
@@ -95,16 +92,11 @@ export default function HomeBackup() {
       <ComparisonSection />
       <BuiltForEveryoneSection />
       <BeforeAfterCarousel />
-      <MarqueeBanner />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
-      {/* Video testimonials below before/after carousel */}
       {/* #pricing */}
       <PricingSection />
-      <HowItFlowsSection />
-      {/* #inner-circle */}
-      <InnerCircleSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />

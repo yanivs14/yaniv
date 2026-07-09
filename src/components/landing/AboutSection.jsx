@@ -86,7 +86,11 @@ export default function AboutSection() {
               {c.headline || "About"}<br />
               {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}
             </h2>
-            <p className="font-body text-base lg:text-lg text-white-muted leading-loose whitespace-pre-line">{c.text}</p>
+            <div className="space-y-5">
+              {(c.text || "").split("\n\n").filter(Boolean).map((para, i) => (
+                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{para}</p>
+              ))}
+            </div>
 
             {/* Feature panel with checklist + CTA */}
             {(c.iconList?.length > 0) && (
