@@ -196,6 +196,12 @@ export default function HsPreEditor() {
         <Plus className="w-4 h-4" /> Add extra
       </button>
 
+      {/* ── LEAD FORM ── */}
+      <SectionTitle>Lead Form (below Toolbox)</SectionTitle>
+      <F label="Form Heading" value={data.formHeading} onChange={v => set("formHeading", v)} placeholder="Start Your Handstand Journey" />
+      <F label="Form Subtext" value={data.formSubtext} onChange={v => set("formSubtext", v)} multiline />
+      <F label="Button Text" value={data.formButtonText} onChange={v => set("formButtonText", v)} placeholder="Get Early Access" />
+
       {/* ── CTA ── */}
       <SectionTitle>CTA Section</SectionTitle>
       <F label="CTA Title" value={data.ctaTitle} onChange={v => set("ctaTitle", v)} placeholder="Be the First to Get Access" />

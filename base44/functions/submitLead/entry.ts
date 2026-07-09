@@ -38,8 +38,8 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const { full_name, phone, email, source, quiz_section, quiz_recommendation, quiz_answers, browser_language, country, utms } = await req.json();
 
-    if (!full_name || !phone) {
-      return Response.json({ error: 'Full name and phone are required' }, { status: 400 });
+    if (!full_name) {
+      return Response.json({ error: 'Full name is required' }, { status: 400 });
     }
 
     const isInnerCircle = source === 'inner_circle';
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
     // Save lead — this is the critical part, always must succeed
     const lead = await base44.asServiceRole.entities.Lead.create({
       full_name,
-      phone,
+      phone: phone || '',
       email: email || '',
       source: source || 'quiz',
       quiz_section: quiz_section || '',

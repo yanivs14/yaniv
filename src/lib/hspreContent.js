@@ -30,6 +30,11 @@ export const HSPRE_DEFAULTS = {
     { title: "Toolbox", description: "Your go-to repository for supplementary work, covering joint preparation, wrist warm-ups, and the essential mobility drills needed to support your practice." },
   ],
 
+  // Lead Form
+  formHeading: "Start Your Handstand Journey",
+  formSubtext: "Join the pre-launch list and get 25% off on launch day.",
+  formButtonText: "Get Early Access",
+
   // CTA
   ctaTitle: "Be the First to Get Access",
   ctaDesc1Before: "Join the pre-launch and enjoy ",

@@ -66,8 +66,7 @@
     }
   },
   "required": [
-    "full_name",
-    "phone"
+    "full_name"
   ],
   "rls": {
     "create": {},
