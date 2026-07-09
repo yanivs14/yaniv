@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, X, Crown } from "lucide-react";
+import { Check, ArrowRight, X } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { trackPricingViewed, track, getGaClientId } from "@/lib/analytics";
@@ -146,7 +146,8 @@ export default function PricingSection() {
   };
 
   const generalFeatures = c.monthlyFeatures?.length ? c.monthlyFeatures : DEFAULT_GENERAL_FEATURES;
-  const premiumFeatures = c.innerCircleFeatures?.length ? c.innerCircleFeatures : DEFAULT_PREMIUM_FEATURES;
+  const premiumExtras = (c.innerCircleFeatures?.length ? c.innerCircleFeatures : DEFAULT_PREMIUM_FEATURES)
+    .filter(f => !f.toLowerCase().startsWith("everything in"));
 
   return (
     <section ref={pricingRef} className="py-12 lg:py-24 bg-dark-surface" id="pricing">
@@ -168,7 +169,7 @@ export default function PricingSection() {
 
         {/* Two tracks */}
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-          {/* General Package */}
+          {/* Regular Track */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -176,8 +177,8 @@ export default function PricingSection() {
             transition={{ duration: 0.5 }}
             className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col"
           >
-            <p className="font-body text-sm text-white-muted mb-1">General</p>
-            <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">General Package</h3>
+            <p className="font-body text-sm text-white-muted mb-1">Regular</p>
+            <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">Regular Track</h3>
             <p className="font-body text-sm text-white-muted mb-6 leading-relaxed">Full access to the Movement library, daily practice, and community.</p>
             <ul className="space-y-2.5 flex-1">
               {generalFeatures.map((f, i) => (
@@ -189,49 +190,39 @@ export default function PricingSection() {
             </ul>
             <button onClick={() => setModalOpen(true)}
               className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-6">
-              Choose General <ArrowRight className="w-4 h-4" />
+              Choose Regular <ArrowRight className="w-4 h-4" />
             </button>
           </motion.div>
 
-          {/* Premium Package */}
+          {/* Premium Track */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-2xl p-px bg-gradient-to-b from-orange-red/50 via-orange-red/15 to-transparent flex flex-col"
+            className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col"
           >
-            <div className="relative bg-dark-bg rounded-2xl p-8 flex flex-col overflow-hidden h-full">
-              <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-red/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-3 py-1">
-                <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-                <span className="font-body text-[10px] font-semibold text-orange-red uppercase tracking-wider">Limited Spots</span>
-              </div>
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center mb-3">
-                  <Crown className="w-5 h-5 text-orange-red" />
-                </div>
-                <p className="font-body text-sm text-orange-red mb-1 uppercase tracking-widest">Premium</p>
-                <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">{c.innerCircleTitle || "Roye, Maxed Out."}</h3>
-                <p className="font-body text-sm text-white-muted leading-relaxed mb-4">{c.innerCircleDescription}</p>
-              </div>
-              <div className="relative my-4 h-px bg-gradient-to-r from-transparent via-orange-red/30 to-transparent" />
-              <ul className="relative space-y-2.5 flex-1">
-                {premiumFeatures.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-off-white/90">{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="relative mt-6">
-                <a href="/inner-circle"
-                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors shadow-lg shadow-orange-red/20">
-                  {c.innerCircleCta || "Apply to Inner Circle"} <ArrowRight className="w-4 h-4" />
-                </a>
-                <p className="mt-2 font-body text-xs text-white-muted text-center">{c.innerCircleFootnote || "Starts with a private consultation."}</p>
-              </div>
-            </div>
+            <p className="font-body text-sm text-orange-red mb-1">Premium</p>
+            <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">Premium Track</h3>
+            <p className="font-body text-sm text-white-muted mb-6 leading-relaxed">{c.innerCircleDescription || "The most personal experience we offer — Roye's direct guidance, every step of the way."}</p>
+            <ul className="space-y-2.5 flex-1">
+              {generalFeatures.map((f, i) => (
+                <li key={`g-${i}`} className="flex items-start gap-2.5">
+                  <Check className="w-4 h-4 text-off-white flex-shrink-0 mt-0.5" />
+                  <span className="font-body text-sm text-off-white/80">{f}</span>
+                </li>
+              ))}
+              {premiumExtras.map((f, i) => (
+                <li key={`p-${i}`} className="flex items-start gap-2.5">
+                  <Check className="w-4 h-4 text-off-white flex-shrink-0 mt-0.5" />
+                  <span className="font-body text-sm text-off-white/80">{f}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="/inner-circle"
+              className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-6">
+              {c.innerCircleCta || "Apply to Inner Circle"} <ArrowRight className="w-4 h-4" />
+            </a>
           </motion.div>
         </div>
 
