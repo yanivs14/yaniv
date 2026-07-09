@@ -47,14 +47,15 @@ export const HSPRE_DEFAULTS = {
 
 export async function loadHsPreContent() {
   try {
-    const records = await base44.entities.PrepPageContent.filter({ page_key: PAGE_KEY });
-    if (records.length > 0) {
-      return { ...HSPRE_DEFAULTS, ...records[0].data, _id: records[0].id };
+    const records = await base44.entities.PrepPageContent.list();
+    const record = records.find(r => r.page_key === PAGE_KEY);
+    if (record) {
+      return { ...record.data, _id: record.id };
     }
   } catch (e) {
     console.error("Failed to load hspre content:", e);
   }
-  return { ...HSPRE_DEFAULTS, _id: null };
+  return { _id: null };
 }
 
 export async function saveHsPreContent(data, recordId) {
