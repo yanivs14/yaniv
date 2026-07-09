@@ -1,6 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
+  let body = {};
+  let subject = '';
   try {
     const base44 = createClientFromRequest(req);
 
@@ -9,7 +11,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
+    body = await req.json();
     const {
       type, email, name, amount, currency, planLabel, transactionId,
       paymentMethod, refundId, originalTransactionId, reason, chargeId,
@@ -69,7 +71,7 @@ Deno.serve(async (req) => {
       hour: '2-digit', minute: '2-digit',
     });
 
-    let subject, html;
+    let html;
     if (type === 'receipt') {
       subject = `Your Receipt — ${planLabel || 'Purchase'}`;
       html = buildReceiptHtml({
@@ -127,16 +129,13 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('sendCustomerEmail error:', error.message);
 
-    // Try to log the failure
+    // Try to log the failure — use the already-parsed body (req body can't be re-read)
     try {
-      const base44 = createClientFromRequest(req);
-      const body = await req.json().catch(() => ({}));
       if (body.email) {
-        const failSubjectMap = { refund: 'Refund Confirmation', welcome_skool: 'Welcome + Join Skool' };
         await base44.asServiceRole.entities.EmailLog.create({
           recipient_email: body.email,
           recipient_name: body.name || '',
-          subject: failSubjectMap[body.type] || 'Receipt',
+          subject: subject || (body.type === 'refund' ? 'Refund Confirmation' : body.type === 'welcome_skool' ? 'Welcome + Join Skool' : 'Receipt'),
           template_name: body.type || 'receipt',
           campaign_name: body.chargeId || body.transactionId || '',
           status: 'failed',

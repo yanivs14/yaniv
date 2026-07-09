@@ -423,7 +423,7 @@ Deno.serve(async (req) => {
           }
         }
 
-        await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
+        const receiptRes = await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
           type: "receipt",
           email: customerEmail,
           name: customerName,
@@ -435,13 +435,16 @@ Deno.serve(async (req) => {
           chargeId: session.id,
           invoicePdfUrl,
         });
+        if (receiptRes?.data?.error) {
+          console.error("Receipt email failed:", receiptRes.data.error);
+        }
       } catch (e) {
         console.error("Failed to send receipt email:", e.message);
       }
 
       // Send welcome + Skool registration email to customer
       try {
-        await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
+        const welcomeRes = await base44.asServiceRole.functions.invoke("sendCustomerEmail", {
           type: "welcome_skool",
           email: customerEmail,
           name: customerName,
@@ -449,6 +452,9 @@ Deno.serve(async (req) => {
           transactionId,
           chargeId: session.id,
         });
+        if (welcomeRes?.data?.error) {
+          console.error("Welcome/Skool email failed:", welcomeRes.data.error);
+        }
       } catch (e) {
         console.error("Failed to send welcome_skool email:", e.message);
       }
