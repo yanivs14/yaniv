@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
 export default function BuiltForEveryoneSection() {
@@ -38,6 +39,22 @@ export default function BuiltForEveryoneSection() {
               </motion.p>
             ))}
           </div>
+
+          {/* Checkmark badges */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-10 flex flex-wrap justify-center gap-3"
+          >
+            {["All Ages", "Any Pace", "Any Size", "Any Level"].map((badge, i) => (
+              <div key={i} className="flex items-center gap-2 bg-dark-surface border border-dark-border rounded-full px-4 py-2">
+                <Check className="w-4 h-4 text-orange-red flex-shrink-0" />
+                <span className="font-body text-sm text-off-white">{badge}</span>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
     </section>

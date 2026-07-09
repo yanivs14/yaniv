@@ -6,8 +6,6 @@ import { trackPurchase } from "@/lib/analytics";
 import Navbar from "../components/landing/Navbar";
 import HeroSection from "../components/landing/HeroSection";
 import MarqueeBanner from "../components/landing/MarqueeBanner";
-import DegradingSection from "../components/landing/DegradingSection";
-import PillarsSection from "../components/landing/PillarsSection";
 import HowItFlowsSection from "../components/landing/HowItFlowsSection";
 import PricingSection from "../components/landing/PricingSection";
 import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
@@ -97,10 +95,7 @@ export default function HomeBackup() {
       <ComparisonSection />
       <BuiltForEveryoneSection />
       <BeforeAfterCarousel />
-      <PillarsSection />
       <MarqueeBanner />
-      {/* #who */}
-      <DegradingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
