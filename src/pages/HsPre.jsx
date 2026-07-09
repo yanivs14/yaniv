@@ -1,20 +1,16 @@
 import { useState, useEffect } from "react";
-import { loadHsPreContent } from "@/lib/hspreContent";
+import { loadHsPreContent, HSPRE_DEFAULTS } from "@/lib/hspreContent";
 import HsPreHero from "@/components/hspre/HsPreHero";
 import HsPreIntro from "@/components/hspre/HsPreIntro";
 import HsPreProgram from "@/components/hspre/HsPreProgram";
 import HsPreCta from "@/components/hspre/HsPreCta";
 
 export default function HsPre() {
-  const [content, setContent] = useState(null);
+  const [content, setContent] = useState(HSPRE_DEFAULTS);
 
   useEffect(() => {
-    loadHsPreContent().then(setContent).catch(() => setContent({}));
+    loadHsPreContent().then(setContent).catch(() => {});
   }, []);
-
-  if (!content) {
-    return <div className="min-h-screen bg-[#0F0F0F]" />;
-  }
 
   return (
     <div className="min-h-screen bg-[#0F0F0F] text-white">
