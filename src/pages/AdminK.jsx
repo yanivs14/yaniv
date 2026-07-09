@@ -972,7 +972,7 @@ function SettingsTab() {
 }
 
 // ---- AUTH GATE ----
-function AuthGate() {
+function AuthGate({ homePath = "/" }) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
       <div className="text-center max-w-sm">
@@ -987,7 +987,7 @@ function AuthGate() {
         >
           Sign in to continue
         </button>
-        <Link to="/" className="mt-4 inline-flex items-center gap-1.5 text-sm text-white-muted hover:text-off-white transition-colors">
+        <Link to={homePath} className="mt-4 inline-flex items-center gap-1.5 text-sm text-white-muted hover:text-off-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to site
         </Link>
       </div>
@@ -1008,7 +1008,7 @@ const TABS = [
   { key: "settings", label: "Settings", icon: Settings },
 ];
 
-export default function AdminK() {
+export default function AdminK({ homePath = "/" }) {
   const [activeSection, setActiveSection] = useState("hero");
   const [activeTab, setActiveTab] = useState("content");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -1027,7 +1027,7 @@ export default function AdminK() {
     </div>
   );
 
-  if (!user || user.role !== "admin") return <AuthGate />;
+  if (!user || user.role !== "admin") return <AuthGate homePath={homePath} />;
 
   const activeSectionLabel = CONTENT_SECTIONS.find(s => s.key === activeSection)?.label;
 
@@ -1082,11 +1082,11 @@ export default function AdminK() {
             <p className="text-xs text-off-white truncate">{user.full_name || user.email}</p>
             <p className="text-xs text-white-muted">Admin</p>
           </div>
-          <button onClick={() => base44.auth.logout("/")} title="Sign out">
+          <button onClick={() => base44.auth.logout(homePath)} title="Sign out">
             <LogOut className="w-4 h-4 text-white-muted hover:text-orange-red transition-colors" />
           </button>
         </div>
-        <Link to="/" className="flex items-center gap-2 text-sm text-white-muted hover:text-off-white transition-colors">
+        <Link to={homePath} className="flex items-center gap-2 text-sm text-white-muted hover:text-off-white transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to site
         </Link>
       </div>

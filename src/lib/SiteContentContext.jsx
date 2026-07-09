@@ -205,7 +205,7 @@ function mergeDbRecords(records) {
   return merged;
 }
 
-export function SiteContentProvider({ children }) {
+export function SiteContentProvider({ children, keyPrefix = "" }) {
   const [content, setContent] = useState(null);
   const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
   const [loading, setLoading] = useState(true);
@@ -214,11 +214,22 @@ export function SiteContentProvider({ children }) {
   useEffect(() => {
     base44.entities.SiteContent.list().then(records => {
       const byKey = {};
+      const filtered = [];
       for (const rec of records) {
-        byKey[rec.section_key] = rec;
+        if (keyPrefix) {
+          if (rec.section_key?.startsWith(keyPrefix)) {
+            const unprefixed = rec.section_key.slice(keyPrefix.length);
+            const adjusted = { ...rec, section_key: unprefixed };
+            byKey[unprefixed] = adjusted;
+            filtered.push(adjusted);
+          }
+        } else {
+          byKey[rec.section_key] = rec;
+          filtered.push(rec);
+        }
       }
       setDbRecords(byKey);
-      setContent(mergeDbRecords(records));
+      setContent(mergeDbRecords(filtered));
       setLoading(false);
     }).catch(() => {
       setContent(DEFAULT_CONTENT);
@@ -243,7 +254,7 @@ export function SiteContentProvider({ children }) {
         if (existing?.id) {
           await base44.entities.SiteContent.update(existing.id, { data: newData });
         } else {
-          const created = await base44.entities.SiteContent.create({ section_key: section, data: newData });
+          const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: newData });
           setDbRecords(p => ({ ...p, [section]: created }));
         }
       };
@@ -251,7 +262,7 @@ export function SiteContentProvider({ children }) {
 
       return { ...prev, [section]: { ...existing, data: newData } };
     });
-  }, []);
+  }, [keyPrefix]);
 
   // Update a nested array item and persist to DB
   const updateDeep = useCallback(async (section, field, index, subField, value) => {
@@ -267,7 +278,7 @@ export function SiteContentProvider({ children }) {
           if (existing?.id) {
             await base44.entities.SiteContent.update(existing.id, { data: newSectionData });
           } else {
-            const created = await base44.entities.SiteContent.create({ section_key: section, data: newSectionData });
+            const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: newSectionData });
             setDbRecords(p => ({ ...p, [section]: created }));
           }
         };
@@ -277,7 +288,7 @@ export function SiteContentProvider({ children }) {
 
       return { ...prev, [section]: newSectionData };
     });
-  }, []);
+  }, [keyPrefix]);
 
   // Reset a section to defaults and overwrite DB
   const resetSection = useCallback(async (section) => {
@@ -290,14 +301,14 @@ export function SiteContentProvider({ children }) {
         if (existing?.id) {
           await base44.entities.SiteContent.update(existing.id, { data: defaultData });
         } else {
-          const created = await base44.entities.SiteContent.create({ section_key: section, data: defaultData });
+          const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: defaultData });
           setDbRecords(p => ({ ...p, [section]: created }));
         }
       };
       save();
       return { ...prev, [section]: { ...existing, data: defaultData } };
     });
-  }, []);
+  }, [keyPrefix]);
 
   return (
     <SiteContentContext.Provider value={{ content, update, updateDeep, resetSection, loading }}>

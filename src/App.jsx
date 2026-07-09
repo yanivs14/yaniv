@@ -31,6 +31,8 @@ import Unsubscribe from './pages/Unsubscribe';
 import HandstandLanding from './pages/HandstandLanding';
 import HsPre from './pages/HsPre';
 import HomeBackup from './pages/HomeBackup';
+import HomeBackupLayout from './components/HomeBackupLayout';
+import AdminHomeB from './pages/AdminHomeB';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -72,7 +74,8 @@ const AuthenticatedApp = () => {
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />
         <Route path="/hspre" element={<HsPre />} />
-        <Route path="/home-b" element={<HomeBackup />} />
+        <Route path="/home-b" element={<HomeBackupLayout><HomeBackup /></HomeBackupLayout>} />
+        <Route path="/admin-home-b" element={<AdminHomeB />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
