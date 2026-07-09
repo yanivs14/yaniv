@@ -188,6 +188,49 @@ const DEFAULT_CONTENT = {
       { question: "What platform is the content on?", answer: "All content is hosted on Skool — a simple, clean community platform. One login gives you access to the full library, the community, and all live sessions." },
     ]
   },
+  homebSocialProof: {
+    stats: [
+      { value: "1.5M", label: "Followers of Roye" },
+      { value: "1k+", label: "Guided Videos" },
+      { value: "15", label: "Years Coaching Members" },
+      { value: "1st", label: "Official Movement School in the World" },
+    ],
+  },
+  homebSeeInside: {
+    eyebrow: "See Inside",
+    headline: "See How It Works",
+    steps: ["Watch it", "Try it", "Share it", "Personal Feedback"],
+    videoUrl: "",
+    imageUrl: "",
+  },
+  homebComparison: {
+    eyebrow: "Comparison Chart",
+    headline: "Everyone wants structure, a routine, and fast results. Here's who actually gives you all three.",
+    columns: ["The Movement", "Random YouTube", "Traditional Gym"],
+    rows: [
+      { feature: "Time to start", movement: "10 min, exact exercise ready for you", youtube: "Endless searching", gym: "Drive, park, wait for equipment" },
+      { feature: "Pain relief", movement: "Lasts", youtube: "Temporary, if any", gym: "Focus on aesthetics only" },
+      { feature: "Who's coaching you", movement: "Roye, daily", youtube: "No one personally", gym: "Extra cost for personal trainer" },
+      { feature: "Routine", movement: "Built as a daily 10 min habit", youtube: "Easy to abandon", gym: "Easy to skip" },
+      { feature: "Feels different by", movement: "Week 1", youtube: "Unknown", gym: "2-3 Months" },
+      { feature: "Cost", movement: "$19.99/mo", youtube: "Free (but no plan)", gym: "$50-150/mo" },
+    ],
+  },
+  homebBuiltForEveryone: {
+    eyebrow: "Inclusivity",
+    headline: "Built For Everyone",
+    paragraphs: [
+      "Sit for hours a day? Hips locked, back tight the second you stand? Stretching apps, random YouTube, even physio and massages – they treat the symptom, not the cause.",
+      "This isn't one program for one type of body. Active or just getting moving again, any age, any size, any pace – built around you, not a generic plan.",
+      "Fifteen years of Roye's method, broken down step by step – so anyone can follow from day one.",
+    ],
+  },
+  homebBeforeAfter: {
+    eyebrow: "Real Results",
+    headline: "Real Results, Real Members",
+    subtitle: "Before & After photos of flexibility (touching toes) and then improving after 2 weeks",
+    items: [],
+  },
 };
 
 const SiteContentContext = createContext(null);

@@ -6,6 +6,7 @@ import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
 import HandstandEditor from "@/components/admin/HandstandEditor";
 import HsPreEditor from "@/components/admin/HsPreEditor";
+import HomeBEditor from "@/components/admin/HomeBEditor";
 import DraggableFeatureList from "@/components/admin/DraggableFeatureList";
 import Pagination from "@/components/admin/leads/Pagination";
 import { useSiteContent } from "@/lib/SiteContentContext";
@@ -971,6 +972,37 @@ function SettingsTab() {
   );
 }
 
+// ---- HOME-B TAB ----
+const HOME_B_SECTIONS = [
+  { key: "socialProof", label: "Social Proof" },
+  { key: "seeInside", label: "See Inside" },
+  { key: "comparison", label: "Comparison Chart" },
+  { key: "builtForEveryone", label: "Built For Everyone" },
+  { key: "beforeAfter", label: "Before & After" },
+];
+
+function HomeBTab() {
+  const [activeSection, setActiveSection] = useState("socialProof");
+  return (
+    <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
+      <div className="flex flex-wrap gap-2 mb-6">
+        {HOME_B_SECTIONS.map(({ key, label }) => (
+          <button key={key} onClick={() => setActiveSection(key)}
+            className={`text-xs font-body px-3 py-2 rounded-lg transition-colors ${activeSection === key ? "bg-orange-red text-dark-bg font-semibold" : "bg-[#1a1a1a] border border-[#2a2a2a] text-white-muted hover:text-off-white"}`}>
+            {label}
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={activeSection} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+          <HomeBEditor section={activeSection} />
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ---- AUTH GATE ----
 function AuthGate({ homePath = "/" }) {
   return (
@@ -1005,6 +1037,7 @@ const TABS = [
   { key: "promotion", label: "Promo Page", icon: Zap },
   { key: "handstand", label: "Handstand", icon: Zap },
   { key: "hspre", label: "HsPre Page", icon: Zap },
+  { key: "homeb", label: "Home-B", icon: Layout },
   { key: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -1124,7 +1157,7 @@ export default function AdminK({ homePath = "/" }) {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">
-              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "handstand" ? "Handstand Landing" : activeTab === "hspre" ? "HsPre Page" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
+              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "handstand" ? "Handstand Landing" : activeTab === "hspre" ? "HsPre Page" : activeTab === "homeb" ? "Home-B Sections" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -1183,6 +1216,9 @@ export default function AdminK({ homePath = "/" }) {
             <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">
               <HsPreEditor />
             </div>
+          )}
+          {activeTab === "homeb" && (
+            <HomeBTab />
           )}
           {activeTab === "settings" && (
             <div className="max-w-2xl mx-auto px-4 sm:px-8 py-6">

@@ -13,6 +13,11 @@ import PricingSection from "../components/landing/PricingSection";
 import InnerCircleSection from "../components/landing/InnerCircleSection.jsx";
 import BackToTop from "../components/BackToTop";
 import NewsletterPopup from "../components/landing/NewsletterPopup";
+import SocialProofSection from "../components/homeb/SocialProofSection";
+import SeeInsideSection from "../components/homeb/SeeInsideSection";
+import ComparisonSection from "../components/homeb/ComparisonSection";
+import BuiltForEveryoneSection from "../components/homeb/BuiltForEveryoneSection";
+import BeforeAfterCarousel from "../components/homeb/BeforeAfterCarousel";
 
 const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/landing/AboutSection.jsx"));
@@ -87,6 +92,11 @@ export default function HomeBackup() {
       <Navbar />
       {/* #program */}
       <HeroSection />
+      <SocialProofSection />
+      <SeeInsideSection />
+      <ComparisonSection />
+      <BuiltForEveryoneSection />
+      <BeforeAfterCarousel />
       <PillarsSection />
       <HowItFlowsSection />
       <MarqueeBanner />
@@ -95,6 +105,7 @@ export default function HomeBackup() {
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
+      {/* Video testimonials below before/after carousel */}
       {/* #pricing */}
       <PricingSection />
       {/* #inner-circle */}
