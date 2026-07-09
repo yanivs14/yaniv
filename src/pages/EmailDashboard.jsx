@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar, Mail, BarChart3, Settings } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar, Mail, BarChart3, Settings, KanbanSquare } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -15,6 +15,7 @@ import CalendlyTab from "@/components/admin/email/CalendlyTab";
 import KitTab from "@/components/admin/email/KitTab";
 import AnalyticsTab from "@/components/admin/email/AnalyticsTab";
 import SettingsLogsTab from "@/components/admin/email/SettingsLogsTab";
+import TasksTab from "@/components/admin/email/TasksTab";
 
 const TABS = [
   { key: "crm", label: "CRM", icon: Users },
@@ -27,6 +28,7 @@ const TABS = [
   { key: "kit", label: "Kit", icon: Mail },
   { key: "automations", label: "Automations", icon: Zap },
   { key: "email_preview", label: "Email Preview", icon: MailCheck },
+  { key: "tasks", label: "Tasks", icon: KanbanSquare },
   { key: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -342,6 +344,7 @@ export default function EmailDashboard() {
                   {activeTab === "kit" && <KitTab />}
                   {activeTab === "history" && <EmailHistory logs={logs} loading={false} />}
                   {activeTab === "email_preview" && <EmailPreviewTab />}
+                  {activeTab === "tasks" && <TasksTab />}
                   {activeTab === "settings" && <SettingsLogsTab />}
                   {activeTab === "automations" && (
                     <AutomationsTab
