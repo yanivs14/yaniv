@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
     const {
       type, email, name, amount, currency, planLabel, transactionId,
       paymentMethod, refundId, originalTransactionId, reason, chargeId,
-      invoicePdfUrl,
+      invoicePdfUrl, overrideRecipient,
     } = body;
 
     if (!email || !type) {
@@ -107,7 +107,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid type. Use "receipt", "refund", or "welcome_skool".' }, { status: 400 });
     }
 
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "move@royegold.com";
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    const sendTo = overrideRecipient || email;
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -116,7 +117,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: `The Movement — Roye Gold <${fromEmail}>`,
-        to: [email],
+        to: [sendTo],
         subject,
         html,
       }),
