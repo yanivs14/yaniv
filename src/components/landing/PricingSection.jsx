@@ -197,15 +197,11 @@ export default function PricingSection() {
           <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
         </motion.div>
 
-        {/* Desktop: Monthly + Annual larger, Inner Circle compact below */}
-        <div className="hidden md:block">
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-            <AnnualCard c={c} />
-            <MonthlyCard c={c} />
-          </div>
-          <div className="mt-6 max-w-4xl mx-auto">
-            <InnerCirclePricingCard c={c} />
-          </div>
+        {/* Desktop: 3 columns - Annual, Monthly, Inner Circle */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
+          <AnnualCard c={c} />
+          <MonthlyCard c={c} />
+          <InnerCirclePricingCard c={c} />
         </div>
 
         {/* Mobile slider */}

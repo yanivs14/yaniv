@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Bell, Circle, CalendarClock, Video, RefreshCw } from "lucide-react";
+import { Upload, ArrowLeft, Menu, X, LogOut, Lock, Users, Settings, Layout, Plus, Trash2, Instagram, Youtube, Twitter, Facebook, Linkedin, Music, Mail, Phone, User as UserIcon, Zap, Play, Download, MessageSquare, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Bell, Circle, CalendarClock, Video, RefreshCw, GripVertical } from "lucide-react";
 import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
@@ -8,6 +8,7 @@ import HandstandEditor from "@/components/admin/HandstandEditor";
 import HsPreEditor from "@/components/admin/HsPreEditor";
 import HomeBEditor from "@/components/admin/HomeBEditor";
 import DraggableFeatureList from "@/components/admin/DraggableFeatureList";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Pagination from "@/components/admin/leads/Pagination";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
@@ -399,33 +400,72 @@ function SectionEditor({ sectionKey }) {
           })}
         </div>
         <UploadButton accept="image/*" label="Add Image" onUpload={url => update("about", "gallery", [...gallery, { url, type: "image" }])} />
+
+        <p className="text-xs text-white-muted mb-2 mt-6 font-body font-semibold">Icon Checklist</p>
+        <p className="text-xs text-white-dim mb-3 font-body">Checkmark list shown below the about text</p>
+        <DraggableFeatureList
+          features={data.iconList || []}
+          onChange={(arr) => update("about", "iconList", arr)}
+          addLabel="Add checklist item"
+        />
       </div>
     );
   }
 
-  if (sectionKey === "faq") return (
-    <div>
-      <p className="text-xs text-white-muted mb-4 font-body">Manage FAQ questions and answers</p>
-      {(data.items || []).map((item, i) => (
-        <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
-          <div className="flex items-start gap-2 mb-2">
-            <textarea value={item.question || ""} onChange={e => updateDeep("faq", "items", i, "question", e.target.value)} rows={2} placeholder="Question"
-              className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
-            <button onClick={() => update("faq", "items", (data.items || []).filter((_, idx) => idx !== i))}
-              className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0 mt-1">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-          <textarea value={item.answer || ""} onChange={e => updateDeep("faq", "items", i, "answer", e.target.value)} rows={3} placeholder="Answer"
-            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
-        </div>
-      ))}
-      <button onClick={() => update("faq", "items", [...(data.items || []), { question: "", answer: "" }])}
-        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-        <Plus className="w-4 h-4" /> Add question
-      </button>
-    </div>
-  );
+  if (sectionKey === "faq") {
+    const items = data.items || [];
+    const onDragEnd = (result) => {
+      if (!result.destination || result.destination.index === result.source.index) return;
+      const reordered = [...items];
+      const [moved] = reordered.splice(result.source.index, 1);
+      reordered.splice(result.destination.index, 0, moved);
+      update("faq", "items", reordered);
+    };
+    return (
+      <div>
+        <p className="text-xs text-white-muted mb-4 font-body">Drag to reorder questions · {items.length} questions</p>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="faq-list">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {items.map((item, i) => (
+                  <Draggable key={`faq-${i}`} draggableId={`faq-${i}`} index={i}>
+                    {(prov, snapshot) => (
+                      <div
+                        ref={prov.innerRef}
+                        {...prov.draggableProps}
+                        className={`mb-3 border rounded-xl p-3 bg-[#111] ${snapshot.isDragging ? "opacity-80 shadow-lg border-orange-red/40" : "border-[#2a2a2a]"}`}
+                      >
+                        <div className="flex items-start gap-2 mb-2">
+                          <span {...prov.dragHandleProps} className="cursor-grab active:cursor-grabbing text-white-dim hover:text-orange-red transition-colors flex-shrink-0 mt-1">
+                            <GripVertical className="w-4 h-4" />
+                          </span>
+                          <span className="text-[10px] text-white-dim font-body w-5 text-center flex-shrink-0 mt-1.5">{i + 1}</span>
+                          <textarea value={item.question || ""} onChange={e => updateDeep("faq", "items", i, "question", e.target.value)} rows={2} placeholder="Question"
+                            className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
+                          <button onClick={() => update("faq", "items", items.filter((_, idx) => idx !== i))}
+                            className="text-white-muted hover:text-red-400 transition-colors p-1 flex-shrink-0 mt-1">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <textarea value={item.answer || ""} onChange={e => updateDeep("faq", "items", i, "answer", e.target.value)} rows={3} placeholder="Answer"
+                          className="w-full ml-9 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <button onClick={() => update("faq", "items", [...items, { question: "", answer: "" }])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add question
+        </button>
+      </div>
+    );
+  }
 
   if (sectionKey === "footer") return (
     <div>{f("brand", "Brand Name")} {f("tagline", "Tagline")} {f("copyright", "Copyright")}</div>

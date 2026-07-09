@@ -189,6 +189,12 @@ const DEFAULT_CONTENT = {
     text: "Roye Gold is a movement coach, educator, and the creator of Kinetiqo — a daily practice built around the idea that your body deserves more than occasional effort.\n\nAfter years of working with thousands of people across the globe, Roye developed a system that combines mobility, strength, breath, and intentional control into one seamless daily method.\n\nHis mission is simple: to give people back the physical freedom they've lost — and show them it's never too late to rebuild it.\n\nKinetiqo isn't a workout. It's an operating system for your body.",
     imageUrl: "",
     gallery: [],
+    iconList: [
+      "Live coaching, every cue",
+      "Structured progressions, beginner to advanced",
+      "Full library, one login",
+      "Community that keeps you accountable",
+    ],
   },
   faq: {
     items: [
