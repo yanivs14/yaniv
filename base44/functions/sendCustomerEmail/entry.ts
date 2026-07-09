@@ -107,12 +107,25 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid type. Use "receipt", "refund", or "welcome_skool".' }, { status: 400 });
     }
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: email,
-      subject,
-      from_name: 'The Movement - Roye Gold',
-      body: html,
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "move@royegold.com";
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `The Movement — Roye Gold <${fromEmail}>`,
+        to: [email],
+        subject,
+        html,
+      }),
     });
+
+    if (!resendRes.ok) {
+      const errText = await resendRes.text();
+      throw new Error(`Resend API error (${resendRes.status}): ${errText}`);
+    }
 
     await base44.asServiceRole.entities.EmailLog.create({
       recipient_email: email,
