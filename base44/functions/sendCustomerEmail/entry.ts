@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid type. Use "receipt", "refund", or "welcome_skool".' }, { status: 400 });
     }
 
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    const fromEmail = "onboarding@resend.dev";
     const sendTo = overrideRecipient || email;
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
