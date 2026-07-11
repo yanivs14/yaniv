@@ -9,13 +9,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-    const safeName = escapeHtml(full_name);
-    const safeDate = escapeHtml(slot_date);
-    const safeTime = escapeHtml(slot_time);
-
     const durationText = duration ? ` · ${duration}m` : '';
 
     const body = `<!DOCTYPE html>
@@ -33,14 +26,14 @@ Deno.serve(async (req) => {
         <tr>
           <td style="padding:40px;">
             <p style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:3px;margin:0 0 12px;">Inner Circle</p>
-            <h1 style="color:#F5F5F5;font-size:28px;font-weight:700;margin:0 0 16px;line-height:1.2;">You're all set, ${safeName}!</h1>
+            <h1 style="color:#F5F5F5;font-size:28px;font-weight:700;margin:0 0 16px;line-height:1.2;">You're all set, ${full_name}!</h1>
             <p style="color:#888;font-size:15px;line-height:1.8;margin:0 0 24px;">
               Your call has been scheduled. One of our movement experts will be in touch to confirm all details.
             </p>
             <div style="background:#0F0F0F;border:1px solid #2A2A2A;border-radius:12px;padding:24px;margin-bottom:24px;">
               <p style="color:#00fff7;font-size:12px;text-transform:uppercase;letter-spacing:2px;margin:0 0 8px;">Your Scheduled Call</p>
-              <p style="color:#F5F5F5;font-size:20px;font-weight:700;margin:0 0 4px;">${safeDate}</p>
-              <p style="color:#C8C8C8;font-size:16px;margin:0;">${safeTime}${durationText}</p>
+              <p style="color:#F5F5F5;font-size:20px;font-weight:700;margin:0 0 4px;">${slot_date}</p>
+              <p style="color:#C8C8C8;font-size:16px;margin:0;">${slot_time}${durationText}</p>
             </div>
             <p style="color:#888;font-size:13px;line-height:1.7;margin:0;">
               If you need to reschedule or have any questions, simply reply to this email.
