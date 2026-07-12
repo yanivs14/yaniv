@@ -27,7 +27,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="order-2 lg:order-1 aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
+            className="order-2 lg:order-1 aspect-[4/3] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
           >
             {images.length > 0 ? (
               <>
