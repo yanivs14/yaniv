@@ -17,7 +17,7 @@ export default function BenefitsSection() {
   const embedUrl = getYoutubeEmbedUrl(c.youtubeUrl);
 
   return (
-    <section className="py-12 lg:py-24 bg-dark-bg" id="benefits">
+    <section className="py-12 lg:py-24 bg-dark-bg" id="benefits" data-section="benefits">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
           {/* Left: heading + pillars grid */}
