@@ -22,10 +22,6 @@ export default function InnerCirclePricingCard({ c, mobile = false }) {
             <span className="font-body text-[9px] font-semibold text-orange-red uppercase tracking-wider">Limited</span>
           </div>
           <div className="relative">
-            <div className="w-9 h-9 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center mb-2">
-              <Crown className="w-4 h-4 text-orange-red" />
-            </div>
-            <p className="font-body text-sm text-orange-red mb-1 uppercase tracking-widest">Inner Circle</p>
             <h3 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
               {c.innerCircleTitle || "Roye, Maxed Out."}
             </h3>
@@ -71,10 +67,6 @@ export default function InnerCirclePricingCard({ c, mobile = false }) {
         </div>
 
         <div className="relative">
-          <div className="w-10 h-10 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center mb-3">
-            <Crown className="w-5 h-5 text-orange-red" />
-          </div>
-          <p className="font-body text-sm text-orange-red mb-1 uppercase tracking-widest">Inner Circle</p>
           <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">
             {c.innerCircleTitle || "Roye, Maxed Out."}
           </h3>

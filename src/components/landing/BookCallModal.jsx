@@ -137,7 +137,7 @@ export default function BookCallModal({ open, onClose }) {
 
                 <form onSubmit={handleFormSubmit} noValidate>
                   <div className="mb-4">
-                    <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">Full Name</label>
+                    <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">Full Name <span className="text-orange-red">*</span></label>
                     <input
                       type="text"
                       autoComplete="name"
@@ -148,7 +148,7 @@ export default function BookCallModal({ open, onClose }) {
                     />
                     {errors.full_name && <p className="mt-1 text-xs text-red-400 font-body">{errors.full_name}</p>}
                   </div>
-                  {field("email", "Email Address", "email", "john@example.com")}
+                  {field("email", <>Email Address <span className="text-orange-red">*</span></>, "email", "john@example.com")}
                   <div className="mb-4">
                     <label className="block font-body text-xs text-white-muted uppercase tracking-widest mb-1.5">
                       Phone Number <span className="text-orange-red">*</span>

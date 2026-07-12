@@ -113,19 +113,20 @@ export default function PricingSection() {
               className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60 mt-6">
               {checkoutLoading === "monthly" ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
             </button>
+            <p className="mt-2 font-body text-xs text-transparent select-none" aria-hidden="true">Starts with a private consultation.</p>
           </div>
 
           {/* Annual */}
           <div className="bg-orange-red border border-orange-red rounded-2xl p-8 relative flex flex-col">
             <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
             <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-            <div className="flex items-baseline gap-1.5 my-2">
+            <div className="flex items-baseline gap-1.5 my-2 flex-wrap">
               <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
               <span className="font-body text-sm text-dark-bg/60">/ month</span>
+              <span className="font-body text-sm text-dark-bg/60 mx-1">·</span>
+              <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
+              <span className="font-body text-sm text-dark-bg/60">/ year billed annually</span>
             </div>
-            <p className="font-body text-sm text-dark-bg mb-1">
-              <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
-            </p>
             <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
             {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
             <ul className="space-y-2.5 flex-1">
@@ -140,6 +141,7 @@ export default function PricingSection() {
               className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60 mt-4">
               {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
             </button>
+            <p className="mt-2 font-body text-xs text-transparent select-none" aria-hidden="true">Starts with a private consultation.</p>
           </div>
 
           {/* Inner Circle */}
@@ -175,13 +177,13 @@ export default function PricingSection() {
             <div className="flex-shrink-0 w-[78vw] snap-start bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
               <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
               <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-              <div className="flex items-baseline gap-1.5 my-2">
+              <div className="flex items-baseline gap-1.5 my-2 flex-wrap">
                 <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
                 <span className="font-body text-sm text-dark-bg/60">/ month</span>
+                <span className="font-body text-sm text-dark-bg/60 mx-1">·</span>
+                <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
+                <span className="font-body text-sm text-dark-bg/60">/ year</span>
               </div>
-              <p className="font-body text-sm text-dark-bg mb-1">
-                <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year
-              </p>
               <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
               {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
               <ul className="space-y-2 flex-1">
