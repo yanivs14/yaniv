@@ -17,11 +17,11 @@ export default function InnerCirclePricingCard({ c, mobile = false }) {
       <div className="flex-shrink-0 w-[78vw] snap-start relative rounded-2xl p-px bg-gradient-to-b from-orange-red/50 via-orange-red/15 to-transparent flex flex-col">
         <div className="relative bg-dark-bg rounded-2xl p-5 flex flex-col overflow-hidden">
           <div className="absolute -top-16 -right-16 w-40 h-40 bg-orange-red/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-2.5 py-1">
-            <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-            <span className="font-body text-[9px] font-semibold text-orange-red uppercase tracking-wider">Limited</span>
-          </div>
           <div className="relative">
+            <div className="flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-2.5 py-1 w-fit mb-3">
+              <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
+              <span className="font-body text-[9px] font-semibold text-orange-red uppercase tracking-wider">Limited Spots</span>
+            </div>
             <h3 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2">
               {c.innerCircleTitle || "Roye, Maxed Out."}
             </h3>
@@ -60,13 +60,13 @@ export default function InnerCirclePricingCard({ c, mobile = false }) {
       <div className="relative bg-dark-bg rounded-2xl p-8 flex flex-col overflow-hidden">
         {/* Glow accent */}
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-red/10 rounded-full blur-3xl pointer-events-none" />
-        {/* Limited spots badge */}
-        <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-3 py-1">
-          <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-          <span className="font-body text-[10px] font-semibold text-orange-red uppercase tracking-wider">Limited Spots</span>
-        </div>
 
         <div className="relative">
+          {/* Limited spots badge */}
+          <div className="flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-3 py-1 w-fit mb-3">
+            <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
+            <span className="font-body text-[10px] font-semibold text-orange-red uppercase tracking-wider">Limited Spots</span>
+          </div>
           <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">
             {c.innerCircleTitle || "Roye, Maxed Out."}
           </h3>
