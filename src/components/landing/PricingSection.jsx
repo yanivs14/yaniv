@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
@@ -44,7 +44,30 @@ export default function PricingSection() {
   const { content } = useSiteContent();
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const [mobilePlan, setMobilePlan] = useState("monthly");
+  const mobileSliderRef = useRef(null);
   const pricingRef = useSectionTracking("pricing");
+
+  const mobilePlanKeys = ["monthly", "annual", "inner"];
+
+  const handleMobileScroll = () => {
+    const container = mobileSliderRef.current;
+    if (!container || container.children.length === 0) return;
+    const cardWidth = container.children[0].offsetWidth + 20;
+    const idx = Math.max(0, Math.min(2, Math.round(container.scrollLeft / cardWidth)));
+    if (mobilePlanKeys[idx] !== mobilePlan) {
+      setMobilePlan(mobilePlanKeys[idx]);
+    }
+  };
+
+  const scrollToMobilePlan = (plan) => {
+    setMobilePlan(plan);
+    const container = mobileSliderRef.current;
+    if (!container || container.children.length === 0) return;
+    const idx = mobilePlanKeys.indexOf(plan);
+    if (idx === -1) return;
+    const cardWidth = container.children[0].offsetWidth + 20;
+    container.scrollTo({ left: idx * cardWidth, behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (content?.pricing) {
@@ -121,11 +144,15 @@ export default function PricingSection() {
           <div className="bg-orange-red border border-orange-red rounded-2xl p-8 relative flex flex-col">
             <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
             <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-            <div className="flex items-baseline gap-1.5 my-2 whitespace-nowrap">
-              <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
-              <span className="font-body text-sm text-dark-bg/60">/ mo ·</span>
-              <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
-              <span className="font-body text-sm text-dark-bg/60">/ yr billed annually</span>
+            <div className="my-2">
+              <div className="flex items-baseline gap-1.5">
+                <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
+                <span className="font-body text-sm text-dark-bg/60">/ mo</span>
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
+                <span className="font-body text-sm text-dark-bg/60">/ yr billed annually</span>
+              </div>
             </div>
             <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
             {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
@@ -148,7 +175,7 @@ export default function PricingSection() {
           <InnerCirclePricingCard c={c} />
         </div>
 
-        {/* Mobile: toggle switch */}
+        {/* Mobile: synced toggle + slider */}
         <div className="md:hidden">
           <div className="flex gap-2 p-1 bg-dark-bg border border-dark-border rounded-full mb-6 max-w-xs mx-auto">
             {[
@@ -158,7 +185,7 @@ export default function PricingSection() {
             ].map(opt => (
               <button
                 key={opt.key}
-                onClick={() => setMobilePlan(opt.key)}
+                onClick={() => scrollToMobilePlan(opt.key)}
                 className={`flex-1 py-2 rounded-full font-body text-xs font-semibold uppercase tracking-wider transition-colors ${
                   mobilePlan === opt.key ? "bg-orange-red text-dark-bg" : "text-white-muted"
                 }`}
@@ -168,9 +195,13 @@ export default function PricingSection() {
             ))}
           </div>
 
-          {/* Monthly mobile */}
-          {mobilePlan === "monthly" && (
-            <div className="bg-dark-bg border border-dark-border rounded-2xl p-5 flex flex-col">
+          <div
+            ref={mobileSliderRef}
+            onScroll={handleMobileScroll}
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar"
+          >
+            {/* Monthly mobile */}
+            <div className="flex-shrink-0 w-[78vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 flex flex-col">
               <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
               <div className="flex items-baseline gap-1 my-2">
                 <PriceSplit price={c.monthlyPrice} className="text-off-white" />
@@ -190,18 +221,20 @@ export default function PricingSection() {
                 {checkoutLoading === "monthly" ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
-          )}
 
-          {/* Annual mobile */}
-          {mobilePlan === "annual" && (
-            <div className="bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
+            {/* Annual mobile */}
+            <div className="flex-shrink-0 w-[78vw] snap-start bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
               <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
               <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-              <div className="flex items-baseline gap-1.5 my-2 whitespace-nowrap">
-                <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
-                <span className="font-body text-sm text-dark-bg/60">/ mo ·</span>
-                <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
-                <span className="font-body text-sm text-dark-bg/60">/ yr billed annually</span>
+              <div className="my-2">
+                <div className="flex items-baseline gap-1.5">
+                  <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
+                  <span className="font-body text-sm text-dark-bg/60">/ mo</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <PriceSplit price={c.annualPrice} className="text-dark-bg" small />
+                  <span className="font-body text-sm text-dark-bg/60">/ yr billed annually</span>
+                </div>
               </div>
               <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
               {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
@@ -218,12 +251,10 @@ export default function PricingSection() {
                 {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
               </button>
             </div>
-          )}
 
-          {/* Inner Circle mobile */}
-          {mobilePlan === "inner" && (
+            {/* Inner Circle mobile */}
             <InnerCirclePricingCard c={c} mobile />
-          )}
+          </div>
         </div>
 
         <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment required · Cancel any time</p>
