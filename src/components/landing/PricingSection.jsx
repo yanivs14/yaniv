@@ -23,12 +23,12 @@ async function startCheckout(plan) {
   }
 }
 
-const REGULAR_FEATURES = [
+const MONTHLY_FEATURES = [
   "Full Movement training library (240+ sessions)",
   "Strength, mobility, control & longevity tracks",
   "Community access + challenges",
 ];
-const PREMIUM_FEATURES = [
+const ANNUAL_FEATURES = [
   "Personalized plan for your goals",
   "Async check-ins & ongoing adjustments",
   "Priority support",
@@ -39,23 +39,6 @@ const INNER_CIRCLE_FEATURES = [
   "Ongoing adjustments as you progress",
 ];
 const GOLD = "#D4AF37";
-
-function PriceDisplay({ billing, monthlyPrice, annualMonthlyPrice, className }) {
-  if (billing === "annual") {
-    return (
-      <div className="flex items-baseline gap-1.5 my-3">
-        <span className={`font-heading text-3xl lg:text-4xl font-bold ${className}`}>{annualMonthlyPrice}</span>
-        <span className="font-body text-sm text-white-muted">/ mo</span>
-      </div>
-    );
-  }
-  return (
-    <div className="flex items-baseline gap-1.5 my-3">
-      <span className={`font-heading text-3xl lg:text-4xl font-bold ${className}`}>{monthlyPrice}</span>
-      <span className="font-body text-sm text-white-muted">/ mo</span>
-    </div>
-  );
-}
 
 function CheckItem({ children, color = "text-orange-red", style }) {
   return (
@@ -68,12 +51,11 @@ function CheckItem({ children, color = "text-orange-red", style }) {
 
 export default function PricingSection() {
   const { content } = useSiteContent();
-  const [billing, setBilling] = useState("annual");
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const pricingRef = useSectionTracking("pricing");
 
   useEffect(() => {
-    if (content?.pricing) trackPricingViewed(["annual", "monthly", "inner_circle"], "pricing_section");
+    if (content?.pricing) trackPricingViewed(["monthly", "annual", "inner_circle"], "pricing_section");
   }, [content]);
 
   if (!content) return null;
@@ -85,13 +67,9 @@ export default function PricingSection() {
     setCheckoutLoading(null);
   };
 
-  const regularFeatures = c.regularFeatures?.length ? c.regularFeatures : REGULAR_FEATURES;
-  const premiumFeatures = c.premiumFeatures?.length ? c.premiumFeatures : PREMIUM_FEATURES;
+  const monthlyFeatures = c.regularFeatures?.length ? c.regularFeatures : MONTHLY_FEATURES;
+  const annualFeatures = c.premiumFeatures?.length ? c.premiumFeatures : ANNUAL_FEATURES;
   const innerCircleFeatures = c.innerCircleFeatures?.length ? c.innerCircleFeatures : INNER_CIRCLE_FEATURES;
-  const monthlyPrice = c.monthlyPrice || "$35";
-  const annualMonthlyPrice = c.annualMonthlyPrice || "$19.99";
-  const savingsBadge = c.savingsBadge || "Save 40%";
-  const ctaLabel = billing === "annual" ? (c.ctaAnnual || "Begin Annual") : (c.ctaMonthly || "Begin Monthly");
 
   return (
     <section ref={pricingRef} className="py-12 lg:py-24 bg-dark-surface" id="pricing">
@@ -103,36 +81,15 @@ export default function PricingSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          {c.eyebrow && <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>}
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
             {c.headline1 || "Memberships"}
           </h2>
-          <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
+          <p className="mt-4 font-body text-base text-white-muted">Three ways to train with Roye. Find the right fit.</p>
         </motion.div>
 
-        {/* Toggle */}
-        <div className="flex items-center justify-center gap-2 mb-10">
-          <button
-            onClick={() => setBilling("monthly")}
-            className={`px-6 py-2.5 rounded-full font-body text-sm font-semibold transition-colors ${billing === "monthly" ? "bg-off-white text-dark-bg" : "bg-dark-bg border border-dark-border text-white-muted hover:text-off-white"}`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setBilling("annual")}
-            className={`px-6 py-2.5 rounded-full font-body text-sm font-semibold transition-colors flex items-center gap-2 ${billing === "annual" ? "bg-off-white text-dark-bg" : "bg-dark-bg border border-dark-border text-white-muted hover:text-off-white"}`}
-          >
-            Annual
-            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${billing === "annual" ? "bg-orange-red text-dark-bg" : "bg-orange-red/20 text-orange-red"}`}>
-              {savingsBadge}
-            </span>
-          </button>
-        </div>
-
-        {/* Three cards: desktop Regular → Premium → Inner Circle | mobile Premium → Regular → Inner Circle */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
 
-          {/* Regular */}
+          {/* Monthly Plan */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -140,21 +97,24 @@ export default function PricingSection() {
             transition={{ duration: 0.5 }}
             className="order-2 md:order-1 bg-dark-bg border border-dark-border rounded-2xl p-6 lg:p-7 flex flex-col"
           >
-            <h3 className="font-heading text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight">Regular</h3>
-            <PriceDisplay billing={billing} monthlyPrice={monthlyPrice} annualMonthlyPrice={annualMonthlyPrice} className="text-off-white" />
+            <h3 className="font-heading text-2xl lg:text-3xl font-bold text-off-white uppercase tracking-tight">Monthly Plan</h3>
+            <div className="flex items-baseline gap-1.5 my-3">
+              <span className="font-heading text-3xl lg:text-4xl font-bold text-off-white">$35</span>
+              <span className="font-body text-sm text-white-muted">/ mo</span>
+            </div>
             <ul className="space-y-2.5 flex-1 mt-1">
-              {regularFeatures.map((f, i) => <CheckItem key={i}>{f}</CheckItem>)}
+              {monthlyFeatures.map((f, i) => <CheckItem key={i}>{f}</CheckItem>)}
             </ul>
             <button
-              onClick={() => handleCheckout(billing)}
-              disabled={checkoutLoading === billing}
+              onClick={() => handleCheckout("monthly")}
+              disabled={checkoutLoading === "monthly"}
               className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-6 disabled:opacity-60"
             >
-              {checkoutLoading === billing ? "Loading..." : <>{ctaLabel} <ArrowRight className="w-4 h-4" /></>}
+              {checkoutLoading === "monthly" ? "Loading..." : <>Begin Monthly <ArrowRight className="w-4 h-4" /></>}
             </button>
           </motion.div>
 
-          {/* Premium — MOST POPULAR, cyan border */}
+          {/* Annual Plan — MOST POPULAR */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -165,19 +125,23 @@ export default function PricingSection() {
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg font-body text-[10px] font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
               Most Popular
             </span>
-            <h3 className="font-heading text-2xl lg:text-3xl font-bold text-orange-red uppercase tracking-tight mt-1">Premium</h3>
-            <PriceDisplay billing={billing} monthlyPrice={monthlyPrice} annualMonthlyPrice={annualMonthlyPrice} className="text-off-white" />
-            <p className="font-body text-xs text-white-muted mb-1 italic">Everything in Regular, plus:</p>
+            <h3 className="font-heading text-2xl lg:text-3xl font-bold text-orange-red uppercase tracking-tight mt-1">Annual Plan</h3>
+            <div className="flex items-baseline gap-1.5 my-3">
+              <span className="font-heading text-3xl lg:text-4xl font-bold text-off-white">$19.99</span>
+              <span className="font-body text-sm text-white-muted">/ mo</span>
+            </div>
+            <p className="font-body text-xs text-white-muted mb-2">Billed annually ($239.88/yr)</p>
+            <p className="font-body text-xs text-white-muted mb-1 italic">Everything in Monthly, plus:</p>
             <ul className="space-y-2.5 flex-1 mt-1">
-              {regularFeatures.map((f, i) => <CheckItem key={`r-${i}`}>{f}</CheckItem>)}
-              {premiumFeatures.map((f, i) => <CheckItem key={`p-${i}`}><span className="font-medium text-off-white">{f}</span></CheckItem>)}
+              {monthlyFeatures.map((f, i) => <CheckItem key={`m-${i}`}>{f}</CheckItem>)}
+              {annualFeatures.map((f, i) => <CheckItem key={`a-${i}`}><span className="font-medium text-off-white">{f}</span></CheckItem>)}
             </ul>
             <button
-              onClick={() => handleCheckout(billing)}
-              disabled={checkoutLoading === billing}
+              onClick={() => handleCheckout("annual")}
+              disabled={checkoutLoading === "annual"}
               className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors mt-6 disabled:opacity-60"
             >
-              {checkoutLoading === billing ? "Loading..." : <>{ctaLabel} <ArrowRight className="w-4 h-4" /></>}
+              {checkoutLoading === "annual" ? "Loading..." : <>Begin Annual <ArrowRight className="w-4 h-4" /></>}
             </button>
           </motion.div>
 
@@ -201,9 +165,9 @@ export default function PricingSection() {
               <span className="font-heading text-2xl lg:text-3xl font-bold text-off-white">Custom</span>
               <p className="font-body text-xs text-white-muted">Private consultation required</p>
             </div>
-            <p className="font-body text-xs text-white-muted mb-1 italic">Everything in Premium, plus:</p>
+            <p className="font-body text-xs text-white-muted mb-1 italic">Everything in Annual, plus:</p>
             <ul className="space-y-2.5 flex-1 mt-1">
-              {premiumFeatures.map((f, i) => <CheckItem key={`pp-${i}`} color="" style={{ color: GOLD }}>{f}</CheckItem>)}
+              {annualFeatures.map((f, i) => <CheckItem key={`aa-${i}`} color="" style={{ color: GOLD }}>{f}</CheckItem>)}
               {innerCircleFeatures.map((f, i) => <CheckItem key={`ic-${i}`} color="" style={{ color: GOLD }}><span className="font-medium text-off-white">{f}</span></CheckItem>)}
             </ul>
             <a
