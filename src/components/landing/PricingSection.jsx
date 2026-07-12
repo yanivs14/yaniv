@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight, X, Crown } from "lucide-react";
+import { motion } from "framer-motion";
+import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { trackPricingViewed, track, getGaClientId } from "@/lib/analytics";
 import { useSectionTracking } from "@/hooks/useSectionTracking";
+import InnerCirclePricingCard from "./InnerCirclePricingCard";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
@@ -39,94 +40,8 @@ function PriceSplit({ price, className = "", small = false }) {
   );
 }
 
-const DEFAULT_GENERAL_FEATURES = [
-  "Personalized adaptive daily practice",
-  "Full Movement training library (240+ sessions)",
-  "Strength, mobility, control & longevity tracks",
-  "Community access + challenges",
-];
-
-const DEFAULT_PREMIUM_FEATURES = [
-  "Everything in General, plus:",
-  "Personalized plan for your body & goals",
-  "Weekly live feedback with Roye",
-  "Ongoing adjustments as you progress",
-  "Direct support, every step",
-  "Limited spots - serious members only",
-];
-
-function ModalMonthlyCard({ c, onSelect, loading }) {
-  const features = c.monthlyFeatures?.length ? c.monthlyFeatures : [
-    "Personalized adaptive daily practice",
-    "Full Movement training library (240+ sessions)",
-    "Strength, mobility, control & longevity tracks",
-    "Community access + challenges",
-  ];
-  return (
-    <div className="bg-dark-bg border border-dark-border rounded-2xl p-6 flex flex-col">
-      <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
-      <div className="flex items-baseline gap-1 my-2">
-        <PriceSplit price={c.monthlyPrice} className="text-off-white" />
-        <span className="font-body text-sm text-white-muted">/ month</span>
-      </div>
-      {c.monthlySubtitle && <p className="font-body text-xs text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>}
-      <ul className="space-y-2 flex-1">
-        {features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5">
-            <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-            <span className="font-body text-sm text-off-white/80">{f}</span>
-          </li>
-        ))}
-      </ul>
-      <button onClick={onSelect} disabled={loading}
-        className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60 mt-5">
-        {loading ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
-      </button>
-    </div>
-  );
-}
-
-function ModalAnnualCard({ c, onSelect, loading }) {
-  const features = c.annualFeatures?.length ? c.annualFeatures : [
-    "Everything in Monthly, plus:",
-    "Weekly live coaching & feedback",
-    "Exclusive member-only trainings",
-    "Advanced content drops",
-    "Priority access to new releases",
-    "Annual member perks & content",
-  ];
-  return (
-    <div className="bg-orange-red border border-orange-red rounded-2xl p-6 relative flex flex-col">
-      <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
-      <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
-      <div className="flex items-baseline gap-1.5 my-2">
-        <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
-        <span className="font-body text-sm text-dark-bg/60">/ month</span>
-      </div>
-      <p className="font-body text-sm text-dark-bg mb-1">
-        <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
-      </p>
-      <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
-      {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
-      <ul className="space-y-2 flex-1">
-        {features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5">
-            <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-            <span className={`font-body text-sm text-dark-bg/90 ${i === 0 || i === 1 ? "font-bold" : ""}`}>{f}</span>
-          </li>
-        ))}
-      </ul>
-      <button onClick={onSelect} disabled={loading}
-        className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60 mt-4">
-        {loading ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
-      </button>
-    </div>
-  );
-}
-
 export default function PricingSection() {
   const { content } = useSiteContent();
-  const [modalOpen, setModalOpen] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const pricingRef = useSectionTracking("pricing");
 
@@ -145,8 +60,21 @@ export default function PricingSection() {
     setCheckoutLoading(null);
   };
 
-  const generalFeatures = c.monthlyFeatures?.length ? c.monthlyFeatures : DEFAULT_GENERAL_FEATURES;
-  const premiumFeatures = c.innerCircleFeatures?.length ? c.innerCircleFeatures : DEFAULT_PREMIUM_FEATURES;
+  const monthlyFeatures = c.monthlyFeatures?.length ? c.monthlyFeatures : [
+    "Personalized adaptive daily practice",
+    "Full Movement training library (240+ sessions)",
+    "Strength, mobility, control & longevity tracks",
+    "Community access + challenges",
+  ];
+
+  const annualFeatures = c.annualFeatures?.length ? c.annualFeatures : [
+    "Everything in Monthly, plus:",
+    "Weekly live coaching & feedback",
+    "Exclusive member-only trainings",
+    "Advanced content drops",
+    "Priority access to new releases",
+    "Annual member perks & content",
+  ];
 
   return (
     <section ref={pricingRef} className="py-12 lg:py-24 bg-dark-surface" id="pricing">
@@ -166,107 +94,120 @@ export default function PricingSection() {
           <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
         </motion.div>
 
-        {/* Two tracks */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-          {/* General Package */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col"
-          >
-            <p className="font-body text-sm text-white-muted mb-1">General</p>
-            <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">General Package</h3>
-            <p className="font-body text-sm text-white-muted mb-6 leading-relaxed">Full access to the Movement library, daily practice, and community.</p>
+        {/* Desktop: 3 columns */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+          {/* Monthly */}
+          <div className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col">
+            <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
+            <div className="flex items-baseline gap-1 my-2">
+              <PriceSplit price={c.monthlyPrice} className="text-off-white" />
+              <span className="font-body text-sm text-white-muted">/ month</span>
+            </div>
+            {c.monthlySubtitle && <p className="font-body text-xs text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>}
             <ul className="space-y-2.5 flex-1">
-              {generalFeatures.map((f, i) => (
+              {monthlyFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
                   <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
                   <span className="font-body text-sm text-off-white/80">{f}</span>
                 </li>
               ))}
             </ul>
-            <button onClick={() => setModalOpen(true)}
-              className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-6">
-              Choose General <ArrowRight className="w-4 h-4" />
+            <button onClick={() => handleCheckout("monthly")} disabled={checkoutLoading === "monthly"}
+              className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60 mt-6">
+              {checkoutLoading === "monthly" ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
             </button>
-          </motion.div>
+          </div>
 
-          {/* Premium Package */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-2xl p-px bg-gradient-to-b from-orange-red/50 via-orange-red/15 to-transparent flex flex-col"
-          >
-            <div className="relative bg-dark-bg rounded-2xl p-8 flex flex-col overflow-hidden h-full">
-              <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-red/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-orange-red/15 border border-orange-red/30 rounded-full px-3 py-1">
-                <span className="w-1.5 h-1.5 bg-orange-red rounded-full animate-pulse" />
-                <span className="font-body text-[10px] font-semibold text-orange-red uppercase tracking-wider">Limited Spots</span>
+          {/* Annual */}
+          <div className="bg-orange-red border border-orange-red rounded-2xl p-8 relative flex flex-col">
+            <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
+            <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
+            <div className="flex items-baseline gap-1.5 my-2">
+              <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
+              <span className="font-body text-sm text-dark-bg/60">/ month</span>
+            </div>
+            <p className="font-body text-sm text-dark-bg mb-1">
+              <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year billed annually
+            </p>
+            <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
+            {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
+            <ul className="space-y-2.5 flex-1">
+              {annualFeatures.map((f, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                  <span className={`font-body text-sm text-dark-bg/90 ${i === 0 || i === 1 ? "font-bold" : ""}`}>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <button onClick={() => handleCheckout("annual")} disabled={checkoutLoading === "annual"}
+              className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60 mt-4">
+              {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
+            </button>
+          </div>
+
+          {/* Inner Circle */}
+          <InnerCirclePricingCard c={c} />
+        </div>
+
+        {/* Mobile: slider */}
+        <div className="md:hidden">
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            {/* Monthly mobile */}
+            <div className="flex-shrink-0 w-[78vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 flex flex-col">
+              <p className="font-body text-sm text-white-muted mb-1">Monthly</p>
+              <div className="flex items-baseline gap-1 my-2">
+                <PriceSplit price={c.monthlyPrice} className="text-off-white" />
+                <span className="font-body text-sm text-white-muted">/ month</span>
               </div>
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center mb-3">
-                  <Crown className="w-5 h-5 text-orange-red" />
-                </div>
-                <p className="font-body text-sm text-orange-red mb-1 uppercase tracking-widest">Premium</p>
-                <h3 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-3">{c.innerCircleTitle || "Roye, Maxed Out."}</h3>
-                <p className="font-body text-sm text-white-muted leading-relaxed mb-4">{c.innerCircleDescription}</p>
-              </div>
-              <div className="relative my-4 h-px bg-gradient-to-r from-transparent via-orange-red/30 to-transparent" />
-              <ul className="relative space-y-2.5 flex-1">
-                {premiumFeatures.map((f, i) => (
+              {c.monthlySubtitle && <p className="font-body text-xs text-white-muted mb-4 leading-relaxed">{c.monthlySubtitle}</p>}
+              <ul className="space-y-2 flex-1">
+                {monthlyFeatures.map((f, i) => (
                   <li key={i} className="flex items-start gap-2.5">
                     <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-off-white/90">{f}</span>
+                    <span className="font-body text-sm text-off-white/80">{f}</span>
                   </li>
                 ))}
               </ul>
-              <div className="relative mt-6">
-                <a href="/inner-circle"
-                  className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors shadow-lg shadow-orange-red/20">
-                  {c.innerCircleCta || "Apply to Inner Circle"} <ArrowRight className="w-4 h-4" />
-                </a>
-                <p className="mt-2 font-body text-xs text-white-muted text-center">{c.innerCircleFootnote || "Starts with a private consultation."}</p>
-              </div>
+              <button onClick={() => handleCheckout("monthly")} disabled={checkoutLoading === "monthly"}
+                className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors disabled:opacity-60 mt-5">
+                {checkoutLoading === "monthly" ? "Loading..." : <>{c.ctaMonthly} <ArrowRight className="w-4 h-4" /></>}
+              </button>
             </div>
-          </motion.div>
+
+            {/* Annual mobile */}
+            <div className="flex-shrink-0 w-[78vw] snap-start bg-orange-red border border-orange-red rounded-2xl p-5 relative flex flex-col">
+              <span className="absolute top-3 right-3 font-heading text-xs font-bold text-dark-bg bg-dark-bg/15 px-3 py-1 rounded-full uppercase">{c.annualInsteadOf}</span>
+              <p className="font-body text-sm text-dark-bg/70 mb-1">Annual</p>
+              <div className="flex items-baseline gap-1.5 my-2">
+                <PriceSplit price={c.annualMonthlyPrice} className="text-dark-bg" />
+                <span className="font-body text-sm text-dark-bg/60">/ month</span>
+              </div>
+              <p className="font-body text-sm text-dark-bg mb-1">
+                <PriceSplit price={c.annualPrice} className="text-dark-bg" small /> / year
+              </p>
+              <p className="font-body text-xs font-bold text-dark-bg mb-1 bg-dark-bg/20 w-fit px-3 py-1 rounded-full">{c.annualSavings}</p>
+              {c.annualSubtitle && <p className="font-body text-xs text-dark-bg/80 mb-4 mt-2 leading-relaxed">{c.annualSubtitle}</p>}
+              <ul className="space-y-2 flex-1">
+                {annualFeatures.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                    <span className={`font-body text-sm text-dark-bg/90 ${i === 0 || i === 1 ? "font-bold" : ""}`}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <button onClick={() => handleCheckout("annual")} disabled={checkoutLoading === "annual"}
+                className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface transition-colors disabled:opacity-60 mt-4">
+                {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual} <ArrowRight className="w-4 h-4" /></>}
+              </button>
+            </div>
+
+            {/* Inner Circle mobile */}
+            <InnerCirclePricingCard c={c} mobile />
+          </div>
         </div>
 
         <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment required · Cancel any time</p>
       </div>
-
-      {/* Modal: Monthly vs Annual */}
-      <AnimatePresence>
-        {modalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
-            onClick={() => setModalOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-              className="relative w-full max-w-3xl"
-            >
-              <button onClick={() => setModalOpen(false)}
-                className="absolute -top-4 -right-4 z-10 w-10 h-10 rounded-full bg-dark-surface border border-dark-border flex items-center justify-center text-white-muted hover:text-off-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <ModalAnnualCard c={c} onSelect={() => handleCheckout("annual")} loading={checkoutLoading === "annual"} />
-                <ModalMonthlyCard c={c} onSelect={() => handleCheckout("monthly")} loading={checkoutLoading === "monthly"} />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

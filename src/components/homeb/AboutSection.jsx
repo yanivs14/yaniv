@@ -10,7 +10,6 @@ export default function AboutSection() {
   const [current, setCurrent] = useState(0);
   if (!content) return null;
 
-  // All images: main imageUrl first, then gallery images (type=image only)
   const images = [
     ...(c.imageUrl ? [c.imageUrl] : []),
     ...gallery.filter(g => g.type === "image" && g.url).map(g => g.url),
@@ -23,7 +22,6 @@ export default function AboutSection() {
     <section className="py-12 lg:py-24 bg-dark-surface" id="roye">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-          {/* Image slider — order-2 on mobile (below text), order-1 on desktop (left) */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -53,7 +51,6 @@ export default function AboutSection() {
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>
-                    {/* Dots */}
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5">
                       {images.map((_, i) => (
                         <button
@@ -73,7 +70,6 @@ export default function AboutSection() {
             )}
           </motion.div>
 
-          {/* Text */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -81,18 +77,19 @@ export default function AboutSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow || "About"}</p>
+            {c.eyebrow && c.eyebrow.trim() && (
+              <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
+            )}
             <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
               {c.headline || "About"}<br />
               {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-6">
               {(c.text || "").split("\n\n").filter(Boolean).map((para, i) => (
-                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{para}</p>
+                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-loose tracking-wide">{para}</p>
               ))}
             </div>
 
-            {/* Feature panel with checklist + CTA */}
             {(c.iconList?.length > 0) && (
               <div className="mt-8 rounded-2xl bg-dark-bg border border-dark-border p-6">
                 <ul className="space-y-4">

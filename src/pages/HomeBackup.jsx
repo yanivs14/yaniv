@@ -3,20 +3,20 @@ import { Helmet } from "react-helmet-async";
 import { base44 } from "@/api/base44Client";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { trackPurchase } from "@/lib/analytics";
-import Navbar from "../components/landing/Navbar";
-import HeroSection from "../components/landing/HeroSection";
-import PricingSection from "../components/landing/PricingSection";
-import BackToTop from "../components/BackToTop";
-import NewsletterPopup from "../components/landing/NewsletterPopup";
+import Navbar from "../components/homeb/Navbar";
+import HeroSection from "../components/homeb/HeroSection";
+import PricingSection from "../components/homeb/PricingSection";
+import BackToTop from "../components/homeb/BackToTop";
+import NewsletterPopup from "../components/homeb/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
 import BeforeAfterCarousel from "../components/homeb/BeforeAfterCarousel";
 
-const TestimonialsSection = lazy(() => import("../components/landing/TestimonialsSection.jsx"));
-const AboutSection = lazy(() => import("../components/landing/AboutSection.jsx"));
-const FAQSection = lazy(() => import("../components/landing/FAQSection.jsx"));
-const FinalCTASection = lazy(() => import("../components/landing/FinalCTASection"));
-const Footer = lazy(() => import("../components/landing/Footer"));
+const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection.jsx"));
+const AboutSection = lazy(() => import("../components/homeb/AboutSection.jsx"));
+const FAQSection = lazy(() => import("../components/homeb/FAQSection.jsx"));
+const FinalCTASection = lazy(() => import("../components/homeb/FinalCTASection"));
+const Footer = lazy(() => import("../components/homeb/Footer"));
 
 
 export default function HomeBackup() {

@@ -1,0 +1,147 @@
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, ArrowRight } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import GdprConsent from "@/components/landing/GdprConsent";
+import { trackLeadCapture } from "@/lib/analytics";
+
+const STORAGE_KEY = "newsletter_dismissed_until";
+
+function isDismissed() {
+  const until = localStorage.getItem(STORAGE_KEY);
+  if (!until) return false;
+  return Date.now() < parseInt(until, 10);
+}
+
+function dismissForMonth() {
+  const oneMonth = Date.now() + 30 * 24 * 60 * 60 * 1000;
+  localStorage.setItem(STORAGE_KEY, String(oneMonth));
+}
+
+export default function NewsletterPopup() {
+  const [visible, setVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [gdpr, setGdpr] = useState(false);
+  const [gdprError, setGdprError] = useState("");
+
+  useEffect(() => {
+    if (isDismissed()) return;
+
+    let shown = false;
+    const show = () => {
+      if (shown) return;
+      shown = true;
+      setVisible(true);
+    };
+
+    const timer = setTimeout(show, 3000);
+
+    const sections = document.querySelectorAll("section, [data-section]");
+    const target = sections[2];
+    let observer;
+    if (target) {
+      observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) { clearTimeout(timer); show(); observer.disconnect(); } },
+        { threshold: 0.3 }
+      );
+      observer.observe(target);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      observer?.disconnect();
+    };
+  }, []);
+
+  const dismiss = () => {
+    dismissForMonth();
+    setVisible(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email");
+      return;
+    }
+    if (!gdpr) {
+      setGdprError("Please accept the privacy policy to continue");
+      return;
+    }
+    setLoading(true);
+    try {
+      await base44.functions.invoke("subscribeNewsletter", { email: email.trim(), source: "popup" });
+      trackLeadCapture(email.trim(), "newsletter_popup", gdpr, "");
+      setSubmitted(true);
+      setTimeout(dismiss, 2000);
+    } catch {
+      setError("Something went wrong. Try again.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: 40, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.97 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}
+        >
+          <div className="bg-dark-surface border border-dark-border rounded-2xl px-6 py-6 shadow-2xl w-full max-w-sm sm:max-w-sm relative mx-4 sm:mx-0" style={{width: 'min(90vw, 24rem)'}}>
+            <button
+              onClick={dismiss}
+              className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full text-white-muted hover:text-off-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {!submitted ? (
+              <>
+                <p className="font-body text-[10px] text-orange-red uppercase tracking-widest mb-1 text-center">Free tips & updates</p>
+                <p className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-4 text-center">
+                  Join The Movement
+                </p>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setError(""); }}
+                    placeholder="your@email.com"
+                    className={`w-full bg-dark-bg border rounded-xl px-4 py-3 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${error ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
+                  />
+                  {error && <p className="text-xs text-red-400 font-body">{error}</p>}
+                  <div>
+                    <GdprConsent id="newsletter-gdpr" checked={gdpr} onChange={v => { setGdpr(v); setGdprError(""); }} />
+                    {gdprError && <p className="mt-1 text-xs text-red-400 font-body">{gdprError}</p>}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
+                  >
+                    {loading
+                      ? <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
+                      : <>Subscribe <ArrowRight className="w-3.5 h-3.5" /></>}
+                  </button>
+                </form>
+                <p className="mt-3 text-center font-body text-xs text-white-dim">No spam. Unsubscribe anytime.</p>
+              </>
+            ) : (
+              <div className="text-center py-2">
+                <p className="font-heading text-xl font-bold text-orange-red uppercase tracking-tight mb-1">You're in! 🎉</p>
+                <p className="font-body text-sm text-white-muted">Thanks for subscribing.</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
