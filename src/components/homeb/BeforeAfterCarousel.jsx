@@ -29,7 +29,6 @@ export default function BeforeAfterCarousel() {
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {c.headline || "Real Results, Real Members"}
           </h2>
-          <p className="mt-3 font-body text-base text-orange-red">94% feel a shift in week one</p>
         </motion.div>
 
         {items.length > 0 ? (
@@ -97,17 +96,17 @@ export default function BeforeAfterCarousel() {
             </div>
           </div>
         ) : (
-          <div className="text-center">
-            <div className="rounded-2xl overflow-hidden border border-dark-border bg-dark-surface max-w-2xl mx-auto">
-              <img
-                src="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png"
-                alt="Movement practice in action"
-                className="w-full aspect-video object-cover"
-              />
-            </div>
-            <p className="mt-4 font-body text-sm text-white-dim">Real member transformations — coming soon</p>
+          <div className="text-center py-16">
+            <p className="font-body text-sm text-white-dim">No before & after photos yet</p>
           </div>
         )}
+        {/* 94% stat */}
+        <div className="mt-10 flex justify-center">
+          <div className="inline-flex items-center gap-4 bg-dark-surface border border-dark-border rounded-2xl px-8 py-5">
+            <span className="font-heading text-5xl lg:text-6xl font-bold text-orange-red leading-none">94%</span>
+            <span className="font-body text-sm text-white-muted leading-tight max-w-[140px]">feel a shift in week one</span>
+          </div>
+        </div>
       </div>
     </section>
   );
