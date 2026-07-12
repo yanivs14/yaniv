@@ -77,16 +77,14 @@ export default function AboutSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            {c.eyebrow && c.eyebrow.trim() && (
-              <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
-            )}
+            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow || "About"}</p>
             <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
               {c.headline || "About"}<br />
               {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}
             </h2>
-            <div className="space-y-6">
+            <div className="space-y-5">
               {(c.text || "").split("\n\n").filter(Boolean).map((para, i) => (
-                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-loose tracking-wide">{para}</p>
+                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{para}</p>
               ))}
             </div>
 
