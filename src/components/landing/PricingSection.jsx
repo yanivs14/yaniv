@@ -86,12 +86,9 @@ export default function PricingSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
           <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            {c.headline1}<br />
-            {c.headline2} <span className="text-orange-red">{c.headlineAccent}</span>
+            {c.sectionTitle || "Memberships"}
           </h2>
-          <p className="mt-4 font-body text-base text-white-muted">{c.subtitle}</p>
         </motion.div>
 
         {/* Desktop: 3 columns */}

@@ -300,8 +300,7 @@ function SectionEditor({ sectionKey }) {
 
   if (sectionKey === "pricing") return (
     <div>
-      {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headline2", "Headline 2")} {f("headlineAccent", "Headline Accent")}
-      {f("subtitle", "Subtitle", true)}
+      {f("sectionTitle", "Section Title (e.g. Memberships)")}
 
       <p className="text-xs text-white-muted font-body font-semibold mt-4 mb-3">Monthly Plan</p>
       {f("monthlyPrice", "Large Price (e.g. $35)")}

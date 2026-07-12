@@ -83,13 +83,14 @@ const DEFAULT_CONTENT = {
     ],
   },
   pricing: {
-    headline: "Three ways to train with Roye. Find the right fit.",
+    sectionTitle: "Memberships",
     monthlyPrice: "$35",
     monthlyFeatures: [
       "Full Movement training library (240+ sessions)",
       "Strength, mobility, control & longevity tracks",
       "Community access + challenges",
     ],
+    ctaMonthly: "Begin Monthly",
     annualMonthlyPrice: "$19.99",
     annualPrice: "$239.88",
     annualFeatures: [
@@ -100,11 +101,8 @@ const DEFAULT_CONTENT = {
       "Async check-ins & ongoing adjustments",
       "Priority support",
     ],
-    ctaMonthly: "Begin Monthly",
     ctaAnnual: "Begin Annual",
-    innerCircleTitle: "Inner Circle",
-    innerCirclePrice: "Custom",
-    innerCircleSubtitle: "Private consultation required",
+    innerCircleTitle: "INNER CIRCLE",
     innerCircleFeatures: [
       "Personalized plan for your goals",
       "Async check-ins & ongoing adjustments",
@@ -114,6 +112,7 @@ const DEFAULT_CONTENT = {
       "Ongoing adjustments as you progress",
     ],
     innerCircleCta: "Apply for Inner Circle",
+    innerCircleFootnote: "Starts with a private consultation.",
   },
   finalCta: {
     eyebrow: "The only question",
