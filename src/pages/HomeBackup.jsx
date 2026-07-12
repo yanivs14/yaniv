@@ -88,13 +88,13 @@ export default function HomeBackup() {
       <HeroSection />
       <SocialProofSection />
       <BenefitsSection />
+      {/* #pricing */}
+      <PricingSection />
       <SeeInsideSection />
       <BeforeAfterCarousel />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
-      {/* #pricing */}
-      <PricingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />

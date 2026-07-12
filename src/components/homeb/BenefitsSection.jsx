@@ -1,13 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+
+function getYoutubeEmbedUrl(url) {
+  if (!url) return null;
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}&controls=0&modestbranding=1` : null;
+}
 
 export default function BenefitsSection() {
   const { content } = useSiteContent();
-  const c = content?.homebBenefits || {};
+  const c = content?.pillars || {};
   const pillars = c.pillars || [];
   if (!content) return null;
+
+  const embedUrl = getYoutubeEmbedUrl(c.youtubeUrl);
 
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="benefits">
@@ -21,10 +28,17 @@ export default function BenefitsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
+              {c.eyebrow && (
+                <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
+              )}
               <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
                 {c.headline1 || "The Program's"}<br />
+                {c.headline2 && <>{c.headline2} </>}
                 {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}
               </h2>
+              {c.subtitle && (
+                <p className="mt-6 font-body text-base text-white-muted max-w-xl leading-relaxed">{c.subtitle}</p>
+              )}
             </motion.div>
 
             {/* Pillars grid — 2x2 */}
@@ -46,7 +60,7 @@ export default function BenefitsSection() {
             </div>
           </div>
 
-          {/* Right: vertical image with overlay */}
+          {/* Right: media — YouTube > video > image */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -54,23 +68,21 @@ export default function BenefitsSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface"
           >
-            {c.imageUrl ? (
-              <img src={c.imageUrl} alt="Benefits" className="w-full h-full object-cover" loading="lazy" />
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
             ) : c.videoUrl ? (
               <video src={c.videoUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+            ) : c.imageUrl ? (
+              <img src={c.imageUrl} alt="Benefits" className="w-full h-full object-cover" loading="lazy" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">No media yet</div>
             )}
-
-            {/* Text overlay */}
-            {c.imageOverlay && (
-              <p className="absolute top-6 left-6 font-body text-sm text-off-white font-medium">{c.imageOverlay}</p>
-            )}
-
-            {/* Arrow icon */}
-            <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-orange-red flex items-center justify-center">
-              <ArrowUpRight className="w-5 h-5 text-dark-bg" />
-            </div>
           </motion.div>
         </div>
       </div>
