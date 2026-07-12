@@ -94,9 +94,9 @@ export default function AboutSection() {
               ))}
             </div>
 
-            {/* Feature panel with checklist + CTA */}
+            {/* Feature panel with checklist + CTA — button overlaps bottom edge */}
             {(c.iconList?.length > 0) && (
-              <div className="mt-8 rounded-2xl bg-dark-bg border border-dark-border p-6">
+              <div className="mt-8 rounded-2xl bg-dark-surface-2 border border-dark-border p-6 pb-16 relative">
                 <ul className="space-y-4">
                   {c.iconList.map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
@@ -109,7 +109,7 @@ export default function AboutSection() {
                 </ul>
                 <a
                   href="#pricing"
-                  className="mt-6 flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
+                  className="absolute left-1/2 -translate-x-1/2 -bottom-5 flex items-center justify-center gap-2 w-[70%] max-w-xs bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors shadow-xl"
                 >
                   Join Us <ArrowRight className="w-4 h-4" />
                 </a>
