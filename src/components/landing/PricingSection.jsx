@@ -177,7 +177,7 @@ export default function PricingSection() {
 
         {/* Mobile: synced toggle + slider */}
         <div className="md:hidden">
-          <div className="flex gap-2 p-1 bg-dark-bg border border-dark-border rounded-full mb-6 max-w-xs mx-auto">
+          <div className="flex gap-1 p-1 bg-dark-bg border border-dark-border rounded-full mb-6 max-w-sm mx-auto">
             {[
               { key: "monthly", label: "Monthly" },
               { key: "annual", label: "Annual" },
@@ -186,7 +186,7 @@ export default function PricingSection() {
               <button
                 key={opt.key}
                 onClick={() => scrollToMobilePlan(opt.key)}
-                className={`flex-1 py-2 rounded-full font-body text-xs font-semibold uppercase tracking-wider transition-colors ${
+                className={`flex-1 py-2 px-2 rounded-full font-body text-[11px] font-semibold uppercase transition-colors whitespace-nowrap ${
                   mobilePlan === opt.key ? "bg-orange-red text-dark-bg" : "text-white-muted"
                 }`}
               >
