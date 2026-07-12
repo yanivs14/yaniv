@@ -197,6 +197,19 @@ const DEFAULT_CONTENT = {
       { question: "What platform is the content on?", answer: "All content is hosted on Skool — a simple, clean community platform. One login gives you access to the full library, the community, and all live sessions." },
     ]
   },
+  homebBenefits: {
+    headline1: "The Program's",
+    headlineAccent: "Benefits",
+    pillars: [
+      { icon: "◎", title: "Mobility", desc: "Open every joint. Recover the range you were born with." },
+      { icon: "◈", title: "Strength", desc: "Functional, owned. Strength your body actually uses." },
+      { icon: "◇", title: "Control", desc: "Precision in every transition. Move with intention." },
+      { icon: "∞", title: "Longevity", desc: "Body that lasts. Decades of capability, not a sprint." },
+    ],
+    imageUrl: "",
+    videoUrl: "",
+    imageOverlay: "Hang for 30s-60s",
+  },
   homebSocialProof: {
     stats: [
       { value: "1.5M+", label: "Social Media Followers" },

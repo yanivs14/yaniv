@@ -9,6 +9,7 @@ import PricingSection from "../components/homeb/PricingSection";
 import BackToTop from "../components/homeb/BackToTop";
 import NewsletterPopup from "../components/homeb/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
+import BenefitsSection from "../components/homeb/BenefitsSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
 import BeforeAfterCarousel from "../components/homeb/BeforeAfterCarousel";
 
@@ -86,6 +87,7 @@ export default function HomeBackup() {
       {/* #program */}
       <HeroSection />
       <SocialProofSection />
+      <BenefitsSection />
       <SeeInsideSection />
       <BeforeAfterCarousel />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
