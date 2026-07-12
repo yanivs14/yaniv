@@ -97,8 +97,15 @@ export default function BeforeAfterCarousel() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-16">
-            <p className="font-body text-sm text-white-dim">No before & after photos yet</p>
+          <div className="text-center">
+            <div className="rounded-2xl overflow-hidden border border-dark-border bg-dark-surface max-w-2xl mx-auto">
+              <img
+                src="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png"
+                alt="Movement practice in action"
+                className="w-full aspect-video object-cover"
+              />
+            </div>
+            <p className="mt-4 font-body text-sm text-white-dim">Real member transformations — coming soon</p>
           </div>
         )}
       </div>
