@@ -80,7 +80,7 @@ export default function PricingSection() {
           className="text-center mb-14"
         >
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight">
-            {c.headline || "Three ways to train with Roye. Find the right fit."}
+            {c.sectionTitle || c.headline1 || "Three ways to train with Roye. Find the right fit."}
           </h2>
         </motion.div>
 
@@ -94,10 +94,12 @@ export default function PricingSection() {
             className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col"
           >
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">Monthly Plan</p>
-            <div className="flex items-baseline gap-1.5 mb-6">
-              <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
-              <span className="font-body text-sm text-white-muted">/ mo</span>
-            </div>
+            <div className="flex items-baseline gap-1.5 mb-1">
+               <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
+               <span className="font-body text-sm text-white-muted">/ mo</span>
+             </div>
+             {c.monthlySubtitle && <p className="font-body text-xs text-white-muted mb-6">{c.monthlySubtitle}</p>}
+             {!c.monthlySubtitle && <div className="mb-6" />}
             <ul className="space-y-3 flex-1">
               {monthlyFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -125,11 +127,16 @@ export default function PricingSection() {
           >
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
             <p className="font-body text-sm font-bold text-orange-red uppercase tracking-widest mb-4">Annual Plan</p>
+            {c.annualInsteadOf && (
+              <p className="font-body text-xs text-orange-red font-semibold mb-2">{c.annualInsteadOf}</p>
+            )}
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="font-heading text-5xl font-bold text-off-white">{c.annualMonthlyPrice || "$19.99"}</span>
               <span className="font-body text-sm text-white-muted">/ mo</span>
             </div>
+            {c.annualSavings && <p className="font-body text-xs text-orange-red font-semibold mb-1">{c.annualSavings}</p>}
             <p className="font-body text-xs text-white-muted mb-6">Billed annually ({c.annualPrice || "$239.88"}/yr)</p>
+            {c.annualSubtitle && <p className="font-body text-sm text-white-muted mb-3">{c.annualSubtitle}</p>}
             <p className="font-body text-sm text-off-white/80 mb-3">Everything in Monthly, plus:</p>
             <ul className="space-y-3 flex-1">
               {annualFeatures.map((f, i) => (
@@ -159,9 +166,9 @@ export default function PricingSection() {
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Inner Circle — Applications Reviewed</span>
             <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-4">Inner Circle</p>
             <div className="flex items-baseline gap-1.5 mb-1">
-              <span className="font-heading text-5xl font-bold text-off-white">{c.innerCirclePrice || "Custom"}</span>
+              <span className="font-heading text-5xl font-bold text-off-white">{c.innerCircleTitle || "Custom"}</span>
             </div>
-            <p className="font-body text-xs text-white-muted mb-6">{c.innerCircleSubtitle || "Private consultation required"}</p>
+            <p className="font-body text-xs text-white-muted mb-6">{c.innerCircleDescription || "Private consultation required"}</p>
             <p className="font-body text-sm text-off-white/80 mb-3">Everything in Annual, plus:</p>
             <ul className="space-y-3 flex-1">
               {innerCircleFeatures.map((f, i) => (
@@ -177,6 +184,9 @@ export default function PricingSection() {
             >
               {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
             </button>
+            {c.innerCircleFootnote && (
+              <p className="font-body text-xs text-white-dim mt-3 text-center">{c.innerCircleFootnote}</p>
+            )}
           </motion.div>
         </div>
 
