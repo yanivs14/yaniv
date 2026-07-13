@@ -20,7 +20,6 @@ export default function FinalCTASection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-6">{c.eyebrow}</p>
             <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
               {c.headline1}<br />
               {c.headline2}<br />

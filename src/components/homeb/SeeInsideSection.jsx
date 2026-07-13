@@ -33,7 +33,6 @@ export default function SeeInsideSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-3">{c.eyebrow || "This is what you're joining"}</p>
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {c.headline || "See How It Works"}
           </h2>

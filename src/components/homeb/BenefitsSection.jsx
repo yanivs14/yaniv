@@ -28,9 +28,6 @@ export default function BenefitsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              {c.eyebrow && (
-                <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
-              )}
               <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
                 {c.headline1 || "The Program's"}<br />
                 {c.headline2 && <>{c.headline2} </>}
