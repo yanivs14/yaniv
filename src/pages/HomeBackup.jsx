@@ -70,12 +70,12 @@ export default function HomeBackup() {
       <title>The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength</title>
       <meta name="description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed. Join The Movement by Roye Gold." />
       <meta name="robots" content="index, follow" />
-      <link rel="canonical" href="https://themovement.royegold.com/" />
+      <link rel="canonical" href="https://royegold.com/" />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="The Movement by Roye Gold" />
       <meta property="og:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
       <meta property="og:description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed." />
-      <meta property="og:url" content="https://themovement.royegold.com/" />
+      <meta property="og:url" content="https://royegold.com/" />
       <meta property="og:image" content="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
