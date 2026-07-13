@@ -11,6 +11,7 @@ import NewsletterPopup from "../components/homeb/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
 import BenefitsSection from "../components/homeb/BenefitsSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
+import ComparisonSection from "../components/homeb/ComparisonSection";
 
 const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/homeb/AboutSection.jsx"));
@@ -98,6 +99,7 @@ export default function HomeBackup() {
           Real Results, Real Members
         </h2>
       </div>
+      <ComparisonSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />

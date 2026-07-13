@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
-import ComparisonTable from "@/components/landing/ComparisonTable";
 
 export default function FAQSection() {
   const { content } = useSiteContent();
@@ -13,8 +12,7 @@ export default function FAQSection() {
   return (
     <section className="py-12 lg:py-24 bg-dark-bg" id="faq">
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          <div className="space-y-3">
+        <div className="max-w-3xl mx-auto space-y-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -58,9 +56,6 @@ export default function FAQSection() {
             </motion.div>
             )}
           </div>
-
-          <ComparisonTable />
-        </div>
       </div>
     </section>);
 }

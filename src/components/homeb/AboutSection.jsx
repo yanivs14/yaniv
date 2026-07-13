@@ -27,14 +27,14 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="order-2 lg:order-1 aspect-[4/3] rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
+            className="order-2 lg:order-1 rounded-2xl overflow-hidden bg-dark-bg border border-dark-border relative"
           >
             {images.length > 0 ? (
               <>
                 <img
                   src={images[current]}
                   alt="About"
-                  className="w-full h-full object-cover transition-opacity duration-300"
+                  className="w-full h-auto block transition-opacity duration-300"
                   loading="lazy"
                 />
                 {images.length > 1 && (
