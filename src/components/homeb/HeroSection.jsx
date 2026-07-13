@@ -47,7 +47,7 @@ export default function HeroSection() {
               
               <h1 style={{ textWrap: 'pretty' }} className="font-heading font-bold leading-[0.95] text-off-white uppercase tracking-tight text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-8xl">
                 {c.headline1}<br />
-                {c.headline2} {c.headlineAccent} {c.headline3.split(" ").map((word, i) =>
+                {c.headline2 && <span className="text-orange-red">{c.headline2}</span>} {c.headlineAccent} {c.headline3.split(" ").map((word, i) =>
                 i === c.headline3.split(" ").length - 1 ?
                 <span key={i} className="text-orange-red">{word}</span> :
                 <span key={i}>{word} </span>
