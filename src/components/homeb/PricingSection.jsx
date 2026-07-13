@@ -30,9 +30,19 @@ export default function PricingSection() {
   const { content } = useSiteContent();
   const [checkoutLoading, setCheckoutLoading] = useState(null);
   const [bookCallOpen, setBookCallOpen] = useState(false);
-  const [mobilePlan, setMobilePlan] = useState("monthly");
+  const [mobilePlan, setMobilePlan] = useState("annual");
   const mobileSliderRef = useRef(null);
   const pricingRef = useSectionTracking("pricing");
+
+  // Scroll slider to the default plan on mount
+  useEffect(() => {
+    const container = mobileSliderRef.current;
+    if (!container || container.children.length === 0) return;
+    const idx = MOBILE_PLAN_KEYS.indexOf("annual");
+    if (idx === -1) return;
+    const cardWidth = container.children[0].offsetWidth + 20;
+    container.scrollTo({ left: idx * cardWidth });
+  }, []);
 
   const handleMobileScroll = () => {
     const container = mobileSliderRef.current;

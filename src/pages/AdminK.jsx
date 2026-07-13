@@ -239,9 +239,19 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
       {f("listTitle", "List Title (above pain points)")}
       <p className="text-xs text-white-muted mb-2 mt-1 font-body">Pain Points</p>
       {data.painPoints.map((pt, i) => (
-        <input key={i} value={pt} onChange={e => { const a = [...data.painPoints]; a[i] = e.target.value; update("degrading", "painPoints", a); }}
-          className="w-full mb-2 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={pt} onChange={e => { const a = [...data.painPoints]; a[i] = e.target.value; update("degrading", "painPoints", a); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => update("degrading", "painPoints", data.painPoints.filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       ))}
+      <button onClick={() => update("degrading", "painPoints", [...(data.painPoints || []), ""])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-1">
+        <Plus className="w-4 h-4" /> Add pain point
+      </button>
       <p className="text-xs text-white-muted mb-2 mt-3 font-body">Stats</p>
       {data.stats.map((s, i) => (
         <div key={i} className="flex gap-2 mb-2">
