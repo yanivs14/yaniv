@@ -25,6 +25,7 @@ const DEFAULT_CONTENT = {
       "Stiff in the morning. Tight by night.",
       "Back, hips, knees, neck — the daily friction.",
       "Strength isn't the problem. Foundation is.",
+      "Modern life is breaking your body.",
     ],
     stats: [
       { value: "80%", label: "of adults carry chronic joint or back pain" },
