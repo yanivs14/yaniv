@@ -71,7 +71,7 @@ export default function Navbar() {
             {c.links.map((l) => {
               const labelLower = l.label.toLowerCase();
               const isWhoLink = labelLower.includes("who");
-              const effectiveHref = isWhoLink ? "#members" : l.href;
+              const effectiveHref = isWhoLink ? "#who" : l.href;
               const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
               const isProgramLink = labelLower.includes("program");
               const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
@@ -126,7 +126,7 @@ export default function Navbar() {
               {c.links.map((l, i) => {
                 const labelLower = l.label.toLowerCase();
                 const isWhoLink = labelLower.includes("who");
-                const effectiveHref = isWhoLink ? "#members" : l.href;
+                const effectiveHref = isWhoLink ? "#who" : l.href;
                 const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
                 const isProgramLink = labelLower.includes("program");
                 const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
