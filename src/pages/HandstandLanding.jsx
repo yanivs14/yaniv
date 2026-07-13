@@ -18,33 +18,38 @@ const DEFAULT_PREORDER = { enabled: false, targetDate: "", price: "99", original
 
 export default function HandstandLanding() {
   const [content, setContent] = useState(null);
-  const [preOrder, setPreOrder] = useState(null);
+  const [preOrder, setPreOrder] = useState(DEFAULT_PREORDER);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
+      // Fetch landing page content
       try {
-        const [pages, preOrderRecords] = await Promise.all([
-          base44.entities.LandingPageContent.filter({ page_key: "handstand_course" }),
-          base44.entities.SiteContent.filter({ section_key: "homeb_handstandPreorder" }),
-        ]);
+        const pages = await base44.entities.LandingPageContent.filter({ page_key: "handstand_course" });
+        if (!mounted) return;
         if (pages.length > 0 && pages[0].data) {
           setContent({ ...defaultHandstandContent, ...pages[0].data });
         } else {
           setContent(defaultHandstandContent);
         }
-        if (preOrderRecords.length > 0 && preOrderRecords[0].data) {
-          setPreOrder({ ...DEFAULT_PREORDER, ...preOrderRecords[0].data });
-        } else {
-          setPreOrder(DEFAULT_PREORDER);
+      } catch {
+        if (mounted) setContent(defaultHandstandContent);
+      }
+      // Fetch pre-order config separately so one failure doesn't block the page
+      try {
+        const records = await base44.entities.SiteContent.filter({ section_key: "homeb_handstandPreorder" });
+        if (!mounted) return;
+        if (records.length > 0 && records[0].data) {
+          setPreOrder({ ...DEFAULT_PREORDER, ...records[0].data });
         }
       } catch {
-        setContent(defaultHandstandContent);
-        setPreOrder(DEFAULT_PREORDER);
+        // Keep default (enabled: false) — regular page renders
       }
     })();
+    return () => { mounted = false; };
   }, []);
 
-  if (!content || !preOrder) {
+  if (!content) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-dark-bg">
         <div className="w-8 h-8 border-4 border-dark-border border-t-orange-red rounded-full animate-spin" />
