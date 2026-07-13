@@ -64,7 +64,7 @@ export default function HeroSection() {
                   <button
                     onClick={openQuiz}
                     data-cta-id="hero_start_moving"
-                    className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-base font-semibold px-9 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
                   >
                     {c.ctaPrimary}
                   </button>
@@ -72,7 +72,7 @@ export default function HeroSection() {
                   <motion.a
                     href="#pricing"
                     data-cta-id="hero_take_quiz"
-                    className="inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
+                    className="lg:hidden inline-flex items-center justify-center gap-2 font-body text-sm text-white-muted hover:text-off-white transition-colors underline underline-offset-4 decoration-white-dim group"
                     whileHover={{ x: 3 }}
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   >
