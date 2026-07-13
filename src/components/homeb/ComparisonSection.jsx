@@ -27,7 +27,6 @@ export default function ComparisonSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
-          <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-3">{c.eyebrow || "Comparison Chart"}</p>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight max-w-4xl mx-auto leading-tight">
             {headline}
           </h2>

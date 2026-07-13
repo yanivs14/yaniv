@@ -88,18 +88,13 @@ export default function HomeBackup() {
       <HeroSection />
       <SocialProofSection />
       <BenefitsSection />
-      {/* #pricing */}
-      <PricingSection />
       <SeeInsideSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
-      <div className="bg-dark-bg py-8 lg:py-12 text-center">
-        <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
-          Real Results, Real Members
-        </h2>
-      </div>
       <ComparisonSection />
+      {/* #pricing */}
+      <PricingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />
