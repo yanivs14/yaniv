@@ -77,7 +77,6 @@ export default function AboutSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow || "About"}</p>
             <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
               {c.headline || "About"}<br />
               {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}

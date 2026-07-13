@@ -29,9 +29,6 @@ export default function InnerCircleSection() {
               transition={{ duration: 0.6 }}
               className="order-2 lg:order-1"
             >
-              <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">
-                {c.eyebrow || "Our Highest Level of Coaching"}
-              </p>
               <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] uppercase tracking-tight mb-6">
                 <span className="text-off-white">Inner </span><span className="text-orange-red">Circle.</span>
               </h2>
