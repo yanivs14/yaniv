@@ -104,10 +104,6 @@ function PricingCard({ config, onCheckout, loading, compact = false }) {
     <div className="relative group">
       <div className="absolute -inset-0.5 bg-gradient-to-b from-orange-red/40 via-orange-red/10 to-transparent rounded-3xl blur-md group-hover:blur-lg transition-all" />
       <div className={`relative bg-dark-surface/90 backdrop-blur-xl border border-orange-red/30 rounded-3xl ${compact ? "p-6" : "p-7 sm:p-8"} text-center`}>
-        <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-3 py-1 mb-4">
-          <Zap className="w-3 h-3 text-orange-red" />
-          <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-[0.15em]">Lowest Price Ever</span>
-        </div>
         <p className="font-heading text-base sm:text-lg font-bold text-off-white uppercase tracking-tight mb-1">
           Lock In Our Lowest Price
         </p>
@@ -128,9 +124,9 @@ function PricingCard({ config, onCheckout, loading, compact = false }) {
         </button>
         <p className="font-body text-[11px] text-white-muted mt-4">Pay today. Your access link arrives the moment we go live.</p>
         <div className="flex items-center justify-center gap-4 mt-3 flex-wrap">
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-dim"><Lock className="w-3 h-3" /> Secure</span>
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-dim"><InfinityIcon className="w-3 h-3" /> One-time</span>
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-dim"><Shield className="w-3 h-3" /> Lifetime</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><Lock className="w-3 h-3 text-orange-red/60" /> Secure</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><InfinityIcon className="w-3 h-3 text-orange-red/60" /> One-time</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><Shield className="w-3 h-3 text-orange-red/60" /> Lifetime</span>
         </div>
       </div>
     </div>
@@ -207,20 +203,18 @@ export default function HandstandPreOrder({ config }) {
 
           <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center gap-6">
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 backdrop-blur-sm"
             >
-              <Star className="w-3 h-3 text-orange-red fill-orange-red" />
-              <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-[0.15em]">Limited Pre-Order · Early Access</span>
+              <CountdownTimer targetDate={config.targetDate} />
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] text-off-white uppercase tracking-tight"
+              className="font-heading text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-bold leading-[0.92] text-off-white uppercase tracking-tight"
             >
               Master Your<br />
               Handstand In<br />
@@ -231,18 +225,10 @@ export default function HandstandPreOrder({ config }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="font-body text-base lg:text-lg text-white-muted leading-relaxed max-w-xl"
+              className="font-body text-base lg:text-lg text-off-white font-medium leading-relaxed max-w-xl"
             >
               Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
             </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <CountdownTimer targetDate={config.targetDate} />
-            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -356,9 +342,9 @@ export default function HandstandPreOrder({ config }) {
               {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
             </button>
             <div className="flex items-center justify-center gap-4 mt-5 flex-wrap">
-              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><Lock className="w-3 h-3" /> Secure checkout</span>
-              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><InfinityIcon className="w-3 h-3" /> Lifetime access</span>
-              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><Shield className="w-3 h-3" /> One-time payment</span>
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-muted"><Lock className="w-3 h-3 text-orange-red/60" /> Secure checkout</span>
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-muted"><InfinityIcon className="w-3 h-3 text-orange-red/60" /> Lifetime access</span>
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-muted"><Shield className="w-3 h-3 text-orange-red/60" /> One-time payment</span>
             </div>
           </div>
         </section>
