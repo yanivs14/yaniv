@@ -102,11 +102,11 @@ export default function PricingSection() {
   ];
 
   const innerCircleFeatures = c.innerCircleFeatures?.length ? c.innerCircleFeatures : [
-    "Everything included in Annual",
-    "Personal assessment and strategy session with Roye",
-    "Weekly live coaching and personalized feedback",
-    "Ongoing reassessments and plan adjustments",
-    "Access to a private community of committed members",
+    "Everything in Annual, plus:",
+    "Personal assessment and 1:1 strategy with Roye",
+    "Weekly live coaching and direct feedback",
+    "Progress reviews and plan adjustments",
+    "Private community of committed members",
   ];
 
   const sectionTitle = c.sectionTitle || "Choose Your Membership";
@@ -227,8 +227,12 @@ export default function PricingSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="bg-dark-bg border border-gold rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0"
           >
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">{c.innerCircleBadge || "Application Only"}</span>
-            <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-4">{c.innerCircleTitle || "Tailored to You"}</p>
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">{c.innerCircleBadge || "By Application Only"}</span>
+            <h3 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-1">{c.innerCircleTitle || "Inner Circle"}</h3>
+            <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-2">{c.innerCircleSubtitle || "Private Coaching"}</p>
+            {c.innerCircleTagline && (
+              <p className="font-body text-xs text-gold font-semibold mb-4">{c.innerCircleTagline}</p>
+            )}
             {c.innerCircleDescription && (
               <p className="font-body text-sm text-white-muted mb-6 leading-relaxed">{c.innerCircleDescription}</p>
             )}
@@ -346,8 +350,12 @@ export default function PricingSection() {
 
             {/* Inner Circle mobile */}
             <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
-              <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "Application Only"}</span>
-              <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-3 mt-2">{c.innerCircleTitle || "Tailored to You"}</p>
+              <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "By Application Only"}</span>
+              <h3 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-1 mt-2">{c.innerCircleTitle || "Inner Circle"}</h3>
+              <p className="font-body text-xs font-bold text-gold uppercase tracking-widest mb-2">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              {c.innerCircleTagline && (
+                <p className="font-body text-[11px] text-gold font-semibold mb-3">{c.innerCircleTagline}</p>
+              )}
               {c.innerCircleDescription && (
                 <p className="font-body text-xs text-white-muted mb-3 leading-relaxed">{c.innerCircleDescription}</p>
               )}
