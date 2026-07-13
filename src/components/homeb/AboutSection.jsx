@@ -88,20 +88,30 @@ export default function AboutSection() {
             </div>
 
             {(c.iconList?.length > 0) && (
-              <div className="mt-8 rounded-2xl bg-dark-bg/80 border border-dark-border p-6">
-                <ul className="space-y-4">
+              <div className="mt-8">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {c.iconList.map((item, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3.5 h-3.5 text-orange-red" />
-                      </span>
-                      <span className="font-body text-sm text-off-white font-medium">{item}</span>
-                    </li>
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.08 }}
+                      className="group relative bg-dark-bg border border-dark-border rounded-2xl p-5 hover:border-orange-red/50 transition-all duration-300 overflow-hidden"
+                    >
+                      <div className="absolute -top-6 -right-6 w-20 h-20 bg-orange-red/5 rounded-full blur-2xl group-hover:bg-orange-red/10 transition-all duration-500" />
+                      <div className="relative flex flex-col gap-3">
+                        <span className="w-10 h-10 rounded-xl bg-orange-red/10 border border-orange-red/30 flex items-center justify-center flex-shrink-0 group-hover:bg-orange-red/20 group-hover:scale-110 transition-all duration-300">
+                          <Check className="w-5 h-5 text-orange-red" strokeWidth={3} />
+                        </span>
+                        <span className="font-body text-sm text-off-white font-semibold leading-snug">{item}</span>
+                      </div>
+                    </motion.div>
                   ))}
-                </ul>
+                </div>
                 <a
                   href="#pricing"
-                  className="mt-6 flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
+                  className="mt-5 flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors"
                 >
                   Join Us <ArrowRight className="w-4 h-4" />
                 </a>
