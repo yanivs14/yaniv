@@ -21,9 +21,8 @@ export default function ComparisonTable() {
   const rows = c.rows?.length ? c.rows : DEFAULT_ROWS;
   const columns = c.columns?.length ? c.columns : ["The Movement", "Random YouTube", "Traditional Gym"];
 
+  const eyebrow = c.eyebrow || "";
   const headline = c.headline || "Built different.";
-  const headlineParts = headline.split("{accent}");
-  const hasAccent = headline.includes("{accent}");
 
   return (
     <div>
@@ -33,14 +32,9 @@ export default function ComparisonTable() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
         className="mb-3">
-        <h3 className="font-heading text-4xl sm:text-5xl font-bold uppercase tracking-tight text-off-white leading-[0.95]">
-          {hasAccent ? (
-            <>
-              {headlineParts[0]}<span style={{ color: accent }}>{headlineParts[1]}</span>
-            </>
-          ) : (
-            <>Built <span style={{ color: accent }}>different.</span></>
-          )}
+        {eyebrow && <p className="font-body text-xs text-orange-red uppercase tracking-widest mb-2">{eyebrow}</p>}
+        <h3 className="font-heading text-2xl sm:text-3xl font-bold uppercase tracking-tight text-off-white leading-[1.05]">
+          {headline}
         </h3>
       </motion.div>
 
