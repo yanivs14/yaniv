@@ -322,7 +322,7 @@ export default function PricingSection() {
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
               </div>
               {c.annualSavings &&
-              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at ${c.annualPrice || "$240"} · {c.annualSavings}</p>
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"} · {c.annualSavings}</p>
               }
               {c.annualDescription &&
               <p className="font-body text-xs text-dark-bg/80 mb-3 mt-1 leading-relaxed">{c.annualDescription}</p>
