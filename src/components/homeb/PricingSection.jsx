@@ -5,6 +5,7 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
 import { trackPricingViewed, track, getGaClientId } from "@/lib/analytics";
 import { useSectionTracking } from "@/hooks/useSectionTracking";
+import BookCallModal from "@/components/landing/BookCallModal";
 
 let _checkoutInProgress = false;
 async function startCheckout(plan) {
@@ -26,6 +27,7 @@ async function startCheckout(plan) {
 export default function PricingSection() {
   const { content } = useSiteContent();
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  const [bookCallOpen, setBookCallOpen] = useState(false);
   const pricingRef = useSectionTracking("pricing");
 
   useEffect(() => {
@@ -169,17 +171,18 @@ export default function PricingSection() {
                 </li>
               ))}
             </ul>
-            <a
-              href="/inner-circle"
+            <button
+              onClick={() => setBookCallOpen(true)}
               className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-6"
             >
               {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
           </motion.div>
         </div>
 
         <p className="mt-8 text-center font-body text-sm text-white-muted">No equipment required · Cancel any time</p>
       </div>
+      <BookCallModal open={bookCallOpen} onClose={() => setBookCallOpen(false)} />
     </section>
   );
 }
