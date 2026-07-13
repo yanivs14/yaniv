@@ -139,7 +139,7 @@ export default function PricingSection() {
         </motion.div>
 
         {/* Desktop: 3 columns */}
-        <div className="hidden md:grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+        <div className="hidden lg:grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
           {/* Monthly */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -258,7 +258,7 @@ export default function PricingSection() {
         </div>
 
         {/* Mobile: synced toggle + slider */}
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="flex gap-1 p-1 bg-dark-bg border border-dark-border rounded-full mb-6 max-w-sm mx-auto">
             {[
               { key: "monthly", label: "Monthly" },

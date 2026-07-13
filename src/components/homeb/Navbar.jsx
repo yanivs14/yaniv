@@ -67,7 +67,7 @@ export default function Navbar() {
           <a href="#" className="font-heading text-xl font-bold tracking-widest text-off-white uppercase">
             {c.brand || "The Movement"}
           </a>
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {c.links.map((l) => {
               const labelLower = l.label.toLowerCase();
               const isWhoLink = labelLower.includes("who");
@@ -83,12 +83,12 @@ export default function Navbar() {
               );
             })}
             <a href="#pricing" onClick={(e) => scrollTo(e, "#pricing")}
-              className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
+              className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors whitespace-nowrap">
               {c.cta}
             </a>
           </div>
           <button
-            className="flex md:hidden items-center justify-center w-11 h-11 rounded-xl bg-dark-surface border border-dark-border text-off-white hover:border-orange-red transition-colors"
+            className="flex lg:hidden items-center justify-center w-11 h-11 rounded-xl bg-dark-surface border border-dark-border text-off-white hover:border-orange-red transition-colors"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
@@ -106,7 +106,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="fixed bottom-8 left-0 right-0 mx-auto w-fit z-50 font-body text-sm font-semibold bg-orange-red text-dark-bg px-8 py-3.5 rounded-full shadow-xl hover:bg-orange-red-hover transition-colors md:hidden whitespace-nowrap"
+            className="fixed bottom-8 left-0 right-0 mx-auto w-fit z-50 font-body text-sm font-semibold bg-orange-red text-dark-bg px-8 py-3.5 rounded-full shadow-xl hover:bg-orange-red-hover transition-colors lg:hidden whitespace-nowrap"
           >
             {c.cta}
           </motion.a>
@@ -120,7 +120,7 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.28, ease: "easeOut" }}
-            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col md:hidden overflow-hidden"
+            className="fixed inset-0 top-16 bg-dark-bg z-40 flex flex-col lg:hidden overflow-hidden"
           >
             <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
               {c.links.map((l, i) => {
