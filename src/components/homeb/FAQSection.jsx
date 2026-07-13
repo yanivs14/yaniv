@@ -19,7 +19,7 @@ export default function FAQSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="mb-3">
-              <h2 className="font-heading text-5xl sm:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
                 Any <span className="text-orange-red">questions?</span>
               </h2>
             </motion.div>

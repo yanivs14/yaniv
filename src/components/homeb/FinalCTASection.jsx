@@ -20,7 +20,7 @@ export default function FinalCTASection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="font-heading text-6xl sm:text-7xl lg:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.9] text-off-white uppercase tracking-tight">
               {c.headline1}<br />
               {c.headline2}<br />
               <span className="text-orange-red">{c.headlineAccent}</span>

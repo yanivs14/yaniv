@@ -34,7 +34,12 @@ export default function SeeInsideSection() {
           className="text-center mb-8 lg:mb-12"
         >
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
-            {c.headline || "See How It Works"}
+            {(() => {
+              const h = c.headline || "See How It Works";
+              const parts = h.split(" ");
+              const last = parts.pop();
+              return <>{parts.join(" ")} <span className="text-orange-red">{last}</span></>;
+            })()}
           </h2>
           {c.subtitle && (
             <p className="mt-4 font-body text-base sm:text-lg text-white-muted max-w-2xl mx-auto leading-relaxed">

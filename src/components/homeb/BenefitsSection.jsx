@@ -28,7 +28,7 @@ export default function BenefitsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
                 {c.headline1 || "The Program's"}<br />
                 {c.headline2 && <>{c.headline2} </>}
                 {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}

@@ -27,8 +27,12 @@ export default function ComparisonSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight max-w-4xl mx-auto leading-tight">
-            {headline}
+          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight max-w-4xl mx-auto leading-tight">
+            {(() => {
+              const parts = headline.split(" ");
+              const last = parts.pop();
+              return <>{parts.join(" ")} <span className="text-orange-red">{last}</span></>;
+            })()}
           </h2>
         </motion.div>
 
