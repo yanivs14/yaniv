@@ -90,7 +90,7 @@ export default function Navbar() {
                 </a>
               );
             })}
-            <a href="#" onClick={openQuiz}
+            <a href="#pricing" onClick={(e) => scrollTo(e, "#pricing")}
               className="font-body text-sm font-medium bg-orange-red text-dark-bg px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors">
               {c.cta}
             </a>
@@ -111,8 +111,8 @@ export default function Navbar() {
       <AnimatePresence>
         {showFloat && (
           <motion.a
-            href="#"
-            onClick={openQuiz}
+            href="#pricing"
+            onClick={(e) => scrollTo(e, "#pricing")}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
