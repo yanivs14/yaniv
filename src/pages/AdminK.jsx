@@ -175,21 +175,48 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
           <p className="text-xs text-white-muted font-body">Nav Links</p>
           <button onClick={() => resetSection("navbar")} className="text-xs text-orange-red hover:text-orange-red-hover transition-colors font-body">↺ Reset to defaults</button>
         </div>
-        {data.links.map((link, i) => (
-          <div key={i} className="flex gap-2 mb-2">
-            <input value={link.label} onChange={e => updateDeep("navbar", "links", i, "label", e.target.value)} placeholder="Label"
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-            <select value={link.href} onChange={e => updateDeep("navbar", "links", i, "href", e.target.value)}
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
-              {!anchorOptions.some(o => o.value === link.href) && <option value={link.href}>{link.href}</option>}
-              {anchorOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
-            <button onClick={() => update("navbar", "links", data.links.filter((_, idx) => idx !== i))}
-              className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
+        <p className="text-xs text-white-dim mb-3 font-body">Drag to reorder · Select anchor from dropdown</p>
+        <DragDropContext onDragEnd={(result) => {
+          if (!result.destination || result.destination.index === result.source.index) return;
+          const reordered = [...data.links];
+          const [moved] = reordered.splice(result.source.index, 1);
+          reordered.splice(result.destination.index, 0, moved);
+          update("navbar", "links", reordered);
+        }}>
+          <Droppable droppableId="navbar-links">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {data.links.map((link, i) => (
+                  <Draggable key={`nav-${i}`} draggableId={`nav-${i}`} index={i}>
+                    {(prov, snapshot) => (
+                      <div
+                        ref={prov.innerRef}
+                        {...prov.draggableProps}
+                        className={`flex gap-2 mb-2 items-center ${snapshot.isDragging ? "opacity-80 shadow-lg border-orange-red/40 rounded-lg" : ""}`}
+                      >
+                        <span {...prov.dragHandleProps} className="cursor-grab active:cursor-grabbing text-white-dim hover:text-orange-red transition-colors flex-shrink-0">
+                          <GripVertical className="w-4 h-4" />
+                        </span>
+                        <input value={link.label} onChange={e => updateDeep("navbar", "links", i, "label", e.target.value)} placeholder="Label"
+                          className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+                        <select value={link.href} onChange={e => updateDeep("navbar", "links", i, "href", e.target.value)}
+                          className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+                          {!anchorOptions.some(o => o.value === link.href) && <option value={link.href}>{link.href}</option>}
+                          {anchorOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                        </select>
+                        <button onClick={() => update("navbar", "links", data.links.filter((_, idx) => idx !== i))}
+                          className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
         <button onClick={() => update("navbar", "links", [...(data.links || []), { label: "New Link", href: "#program" }])}
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
           <Plus className="w-4 h-4" /> Add nav link
