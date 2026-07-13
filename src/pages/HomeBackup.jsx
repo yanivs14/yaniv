@@ -11,7 +11,6 @@ import NewsletterPopup from "../components/homeb/NewsletterPopup";
 import SocialProofSection from "../components/homeb/SocialProofSection";
 import BenefitsSection from "../components/homeb/BenefitsSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
-import BeforeAfterCarousel from "../components/homeb/BeforeAfterCarousel";
 
 const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/homeb/AboutSection.jsx"));
@@ -91,10 +90,14 @@ export default function HomeBackup() {
       {/* #pricing */}
       <PricingSection />
       <SeeInsideSection />
-      <BeforeAfterCarousel />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
+      <div className="bg-dark-bg py-8 lg:py-12 text-center">
+        <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
+          Real Results, Real Members
+        </h2>
+      </div>
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />

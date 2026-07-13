@@ -77,25 +77,25 @@ export default function AboutSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6">
+            <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               {c.headline || "About"}<br />
               {c.headlineAccent && <span className="text-orange-red">{c.headlineAccent}</span>}
             </h2>
             <div className="space-y-5">
               {(c.text || "").split("\n\n").filter(Boolean).map((para, i) => (
-                <p key={i} className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{para}</p>
+                <p key={i} className="font-body text-base lg:text-lg text-off-white/90 leading-relaxed">{para}</p>
               ))}
             </div>
 
             {(c.iconList?.length > 0) && (
-              <div className="mt-8 rounded-2xl bg-dark-bg border border-dark-border p-6">
+              <div className="mt-8 rounded-2xl bg-dark-bg/80 border border-dark-border p-6">
                 <ul className="space-y-4">
                   {c.iconList.map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
                       <span className="w-6 h-6 rounded-full bg-orange-red/15 border border-orange-red/30 flex items-center justify-center flex-shrink-0">
                         <Check className="w-3.5 h-3.5 text-orange-red" />
                       </span>
-                      <span className="font-body text-sm text-off-white">{item}</span>
+                      <span className="font-body text-sm text-off-white font-medium">{item}</span>
                     </li>
                   ))}
                 </ul>
