@@ -69,10 +69,14 @@ export default function Navbar() {
           </a>
           <div className="hidden md:flex items-center gap-8">
             {c.links.map((l) => {
-              const id = l.href?.startsWith("#") ? l.href.replace("#", "") : null;
-              const isActive = id !== null && activeSection === id;
+              const labelLower = l.label.toLowerCase();
+              const isWhoLink = labelLower.includes("who");
+              const effectiveHref = isWhoLink ? "#members" : l.href;
+              const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
+              const isProgramLink = labelLower.includes("program");
+              const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
               return (
-                <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
+                <a key={l.label} href={effectiveHref} onClick={(e) => scrollTo(e, effectiveHref)}
                   className={`font-body text-sm font-medium transition-colors ${isActive ? "text-orange-red" : "text-white-muted hover:text-off-white"}`}>
                   {l.label}
                 </a>
@@ -120,17 +124,21 @@ export default function Navbar() {
           >
             <div className="flex-1 px-6 pt-6 pb-4 flex flex-col gap-1 overflow-y-auto">
               {c.links.map((l, i) => {
-                const id = l.href?.startsWith("#") ? l.href.replace("#", "") : null;
-                const isActive = id !== null && activeSection === id;
+                const labelLower = l.label.toLowerCase();
+                const isWhoLink = labelLower.includes("who");
+                const effectiveHref = isWhoLink ? "#members" : l.href;
+                const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
+                const isProgramLink = labelLower.includes("program");
+                const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
                 return (
                   <motion.a
                     key={l.label}
-                    href={l.href}
+                    href={effectiveHref}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06, duration: 0.2 }}
                     className={`flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight transition-colors py-4 border-b border-dark-border ${isActive ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
-                    onClick={(e) => scrollTo(e, l.href)}
+                    onClick={(e) => scrollTo(e, effectiveHref)}
                   >
                     {l.label}
                     <ChevronRight className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-orange-red" : "text-orange-red"}`} />
