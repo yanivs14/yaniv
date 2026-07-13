@@ -241,7 +241,7 @@ export default function PricingSection() {
             className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-1"
           >
             {/* Monthly mobile */}
-            <div className="flex-shrink-0 w-[95vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 pb-14 flex flex-col">
+            <div className="flex-shrink-0 w-[85vw] h-[85vh] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 pb-14 flex flex-col overflow-y-auto">
               <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3">Monthly Plan</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
@@ -266,7 +266,7 @@ export default function PricingSection() {
             </div>
 
             {/* Annual mobile */}
-            <div className="flex-shrink-0 w-[95vw] snap-start bg-dark-bg border-2 border-orange-red rounded-2xl p-5 pb-14 relative flex flex-col">
+            <div className="flex-shrink-0 w-[85vw] h-[85vh] snap-start bg-dark-bg border-2 border-orange-red rounded-2xl p-5 pb-14 relative flex flex-col overflow-y-auto">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
               <p className="font-body text-sm font-bold text-orange-red uppercase tracking-widest mb-3 mt-2">Annual Plan</p>
               <div className="flex items-baseline gap-1.5 mb-1">
@@ -294,7 +294,7 @@ export default function PricingSection() {
             </div>
 
             {/* Inner Circle mobile */}
-            <div className="flex-shrink-0 w-[95vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-14 relative flex flex-col">
+            <div className="flex-shrink-0 w-[85vw] h-[85vh] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-14 relative flex flex-col overflow-y-auto">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Inner Circle — Applications Reviewed</span>
               <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-3 mt-2">Inner Circle</p>
               <div className="flex items-baseline gap-1.5 mb-1">
