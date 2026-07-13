@@ -5,18 +5,18 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 import { trackPurchase } from "@/lib/analytics";
 import Navbar from "../components/homeb/Navbar";
 import HeroSection from "../components/homeb/HeroSection";
-import PricingSection from "../components/homeb/PricingSection";
 import BackToTop from "../components/homeb/BackToTop";
 import NewsletterPopup from "../components/homeb/NewsletterPopup";
-import SocialProofSection from "../components/homeb/SocialProofSection";
-import BenefitsSection from "../components/homeb/BenefitsSection";
-import SeeInsideSection from "../components/homeb/SeeInsideSection";
-import ComparisonSection from "../components/homeb/ComparisonSection";
-import DegradingSection from "../components/homeb/DegradingSection";
 
-const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection.jsx"));
-const AboutSection = lazy(() => import("../components/homeb/AboutSection.jsx"));
-const FAQSection = lazy(() => import("../components/homeb/FAQSection.jsx"));
+const SocialProofSection = lazy(() => import("../components/homeb/SocialProofSection"));
+const BenefitsSection = lazy(() => import("../components/homeb/BenefitsSection"));
+const SeeInsideSection = lazy(() => import("../components/homeb/SeeInsideSection"));
+const PricingSection = lazy(() => import("../components/homeb/PricingSection"));
+const DegradingSection = lazy(() => import("../components/homeb/DegradingSection"));
+const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection"));
+const ComparisonSection = lazy(() => import("../components/homeb/ComparisonSection"));
+const AboutSection = lazy(() => import("../components/homeb/AboutSection"));
+const FAQSection = lazy(() => import("../components/homeb/FAQSection"));
 const FinalCTASection = lazy(() => import("../components/homeb/FinalCTASection"));
 const Footer = lazy(() => import("../components/homeb/Footer"));
 
@@ -51,7 +51,7 @@ export default function HomeBackup() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "The Movement by Roye Gold",
-    "url": "https://themovement.royegold.com/",
+    "url": "https://royegold.com/",
     "description": "A guided daily movement practice to rebuild mobility, strength, and longevity.",
     "publisher": { "@type": "Person", "name": "Roye Gold", "jobTitle": "Movement Coach" },
     "offers": {
@@ -87,16 +87,14 @@ export default function HomeBackup() {
       <Navbar />
       {/* #program */}
       <HeroSection />
-      <SocialProofSection />
-      <BenefitsSection />
-      <SeeInsideSection />
+      <Suspense fallback={<div className="h-32 bg-dark-bg" />}><SocialProofSection /></Suspense>
+      <Suspense fallback={<div className="h-96 bg-dark-bg" />}><BenefitsSection /></Suspense>
+      <Suspense fallback={<div className="h-96 bg-dark-bg" />}><SeeInsideSection /></Suspense>
       {/* #pricing */}
-      <PricingSection />
-      <DegradingSection />
-      <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
-        <TestimonialsSection />
-      </Suspense>
-      <ComparisonSection />
+      <Suspense fallback={<div className="h-[600px] bg-dark-bg" />}><PricingSection /></Suspense>
+      <Suspense fallback={<div className="h-96 bg-dark-bg" />}><DegradingSection /></Suspense>
+      <Suspense fallback={<div className="h-96 bg-dark-bg" />}><TestimonialsSection /></Suspense>
+      <Suspense fallback={<div className="h-96 bg-dark-bg" />}><ComparisonSection /></Suspense>
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         {/* #roye */}
         <AboutSection />

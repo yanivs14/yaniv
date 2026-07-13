@@ -90,7 +90,9 @@ function App() {
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
           <Router>
-            <AuthenticatedApp />
+            <SiteContentProvider keyPrefix="homeb_">
+              <AuthenticatedApp />
+            </SiteContentProvider>
             <CookieBanner />
           </Router>
           <Toaster />
