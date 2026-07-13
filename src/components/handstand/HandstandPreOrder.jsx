@@ -183,34 +183,59 @@ export default function HandstandPreOrder({ config }) {
         </div>
       </div>
 
-      {/* Desktop: centered one-screen layout */}
-      <div className="relative hidden lg:flex h-[calc(100vh-32px)] flex-col items-center justify-center px-10">
-        {/* Centered hero + countdown + pricing */}
-        <div className="flex flex-col items-center text-center gap-5 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5">
-            <Star className="w-3 h-3 text-orange-red fill-orange-red" />
-            <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-widest">Limited Pre-Order · Early Access</span>
+      {/* Desktop: 3-column one-screen layout */}
+      <div className="relative hidden lg:flex h-[calc(100vh-32px)] items-center justify-center px-8">
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-6 xl:gap-10 items-center w-full max-w-7xl">
+          {/* Left: Phases 01-02 */}
+          <div className="flex flex-col gap-3 max-w-[200px] xl:max-w-[240px] ml-auto">
+            <p className="font-body text-[10px] font-bold text-white-muted uppercase tracking-widest text-center mb-1">
+              From your first wall hold
+            </p>
+            {PHASES.slice(0, 2).map((p) => (
+              <div key={p.num} className="bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-xl p-3.5 hover:border-orange-red/40 transition-colors">
+                <div className="font-heading text-lg font-bold text-orange-red/80 mb-0.5">{p.num}</div>
+                <div className="font-heading text-xs font-bold text-off-white uppercase mb-0.5">{p.title}</div>
+                <p className="font-body text-[10px] text-white-muted leading-tight">{p.desc}</p>
+              </div>
+            ))}
           </div>
 
-          <h1 className="font-heading text-5xl xl:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            Master Your Handstand<br />
-            In <span className="text-orange-red">4 Stages</span>
-          </h1>
+          {/* Center: Hero + Countdown + Pricing */}
+          <div className="flex flex-col items-center text-center gap-4 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5">
+              <Star className="w-3 h-3 text-orange-red fill-orange-red" />
+              <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-widest">Limited Pre-Order · Early Access</span>
+            </div>
 
-          <p className="font-body text-base text-white-muted leading-relaxed max-w-lg">
-            Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep.
-          </p>
+            <h1 className="font-heading text-4xl xl:text-5xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+              Master Your Handstand<br />
+              In <span className="text-orange-red">4 Stages</span>
+            </h1>
 
-          <CountdownTimer targetDate={config.targetDate} />
+            <p className="font-body text-sm text-white-muted leading-relaxed max-w-lg">
+              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep.
+            </p>
 
-          <div className="w-full max-w-md">
-            <PricingCard config={config} onCheckout={handleCheckout} loading={loading} />
+            <CountdownTimer targetDate={config.targetDate} />
+
+            <div className="w-full max-w-sm">
+              <PricingCard config={config} onCheckout={handleCheckout} loading={loading} />
+            </div>
           </div>
-        </div>
 
-        {/* Phase strip at bottom */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full px-10 flex justify-center">
-          <PhaseStrip />
+          {/* Right: Phases 03-04 */}
+          <div className="flex flex-col gap-3 max-w-[200px] xl:max-w-[240px] mr-auto">
+            <p className="font-body text-[10px] font-bold text-white-muted uppercase tracking-widest text-center mb-1">
+              to one-arm mastery
+            </p>
+            {PHASES.slice(2, 4).map((p) => (
+              <div key={p.num} className="bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-xl p-3.5 hover:border-orange-red/40 transition-colors">
+                <div className="font-heading text-lg font-bold text-orange-red/80 mb-0.5">{p.num}</div>
+                <div className="font-heading text-xs font-bold text-off-white uppercase mb-0.5">{p.title}</div>
+                <p className="font-body text-[10px] text-white-muted leading-tight">{p.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
