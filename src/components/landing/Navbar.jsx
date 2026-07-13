@@ -85,7 +85,7 @@ export default function Navbar() {
               const isActive = id !== null && activeSection === id;
               return (
                 <a key={l.label} href={l.href} onClick={(e) => scrollTo(e, l.href)}
-                  className={`font-body text-sm transition-colors ${isActive ? "text-orange-red font-semibold" : "text-white-muted hover:text-off-white"}`}>
+                  className={`font-body text-sm font-medium transition-colors ${isActive ? "text-orange-red" : "text-white-muted hover:text-off-white"}`}>
                   {l.label}
                 </a>
               );
