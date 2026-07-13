@@ -238,7 +238,7 @@ export default function PricingSection() {
           <div
             ref={mobileSliderRef}
             onScroll={handleMobileScroll}
-            className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar px-4 scroll-px-4"
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory pt-6 pb-4 no-scrollbar px-4 scroll-px-4"
           >
             {/* Monthly mobile */}
             <div className="flex-shrink-0 w-[85vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 pb-14 flex flex-col">
@@ -295,7 +295,7 @@ export default function PricingSection() {
 
             {/* Inner Circle mobile */}
             <div className="flex-shrink-0 w-[85vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-14 relative flex flex-col">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Inner Circle — Applications Reviewed</span>
+              <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">Inner Circle — Applications Reviewed</span>
               <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-3 mt-2">Inner Circle</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-off-white">{c.innerCircleTitle || "Custom"}</span>
