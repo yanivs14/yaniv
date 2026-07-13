@@ -6,12 +6,18 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [showFloat, setShowFloat] = useState(false);
+  const [inPricing, setInPricing] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const { content } = useSiteContent();
 
   useEffect(() => {
     const onScroll = () => {
       setShowFloat(window.scrollY > 400);
+    const pricingEl = document.getElementById("pricing");
+    if (pricingEl) {
+      const rect = pricingEl.getBoundingClientRect();
+      setInPricing(rect.top < window.innerHeight && rect.bottom > 0);
+    }
       if (window.scrollY < 200) {
         setActiveSection("program");
         return;
@@ -98,7 +104,7 @@ export default function Navbar() {
       </nav>
 
       <AnimatePresence>
-        {showFloat && (
+        {showFloat && !inPricing && (
           <motion.a
             href="#pricing"
             onClick={(e) => scrollTo(e, "#pricing")}
