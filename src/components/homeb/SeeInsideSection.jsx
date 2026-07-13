@@ -36,6 +36,11 @@ export default function SeeInsideSection() {
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {c.headline || "See How It Works"}
           </h2>
+          {c.subtitle && (
+            <p className="mt-4 font-body text-base sm:text-lg text-white-muted max-w-2xl mx-auto leading-relaxed">
+              {c.subtitle}
+            </p>
+          )}
         </motion.div>
 
         <motion.div

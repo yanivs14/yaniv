@@ -206,7 +206,8 @@ const DEFAULT_CONTENT = {
   },
   homebSeeInside: {
     eyebrow: "This is what you're joining",
-    headline: "See How It Works",
+    headline: "A Glimpse Into The Program",
+    subtitle: "Watch a short introduction to Roye's philosophy, teaching style, and the practice behind The Movement.",
     steps: ["Watch it", "Try it", "Share it", "Personal Feedback"],
     youtubeUrl: "",
     videoUrl: "",
