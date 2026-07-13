@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Zap, Star, Check, Quote } from "lucide-react";
+import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Zap, Star, Check, Quote, ChevronDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track, getGaClientId } from "@/lib/analytics";
 
@@ -133,34 +133,50 @@ function PricingCard({ config, onCheckout, loading, compact = false }) {
   );
 }
 
-function PhaseCard({ phase, index }) {
+function PhaseAccordion({ phases }) {
+  const [open, setOpen] = useState(0);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="relative group"
-    >
-      <div className="absolute -inset-px bg-gradient-to-br from-orange-red/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
-      <div className="relative bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-2xl p-6 group-hover:border-orange-red/40 transition-colors h-full">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="font-heading text-3xl font-bold text-orange-red/30">{phase.num}</span>
-          <div>
-            <h3 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{phase.title}</h3>
-            <p className="font-body text-[11px] text-white-muted">{phase.desc}</p>
-          </div>
-        </div>
-        <ul className="space-y-2">
-          {phase.points.map((pt, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
-              <span className="font-body text-xs text-white-muted">{pt}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </motion.div>
+    <div className="space-y-3">
+      {phases.map((p, i) => {
+        const isOpen = open === i;
+        return (
+          <motion.div
+            key={p.num}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.05 }}
+          >
+            <button
+              onClick={() => setOpen(isOpen ? -1 : i)}
+              className={`w-full flex items-center gap-4 text-left bg-dark-surface/60 backdrop-blur-sm border rounded-2xl px-5 py-4 transition-colors ${isOpen ? "border-orange-red/50" : "border-dark-border hover:border-orange-red/30"}`}
+            >
+              <span className="font-heading text-2xl font-bold text-orange-red/40 flex-shrink-0">{p.num}</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-heading text-base sm:text-lg font-bold text-off-white uppercase tracking-tight">{p.title}</h3>
+                <p className="font-body text-[11px] sm:text-xs text-white-muted truncate">{p.desc}</p>
+              </div>
+              <ChevronDown className={`w-5 h-5 text-orange-red flex-shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+            </button>
+            <motion.div
+              initial={false}
+              animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <ul className="grid sm:grid-cols-3 gap-2 pt-3 px-5 pb-1">
+                {p.points.map((pt, j) => (
+                  <li key={j} className="flex items-start gap-2 bg-dark-bg/50 border border-dark-border rounded-xl px-3 py-2.5">
+                    <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+                    <span className="font-body text-xs text-white-muted">{pt}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </motion.div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -263,19 +279,14 @@ export default function HandstandPreOrder({ config }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="text-center mb-12"
+              className="text-center mb-10"
             >
-              <p className="font-body text-xs font-bold text-orange-red uppercase tracking-[0.2em] mb-3">The Roadmap</p>
               <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight">
                 From your first wall hold<br />to <span className="text-orange-red">one-arm mastery</span>
               </h2>
             </motion.div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {PHASES.map((p, i) => (
-                <PhaseCard key={p.num} phase={p} index={i} />
-              ))}
-            </div>
+            <PhaseAccordion phases={PHASES} />
           </div>
         </section>
 
@@ -289,7 +300,6 @@ export default function HandstandPreOrder({ config }) {
               transition={{ duration: 0.5 }}
               className="text-center mb-12"
             >
-              <p className="font-body text-xs font-bold text-orange-red uppercase tracking-[0.2em] mb-3">Social Proof</p>
               <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight">
                 Real students, <span className="text-orange-red">real results</span>
               </h2>
