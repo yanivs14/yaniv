@@ -59,12 +59,12 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <SiteContentProvider>
+    <>
       <RouteTracker />
       <Routes>
-        <Route path="/home-old" element={<Home />} />
-        <Route path="/admin-k" element={<AdminK />} />
-        <Route path="/inner-circle" element={<InnerCircle />} />
+        <Route path="/home-old" element={<SiteContentProvider><Home /></SiteContentProvider>} />
+        <Route path="/admin-k" element={<SiteContentProvider><AdminK /></SiteContentProvider>} />
+        <Route path="/inner-circle" element={<SiteContentProvider><InnerCircle /></SiteContentProvider>} />
         <Route path="/MOVEMENT7PREP" element={<Movement7Prep />} />
         <Route path="/promotion" element={<Promotion />} />
         <Route path="/crm" element={<EmailDashboard />} />
@@ -77,7 +77,7 @@ const AuthenticatedApp = () => {
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-    </SiteContentProvider>
+    </>
   );
 };
 

@@ -102,7 +102,9 @@ export default function Footer() {
   const [policyLinks, setPolicyLinks] = useState([]);
 
   useEffect(() => {
-    base44.entities.SiteContent.list().then((records) => {
+    base44.entities.SiteContent.filter({
+      section_key: { $in: POLICY_PAGES.map(p => `policy_${p.slug}`) }
+    }).then((records) => {
       const active = POLICY_PAGES.filter(p => {
         const rec = records.find(r => r.section_key === `policy_${p.slug}`);
         return rec?.data?.body?.trim();
