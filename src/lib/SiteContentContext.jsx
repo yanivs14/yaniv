@@ -272,9 +272,9 @@ function mergeDbRecords(records) {
 }
 
 export function SiteContentProvider({ children, keyPrefix = "" }) {
-  const [content, setContent] = useState(DEFAULT_CONTENT);
+  const [content, setContent] = useState(null);
   const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Load all content from DB on mount
   useEffect(() => {
