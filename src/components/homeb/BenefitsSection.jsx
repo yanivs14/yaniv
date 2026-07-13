@@ -47,7 +47,7 @@ export default function BenefitsSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="group relative pt-6 pb-8 px-6 border-dark-border border-r border-b flex flex-col justify-center"
+                  className="group relative pt-6 pb-8 px-6 border-dark-border border-r border-b flex flex-col justify-start"
                 >
                   <div className="text-2xl text-orange-red mb-4 inline-block">{p.icon}</div>
                   <h3 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-2">{p.title}</h3>

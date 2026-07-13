@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
         </motion.div>
 
         <div className="relative">
-          <div className="sm:hidden">
+          <div className="lg:hidden">
             <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
               {c.items.map((t, i) => (
                 <TestimonialCard key={i} t={t} />
@@ -94,7 +94,7 @@ export default function TestimonialsSection() {
               </button>
             </div>
           </div>
-          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
+          <div className="hidden lg:grid lg:grid-cols-3 gap-5 justify-items-center">
             {c.items.map((t, i) => (
               <TestimonialCard key={i} t={t} />
             ))}

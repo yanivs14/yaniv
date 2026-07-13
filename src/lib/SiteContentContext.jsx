@@ -212,6 +212,7 @@ const DEFAULT_CONTENT = {
   homebSeeInside: {
     eyebrow: "This is what you're joining",
     headline: "A Glimpse Into The Program",
+    headlineAccent: "The Program",
     subtitle: "Watch a short introduction to Roye's philosophy, teaching style, and the practice behind The Movement.",
     steps: ["Watch it", "Try it", "Share it", "Personal Feedback"],
     youtubeUrl: "",
@@ -271,9 +272,9 @@ function mergeDbRecords(records) {
 }
 
 export function SiteContentProvider({ children, keyPrefix = "" }) {
-  const [content, setContent] = useState(null);
+  const [content, setContent] = useState(DEFAULT_CONTENT);
   const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Load all content from DB on mount
   useEffect(() => {

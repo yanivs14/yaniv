@@ -45,7 +45,7 @@ export default function HomeBackup() {
     }
   }, []);
 
-  if (loading || !content) return null;
+  if (!content) return null;
 
   const structuredData = JSON.stringify({
     "@context": "https://schema.org",

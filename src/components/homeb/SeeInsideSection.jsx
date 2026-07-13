@@ -36,6 +36,11 @@ export default function SeeInsideSection() {
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {(() => {
               const h = c.headline || "See How It Works";
+              const accent = c.headlineAccent;
+              if (accent && h.endsWith(accent)) {
+                const before = h.slice(0, h.length - accent.length);
+                return <>{before}<span className="text-orange-red">{accent}</span></>;
+              }
               const parts = h.split(" ");
               const last = parts.pop();
               return <>{parts.join(" ")} <span className="text-orange-red">{last}</span></>;

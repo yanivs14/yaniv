@@ -86,6 +86,7 @@ export default function HomeBEditor({ section }) {
       <div>
         <Field label="Eyebrow" value={data.eyebrow} onChange={v => update("homebSeeInside", "eyebrow", v)} />
         <Field label="Headline" value={data.headline} onChange={v => update("homebSeeInside", "headline", v)} />
+        <Field label="Headline Accent (words to color teal, must match end of headline)" value={data.headlineAccent} onChange={v => update("homebSeeInside", "headlineAccent", v)} />
         <Field label="Subtitle" value={data.subtitle} onChange={v => update("homebSeeInside", "subtitle", v)} multiline />
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Flow Steps</p>
         {steps.map((s, i) => (
