@@ -45,7 +45,7 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}>
               
-              <h1 className="font-heading font-bold leading-[0.95] text-off-white uppercase tracking-tight text-4xl sm:text-6xl lg:text-7xl xl:text-8xl">
+              <h1 style={{ textWrap: 'pretty' }} className="font-heading font-bold leading-[0.95] text-off-white uppercase tracking-tight text-[2.75rem] sm:text-6xl lg:text-7xl xl:text-8xl">
                 {c.headline1}<br />
                 {c.headline2} {c.headlineAccent}<br />
                 {c.headline3.split(" ").map((word, i) =>
