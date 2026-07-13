@@ -372,12 +372,15 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
 
   if (sectionKey === "pricing") return (
     <div>
-      {f("sectionTitle", "Section Title (e.g. Memberships)")}
+      {f("sectionTitle", "Section Title (e.g. Choose Your Membership)")}
+      {f("sectionSubtitle", "Section Subtitle", true)}
+      {f("sectionSubtext", "Section Subtext (below subtitle)", true)}
 
       <p className="text-xs text-white-muted font-body font-semibold mt-4 mb-3">Monthly Plan</p>
       {f("monthlyPrice", "Large Price (e.g. $35)")}
-      {f("monthlySubtitle", "Monthly Subtitle", true)}
+      {f("monthlyDescription", "Monthly Description", true)}
       {f("ctaMonthly", "Monthly CTA Button")}
+      {f("monthlyFootnote", "Monthly Footnote (below CTA)")}
       <p className="text-xs text-white-muted font-body mb-2">Monthly Features</p>
       <p className="text-xs text-white-dim font-body mb-3">Drag rows to reorder</p>
       <div className="mb-5">
@@ -389,14 +392,14 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
       </div>
 
       <p className="text-xs text-white-muted font-body font-semibold mt-2 mb-3">Annual Plan</p>
-      {f("annualMonthlyPrice", "Large Price (e.g. $20)")}
-      {f("annualPrice", "Yearly Price (e.g. $250)")}
-      {f("annualSavings", "Savings Label")}
-      {f("annualInsteadOf", "Savings Pill (top right of card)")}
-      {f("annualSubtitle", "Annual Subtitle", true)}
+      {f("annualMonthlyPrice", "Monthly Price (e.g. $20)")}
+      {f("annualPrice", "Yearly Price (e.g. $240)")}
+      {f("annualSavings", "Savings Label (e.g. Save 43%)")}
+      {f("annualDescription", "Annual Description", true)}
       {f("ctaAnnual", "Annual CTA Button")}
+      {f("annualFootnote", "Annual Footnote (below CTA)")}
       <p className="text-xs text-white-muted font-body mb-2">Annual Features</p>
-      <p className="text-xs text-white-dim font-body mb-3">Drag rows to reorder · Row 1 & 2 appear bold on site</p>
+      <p className="text-xs text-white-dim font-body mb-3">Drag rows to reorder</p>
       <DraggableFeatureList
         features={data.annualFeatures || []}
         onChange={(arr) => update("pricing", "annualFeatures", arr)}
@@ -404,7 +407,8 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
       />
 
       <p className="text-xs text-white-muted font-body font-semibold mt-6 mb-3">Inner Circle Package</p>
-      {f("innerCircleTitle", "Title (e.g. Roye, Maxed Out.)")}
+      {f("innerCircleBadge", "Badge (e.g. Application Only)")}
+      {f("innerCircleTitle", "Title (e.g. Tailored to You)")}
       <Field label="Description" value={data.innerCircleDescription} onChange={v => update("pricing", "innerCircleDescription", v)} multiline />
       {f("innerCircleCta", "CTA Button Text")}
       {f("innerCircleFootnote", "Footnote (below CTA)")}
