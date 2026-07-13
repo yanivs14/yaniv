@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Zap, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Zap, Star, Check, Quote } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track, getGaClientId } from "@/lib/analytics";
 
@@ -12,10 +13,10 @@ const MARQUEE_ITEMS = [
 ];
 
 const PHASES = [
-  { num: "01", title: "Foundation", desc: "Bodyline, strength & stamina" },
-  { num: "02", title: "Balance", desc: "Enter, exit & rebalance" },
-  { num: "03", title: "Movement", desc: "Positions, transitions & control" },
-  { num: "04", title: "Specialist", desc: "Weight shifting & one-arm prep" },
+  { num: "01", title: "Foundation", desc: "Bodyline, strength & stamina", points: ["Wrist prep & conditioning", "Hollow body holds", "Wall kick-up mechanics"] },
+  { num: "02", title: "Balance", desc: "Enter, exit & rebalance", points: ["Chest-to-wall holds", "Toe pulls & heel pulls", "Freestanding entries"] },
+  { num: "03", title: "Movement", desc: "Positions, transitions & control", points: ["Tuck, straddle & pike", "Shape transitions", "Pressing mechanics"] },
+  { num: "04", title: "Specialist", desc: "Weight shifting & one-arm prep", points: ["Weight identification", "Block work & shifts", "One-arm conditioning"] },
 ];
 
 const STATS = [
@@ -28,6 +29,8 @@ const TESTIMONIALS = [
   { initial: "M", name: "Maya R.", role: "Foundation → Balance", quote: "I went from barely holding a wall stand to my first freestanding handstand in weeks. The step-by-step phases finally made it click." },
   { initial: "D", name: "Daniel K.", role: "Calisthenics athlete", quote: "Roye breaks down alignment better than any coach I've worked with. Clear, no fluff, and the progressions actually build on each other." },
 ];
+
+const HERO_IMG = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1400&q=80";
 
 function useCountdown(targetDate) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
@@ -82,48 +85,48 @@ function CountdownTimer({ targetDate }) {
       {units.map((u, i) => (
         <React.Fragment key={u.label}>
           <div className="relative">
-            <div className="bg-dark-surface/80 backdrop-blur-sm border border-orange-red/30 rounded-xl px-3 py-2 sm:px-5 sm:py-3 text-center min-w-[58px] sm:min-w-[80px] shadow-[0_0_20px_-5px_rgba(0,255,247,0.3)]">
-              <div className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-red tabular-nums">
+            <div className="bg-gradient-to-b from-dark-surface to-dark-bg border border-orange-red/20 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-center min-w-[64px] sm:min-w-[88px] shadow-[0_0_30px_-10px_rgba(0,255,247,0.4)]">
+              <div className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-orange-red tabular-nums leading-none">
                 {String(u.value).padStart(2, "0")}
               </div>
-              <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-widest text-white-muted mt-0.5">{u.label}</div>
+              <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-white-muted mt-1.5">{u.label}</div>
             </div>
           </div>
-          {i < units.length - 1 && <span className="font-heading text-lg sm:text-2xl text-white-dim -mx-1">:</span>}
+          {i < units.length - 1 && <span className="font-heading text-2xl sm:text-3xl text-white-dim -mx-1">:</span>}
         </React.Fragment>
       ))}
     </div>
   );
 }
 
-function PricingCard({ config, onCheckout, loading }) {
+function PricingCard({ config, onCheckout, loading, compact = false }) {
   return (
-    <div className="relative">
-      <div className="absolute -inset-px bg-gradient-to-b from-orange-red/40 to-orange-red/0 rounded-2xl blur-sm" />
-      <div className="relative bg-dark-surface border border-orange-red/50 rounded-2xl p-5 sm:p-6 text-center">
-        <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-3 py-1 mb-3">
+    <div className="relative group">
+      <div className="absolute -inset-0.5 bg-gradient-to-b from-orange-red/40 via-orange-red/10 to-transparent rounded-3xl blur-md group-hover:blur-lg transition-all" />
+      <div className={`relative bg-dark-surface/90 backdrop-blur-xl border border-orange-red/30 rounded-3xl ${compact ? "p-6" : "p-7 sm:p-8"} text-center`}>
+        <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-3 py-1 mb-4">
           <Zap className="w-3 h-3 text-orange-red" />
-          <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-widest">Lowest Price Ever</span>
+          <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-[0.15em]">Lowest Price Ever</span>
         </div>
-        <p className="font-heading text-sm sm:text-base font-bold text-off-white uppercase tracking-tight mb-1">
-          Lock In Our Lowest Price Ever
+        <p className="font-heading text-base sm:text-lg font-bold text-off-white uppercase tracking-tight mb-1">
+          Lock In Our Lowest Price
         </p>
-        <p className="font-body text-xs text-white-muted mb-4">
+        <p className="font-body text-xs text-white-muted mb-5">
           Pre-order now. Be first in line when we go live.
         </p>
-        <div className="flex items-baseline justify-center gap-2 mb-4">
-          <span className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white">${config.price}</span>
-          <span className="font-heading text-lg sm:text-xl text-white-dim line-through">${config.originalPrice}</span>
+        <div className="flex items-baseline justify-center gap-3 mb-4">
+          <span className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-off-white leading-none">${config.price}</span>
+          <span className="font-heading text-xl sm:text-2xl text-white-dim line-through">${config.originalPrice}</span>
         </div>
-        <span className="inline-block font-body text-xs font-bold text-dark-bg bg-orange-red px-3 py-1 rounded-full mb-4">{config.discountText}</span>
+        <span className="inline-block font-body text-xs font-bold text-dark-bg bg-orange-red px-4 py-1.5 rounded-full mb-5">{config.discountText}</span>
         <button
           onClick={onCheckout}
           disabled={loading}
-          className="group flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm sm:text-base font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-all disabled:opacity-60 shadow-[0_0_30px_-5px_rgba(0,255,247,0.5)] hover:shadow-[0_0_40px_-5px_rgba(0,255,247,0.7)]"
+          className="group/btn flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm sm:text-base font-bold py-4 rounded-2xl hover:bg-orange-red-hover transition-all disabled:opacity-60 shadow-[0_0_40px_-8px_rgba(0,255,247,0.6)] hover:shadow-[0_0_50px_-8px_rgba(0,255,247,0.8)]"
         >
-          {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></>}
+          {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
         </button>
-        <p className="font-body text-[11px] text-white-muted mt-3">Pay today. Your access link arrives the moment we go live.</p>
+        <p className="font-body text-[11px] text-white-muted mt-4">Pay today. Your access link arrives the moment we go live.</p>
         <div className="flex items-center justify-center gap-4 mt-3 flex-wrap">
           <span className="flex items-center gap-1 font-body text-[10px] text-white-dim"><Lock className="w-3 h-3" /> Secure</span>
           <span className="flex items-center gap-1 font-body text-[10px] text-white-dim"><InfinityIcon className="w-3 h-3" /> One-time</span>
@@ -134,25 +137,34 @@ function PricingCard({ config, onCheckout, loading }) {
   );
 }
 
-function PhaseStrip() {
+function PhaseCard({ phase, index }) {
   return (
-    <div className="w-full max-w-5xl">
-      <p className="text-center font-body text-xs font-bold text-white-muted uppercase tracking-widest mb-3">
-        From your first wall hold to one-arm mastery
-      </p>
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
-        {PHASES.map((p, i) => (
-          <div key={p.num} className="relative group">
-            {i > 0 && <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-px bg-dark-border hidden sm:block" />}
-            <div className="bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-xl p-2.5 sm:p-3.5 text-center hover:border-orange-red/40 transition-colors">
-              <div className="font-heading text-base sm:text-xl font-bold text-orange-red/80 mb-0.5">{p.num}</div>
-              <div className="font-heading text-[11px] sm:text-sm font-bold text-off-white uppercase mb-0.5">{p.title}</div>
-              <p className="font-body text-[9px] sm:text-[10px] text-white-muted leading-tight hidden sm:block">{p.desc}</p>
-            </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative group"
+    >
+      <div className="absolute -inset-px bg-gradient-to-br from-orange-red/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
+      <div className="relative bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-2xl p-6 group-hover:border-orange-red/40 transition-colors h-full">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="font-heading text-3xl font-bold text-orange-red/30">{phase.num}</span>
+          <div>
+            <h3 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{phase.title}</h3>
+            <p className="font-body text-[11px] text-white-muted">{phase.desc}</p>
           </div>
-        ))}
+        </div>
+        <ul className="space-y-2">
+          {phase.points.map((pt, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+              <span className="font-body text-xs text-white-muted">{pt}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -165,156 +177,191 @@ export default function HandstandPreOrder({ config }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-dark-bg overflow-y-auto lg:overflow-hidden">
-      {/* Background glow */}
+    <div className="fixed inset-0 z-[100] bg-dark-bg overflow-y-auto">
+      {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-orange-red/8 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[700px] bg-orange-red/6 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-red/4 rounded-full blur-[120px]" />
       </div>
 
       {/* Marquee */}
-      <div className="relative bg-orange-red text-dark-bg py-1.5 overflow-hidden">
+      <div className="relative bg-orange-red text-dark-bg py-2 overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap">
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-            <span key={i} className="font-heading text-xs font-bold uppercase tracking-widest mx-4 flex items-center gap-4">
+            <span key={i} className="font-heading text-xs font-bold uppercase tracking-[0.15em] mx-5 flex items-center gap-5">
               {item}
-              <span className="text-dark-bg/40">◆</span>
+              <span className="text-dark-bg/30">◆</span>
             </span>
           ))}
         </div>
       </div>
 
-      {/* Desktop: 3-column one-screen layout */}
-      <div className="relative hidden lg:flex h-[calc(100vh-32px)] items-center justify-center px-8">
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-6 xl:gap-10 items-center w-full max-w-7xl">
-          {/* Left: Phases 01-02 */}
-          <div className="flex flex-col gap-3 max-w-[200px] xl:max-w-[240px] ml-auto">
-            <p className="font-body text-[10px] font-bold text-white-muted uppercase tracking-widest text-center mb-1">
-              From your first wall hold
-            </p>
-            {PHASES.slice(0, 2).map((p) => (
-              <div key={p.num} className="bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-xl p-3.5 hover:border-orange-red/40 transition-colors">
-                <div className="font-heading text-lg font-bold text-orange-red/80 mb-0.5">{p.num}</div>
-                <div className="font-heading text-xs font-bold text-off-white uppercase mb-0.5">{p.title}</div>
-                <p className="font-body text-[10px] text-white-muted leading-tight">{p.desc}</p>
-              </div>
-            ))}
+      <div className="relative">
+        {/* Hero Section */}
+        <section className="relative min-h-[90vh] flex items-center justify-center px-6 py-16 lg:py-24 overflow-hidden">
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-15" />
+            <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/60 via-dark-bg/80 to-dark-bg" />
           </div>
 
-          {/* Center: Hero + Countdown + Pricing */}
-          <div className="flex flex-col items-center text-center gap-4 max-w-xl">
-            <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5">
+          <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5 backdrop-blur-sm"
+            >
               <Star className="w-3 h-3 text-orange-red fill-orange-red" />
-              <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-widest">Limited Pre-Order · Early Access</span>
-            </div>
+              <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-[0.15em]">Limited Pre-Order · Early Access</span>
+            </motion.div>
 
-            <h1 className="font-heading text-4xl xl:text-5xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-              Master Your Handstand<br />
-              In <span className="text-orange-red">4 Stages</span>
-            </h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.92] text-off-white uppercase tracking-tight"
+            >
+              Master Your<br />
+              Handstand In<br />
+              <span className="text-orange-red">4 Stages</span>
+            </motion.h1>
 
-            <p className="font-body text-sm text-white-muted leading-relaxed max-w-lg">
-              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep.
-            </p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="font-body text-base lg:text-lg text-white-muted leading-relaxed max-w-xl"
+            >
+              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
+            </motion.p>
 
-            <CountdownTimer targetDate={config.targetDate} />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <CountdownTimer targetDate={config.targetDate} />
+            </motion.div>
 
-            <div className="w-full max-w-sm">
-              <PricingCard config={config} onCheckout={handleCheckout} loading={loading} />
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="w-full max-w-md"
+            >
+              <PricingCard config={config} onCheckout={handleCheckout} loading={loading} compact />
+            </motion.div>
           </div>
+        </section>
 
-          {/* Right: Phases 03-04 */}
-          <div className="flex flex-col gap-3 max-w-[200px] xl:max-w-[240px] mr-auto">
-            <p className="font-body text-[10px] font-bold text-white-muted uppercase tracking-widest text-center mb-1">
-              to one-arm mastery
-            </p>
-            {PHASES.slice(2, 4).map((p) => (
-              <div key={p.num} className="bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-xl p-3.5 hover:border-orange-red/40 transition-colors">
-                <div className="font-heading text-lg font-bold text-orange-red/80 mb-0.5">{p.num}</div>
-                <div className="font-heading text-xs font-bold text-off-white uppercase mb-0.5">{p.title}</div>
-                <p className="font-body text-[10px] text-white-muted leading-tight">{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: scrollable layout */}
-      <div className="relative lg:hidden min-h-[calc(100vh-32px)]">
-        <div className="max-w-md mx-auto px-6 py-8 flex flex-col gap-6">
-          <div className="flex flex-col items-center text-center gap-4">
-            <div className="inline-flex items-center gap-1.5 bg-orange-red/10 border border-orange-red/30 rounded-full px-4 py-1.5">
-              <Star className="w-3 h-3 text-orange-red fill-orange-red" />
-              <span className="font-body text-[10px] font-bold text-orange-red uppercase tracking-widest">Limited Pre-Order</span>
-            </div>
-            <h1 className="font-heading text-4xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-              Master Your Handstand<br />In <span className="text-orange-red">4 Stages</span>
-            </h1>
-            <p className="font-body text-base text-white-muted leading-relaxed">
-              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep.
-            </p>
-          </div>
-          <CountdownTimer targetDate={config.targetDate} />
-          <PricingCard config={config} onCheckout={handleCheckout} loading={loading} />
-
-          <div>
-            <p className="font-body text-xs font-bold text-white-muted uppercase tracking-widest mb-3 text-center">
-              From your first wall hold to one-arm mastery
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {PHASES.map((p) => (
-                <div key={p.num} className="bg-dark-surface border border-dark-border rounded-xl p-3 flex items-start gap-2.5">
-                  <span className="font-heading text-lg font-bold text-orange-red/80">{p.num}</span>
-                  <div>
-                    <p className="font-heading text-sm font-bold text-off-white uppercase">{p.title}</p>
-                    <p className="font-body text-[10px] text-white-muted">{p.desc}</p>
-                  </div>
+        {/* Stats Bar */}
+        <section className="relative border-y border-dark-border bg-dark-surface/40 backdrop-blur-sm">
+          <div className="max-w-5xl mx-auto px-6 py-8">
+            <div className="grid grid-cols-3 gap-4">
+              {STATS.map((s, i) => (
+                <div key={s.label} className={`text-center ${i < STATS.length - 1 ? "lg:border-r border-dark-border" : ""}`}>
+                  <div className="font-heading text-3xl lg:text-4xl font-bold text-orange-red">{s.value}</div>
+                  <p className="font-body text-xs text-white-muted mt-1">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
+        </section>
 
-          <div className="grid grid-cols-3 gap-2 py-2 border-y border-dark-border">
-            {STATS.map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="font-heading text-2xl font-bold text-orange-red">{s.value}</div>
-                <p className="font-body text-[10px] text-white-muted">{s.label}</p>
-              </div>
-            ))}
+        {/* Phases / Roadmap */}
+        <section className="relative py-16 lg:py-24 px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-12"
+            >
+              <p className="font-body text-xs font-bold text-orange-red uppercase tracking-[0.2em] mb-3">The Roadmap</p>
+              <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight">
+                From your first wall hold<br />to <span className="text-orange-red">one-arm mastery</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {PHASES.map((p, i) => (
+                <PhaseCard key={p.num} phase={p} index={i} />
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div className="space-y-3">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-dark-surface border border-dark-border rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-orange-red/20 flex items-center justify-center font-heading text-sm font-bold text-orange-red">{t.initial}</div>
-                  <div>
-                    <p className="font-body text-sm font-semibold text-off-white">{t.name}</p>
-                    <p className="font-body text-[10px] text-white-muted">{t.role}</p>
+        {/* Testimonials */}
+        <section className="relative py-16 lg:py-24 px-6 border-t border-dark-border">
+          <div className="max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-12"
+            >
+              <p className="font-body text-xs font-bold text-orange-red uppercase tracking-[0.2em] mb-3">Social Proof</p>
+              <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight">
+                Real students, <span className="text-orange-red">real results</span>
+              </h2>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              {TESTIMONIALS.map((t, i) => (
+                <motion.div
+                  key={t.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="relative bg-dark-surface/60 backdrop-blur-sm border border-dark-border rounded-2xl p-6 lg:p-8"
+                >
+                  <Quote className="w-8 h-8 text-orange-red/20 mb-4" />
+                  <p className="font-body text-sm lg:text-base text-white-muted italic leading-relaxed mb-6">"{t.quote}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-red/30 to-orange-red/10 border border-orange-red/30 flex items-center justify-center font-heading text-base font-bold text-orange-red">{t.initial}</div>
+                    <div>
+                      <p className="font-body text-sm font-semibold text-off-white">{t.name}</p>
+                      <p className="font-body text-[11px] text-white-muted">{t.role}</p>
+                    </div>
                   </div>
-                </div>
-                <p className="font-body text-xs text-white-muted italic">"{t.quote}"</p>
-              </div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div className="text-center py-4 border-t border-dark-border">
-            <p className="font-heading text-xl font-bold text-off-white uppercase mb-1">Get the Handstands program</p>
-            <p className="font-body text-sm text-white-muted mb-3">Pre-order now and save 34% before launch.</p>
-            <div className="flex items-baseline justify-center gap-2 mb-3">
-              <span className="font-heading text-3xl font-bold text-off-white">${config.price}</span>
-              <span className="font-heading text-lg text-white-dim line-through">${config.originalPrice}</span>
-              <span className="font-body text-xs font-bold text-dark-bg bg-orange-red px-2 py-0.5 rounded-full">{config.discountText}</span>
+        {/* Final CTA */}
+        <section className="relative py-16 lg:py-24 px-6 border-t border-dark-border">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-3">
+              Ready to <span className="text-orange-red">go upside down?</span>
+            </h2>
+            <p className="font-body text-base text-white-muted mb-8">
+              Pre-order now and save 34% before launch. Lifetime access, one-time payment.
+            </p>
+            <div className="flex items-baseline justify-center gap-3 mb-6">
+              <span className="font-heading text-5xl lg:text-6xl font-bold text-off-white">${config.price}</span>
+              <span className="font-heading text-xl text-white-dim line-through">${config.originalPrice}</span>
+              <span className="font-body text-xs font-bold text-dark-bg bg-orange-red px-3 py-1 rounded-full">{config.discountText}</span>
             </div>
             <button
               onClick={handleCheckout}
               disabled={loading}
-              className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-bold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
+              className="group inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-base font-bold px-10 py-4 rounded-2xl hover:bg-orange-red-hover transition-all disabled:opacity-60 shadow-[0_0_40px_-8px_rgba(0,255,247,0.6)] hover:shadow-[0_0_50px_-8px_rgba(0,255,247,0.8)]"
             >
-              {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-4 h-4" /></>}
+              {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></>}
             </button>
+            <div className="flex items-center justify-center gap-4 mt-5 flex-wrap">
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><Lock className="w-3 h-3" /> Secure checkout</span>
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><InfinityIcon className="w-3 h-3" /> Lifetime access</span>
+              <span className="flex items-center gap-1 font-body text-[11px] text-white-dim"><Shield className="w-3 h-3" /> One-time payment</span>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
