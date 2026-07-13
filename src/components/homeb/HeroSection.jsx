@@ -54,11 +54,11 @@ export default function HeroSection() {
                 )}
               </h1>
 
-              <p className="mt-6 font-body text-lg lg:text-xl text-white-muted max-w-lg leading-relaxed">
+              <p className="mt-7 lg:mt-9 font-body text-lg lg:text-xl text-white-muted max-w-lg leading-relaxed">
                 {c.subtitle}
               </p>
 
-              <div className="mt-4 flex flex-col gap-4 relative z-10">
+              <div className="mt-7 lg:mt-9 flex flex-col gap-5 relative z-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <button
                     onClick={openQuiz}
@@ -91,7 +91,7 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface mt-4">
+              <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface mt-8">
                 {c.videoUrl ?
                 <video
                   src={c.videoUrl}
