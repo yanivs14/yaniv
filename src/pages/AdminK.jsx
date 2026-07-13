@@ -310,7 +310,7 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
 
   if (sectionKey === "testimonials") return (
     <div>
-      {f("eyebrow", "Eyebrow")} {f("headline1", "Headline 1")} {f("headlineAccent", "Headline Accent")} {f("subtitle", "Subtitle", true)}
+      {f("eyebrow", "Eyebrow")} {f("headline", "Headline (last word will be highlighted in teal)")} {f("subtitle", "Subtitle", true)}
 
       <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Testimonials</p>
       {data.items.map((t, i) => (

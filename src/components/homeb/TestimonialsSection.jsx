@@ -52,6 +52,10 @@ export default function TestimonialsSection() {
   const scrollRef = useRef();
   if (!content) return null;
 
+  const headline = c?.headline || "They didn't expect this.";
+  const headlineParts = headline.split(" ");
+  const headlineLast = headlineParts.pop();
+
   const scroll = (dir) => {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
@@ -68,7 +72,7 @@ export default function TestimonialsSection() {
         >
           <div>
             <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-              {c?.headline1 || "They didn't expect"} <span className="text-orange-red">{c?.headlineAccent || "this."}</span>
+              {headlineParts.join(" ")} <span className="text-orange-red">{headlineLast}</span>
             </h2>
           </div>
 
