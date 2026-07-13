@@ -175,6 +175,36 @@ export default function HomeBEditor({ section }) {
     );
   }
 
+  if (section === "handstandPreorder") {
+    const data = content.handstandPreorder || { enabled: false, targetDate: "", price: "99", originalPrice: "149", discountText: "Save 34%" };
+    const updatePreorder = (field, value) => update("handstandPreorder", field, value);
+    return (
+      <div>
+        <div className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-off-white font-body">Pre-Order Mode</p>
+              <p className="text-xs text-white-muted font-body mt-0.5">When enabled, /handstand-course shows a pre-order overlay with countdown timer until the target date.</p>
+            </div>
+            <button
+              onClick={() => updatePreorder("enabled", !data.enabled)}
+              className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${data.enabled ? "bg-orange-red" : "bg-[#2a2a2a]"}`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${data.enabled ? "translate-x-6" : ""}`} />
+            </button>
+          </div>
+        </div>
+        <Field label="Target Date & Time (when pre-order ends)" value={data.targetDate} onChange={v => updatePreorder("targetDate", v)} />
+        <p className="text-xs text-white-dim mb-4 font-body -mt-2">Format: YYYY-MM-DDTHH:MM (e.g. 2026-07-20T10:00)</p>
+        <div className="grid grid-cols-3 gap-3">
+          <Field label="Price ($)" value={data.price} onChange={v => updatePreorder("price", v)} />
+          <Field label="Original Price ($)" value={data.originalPrice} onChange={v => updatePreorder("originalPrice", v)} />
+          <Field label="Discount Text" value={data.discountText} onChange={v => updatePreorder("discountText", v)} />
+        </div>
+      </div>
+    );
+  }
+
   if (section === "beforeAfter") {
     const data = content.homebBeforeAfter || {};
     const items = data.items || [];

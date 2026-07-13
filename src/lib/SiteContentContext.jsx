@@ -241,6 +241,13 @@ const DEFAULT_CONTENT = {
     subtitle: "Before & After photos of flexibility (touching toes) and then improving after 2 weeks",
     items: [],
   },
+  handstandPreorder: {
+    enabled: false,
+    targetDate: "",
+    price: "99",
+    originalPrice: "149",
+    discountText: "Save 34%",
+  },
 };
 
 const SiteContentContext = createContext(null);

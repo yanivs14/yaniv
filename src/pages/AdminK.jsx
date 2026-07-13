@@ -1102,6 +1102,7 @@ const HOME_B_SECTIONS = [
   { key: "comparison", label: "Comparison Chart" },
   { key: "builtForEveryone", label: "Built For Everyone" },
   { key: "beforeAfter", label: "Before & After" },
+  { key: "handstandPreorder", label: "Handstand Pre-Order" },
 ];
 
 function HomeBTab() {

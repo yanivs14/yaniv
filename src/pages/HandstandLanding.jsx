@@ -12,33 +12,50 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import HandstandPricing from "@/components/handstand/HandstandPricing";
 import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
+import HandstandPreOrder from "@/components/handstand/HandstandPreOrder";
+
+const DEFAULT_PREORDER = { enabled: false, targetDate: "", price: "99", originalPrice: "149", discountText: "Save 34%" };
 
 export default function HandstandLanding() {
   const [content, setContent] = useState(null);
+  const [preOrder, setPreOrder] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const pages = await base44.entities.LandingPageContent.filter({
-          page_key: "handstand_course",
-        });
+        const [pages, preOrderRecords] = await Promise.all([
+          base44.entities.LandingPageContent.filter({ page_key: "handstand_course" }),
+          base44.entities.SiteContent.filter({ section_key: "homeb_handstandPreorder" }),
+        ]);
         if (pages.length > 0 && pages[0].data) {
           setContent({ ...defaultHandstandContent, ...pages[0].data });
         } else {
           setContent(defaultHandstandContent);
         }
+        if (preOrderRecords.length > 0 && preOrderRecords[0].data) {
+          setPreOrder({ ...DEFAULT_PREORDER, ...preOrderRecords[0].data });
+        } else {
+          setPreOrder(DEFAULT_PREORDER);
+        }
       } catch {
         setContent(defaultHandstandContent);
+        setPreOrder(DEFAULT_PREORDER);
       }
     })();
   }, []);
 
-  if (!content) {
+  if (!content || !preOrder) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-dark-bg">
         <div className="w-8 h-8 border-4 border-dark-border border-t-orange-red rounded-full animate-spin" />
       </div>
     );
+  }
+
+  const preOrderActive = preOrder.enabled && preOrder.targetDate && new Date(preOrder.targetDate).getTime() > Date.now();
+
+  if (preOrderActive) {
+    return <HandstandPreOrder config={preOrder} />;
   }
 
   return (
