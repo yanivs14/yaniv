@@ -57,7 +57,7 @@ export default function InnerCirclePricingCard({ c, mobile = false }) {
   // Desktop: premium card with glow + gradient border
   return (
     <div className="relative rounded-2xl p-px bg-gradient-to-b from-orange-red/50 via-orange-red/15 to-transparent flex flex-col">
-      <div className="relative bg-dark-bg rounded-2xl p-8 flex flex-col overflow-hidden">
+      <div className="relative bg-dark-bg rounded-2xl p-8 flex flex-col overflow-hidden flex-1">
         {/* Glow accent */}
         <div className="absolute -top-20 -right-20 w-48 h-48 bg-orange-red/10 rounded-full blur-3xl pointer-events-none" />
 
