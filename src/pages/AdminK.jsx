@@ -130,7 +130,7 @@ function SocialEditor() {
   );
 }
 
-function SectionEditor({ sectionKey }) {
+function SectionEditor({ sectionKey, homePath = "/" }) {
   const { content, update, updateDeep, resetSection } = useSiteContent();
   if (!content) return null;
 
@@ -145,23 +145,58 @@ function SectionEditor({ sectionKey }) {
 
   if (sectionKey === "social") return <SocialEditor />;
 
-  if (sectionKey === "navbar") return (
-    <div>
-      {f("brand", "Brand Name")} {f("cta", "CTA Button Text")}
-      <div className="flex items-center justify-between mb-2 mt-1">
-        <p className="text-xs text-white-muted font-body">Nav Links</p>
-        <button onClick={() => resetSection("navbar")} className="text-xs text-orange-red hover:text-orange-red-hover transition-colors font-body">↺ Reset to defaults</button>
-      </div>
-      {data.links.map((link, i) => (
-        <div key={i} className="flex gap-2 mb-2">
-          <input value={link.label} onChange={e => updateDeep("navbar", "links", i, "label", e.target.value)} placeholder="Label"
-            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-          <input value={link.href} onChange={e => updateDeep("navbar", "links", i, "href", e.target.value)} placeholder="Link"
-            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+  if (sectionKey === "navbar") {
+    const anchorOptions = homePath === "/home-b"
+      ? [
+          { value: "#program", label: "Program (Hero)" },
+          { value: "#benefits", label: "Benefits" },
+          { value: "#pricing", label: "Pricing" },
+          { value: "#see-inside", label: "See Inside" },
+          { value: "#real-results", label: "Real Results" },
+          { value: "#members", label: "Testimonials" },
+          { value: "#roye", label: "Roye Gold" },
+          { value: "#faq", label: "FAQ" },
+        ]
+      : [
+          { value: "#program", label: "The Program" },
+          { value: "#benefits", label: "The Benefits" },
+          { value: "#who", label: "Who It's For?" },
+          { value: "#members", label: "Our Members" },
+          { value: "#pricing", label: "Pricing" },
+          { value: "#inner-circle", label: "Inner Circle" },
+          { value: "#roye", label: "Roye Gold" },
+          { value: "#faq", label: "FAQ" },
+        ];
+
+    return (
+      <div>
+        {f("brand", "Brand Name")} {f("cta", "CTA Button Text")}
+        <div className="flex items-center justify-between mb-2 mt-1">
+          <p className="text-xs text-white-muted font-body">Nav Links</p>
+          <button onClick={() => resetSection("navbar")} className="text-xs text-orange-red hover:text-orange-red-hover transition-colors font-body">↺ Reset to defaults</button>
         </div>
-      ))}
-    </div>
-  );
+        {data.links.map((link, i) => (
+          <div key={i} className="flex gap-2 mb-2">
+            <input value={link.label} onChange={e => updateDeep("navbar", "links", i, "label", e.target.value)} placeholder="Label"
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <select value={link.href} onChange={e => updateDeep("navbar", "links", i, "href", e.target.value)}
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+              {!anchorOptions.some(o => o.value === link.href) && <option value={link.href}>{link.href}</option>}
+              {anchorOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+            </select>
+            <button onClick={() => update("navbar", "links", data.links.filter((_, idx) => idx !== i))}
+              className="text-white-muted hover:text-red-400 transition-colors p-2 flex-shrink-0">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+        <button onClick={() => update("navbar", "links", [...(data.links || []), { label: "New Link", href: "#program" }])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add nav link
+        </button>
+      </div>
+    );
+  }
 
   if (sectionKey === "hero") return (
     <div>
@@ -1228,7 +1263,7 @@ export default function AdminK({ homePath = "/" }) {
               <AnimatePresence mode="wait">
                 <motion.div key={activeSection} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                  <SectionEditor sectionKey={activeSection} />
+                  <SectionEditor sectionKey={activeSection} homePath={homePath} />
                 </motion.div>
               </AnimatePresence>
             </div>
