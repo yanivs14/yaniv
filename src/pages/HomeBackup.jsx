@@ -12,6 +12,7 @@ import SocialProofSection from "../components/homeb/SocialProofSection";
 import BenefitsSection from "../components/homeb/BenefitsSection";
 import SeeInsideSection from "../components/homeb/SeeInsideSection";
 import ComparisonSection from "../components/homeb/ComparisonSection";
+import DegradingSection from "../components/homeb/DegradingSection";
 
 const TestimonialsSection = lazy(() => import("../components/homeb/TestimonialsSection.jsx"));
 const AboutSection = lazy(() => import("../components/homeb/AboutSection.jsx"));
@@ -91,6 +92,7 @@ export default function HomeBackup() {
       <SeeInsideSection />
       {/* #pricing */}
       <PricingSection />
+      <DegradingSection />
       <Suspense fallback={<div className="h-64 bg-dark-bg" />}>
         <TestimonialsSection />
       </Suspense>
