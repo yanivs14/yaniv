@@ -208,6 +208,7 @@ const DEFAULT_CONTENT = {
     eyebrow: "This is what you're joining",
     headline: "See How It Works",
     steps: ["Watch it", "Try it", "Share it", "Personal Feedback"],
+    youtubeUrl: "",
     videoUrl: "",
     imageUrl: "",
   },

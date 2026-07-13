@@ -101,7 +101,8 @@ export default function HomeBEditor({ section }) {
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2 mb-6">
           <Plus className="w-4 h-4" /> Add step
         </button>
-        <MediaField label="Video (MP4 or URL)" value={data.videoUrl} onChange={v => update("homebSeeInside", "videoUrl", v)} isVideo />
+        <Field label="YouTube URL (e.g. https://youtu.be/xxx)" value={data.youtubeUrl} onChange={v => update("homebSeeInside", "youtubeUrl", v)} />
+        <MediaField label="Video (MP4 or URL) — used if no YouTube URL" value={data.videoUrl} onChange={v => update("homebSeeInside", "videoUrl", v)} isVideo />
         <MediaField label="Fallback Image" value={data.imageUrl} onChange={v => update("homebSeeInside", "imageUrl", v)} />
       </div>
     );
