@@ -184,38 +184,38 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-dark-bg border-2 border-orange-red rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0"
+            className="bg-orange-red rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0"
           >
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
-            <p className="font-body text-sm font-bold text-orange-red uppercase tracking-widest mb-4">Annual Membership</p>
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+            <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-4">Annual Membership</p>
             <div className="flex items-baseline gap-1.5 mb-1">
-              <span className="font-heading text-5xl font-bold text-off-white">{c.annualMonthlyPrice || "$20"}</span>
-              <span className="font-body text-sm text-white-muted">/ month</span>
+              <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
+              <span className="font-body text-sm text-dark-bg/70">/ month</span>
             </div>
             {c.annualSavings && (
-              <p className="font-body text-xs text-orange-red font-semibold mb-1">Billed annually at ${c.annualPrice || "$240"} · {c.annualSavings}</p>
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at ${c.annualPrice || "$240"} · {c.annualSavings}</p>
             )}
             {c.annualDescription && (
-              <p className="font-body text-sm text-white-muted mb-6 mt-2 leading-relaxed">{c.annualDescription}</p>
+              <p className="font-body text-sm text-dark-bg/80 mb-6 mt-2 leading-relaxed">{c.annualDescription}</p>
             )}
-            <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-3">What's Included</p>
+            <p className="font-body text-[11px] font-bold text-dark-bg uppercase tracking-widest mb-3">What's Included</p>
             <ul className="space-y-3 flex-1">
               {annualFeatures.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-white-muted">{f}</span>
+                  <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                  <span className="font-body text-sm text-dark-bg/80">{f}</span>
                 </li>
               ))}
             </ul>
             <button
               onClick={() => handleCheckout("annual")}
               disabled={checkoutLoading === "annual"}
-              className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-6"
+              className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface-2 transition-colors disabled:opacity-60 mt-6"
             >
               {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual || "Begin Annual"} <ArrowRight className="w-4 h-4" /></>}
             </button>
             {c.annualFootnote && (
-              <p className="font-body text-xs text-white-dim text-center mt-3">{c.annualFootnote}</p>
+              <p className="font-body text-xs text-dark-bg/60 text-center mt-3">{c.annualFootnote}</p>
             )}
           </motion.div>
 
@@ -314,37 +314,37 @@ export default function PricingSection() {
             </div>
 
             {/* Annual mobile */}
-            <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border-2 border-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
-              <p className="font-body text-sm font-bold text-orange-red uppercase tracking-widest mb-3 mt-2">Annual Membership</p>
+            <div className="flex-shrink-0 w-[75vw] snap-start bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-2">Annual Membership</p>
               <div className="flex items-baseline gap-1.5 mb-1">
-                <span className="font-heading text-4xl font-bold text-off-white">{c.annualMonthlyPrice || "$20"}</span>
-                <span className="font-body text-sm text-white-muted">/ month</span>
+                <span className="font-heading text-4xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
+                <span className="font-body text-sm text-dark-bg/70">/ month</span>
               </div>
               {c.annualSavings && (
-                <p className="font-body text-xs text-orange-red font-semibold mb-1">Billed annually at ${c.annualPrice || "$240"} · {c.annualSavings}</p>
+                <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at ${c.annualPrice || "$240"} · {c.annualSavings}</p>
               )}
               {c.annualDescription && (
-                <p className="font-body text-xs text-white-muted mb-3 mt-1 leading-relaxed">{c.annualDescription}</p>
+                <p className="font-body text-xs text-dark-bg/80 mb-3 mt-1 leading-relaxed">{c.annualDescription}</p>
               )}
-              <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-2">What's Included</p>
+              <p className="font-body text-[11px] font-bold text-dark-bg uppercase tracking-widest mb-2">What's Included</p>
               <ul className="space-y-2.5 flex-1">
                 {annualFeatures.map((f, i) => (
                   <li key={i} className="flex items-start gap-2.5">
-                    <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-white-muted">{f}</span>
+                    <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
+                    <span className="font-body text-sm text-dark-bg/80">{f}</span>
                   </li>
                 ))}
               </ul>
               <button
                 onClick={() => handleCheckout("annual")}
                 disabled={checkoutLoading === "annual"}
-                className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-5"
+                className="flex items-center justify-center gap-2 w-full bg-dark-bg text-off-white font-body text-sm font-semibold py-3.5 rounded-full hover:bg-dark-surface-2 transition-colors disabled:opacity-60 mt-5"
               >
                 {checkoutLoading === "annual" ? "Loading..." : <>{c.ctaAnnual || "Begin Annual"} <ArrowRight className="w-4 h-4" /></>}
               </button>
               {c.annualFootnote && (
-                <p className="font-body text-xs text-white-dim text-center mt-2">{c.annualFootnote}</p>
+                <p className="font-body text-xs text-dark-bg/60 text-center mt-2">{c.annualFootnote}</p>
               )}
             </div>
 
