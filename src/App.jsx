@@ -62,7 +62,7 @@ const AuthenticatedApp = () => {
     <SiteContentProvider>
       <RouteTracker />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home-old" element={<Home />} />
         <Route path="/admin-k" element={<AdminK />} />
         <Route path="/inner-circle" element={<InnerCircle />} />
         <Route path="/MOVEMENT7PREP" element={<Movement7Prep />} />
@@ -72,7 +72,7 @@ const AuthenticatedApp = () => {
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />
         <Route path="/hspre" element={<HsPre />} />
-        <Route path="/home-b" element={<HomeBackupLayout><HomeBackup /></HomeBackupLayout>} />
+        <Route path="/" element={<HomeBackupLayout><HomeBackup /></HomeBackupLayout>} />
         <Route path="/admin-home-b" element={<AdminHomeB />} />
         <Route path="/:slug" element={<PolicyPage />} />
         <Route path="*" element={<PageNotFound />} />
