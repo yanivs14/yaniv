@@ -91,7 +91,7 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-dark-bg border border-dark-border rounded-2xl p-8 flex flex-col"
+            className="bg-dark-bg border border-dark-border rounded-2xl p-8 pb-14 flex flex-col"
           >
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">Monthly Plan</p>
             <div className="flex items-baseline gap-1.5 mb-1">
@@ -123,19 +123,19 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-dark-bg border-2 border-orange-red rounded-2xl p-8 relative flex flex-col mt-6 md:mt-0"
+            className="bg-dark-bg border-2 border-orange-red rounded-2xl p-8 pb-14 relative flex flex-col mt-6 md:mt-0"
           >
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
             <p className="font-body text-sm font-bold text-orange-red uppercase tracking-widest mb-4">Annual Plan</p>
-            {c.annualInsteadOf && (
-              <p className="font-body text-xs text-orange-red font-semibold mb-2">{c.annualInsteadOf}</p>
-            )}
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="font-heading text-5xl font-bold text-off-white">{c.annualMonthlyPrice || "$19.99"}</span>
               <span className="font-body text-sm text-white-muted">/ mo</span>
             </div>
             {c.annualSavings && <p className="font-body text-xs text-orange-red font-semibold mb-1">{c.annualSavings}</p>}
-            <p className="font-body text-xs text-white-muted mb-6">Billed annually ({c.annualPrice || "$239.88"}/yr)</p>
+            <p className={`font-body text-xs text-white-muted ${c.annualInsteadOf ? 'mb-1' : 'mb-6'}`}>Billed annually ({c.annualPrice || "$239.88"}/yr)</p>
+            {c.annualInsteadOf && (
+              <p className="font-body text-xs text-orange-red font-semibold mb-6">{c.annualInsteadOf}</p>
+            )}
             {c.annualSubtitle && <p className="font-body text-sm text-white-muted mb-3">{c.annualSubtitle}</p>}
             <p className="font-body text-sm text-off-white/80 mb-3">Everything in Monthly, plus:</p>
             <ul className="space-y-3 flex-1">
@@ -161,7 +161,7 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-dark-bg border border-gold rounded-2xl p-8 relative flex flex-col mt-6 md:mt-0"
+            className="bg-dark-bg border border-gold rounded-2xl p-8 pb-14 relative flex flex-col mt-6 md:mt-0"
           >
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Inner Circle — Applications Reviewed</span>
             <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-4">Inner Circle</p>
@@ -185,7 +185,7 @@ export default function PricingSection() {
               {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
             </button>
             {c.innerCircleFootnote && (
-              <p className="font-body text-xs text-white-dim mt-3 text-center">{c.innerCircleFootnote}</p>
+              <p className="font-body text-xs text-white-dim absolute bottom-4 left-0 right-0 text-center px-8">{c.innerCircleFootnote}</p>
             )}
           </motion.div>
         </div>

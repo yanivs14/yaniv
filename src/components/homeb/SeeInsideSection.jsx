@@ -5,13 +5,6 @@ export default function SeeInsideSection() {
   const { content } = useSiteContent();
   const c = content.homebSeeInside || {};
 
-  const steps = c.steps || [
-    "Watch it",
-    "Try it",
-    "Share it",
-    "Personal Feedback",
-  ];
-
   return (
     <section className="bg-dark-bg py-12 lg:py-20" id="see-inside">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -27,21 +20,6 @@ export default function SeeInsideSection() {
             {c.headline || "See How It Works"}
           </h2>
         </motion.div>
-
-        {/* Steps flow */}
-        <div className="flex flex-wrap items-center justify-center gap-3 lg:gap-6 mb-8 lg:mb-12">
-          {steps.map((step, i) => (
-            <div key={i} className="flex items-center gap-3 lg:gap-6">
-              <div className="flex items-center gap-2 lg:gap-3 bg-dark-surface border border-dark-border rounded-full px-5 lg:px-7 py-2.5 lg:py-3">
-                <span className="font-heading text-lg lg:text-xl font-bold text-orange-red">{String(i + 1).padStart(2, "0")}</span>
-                <span className="font-body text-sm lg:text-base text-off-white font-medium">{step}</span>
-              </div>
-              {i < steps.length - 1 && (
-                <span className="text-orange-red text-xl lg:text-2xl font-bold">→</span>
-              )}
-            </div>
-          ))}
-        </div>
 
         {/* Video / Animation container */}
         <motion.div
