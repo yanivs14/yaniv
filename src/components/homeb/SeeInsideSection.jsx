@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import ProgramShowcase from "@/components/homeb/ProgramShowcase";
 
 function getYouTubeId(url) {
   if (!url) return null;
@@ -69,12 +70,13 @@ export default function SeeInsideSection() {
           )}
         </motion.div>
 
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-10 items-center max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="rounded-2xl overflow-hidden bg-dark-surface border border-dark-border aspect-video max-w-4xl mx-auto relative"
+          className="rounded-2xl overflow-hidden bg-dark-surface border border-dark-border aspect-video relative"
         >
           {ytId ? (
             <div className="relative w-full h-full">
@@ -109,6 +111,8 @@ export default function SeeInsideSection() {
             </div>
           )}
         </motion.div>
+        <ProgramShowcase />
+        </div>
       </div>
     </section>
   );
