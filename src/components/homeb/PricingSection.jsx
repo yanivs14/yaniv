@@ -312,7 +312,7 @@ export default function PricingSection() {
           <div
             ref={mobileSliderRef}
             onScroll={handleMobileScroll}
-            className="flex gap-5 overflow-x-auto snap-x snap-mandatory pt-6 pb-4 no-scrollbar px-4 scroll-px-4">
+            className="-mx-6 px-6 flex gap-5 overflow-x-auto snap-x snap-mandatory pt-6 pb-4 no-scrollbar scroll-px-6">
             
             {/* Monthly mobile */}
             <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 pb-6 flex flex-col">

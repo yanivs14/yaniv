@@ -80,7 +80,7 @@ export default function TestimonialsSection() {
 
         <div className="relative">
           <div className="lg:hidden">
-            <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+            <div ref={scrollRef} className="-mx-6 px-6 flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar scroll-px-6">
               {c.items.map((t, i) => (
                 <TestimonialCard key={i} t={t} />
               ))}
