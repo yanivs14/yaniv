@@ -445,11 +445,11 @@ Deno.serve(async (req) => {
 </html>`;
 
       try {
-        await await base44.asServiceRole.integrations.Core.SendEmail({
+        await base44.asServiceRole.functions.invoke('sendGmail', {
           to: email,
           subject: isInnerCircle ? 'Your Inner Circle Request — Kinetiqo' : 'Start Train With Roye Gold - Now With Over 25% OFF',
+          html: userEmailBody,
           from_name: 'The Movement - Roye Gold',
-          body: userEmailBody
         });
       } catch (emailErr) {
         console.warn('User confirmation email failed (non-critical):', emailErr.message);
@@ -533,11 +533,11 @@ Deno.serve(async (req) => {
     // Notify admins (non-blocking)
     for (const adminEmail of recipientEmails) {
       try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
+        await base44.asServiceRole.functions.invoke('sendGmail', {
           to: adminEmail,
           subject: isInnerCircle ? `🔵 Inner Circle — ${full_name}` : `🟢 New Lead — ${full_name}`,
           from_name: 'The Movement - Roye Gold',
-          body: `<!DOCTYPE html>
+          html: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

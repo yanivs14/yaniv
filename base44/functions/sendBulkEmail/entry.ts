@@ -178,11 +178,11 @@ Deno.serve(async (req) => {
       }
 
       try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
+        await base44.asServiceRole.functions.invoke('sendGmail', {
           to: r.email,
           subject: emailSubject,
+          html: emailBody,
           from_name: 'The Movement - Roye Gold',
-          body: emailBody,
         });
 
         try {

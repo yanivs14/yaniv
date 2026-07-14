@@ -264,11 +264,11 @@ Deno.serve(async (req) => {
             </tr>`).join('')
           : '';
 
-        await base44.asServiceRole.integrations.Core.SendEmail({
+        await base44.asServiceRole.functions.invoke('sendGmail', {
           to: adminEmail,
           subject: `💰 New Purchase — ${customerName} — ${planLabel}`,
           from_name: 'The Movement - Roye Gold',
-          body: `<!DOCTYPE html>
+          html: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

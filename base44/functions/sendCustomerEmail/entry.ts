@@ -107,26 +107,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid type. Use "receipt", "refund", or "welcome_skool".' }, { status: 400 });
     }
 
-    const fromEmail = "onboarding@resend.dev";
     const sendTo = overrideRecipient || email;
-    const resendRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: `The Movement — Roye Gold <${fromEmail}>`,
-        to: [sendTo],
-        subject,
-        html,
-      }),
+    await base44.asServiceRole.functions.invoke('sendGmail', {
+      to: sendTo,
+      subject,
+      html,
+      from_name: 'The Movement — Roye Gold',
     });
-
-    if (!resendRes.ok) {
-      const errText = await resendRes.text();
-      throw new Error(`Resend API error (${resendRes.status}): ${errText}`);
-    }
 
     await base44.asServiceRole.entities.EmailLog.create({
       recipient_email: email,

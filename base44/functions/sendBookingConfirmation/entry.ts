@@ -51,11 +51,11 @@ Deno.serve(async (req) => {
 </body>
 </html>`;
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
+    await base44.asServiceRole.functions.invoke('sendGmail', {
       to: email,
       subject: `Your Inner Circle Call is Confirmed — ${slot_date}`,
+      html: body,
       from_name: 'Kinetiqo',
-      body
     });
 
     console.log(`Booking confirmation sent to ${email} for ${slot_date} ${slot_time}`);
