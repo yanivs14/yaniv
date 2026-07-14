@@ -1057,6 +1057,7 @@ function NewsletterTab() {
 
 // ---- SETTINGS TAB ----
 function SettingsTab() {
+  const { content, update } = useSiteContent();
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newEmail, setNewEmail] = useState("");
@@ -1099,6 +1100,18 @@ function SettingsTab() {
 
   return (
     <div>
+      <div className="flex items-center justify-between bg-[#111] border border-[#2a2a2a] rounded-xl px-4 py-3 mb-6">
+        <div>
+          <p className="text-sm text-off-white font-body font-semibold">Body Age Quiz button</p>
+          <p className="text-xs text-white-muted font-body">Show the quiz button at the bottom of the page</p>
+        </div>
+        <button
+          onClick={() => update("finalCta", "showQuizButton", content?.finalCta?.showQuizButton === false ? true : false)}
+          className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${content?.finalCta?.showQuizButton === false ? "bg-[#2a2a2a]" : "bg-orange-red"}`}
+        >
+          <span className={`absolute top-0.5 w-5 h-5 bg-off-white rounded-full transition-all ${content?.finalCta?.showQuizButton === false ? "left-0.5" : "left-[22px]"}`} />
+        </button>
+      </div>
       <p className="text-sm text-off-white font-body font-semibold mb-1">Lead notification emails</p>
       <p className="text-xs text-white-muted font-body mb-4">Every new lead will be sent to these emails</p>
       <div className="space-y-2 mb-4">

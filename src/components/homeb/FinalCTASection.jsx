@@ -39,6 +39,7 @@ export default function FinalCTASection() {
               >
                 {c.ctaPrimary || "Master Your Body Today"}
               </button>
+              {c.showQuizButton !== false && (
               <button
                 onClick={() => setQuizOpen(true)}
                 data-cta-id="final_cta_body_age_quiz"
@@ -46,6 +47,7 @@ export default function FinalCTASection() {
               >
                 {c.ctaSecondary || "Take the Body Age Quiz"}
               </button>
+              )}
             </div>
 
             <p className="mt-5 font-body text-xs text-white-muted">{c.footnote}</p>

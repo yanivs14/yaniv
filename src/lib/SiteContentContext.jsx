@@ -123,6 +123,7 @@ const DEFAULT_CONTENT = {
     innerCircleFootnote: "Starts with a private consultation.",
   },
   finalCta: {
+    showQuizButton: true,
     eyebrow: "The only question",
     headline1: "Are you ready",
     headline2: "to actually",
