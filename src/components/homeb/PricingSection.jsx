@@ -217,9 +217,9 @@ export default function PricingSection() {
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
             {c.annualSavings &&
-            <span className="absolute top-4 right-4 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
+            <span className="absolute top-4 right-4 bg-dark-bg/40 text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
             }
-            <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-4">Annual Membership</p>
+            <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-4 pr-16">Annual Membership</p>
             <div className="min-h-[80px]">
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
@@ -357,9 +357,9 @@ export default function PricingSection() {
             <div className="flex-shrink-0 w-[75vw] snap-center bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
               {c.annualSavings &&
-              <span className="absolute top-3 right-3 bg-dark-bg text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
+              <span className="absolute top-3 right-3 bg-dark-bg/40 text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
               }
-              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-2">Annual Membership</p>
+              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-2 pr-14">Annual Membership</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
