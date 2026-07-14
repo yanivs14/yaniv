@@ -101,27 +101,53 @@ function SocialEditor() {
   return (
     <div>
       <p className="text-xs text-white-muted mb-4 font-body">Manage social media links — shown in header and footer</p>
-      {links.map((l, i) => {
-        const Icon = SOCIAL_ICON_MAP[l.icon] || Instagram;
-        return (
-          <div key={i} className="mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111]">
-            <div className="flex items-center gap-2 mb-2">
-              <Icon className="w-4 h-4 text-orange-red flex-shrink-0" />
-              <input value={l.platform} onChange={e => updateLink(i, "platform", e.target.value)} placeholder="Platform name"
-                className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-              <button onClick={() => removeLink(i)} className="text-white-muted hover:text-red-400 transition-colors p-1">
-                <Trash2 className="w-4 h-4" />
-              </button>
+      <DragDropContext onDragEnd={(result) => {
+        if (!result.destination || result.destination.index === result.source.index) return;
+        const reordered = [...links];
+        const [moved] = reordered.splice(result.source.index, 1);
+        reordered.splice(result.destination.index, 0, moved);
+        update("social", "links", reordered);
+      }}>
+        <Droppable droppableId="social-links">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              {links.map((l, i) => {
+                const Icon = SOCIAL_ICON_MAP[l.icon] || Instagram;
+                return (
+                  <Draggable key={`social-${i}`} draggableId={`social-${i}`} index={i}>
+                    {(prov, snapshot) => (
+                      <div
+                        ref={prov.innerRef}
+                        {...prov.draggableProps}
+                        className={`mb-3 border border-[#2a2a2a] rounded-xl p-3 bg-[#111] ${snapshot.isDragging ? "opacity-80 shadow-lg border-orange-red/40" : ""}`}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span {...prov.dragHandleProps} className="cursor-grab active:cursor-grabbing text-white-dim hover:text-orange-red transition-colors flex-shrink-0">
+                            <GripVertical className="w-4 h-4" />
+                          </span>
+                          <Icon className="w-4 h-4 text-orange-red flex-shrink-0" />
+                          <input value={l.platform} onChange={e => updateLink(i, "platform", e.target.value)} placeholder="Platform name"
+                            className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+                          <button onClick={() => removeLink(i)} className="text-white-muted hover:text-red-400 transition-colors p-1">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <input value={l.url} onChange={e => updateLink(i, "url", e.target.value)} placeholder="https://..."
+                          className="w-full mb-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+                        <select value={l.icon} onChange={e => updateLink(i, "icon", e.target.value)}
+                          className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
+                          {SOCIAL_ICON_OPTIONS.map(opt => <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>)}
+                        </select>
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
             </div>
-            <input value={l.url} onChange={e => updateLink(i, "url", e.target.value)} placeholder="https://..."
-              className="w-full mb-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-            <select value={l.icon} onChange={e => updateLink(i, "icon", e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-1.5 text-sm text-off-white font-body focus:outline-none focus:border-orange-red">
-              {SOCIAL_ICON_OPTIONS.map(opt => <option key={opt} value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>)}
-            </select>
-          </div>
-        );
-      })}
+          )}
+        </Droppable>
+      </DragDropContext>
       <button onClick={addLink}
         className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
         <Plus className="w-4 h-4" /> Add social link
