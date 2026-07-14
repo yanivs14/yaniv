@@ -256,9 +256,9 @@ export default function PricingSection() {
             className="bg-dark-bg border border-gold rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0">
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">{c.innerCircleBadge || "By Application Only"}</span>
-            <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">{c.innerCircleTitle || "Inner Circle"}</p>
+            <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">{c.innerCircleSubtitle || "Private Coaching"}</p>
             <div className="min-h-[80px]">
-              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleTitle || "Inner Circle"}</p>
               {c.innerCircleTagline &&
               <p className="font-body text-xs text-gold font-semibold mb-1">{c.innerCircleTagline}</p>
               }
@@ -386,8 +386,8 @@ export default function PricingSection() {
             {/* Inner Circle mobile */}
             <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "By Application Only"}</span>
-              <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3 mt-2">{c.innerCircleTitle || "Inner Circle"}</p>
-              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3 mt-2">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleTitle || "Inner Circle"}</p>
               {c.innerCircleTagline &&
               <p className="font-body text-[11px] text-gold font-semibold mb-3">{c.innerCircleTagline}</p>
               }
