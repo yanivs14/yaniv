@@ -24,11 +24,8 @@ export default function InnerCircleQualification({ open, onClose, onQualify }) {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center">
-              <div className="w-12 h-12 rounded-full bg-gold/15 border border-gold/30 flex items-center justify-center mx-auto mb-5">
-                <span className="font-heading text-xl font-bold text-gold">$</span>
-              </div>
               <p className="font-body text-sm text-white-muted leading-relaxed mb-6">
-                Inner Circle requires a minimum three-month commitment and represents a four-figure investment. Are you comfortable investing at this level?
+                This is a premium 3-month coaching commitment requiring a four-figure investment. Are you ready to work directly with Roye?
               </p>
               <div className="flex flex-col gap-3">
                 <button
