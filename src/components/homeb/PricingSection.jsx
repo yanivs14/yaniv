@@ -167,14 +167,17 @@ export default function PricingSection() {
             className="bg-dark-bg border border-dark-border rounded-2xl p-8 pb-10 flex flex-col">
             
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">Monthly Membership</p>
-            <div className="flex items-baseline gap-1.5 mb-1">
-              <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
-              <span className="font-body text-sm text-white-muted">/ month</span>
+            <div className="min-h-[80px]">
+              <div className="flex items-baseline gap-1.5 mb-1">
+                <span className="font-heading text-5xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
+                <span className="font-body text-sm text-white-muted">/ month</span>
+              </div>
             </div>
-            {c.monthlyDescription &&
-            <p className="font-body text-sm text-white-muted mb-6 mt-2 leading-relaxed">{c.monthlyDescription}</p>
-            }
-            {!c.monthlyDescription && <div className="mb-6" />}
+            <div className="min-h-[60px] mb-6 mt-2">
+              {c.monthlyDescription &&
+              <p className="font-body text-sm text-white-muted leading-relaxed">{c.monthlyDescription}</p>
+              }
+            </div>
             <p className="font-body text-[11px] font-bold uppercase tracking-widest mb-3 text-[hsl(var(--primary-foreground))]">WHAT'S INCLUDED</p>
             <ul className="space-y-3 flex-1">
               {monthlyFeatures.map((f, i) =>
@@ -209,16 +212,20 @@ export default function PricingSection() {
             <span className="absolute top-4 right-4 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
             }
             <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-4">Annual Membership</p>
-            <div className="flex items-baseline gap-1.5 mb-1">
-              <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
-              <span className="font-body text-sm text-dark-bg/70">/ month</span>
+            <div className="min-h-[80px]">
+              <div className="flex items-baseline gap-1.5 mb-1">
+                <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
+                <span className="font-body text-sm text-dark-bg/70">/ month</span>
+              </div>
+              {c.annualSavings &&
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
+              }
             </div>
-            {c.annualSavings &&
-            <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
-            }
-            {c.annualDescription &&
-            <p className="font-body text-sm text-dark-bg/80 mb-6 mt-2 leading-relaxed">{c.annualDescription}</p>
-            }
+            <div className="min-h-[60px] mb-6 mt-2">
+              {c.annualDescription &&
+              <p className="font-body text-sm text-dark-bg/80 leading-relaxed">{c.annualDescription}</p>
+              }
+            </div>
             <p className="font-body text-[11px] font-bold text-dark-bg uppercase tracking-widest mb-3">What's Included</p>
             <ul className="space-y-3 flex-1">
               {annualFeatures.map((f, i) =>
@@ -250,13 +257,17 @@ export default function PricingSection() {
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">{c.innerCircleBadge || "By Application Only"}</span>
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">{c.innerCircleTitle || "Inner Circle"}</p>
-            <p className="font-body text-base font-bold text-gold uppercase tracking-widest mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
-            {c.innerCircleTagline &&
-            <p className="font-body text-xs text-gold font-semibold mb-4">{c.innerCircleTagline}</p>
-            }
-            {c.innerCircleDescription &&
-            <p className="font-body text-sm text-white-muted mb-6 mt-2 leading-relaxed">{c.innerCircleDescription}</p>
-            }
+            <div className="min-h-[80px]">
+              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              {c.innerCircleTagline &&
+              <p className="font-body text-xs text-gold font-semibold mb-1">{c.innerCircleTagline}</p>
+              }
+            </div>
+            <div className="min-h-[60px] mb-6 mt-2">
+              {c.innerCircleDescription &&
+              <p className="font-body text-sm text-white-muted leading-relaxed">{c.innerCircleDescription}</p>
+              }
+            </div>
             <p className="font-body text-[11px] font-bold text-gold uppercase tracking-widest mb-3">What's Included</p>
             <ul className="space-y-3 flex-1">
               {innerCircleFeatures.map((f, i) =>
@@ -376,7 +387,7 @@ export default function PricingSection() {
             <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "By Application Only"}</span>
               <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3 mt-2">{c.innerCircleTitle || "Inner Circle"}</p>
-              <p className="font-body text-sm font-bold text-gold uppercase tracking-widest mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
+              <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleSubtitle || "Private Coaching"}</p>
               {c.innerCircleTagline &&
               <p className="font-body text-[11px] text-gold font-semibold mb-3">{c.innerCircleTagline}</p>
               }
