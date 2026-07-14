@@ -13,6 +13,7 @@ export default function HeroSection() {
   const c = content.hero;
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 1024);
   const heroRef = useSectionTracking("hero");
 
   const openQuiz = () => {
@@ -24,6 +25,12 @@ export default function HeroSection() {
     const handler = () => setQuizOpen(true);
     window.addEventListener("open-quiz", handler);
     return () => window.removeEventListener("open-quiz", handler);
+  }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   const handleVideoUpload = async (e) => {
@@ -92,7 +99,7 @@ export default function HeroSection() {
               </div>
 
               <div className="lg:hidden rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface mt-8">
-                {c.videoUrl ?
+                {c.videoUrl && isMobile ?
                 <video
                   src={c.videoUrl}
                   poster={c.videoPoster}
@@ -120,7 +127,7 @@ export default function HeroSection() {
               className="relative hidden lg:block">
               
               <div className="rounded-2xl overflow-hidden aspect-[3/4] bg-dark-surface relative group">
-                {c.videoUrl ?
+                {c.videoUrl && !isMobile ?
                 <video
                   src={c.videoUrl}
                   poster={c.videoPoster}
