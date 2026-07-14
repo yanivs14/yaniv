@@ -11,7 +11,7 @@ export default function DegradingSection() {
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left */}
-          <div>
+          <div className="hidden lg:block">
             <div className="px-6 lg:px-10">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
@@ -71,6 +71,9 @@ export default function DegradingSection() {
                 </motion.li>
               ))}
             </ul>
+            <div className="mt-10 lg:hidden overflow-hidden">
+              <img src={c.imageUrl} alt="Person stretching" className="w-full h-auto rounded-2xl" loading="lazy" />
+            </div>
             <div className="mt-14 grid grid-cols-3 gap-6">
               {c.stats.map((stat, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}>
