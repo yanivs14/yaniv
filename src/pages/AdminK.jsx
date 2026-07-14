@@ -409,6 +409,8 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
       <p className="text-xs text-white-muted font-body font-semibold mt-6 mb-3">Inner Circle Package</p>
       {f("innerCircleBadge", "Badge (e.g. Application Only)")}
       {f("innerCircleTitle", "Title (e.g. Tailored to You)")}
+      {f("innerCircleSubtitle", "Subtitle (e.g. Private Coaching)")}
+      {f("innerCircleTagline", "Tagline (e.g. Premium 3-month commitment)")}
       <Field label="Description" value={data.innerCircleDescription} onChange={v => update("pricing", "innerCircleDescription", v)} multiline />
       {f("innerCircleCta", "CTA Button Text")}
       {f("innerCircleFootnote", "Footnote (below CTA)")}

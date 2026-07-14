@@ -106,7 +106,10 @@ const DEFAULT_CONTENT = {
       "Annual member perks & content",
     ],
     ctaAnnual: "Begin Annual",
+    innerCircleBadge: "By Application Only",
     innerCircleTitle: "TAILORED TO YOU",
+    innerCircleSubtitle: "Private Coaching",
+    innerCircleTagline: "Premium 3-month commitment",
     innerCircleDescription: "A private, personalized coaching experience for a select number of members ready for direct access to Roye, deeper accountability, and a premium three-month commitment.",
     innerCircleFeatures: [
       "Everything in Monthly/Annual",
