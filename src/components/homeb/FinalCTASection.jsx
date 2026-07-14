@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
-import Quiz from "@/components/landing/Quiz";
+import BodyAgeQuiz from "@/components/homeb/BodyAgeQuiz";
 import { trackCtaClicked } from "@/lib/analytics";
 
 export default function FinalCTASection() {
@@ -39,6 +39,13 @@ export default function FinalCTASection() {
               >
                 {c.ctaPrimary || "Master Your Body Today"}
               </button>
+              <button
+                onClick={() => setQuizOpen(true)}
+                data-cta-id="final_cta_body_age_quiz"
+                className="inline-flex items-center justify-center gap-2 border border-orange-red text-orange-red font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red/10 transition-colors"
+              >
+                {c.ctaSecondary || "Take the Body Age Quiz"}
+              </button>
             </div>
 
             <p className="mt-5 font-body text-xs text-white-muted">{c.footnote}</p>
@@ -48,7 +55,7 @@ export default function FinalCTASection() {
       </section>
 
       <AnimatePresence>
-        {quizOpen && <Quiz onClose={() => setQuizOpen(false)} />}
+        {quizOpen && <BodyAgeQuiz onClose={() => setQuizOpen(false)} />}
       </AnimatePresence>
     </>
   );
