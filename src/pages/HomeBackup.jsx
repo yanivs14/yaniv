@@ -47,6 +47,8 @@ export default function HomeBackup() {
 
   if (loading || !content) return null;
 
+  const ogImage = "https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png";
+
   const structuredData = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -64,24 +66,44 @@ export default function HomeBackup() {
     }
   });
 
+  const faqData = content?.faq?.items?.filter(q => q.question && q.answer).map(q => ({
+    "@type": "Question",
+    "name": q.question,
+    "acceptedAnswer": { "@type": "Answer", "text": q.answer }
+  })) || [];
+
+  const faqStructuredData = faqData.length > 0 ? JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqData
+  }) : null;
+
   return (
     <>
     <Helmet>
       <title>The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength</title>
       <meta name="description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed. Join The Movement by Roye Gold." />
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <meta name="author" content="Roye Gold" />
       <link rel="canonical" href="https://royegold.com/" />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="The Movement by Roye Gold" />
       <meta property="og:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
       <meta property="og:description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed." />
       <meta property="og:url" content="https://royegold.com/" />
-      <meta property="og:image" content="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png" />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="The Movement by Roye Gold — Daily Movement Practice" />
+      <meta property="og:locale" content="en_US" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="The Movement by Roye Gold | Daily Movement Practice for Mobility & Strength" />
       <meta name="twitter:description" content="A guided daily movement practice to rebuild mobility, strength, and longevity. Personalized adaptive training — no equipment needed." />
-      <meta name="twitter:image" content="https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png" />
+      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content="The Movement by Roye Gold — Daily Movement Practice" />
       <script type="application/ld+json">{structuredData}</script>
+      {faqStructuredData && <script type="application/ld+json">{faqStructuredData}</script>}
     </Helmet>
     <div className="bg-dark-bg min-h-screen">
       <Navbar />
