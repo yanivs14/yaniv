@@ -94,34 +94,37 @@ export default function PricingSection() {
   "Programs for mobility, strength, control, and longevity",
   "New sessions, challenges, and community access"];
 
-  const MONTHLY_BOLD = ["240+ guided sessions", "Programs", "New sessions"];
-  const renderMonthlyFeature = (text, index) => {
-    const bold = MONTHLY_BOLD[index];
-    if (!bold) return text;
-    const idx = text.toLowerCase().indexOf(bold.toLowerCase());
-    if (idx === -1) return text;
-    return (
-      <>
-        {text.slice(0, idx)}
-        <strong className="font-bold text-off-white">{text.slice(idx, idx + bold.length)}</strong>
-        {text.slice(idx + bold.length)}
-      </>
-    );
-  };
-
-
   const annualFeatures = c.annualFeatures?.length ? c.annualFeatures : [
-  "Everything included in Monthly",
-  "Exclusive ongoing content for annual members",
-  "Weekly live call with The Movement team"];
+  "Everything in Monthly",
+  "Weekly live community calls & Q&As",
+  "Exclusive ongoing content"];
 
 
   const innerCircleFeatures = c.innerCircleFeatures?.length ? c.innerCircleFeatures : [
   "Everything in Annual, plus:",
-  "Personal assessment and 1:1 strategy with Roye",
-  "Weekly live coaching and direct feedback",
-  "Progress reviews and plan adjustments",
-  "Private community of committed members"];
+  "Custom 1:1 movement roadmap",
+  "Weekly live personal coaching",
+  "Ongoing progress reviews",
+  "Private community"];
+
+  const FEATURE_BOLD = {
+    monthly: ["240+ guided sessions", "Programs", "New sessions"],
+    annual: ["Everything in Monthly", "Weekly live community calls & Q&As", "Exclusive ongoing content"],
+    inner: ["Everything in Annual, plus:", "Custom 1:1 movement roadmap", "Weekly live personal coaching", "Ongoing progress reviews", "Private community"]
+  };
+
+  const renderFeatureBold = (text, boldPhrase, boldClassName) => {
+    if (!boldPhrase) return text;
+    const idx = text.toLowerCase().indexOf(boldPhrase.toLowerCase());
+    if (idx === -1) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <strong className={boldClassName}>{text.slice(idx, idx + boldPhrase.length)}</strong>
+        {text.slice(idx + boldPhrase.length)}
+      </>
+    );
+  };
 
 
   const sectionTitle = c.sectionTitle || "Choose Your Membership";
@@ -177,7 +180,7 @@ export default function PricingSection() {
               {monthlyFeatures.map((f, i) =>
               <li key={i} className="flex items-start gap-2.5">
                   <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-white-muted">{renderMonthlyFeature(f, i)}</span>
+                  <span className="font-body text-sm text-white-muted">{renderFeatureBold(f, FEATURE_BOLD.monthly[i], "font-bold text-off-white")}</span>
                 </li>
               )}
             </ul>
@@ -202,13 +205,16 @@ export default function PricingSection() {
             className="bg-orange-red rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0">
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+            {c.annualSavings &&
+            <span className="absolute top-4 right-4 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
+            }
             <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-4">Annual Membership</p>
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="font-heading text-5xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
               <span className="font-body text-sm text-dark-bg/70">/ month</span>
             </div>
             {c.annualSavings &&
-            <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"} · {c.annualSavings}</p>
+            <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
             }
             {c.annualDescription &&
             <p className="font-body text-sm text-dark-bg/80 mb-6 mt-2 leading-relaxed">{c.annualDescription}</p>
@@ -218,7 +224,7 @@ export default function PricingSection() {
               {annualFeatures.map((f, i) =>
               <li key={i} className="flex items-start gap-2.5">
                   <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-dark-bg/80">{f}</span>
+                  <span className="font-body text-sm text-dark-bg/80">{renderFeatureBold(f, FEATURE_BOLD.annual[i], "font-bold text-dark-bg")}</span>
                 </li>
               )}
             </ul>
@@ -256,7 +262,7 @@ export default function PricingSection() {
               {innerCircleFeatures.map((f, i) =>
               <li key={i} className="flex items-start gap-2.5">
                   <Check className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-white-muted">{f}</span>
+                  <span className="font-body text-sm text-white-muted">{renderFeatureBold(f, FEATURE_BOLD.inner[i], "font-bold text-off-white")}</span>
                 </li>
               )}
             </ul>
@@ -312,7 +318,7 @@ export default function PricingSection() {
                 {monthlyFeatures.map((f, i) =>
                 <li key={i} className="flex items-start gap-2.5">
                     <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-white-muted">{f}</span>
+                    <span className="font-body text-sm text-white-muted">{renderFeatureBold(f, FEATURE_BOLD.monthly[i], "font-bold text-off-white")}</span>
                   </li>
                 )}
               </ul>
@@ -331,13 +337,16 @@ export default function PricingSection() {
             {/* Annual mobile */}
             <div className="flex-shrink-0 w-[75vw] snap-start bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+              {c.annualSavings &&
+              <span className="absolute top-3 right-3 bg-dark-bg text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
+              }
               <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-2">Annual Membership</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
               </div>
               {c.annualSavings &&
-              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"} · {c.annualSavings}</p>
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
               }
               {c.annualDescription &&
               <p className="font-body text-xs text-dark-bg/80 mb-3 mt-1 leading-relaxed">{c.annualDescription}</p>
@@ -347,7 +356,7 @@ export default function PricingSection() {
                 {annualFeatures.map((f, i) =>
                 <li key={i} className="flex items-start gap-2.5">
                     <Check className="w-4 h-4 text-dark-bg flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-dark-bg/80">{f}</span>
+                    <span className="font-body text-sm text-dark-bg/80">{renderFeatureBold(f, FEATURE_BOLD.annual[i], "font-bold text-dark-bg")}</span>
                   </li>
                 )}
               </ul>
@@ -379,7 +388,7 @@ export default function PricingSection() {
                 {innerCircleFeatures.map((f, i) =>
                 <li key={i} className="flex items-start gap-2.5">
                     <Check className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-white-muted">{f}</span>
+                    <span className="font-body text-sm text-white-muted">{renderFeatureBold(f, FEATURE_BOLD.inner[i], "font-bold text-off-white")}</span>
                   </li>
                 )}
               </ul>
