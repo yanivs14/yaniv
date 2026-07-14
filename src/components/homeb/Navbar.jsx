@@ -18,6 +18,11 @@ export default function Navbar() {
       const rect = pricingEl.getBoundingClientRect();
       setInPricing(rect.top < window.innerHeight && rect.bottom > 0);
     }
+    const finalCtaEl = document.getElementById("final-cta");
+    if (finalCtaEl) {
+      const rect = finalCtaEl.getBoundingClientRect();
+      setInPricing(rect.top < window.innerHeight && rect.bottom > 0);
+    }
       if (window.scrollY < 200) {
         setActiveSection("program");
         return;
