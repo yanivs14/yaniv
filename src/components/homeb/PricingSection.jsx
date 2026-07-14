@@ -41,17 +41,26 @@ export default function PricingSection() {
     if (!container || container.children.length === 0) return;
     const idx = MOBILE_PLAN_KEYS.indexOf("annual");
     if (idx === -1) return;
-    const cardWidth = container.children[0].offsetWidth + 20;
-    container.scrollTo({ left: idx * cardWidth });
+    container.children[idx].scrollIntoView({ inline: "center", block: "nearest" });
   }, []);
 
   const handleMobileScroll = () => {
     const container = mobileSliderRef.current;
     if (!container || container.children.length === 0) return;
-    const cardWidth = container.children[0].offsetWidth + 20;
-    const idx = Math.max(0, Math.min(2, Math.round(container.scrollLeft / cardWidth)));
-    if (MOBILE_PLAN_KEYS[idx] !== mobilePlan) {
-      setMobilePlan(MOBILE_PLAN_KEYS[idx]);
+    const center = container.scrollLeft + container.offsetWidth / 2;
+    let closestIdx = 0;
+    let closestDist = Infinity;
+    for (let i = 0; i < container.children.length; i++) {
+      const child = container.children[i];
+      const childCenter = child.offsetLeft + child.offsetWidth / 2;
+      const dist = Math.abs(childCenter - center);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIdx = i;
+      }
+    }
+    if (MOBILE_PLAN_KEYS[closestIdx] !== mobilePlan) {
+      setMobilePlan(MOBILE_PLAN_KEYS[closestIdx]);
     }
   };
 
@@ -61,8 +70,7 @@ export default function PricingSection() {
     if (!container || container.children.length === 0) return;
     const idx = MOBILE_PLAN_KEYS.indexOf(plan);
     if (idx === -1) return;
-    const cardWidth = container.children[0].offsetWidth + 20;
-    container.scrollTo({ left: idx * cardWidth, behavior: "smooth" });
+    container.children[idx].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   };
 
   useEffect(() => {
@@ -312,10 +320,10 @@ export default function PricingSection() {
           <div
             ref={mobileSliderRef}
             onScroll={handleMobileScroll}
-            className="-mx-6 px-6 flex gap-5 overflow-x-auto snap-x snap-mandatory pt-6 pb-4 no-scrollbar scroll-px-6">
+            className="-mx-6 px-[12.5vw] flex gap-5 overflow-x-auto snap-x snap-mandatory pt-3 pb-4 no-scrollbar">
             
             {/* Monthly mobile */}
-            <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-dark-border rounded-2xl p-5 pb-6 flex flex-col">
+            <div className="flex-shrink-0 w-[75vw] snap-center bg-dark-bg border border-dark-border rounded-2xl p-5 pb-6 flex flex-col">
               <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3">Monthly Membership</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-off-white">{c.monthlyPrice || "$35"}</span>
@@ -346,7 +354,7 @@ export default function PricingSection() {
             </div>
 
             {/* Annual mobile */}
-            <div className="flex-shrink-0 w-[75vw] snap-start bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
+            <div className="flex-shrink-0 w-[75vw] snap-center bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
               {c.annualSavings &&
               <span className="absolute top-3 right-3 bg-dark-bg text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
@@ -384,7 +392,7 @@ export default function PricingSection() {
             </div>
 
             {/* Inner Circle mobile */}
-            <div className="flex-shrink-0 w-[75vw] snap-start bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
+            <div className="flex-shrink-0 w-[75vw] snap-center bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "By Application Only"}</span>
               <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3 mt-2">{c.innerCircleSubtitle || "Private Coaching"}</p>
               <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleTitle || "Inner Circle"}</p>
