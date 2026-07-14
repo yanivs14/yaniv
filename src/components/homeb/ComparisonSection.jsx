@@ -34,6 +34,9 @@ export default function ComparisonSection() {
               return <>{parts.join(" ")} <span className="text-orange-red">{last}</span></>;
             })()}
           </h2>
+          {c.subtitle && (
+            <p className="mt-5 font-body text-base lg:text-lg text-white-muted max-w-2xl mx-auto leading-relaxed">{c.subtitle}</p>
+          )}
         </motion.div>
 
         {/* Desktop table */}

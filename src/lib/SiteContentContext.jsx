@@ -222,6 +222,7 @@ const DEFAULT_CONTENT = {
   homebComparison: {
     eyebrow: "Comparison Chart",
     headline: "Everyone wants structure, a routine, and fast results. Here's who actually gives you all three.",
+    subtitle: "",
     columns: ["The Movement", "Random YouTube", "Traditional Gym"],
     rows: [
       { feature: "Time to start", movement: "10 min, exact exercise ready for you", youtube: "Endless searching", gym: "Drive, park, wait for equipment" },

@@ -118,6 +118,7 @@ export default function HomeBEditor({ section }) {
       <div>
         <Field label="Eyebrow" value={data.eyebrow} onChange={v => update("homebComparison", "eyebrow", v)} />
         <Field label="Headline" value={data.headline} onChange={v => update("homebComparison", "headline", v)} multiline />
+        <Field label="Subtitle" value={data.subtitle} onChange={v => update("homebComparison", "subtitle", v)} multiline />
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Column Names</p>
         {[0, 1, 2].map(i => (
           <input key={i} value={columns[i] || ""} onChange={e => { const a = [...columns]; a[i] = e.target.value; update("homebComparison", "columns", a); }}

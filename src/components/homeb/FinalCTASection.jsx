@@ -37,7 +37,7 @@ export default function FinalCTASection() {
                 data-cta-id="final_cta_pricing"
                 className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
               >
-                Master Your Body Today
+                {c.ctaPrimary || "Master Your Body Today"}
               </button>
             </div>
 
