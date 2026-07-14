@@ -94,6 +94,21 @@ export default function PricingSection() {
   "Programs for mobility, strength, control, and longevity",
   "New sessions, challenges, and community access"];
 
+  const MONTHLY_BOLD = ["240+ guided sessions", "Programs", "New sessions"];
+  const renderMonthlyFeature = (text, index) => {
+    const bold = MONTHLY_BOLD[index];
+    if (!bold) return text;
+    const idx = text.toLowerCase().indexOf(bold.toLowerCase());
+    if (idx === -1) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <strong className="font-bold text-off-white">{text.slice(idx, idx + bold.length)}</strong>
+        {text.slice(idx + bold.length)}
+      </>
+    );
+  };
+
 
   const annualFeatures = c.annualFeatures?.length ? c.annualFeatures : [
   "Everything included in Monthly",
@@ -162,7 +177,7 @@ export default function PricingSection() {
               {monthlyFeatures.map((f, i) =>
               <li key={i} className="flex items-start gap-2.5">
                   <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-white-muted">{f}</span>
+                  <span className="font-body text-sm text-white-muted">{renderMonthlyFeature(f, i)}</span>
                 </li>
               )}
             </ul>
