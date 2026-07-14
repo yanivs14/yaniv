@@ -41,7 +41,8 @@ export default function PricingSection() {
     if (!container || container.children.length === 0) return;
     const idx = MOBILE_PLAN_KEYS.indexOf("annual");
     if (idx === -1) return;
-    container.children[idx].scrollIntoView({ inline: "center", block: "nearest" });
+    const child = container.children[idx];
+    container.scrollLeft = child.offsetLeft - (container.offsetWidth - child.offsetWidth) / 2;
   }, []);
 
   const handleMobileScroll = () => {
