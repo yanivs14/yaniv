@@ -32,7 +32,7 @@ export default function HandstandPreOrder({ config }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-dark-bg overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
       <PreOrderHero config={config} onCheckout={handleCheckout} loading={loading} />
       <PreOrderCurriculum />
       <PreOrderClosing config={config} onCheckout={handleCheckout} loading={loading} />

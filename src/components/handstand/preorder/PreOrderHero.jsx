@@ -68,15 +68,15 @@ function CountdownTimer({ targetDate }) {
             transition={{ duration: 0.4, delay: i * 0.08 }}
             className="relative"
           >
-            <div className="absolute -inset-0.5 bg-orange-red/20 rounded-2xl blur-sm" />
-            <div className="relative bg-gradient-to-b from-dark-surface to-dark-bg border border-orange-red/25 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-center min-w-[64px] sm:min-w-[88px]">
-              <div className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-orange-red tabular-nums leading-none">
+            <div className="absolute -inset-0.5 bg-teal-400/20 rounded-2xl blur-sm" />
+            <div className="relative bg-white border border-gray-200 rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-center min-w-[64px] sm:min-w-[88px] shadow-sm">
+              <div className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-teal-600 tabular-nums leading-none">
                 {String(u.value).padStart(2, "0")}
               </div>
-              <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-white-muted mt-1.5">{u.label}</div>
+              <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-gray-500 mt-1.5">{u.label}</div>
             </div>
           </motion.div>
-          {i < units.length - 1 && <span className="font-heading text-2xl sm:text-3xl text-white-dim/50 -mx-1">:</span>}
+          {i < units.length - 1 && <span className="font-heading text-2xl sm:text-3xl text-gray-300 -mx-1">:</span>}
         </React.Fragment>
       ))}
     </div>
@@ -86,31 +86,31 @@ function CountdownTimer({ targetDate }) {
 function PricingCard({ config, onCheckout, loading }) {
   return (
     <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-b from-orange-red/50 via-orange-red/15 to-transparent rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
-      <div className="relative bg-dark-surface/90 backdrop-blur-xl border border-orange-red/30 rounded-3xl p-7 sm:p-8 text-center">
-        <p className="font-heading text-base sm:text-lg font-bold text-off-white uppercase tracking-tight mb-1">
+      <div className="absolute -inset-0.5 bg-gradient-to-b from-teal-400/40 via-teal-400/10 to-transparent rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
+      <div className="relative bg-white border border-teal-400/30 rounded-3xl p-7 sm:p-8 text-center shadow-lg">
+        <p className="font-heading text-base sm:text-lg font-bold text-gray-900 uppercase tracking-tight mb-1">
           Lock In Our Lowest Price
         </p>
-        <p className="font-body text-xs text-white-muted mb-5">
+        <p className="font-body text-xs text-gray-500 mb-5">
           Pre-order now. Be first in line when we go live.
         </p>
         <div className="flex items-baseline justify-center gap-3 mb-4">
-          <span className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-off-white leading-none">${config.price}</span>
-          <span className="font-heading text-xl sm:text-2xl text-white-dim line-through">${config.originalPrice}</span>
+          <span className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-none">${config.price}</span>
+          <span className="font-heading text-xl sm:text-2xl text-gray-300 line-through">${config.originalPrice}</span>
         </div>
         <span className="inline-block font-body text-xs font-bold text-dark-bg bg-orange-red px-4 py-1.5 rounded-full mb-5">{config.discountText}</span>
         <button
           onClick={onCheckout}
           disabled={loading}
-          className="group/btn flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm sm:text-base font-bold py-4 rounded-2xl hover:bg-orange-red-hover transition-all disabled:opacity-60 shadow-[0_0_40px_-8px_rgba(0,255,247,0.6)]"
+          className="group/btn flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm sm:text-base font-bold py-4 rounded-2xl hover:bg-orange-red-hover transition-all disabled:opacity-60 shadow-[0_4px_20px_-4px_rgba(0,255,247,0.5)]"
         >
           {loading ? "Loading..." : <>Pre-order now <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" /></>}
         </button>
-        <p className="font-body text-[11px] text-white-muted mt-4">Pay today. Your access link arrives the moment we go live.</p>
+        <p className="font-body text-[11px] text-gray-500 mt-4">Pay today. Your access link arrives the moment we go live.</p>
         <div className="flex items-center justify-center gap-4 mt-3 flex-wrap">
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><Lock className="w-3 h-3 text-orange-red/60" /> Secure</span>
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><InfinityIcon className="w-3 h-3 text-orange-red/60" /> One-time</span>
-          <span className="flex items-center gap-1 font-body text-[10px] text-white-muted"><Shield className="w-3 h-3 text-orange-red/60" /> Lifetime</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-gray-500"><Lock className="w-3 h-3 text-teal-500" /> Secure</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-gray-500"><InfinityIcon className="w-3 h-3 text-teal-500" /> One-time</span>
+          <span className="flex items-center gap-1 font-body text-[10px] text-gray-500"><Shield className="w-3 h-3 text-teal-500" /> Lifetime</span>
         </div>
       </div>
     </div>
@@ -121,15 +121,15 @@ export default function PreOrderHero({ config, onCheckout, loading }) {
   return (
     <>
       <Marquee />
-      <section className="relative min-h-[92vh] flex items-center justify-center px-6 py-16 lg:py-24 overflow-hidden">
+      <section className="relative min-h-[92vh] flex items-center justify-center px-6 py-16 lg:py-24 overflow-hidden bg-gray-50">
         {/* Background */}
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/70 via-dark-bg/80 to-dark-bg" />
+          <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/85 to-white" />
         </div>
         {/* Glow orbs */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-orange-red/8 rounded-full blur-[140px]" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-teal-400/10 rounded-full blur-[140px]" />
         </div>
 
         <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center gap-7">
@@ -141,18 +141,18 @@ export default function PreOrderHero({ config, onCheckout, loading }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] text-off-white uppercase tracking-tight"
+            className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] text-gray-900 uppercase tracking-tight"
           >
             Master Your<br />
             Handstand In<br />
-            <span className="text-orange-red">4 Stages</span>
+            <span className="text-teal-600">4 Stages</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-body text-base lg:text-lg text-off-white font-medium leading-relaxed max-w-xl"
+            className="font-body text-base lg:text-lg text-gray-600 font-medium leading-relaxed max-w-xl"
           >
             Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
           </motion.p>
