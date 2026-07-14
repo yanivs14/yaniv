@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
@@ -19,9 +19,25 @@ export default function SeeInsideSection() {
   const { content } = useSiteContent();
   const c = content.homebSeeInside || {};
   const [playing, setPlaying] = useState(false);
+  const iframeRef = useRef(null);
 
   const ytId = getYouTubeId(c.youtubeUrl);
-  const poster = c.imageUrl || `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+  const poster = c.imageUrl || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : "");
+
+  const handlePlay = () => {
+    setPlaying(true);
+    // The iframe is pre-loaded (without autoplay). We call playVideo() via
+    // postMessage so the play action happens within the user's tap gesture —
+    // this avoids the "double tap" issue on mobile where YouTube shows its
+    // own play button because the gesture expired during iframe loading.
+    const sendPlay = () => {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+        "*"
+      );
+    };
+    [100, 500, 1000, 2000].forEach((delay) => setTimeout(sendPlay, delay));
+  };
 
   return (
     <section className="bg-dark-bg py-12 lg:py-20" id="see-inside">
@@ -60,25 +76,29 @@ export default function SeeInsideSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="rounded-2xl overflow-hidden bg-dark-surface border border-dark-border aspect-video max-w-4xl mx-auto relative"
         >
-          {playing && ytId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`}
-              title="See how it works"
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              frameBorder="0"
-            />
-          ) : ytId ? (
-            <button onClick={() => setPlaying(true)} className="relative w-full h-full group block">
-              <img src={poster} alt="See inside" className="w-full h-full object-cover" />
-              <span className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
-              <span className="absolute inset-0 flex items-center justify-center">
-                <span className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
-                </span>
-              </span>
-            </button>
+          {ytId ? (
+            <div className="relative w-full h-full">
+              <iframe
+                ref={iframeRef}
+                src={`https://www.youtube.com/embed/${ytId}?enablejsapi=1&rel=0&modestbranding=1&playsinline=1&origin=${typeof window !== "undefined" ? window.location.origin : ""}`}
+                title="See how it works"
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                frameBorder="0"
+              />
+              {!playing && (
+                <button onClick={handlePlay} className="absolute inset-0 w-full h-full group block cursor-pointer">
+                  {poster && <img src={poster} alt="See inside" className="w-full h-full object-cover" />}
+                  <span className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+                    </span>
+                  </span>
+                </button>
+              )}
+            </div>
           ) : c.videoUrl ? (
             <video src={c.videoUrl} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
           ) : c.imageUrl ? (
