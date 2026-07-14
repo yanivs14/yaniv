@@ -39,7 +39,7 @@ export default function SeeInsideSection() {
               const accent = c.headlineAccent;
               if (accent && h.endsWith(accent)) {
                 const before = h.slice(0, h.length - accent.length);
-                return <>{before}<span className="text-orange-red">{accent}</span></>;
+                return <>{before.trim()}<br className="sm:hidden" /><span className="text-orange-red"> {accent}</span></>;
               }
               const parts = h.split(" ");
               const last = parts.pop();

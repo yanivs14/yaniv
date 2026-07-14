@@ -79,39 +79,37 @@ export default function ComparisonSection() {
         </div>
 
         {/* Mobile cards */}
-        <div className="lg:hidden space-y-4">
+        <div className="lg:hidden space-y-2.5">
           {rows.map((row, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
+              transition={{ duration: 0.3, delay: i * 0.04 }}
               className="rounded-xl border border-dark-border bg-dark-surface overflow-hidden"
             >
-              <div className="px-4 py-3 border-b border-dark-border">
-                <p className="font-heading text-base font-bold text-off-white uppercase tracking-wide">{row.feature}</p>
+              <div className="px-3.5 py-2 border-b border-dark-border">
+                <p className="font-heading text-sm font-bold text-off-white uppercase tracking-wide">{row.feature}</p>
               </div>
-              <div className="p-4 space-y-3">
-                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-orange-red/10 border border-orange-red/20">
-                  <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-body text-xs text-orange-red font-semibold uppercase tracking-wide mb-0.5">{columns[0]}</p>
-                    <p className="font-body text-sm text-off-white">{row.movement}</p>
+              <div className="flex items-center gap-2 px-3.5 py-2 bg-orange-red/10 border-b border-dark-border/50">
+                <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0" />
+                <span className="font-body text-xs text-orange-red font-bold uppercase tracking-wide flex-shrink-0">{columns[0]}</span>
+                <span className="font-body text-xs text-off-white truncate">{row.movement}</span>
+              </div>
+              <div className="grid grid-cols-2 divide-x divide-dark-border/50">
+                <div className="flex items-center gap-1.5 px-3 py-2">
+                  <X className="w-3 h-3 text-white-dim flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-body text-[10px] text-white-dim font-semibold uppercase tracking-wide leading-tight">{columns[1]}</p>
+                    <p className="font-body text-xs text-white-muted truncate">{row.youtube}</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5 p-2.5">
-                  <X className="w-4 h-4 text-white-dim flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-body text-xs text-white-dim font-semibold uppercase tracking-wide mb-0.5">{columns[1]}</p>
-                    <p className="font-body text-sm text-white-muted">{row.youtube}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2.5 p-2.5">
-                  <X className="w-4 h-4 text-white-dim flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-body text-xs text-white-dim font-semibold uppercase tracking-wide mb-0.5">{columns[2]}</p>
-                    <p className="font-body text-sm text-white-muted">{row.gym}</p>
+                <div className="flex items-center gap-1.5 px-3 py-2">
+                  <X className="w-3 h-3 text-white-dim flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-body text-[10px] text-white-dim font-semibold uppercase tracking-wide leading-tight">{columns[2]}</p>
+                    <p className="font-body text-xs text-white-muted truncate">{row.gym}</p>
                   </div>
                 </div>
               </div>
