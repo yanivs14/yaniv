@@ -18,7 +18,7 @@ export default function ComparisonSection() {
   const columns = c.columns || ["The Movement", "Random YouTube", "Traditional Gym"];
 
   return (
-    <section className="bg-dark-bg py-12 lg:py-20" id="comparison">
+    <section className="hidden md:block bg-dark-bg py-12 lg:py-20" id="comparison">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
