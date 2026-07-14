@@ -13,7 +13,7 @@ export default function ComparisonSection() {
     { feature: "Who's coaching you", movement: "Roye, daily", youtube: "No one personally", gym: "Extra cost for personal trainer" },
     { feature: "Routine", movement: "Built as a daily 10 min habit", youtube: "Easy to abandon", gym: "Easy to skip" },
     { feature: "Feels different by", movement: "Week 1", youtube: "Unknown", gym: "2-3 Months" },
-    { feature: "Cost", movement: "$19.99/mo", youtube: "Free (but no plan)", gym: "$50-150/mo" },
+    { feature: "Cost", movement: "$20/mo", youtube: "Free (but no plan)", gym: "$50-150/mo" },
   ];
   const columns = c.columns || ["The Movement", "Random YouTube", "Traditional Gym"];
 
