@@ -25,7 +25,7 @@ export default function GdprConsent({ id, checked, onChange }) {
         </label>
       </div>
       <label htmlFor={id} className="font-body text-[11px] text-[#aaa] leading-relaxed cursor-pointer">
-        I agree to the processing of my personal data in accordance with our{" "}
+        I agree to the processing of my personal data in accordance with the{" "}
         <a
           href="/privacy-policy"
           target="_blank"
@@ -33,9 +33,9 @@ export default function GdprConsent({ id, checked, onChange }) {
           className="underline underline-offset-2 text-white-muted hover:text-off-white transition-colors"
           onClick={e => e.stopPropagation()}
         >
-          privacy policy
+          Privacy Policy
         </a>
-        . You can unsubscribe at any time.
+        . You may unsubscribe at any time.
       </label>
     </div>
   );

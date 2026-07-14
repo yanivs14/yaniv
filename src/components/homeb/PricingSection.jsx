@@ -359,7 +359,7 @@ export default function PricingSection() {
               {c.annualSavings &&
               <span className="absolute top-3 right-3 bg-dark-bg/40 text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
               }
-              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-6 pr-16">Annual Membership</p>
+              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest mb-3 mt-2 pr-14">Annual Membership</p>
               <div className="flex items-baseline gap-1.5 mb-1">
                 <span className="font-heading text-4xl font-bold text-dark-bg">{c.annualMonthlyPrice || "$20"}</span>
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
