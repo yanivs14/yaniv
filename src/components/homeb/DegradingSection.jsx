@@ -40,7 +40,7 @@ export default function DegradingSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-4"
+                className="font-heading text-3xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-4"
               >
                 {(() => {
                   const lower = (c.listTitle || "").toLowerCase();
@@ -67,7 +67,7 @@ export default function DegradingSection() {
                   className="flex items-start gap-3 pt-3 border-b border-dark-border pb-3"
                 >
                   <span className="mt-1.5 w-1.5 h-1.5 bg-orange-red rounded-full flex-shrink-0" />
-                  <span className="font-heading text-lg sm:text-xl font-bold text-off-white uppercase tracking-tight leading-tight">{point}</span>
+                  <span className="font-heading text-lg lg:text-2xl font-bold text-off-white uppercase tracking-tight leading-tight">{point}</span>
                 </motion.li>
               ))}
             </ul>
@@ -77,8 +77,8 @@ export default function DegradingSection() {
             <div className="mt-8 grid grid-cols-3 gap-4">
               {c.stats.map((stat, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}>
-                  <div className="font-heading text-3xl lg:text-4xl font-bold text-orange-red">{stat.value}</div>
-                  <p className="mt-1.5 font-body text-xs text-white-muted leading-snug">{stat.label}</p>
+                  <div className="font-heading text-3xl lg:text-5xl font-bold text-orange-red">{stat.value}</div>
+                  <p className="mt-1.5 font-body text-xs lg:text-base text-white-muted leading-snug">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
