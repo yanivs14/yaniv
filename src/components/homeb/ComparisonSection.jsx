@@ -31,10 +31,9 @@ export default function ComparisonSection() {
           {(() => {
             const parts = headline.split(" ");
             if (parts.length >= 2) {
-              const first = parts[0];
-              const last = parts[parts.length - 1];
-              const middle = parts.slice(1, -1).join(" ");
-              return <><span className="text-orange-red">{first}</span> {middle} <span className="text-orange-red">{last}</span></>;
+              const lastTwo = parts.slice(-2).join(" ");
+              const rest = parts.slice(0, -2).join(" ");
+              return <>{rest} <span className="text-orange-red">{lastTwo}</span></>;
             }
             return headline;
           })()}
