@@ -28,14 +28,19 @@ export default function ComparisonSection() {
           className="text-center mb-8 lg:mb-12"
         >
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight max-w-4xl mx-auto leading-tight">
-            {(() => {
-              const parts = headline.split(" ");
-              const last = parts.pop();
-              return <>{parts.join(" ")} <span className="text-orange-red">{last}</span></>;
-            })()}
+          {(() => {
+            const parts = headline.split(" ");
+            if (parts.length >= 2) {
+              const first = parts[0];
+              const last = parts[parts.length - 1];
+              const middle = parts.slice(1, -1).join(" ");
+              return <><span className="text-orange-red">{first}</span> {middle} <span className="text-orange-red">{last}</span></>;
+            }
+            return headline;
+          })()}
           </h2>
           {c.subtitle && (
-            <p className="mt-5 font-body text-base lg:text-lg text-white-muted max-w-2xl mx-auto leading-relaxed">{c.subtitle}</p>
+          <p className="mt-5 font-body text-base lg:text-lg text-white-muted max-w-4xl mx-auto leading-relaxed">{c.subtitle}</p>
           )}
         </motion.div>
 
