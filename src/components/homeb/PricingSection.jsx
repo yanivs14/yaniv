@@ -122,7 +122,8 @@ export default function PricingSection() {
     inner: ["Everything in Annual", "Custom 1:1 roadmap", "Weekly live coaching sessions", "Ongoing progress reviews", "Private community"]
   };
 
-  const renderFeatureBold = (text) => text;
+  const renderFeatureBold = (text) =>
+    text.includes("plus:") ? <span className="font-bold">{text}</span> : text;
 
 
   const sectionTitle = c.sectionTitle || "Choose Your Membership";
