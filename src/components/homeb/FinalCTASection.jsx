@@ -29,15 +29,11 @@ export default function FinalCTASection() {
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => {
-                  trackCtaClicked("final_cta_scroll_pricing", "Master Your Body Today", "#pricing", window.location.pathname);
-                  const el = document.getElementById("pricing");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
-                data-cta-id="final_cta_pricing"
+                onClick={() => setQuizOpen(true)}
+                data-cta-id="final_cta_quiz"
                 className="inline-flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
               >
-                {c.ctaPrimary || "Master Your Body Today"}
+                {c.ctaPrimary || "Take the Free Assessment"}
               </button>
               {c.showQuizButton !== false && (
               <button
