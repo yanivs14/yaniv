@@ -298,7 +298,7 @@ export default function PricingSection() {
               {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
             </button>
             {c.innerCircleFootnote &&
-            <p className="font-body text-xs text-white-dim text-center mt-3">{c.innerCircleFootnote}</p>
+            <p className="font-body text-xs text-white-dim text-center whitespace-nowrap mt-3">{c.innerCircleFootnote}</p>
             }
           </motion.div>
         </div>
@@ -429,7 +429,7 @@ export default function PricingSection() {
                 {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
               </button>
               {c.innerCircleFootnote &&
-              <p className="font-body text-xs text-white-dim text-center mt-2">{c.innerCircleFootnote}</p>
+              <p className="font-body text-xs text-white-dim text-center whitespace-nowrap mt-2">{c.innerCircleFootnote}</p>
               }
             </div>
           </div>
