@@ -122,18 +122,7 @@ export default function PricingSection() {
     inner: ["Everything in Annual", "Custom 1:1 roadmap", "Weekly live coaching sessions", "Ongoing progress reviews", "Private community"]
   };
 
-  const renderFeatureBold = (text, boldPhrase, boldClassName) => {
-    if (!boldPhrase) return text;
-    const idx = text.toLowerCase().indexOf(boldPhrase.toLowerCase());
-    if (idx === -1) return text;
-    return (
-      <>
-        {text.slice(0, idx)}
-        <strong className={boldClassName}>{text.slice(idx, idx + boldPhrase.length)}</strong>
-        {text.slice(idx + boldPhrase.length)}
-      </>
-    );
-  };
+  const renderFeatureBold = (text) => text;
 
 
   const sectionTitle = c.sectionTitle || "Choose Your Membership";
@@ -288,9 +277,6 @@ export default function PricingSection() {
                 </li>
               )}
             </ul>
-            <div className="mt-4">
-              <p className="font-body text-xs text-white-dim text-center whitespace-nowrap">Apply → 15-min call → Approval within 48 hrs</p>
-            </div>
             <button
               onClick={handleApplyInner}
               className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-6">
@@ -419,9 +405,6 @@ export default function PricingSection() {
                   </li>
                 )}
               </ul>
-              <div className="mt-4">
-                <p className="font-body text-xs text-white-dim text-center whitespace-nowrap">Apply → 15-min call → Approval within 48 hrs</p>
-              </div>
               <button
                 onClick={handleApplyInner}
                 className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-5">
