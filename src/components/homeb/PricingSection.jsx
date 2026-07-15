@@ -119,7 +119,7 @@ export default function PricingSection() {
   const FEATURE_BOLD = {
     monthly: ["240+ guided sessions", "Programs", "New sessions"],
     annual: ["Everything in Monthly", "Weekly live community calls & Q&As", "Exclusive ongoing content"],
-    inner: ["Everything in Annual, plus:", "Custom 1:1 movement roadmap", "Weekly live personal coaching", "Ongoing progress reviews", "Private community"]
+    inner: ["Everything in Annual, plus:", "Custom 1:1 roadmap", "Weekly live coaching sessions", "Ongoing progress reviews", "Private community"]
   };
 
   const renderFeatureBold = (text, boldPhrase, boldClassName) => {
@@ -216,7 +216,7 @@ export default function PricingSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="bg-orange-red rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0">
             
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Best Offer</span>
             {c.annualSavings &&
             <span className="absolute top-4 right-4 bg-dark-bg/40 text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
             }
@@ -227,7 +227,7 @@ export default function PricingSection() {
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
               </div>
               {c.annualSavings &&
-              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"} (save $180)</p>
               }
             </div>
             <div className="min-h-[60px] mb-6 mt-2">
@@ -286,6 +286,10 @@ export default function PricingSection() {
                 </li>
               )}
             </ul>
+            <div className="mt-4 space-y-1">
+              <p className="font-body text-xs text-white-dim">Apply → 15-min call → Approval within 48 hrs</p>
+              <p className="font-body text-xs text-white-dim">Custom pricing — discuss on your call</p>
+            </div>
             <button
               onClick={handleApplyInner}
               className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-6">
@@ -356,7 +360,7 @@ export default function PricingSection() {
 
             {/* Annual mobile */}
             <div className="flex-shrink-0 w-[75vw] snap-center bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</span>
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Best Offer</span>
               {c.annualSavings &&
               <span className="absolute top-3 right-3 bg-dark-bg/40 text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
               }
@@ -366,7 +370,7 @@ export default function PricingSection() {
                 <span className="font-body text-sm text-dark-bg/70">/ month</span>
               </div>
               {c.annualSavings &&
-              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"}</p>
+              <p className="font-body text-xs text-dark-bg font-semibold mb-1">Billed annually at {c.annualPrice || "$240"} (save $180)</p>
               }
               {c.annualDescription &&
               <p className="font-body text-xs text-dark-bg/80 mb-3 mt-1 leading-relaxed">{c.annualDescription}</p>
@@ -412,6 +416,10 @@ export default function PricingSection() {
                   </li>
                 )}
               </ul>
+              <div className="mt-4 space-y-1">
+                <p className="font-body text-xs text-white-dim">Apply → 15-min call → Approval within 48 hrs</p>
+                <p className="font-body text-xs text-white-dim">Custom pricing — discuss on your call</p>
+              </div>
               <button
                 onClick={handleApplyInner}
                 className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-5">
