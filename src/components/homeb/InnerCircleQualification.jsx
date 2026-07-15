@@ -25,20 +25,20 @@ export default function InnerCircleQualification({ open, onClose, onQualify }) {
             </button>
             <div className="text-center">
               <p className="font-body text-sm text-white-muted leading-relaxed mb-6">
-                This is an exclusive 3-month coaching experience with Roye. (Pricing starts in the four figures.)
+                Inner Circle requires a minimum three-month, four-figure financial commitment. Are you comfortable with this level of pricing?
               </p>
               <div className="flex flex-col gap-3">
                 <button
                   onClick={onQualify}
                   className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors"
                 >
-                  Yes, I'm ready to apply <ArrowRight className="w-4 h-4" />
+                  Yes, continue to application <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={onClose}
                   className="font-body text-sm text-white-muted hover:text-off-white transition-colors py-2"
                 >
-                  Maybe later. Show me the Annual Membership
+                  No, explore Annual Membership
                 </button>
               </div>
             </div>
