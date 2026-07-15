@@ -4,7 +4,6 @@ import { track, getGaClientId } from "@/lib/analytics";
 import PreOrderHero from "@/components/handstand/preorder/PreOrderHero";
 import PreOrderCurriculum from "@/components/handstand/preorder/PreOrderCurriculum";
 import PreOrderClosing from "@/components/handstand/preorder/PreOrderClosing";
-import PreOrderScroller from "@/components/handstand/preorder/PreOrderScroller";
 
 let _checkoutInProgress = false;
 async function startPreOrderCheckout() {
@@ -33,9 +32,8 @@ export default function HandstandPreOrder({ config }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#f9fafb] overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
       <PreOrderHero config={config} onCheckout={handleCheckout} loading={loading} />
-      <PreOrderScroller />
       <PreOrderCurriculum />
       <PreOrderClosing config={config} onCheckout={handleCheckout} loading={loading} />
     </div>

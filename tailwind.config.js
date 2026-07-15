@@ -8,7 +8,6 @@ module.exports = {
         heading: ['Barlow Condensed', 'system-ui', 'sans-serif'],
         body: ['Inter', 'system-ui', 'sans-serif'],
         hebrew: ['Heebo', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'system-ui', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
