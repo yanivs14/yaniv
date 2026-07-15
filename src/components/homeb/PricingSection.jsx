@@ -218,7 +218,7 @@ export default function PricingSection() {
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Best Offer</span>
             <div className="flex items-center justify-between gap-2 mb-4">
-              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest">Annual Membership</p>
+              <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide whitespace-nowrap">Annual Membership</p>
               {c.annualSavings &&
               <span className="bg-dark-bg/40 text-orange-red text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">{c.annualSavings}</span>
               }
@@ -363,7 +363,7 @@ export default function PricingSection() {
             <div className="flex-shrink-0 w-[75vw] snap-center bg-orange-red rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Best Offer</span>
               <div className="flex items-center justify-between gap-2 mb-3 mt-2">
-                <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-widest">Annual Membership</p>
+                <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide whitespace-nowrap">Annual Membership</p>
                 {c.annualSavings &&
                 <span className="bg-dark-bg/40 text-orange-red text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">{c.annualSavings}</span>
                 }
