@@ -25,7 +25,7 @@ export default function InnerCircleQualification({ open, onClose, onQualify }) {
             </button>
             <div className="text-center">
               <p className="font-body text-sm text-white-muted leading-relaxed mb-6">
-                This is a premium 3-month coaching commitment requiring a four-figure investment. Are you ready to work directly with Roye?
+                This is an exclusive 3-month coaching experience with Roye. (Pricing starts in the four figures.)
               </p>
               <div className="flex flex-col gap-3">
                 <button
@@ -38,7 +38,7 @@ export default function InnerCircleQualification({ open, onClose, onQualify }) {
                   onClick={onClose}
                   className="font-body text-sm text-white-muted hover:text-off-white transition-colors py-2"
                 >
-                  Not right now — explore Annual Membership
+                  Maybe later. Show me the Annual Membership
                 </button>
               </div>
             </div>
