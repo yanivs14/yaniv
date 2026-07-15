@@ -13,16 +13,18 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setShowFloat(window.scrollY > 400);
+    let hideFloat = false;
     const pricingEl = document.getElementById("pricing");
     if (pricingEl) {
       const rect = pricingEl.getBoundingClientRect();
-      setInPricing(rect.top < window.innerHeight && rect.bottom > 0);
+      hideFloat = hideFloat || (rect.top < window.innerHeight && rect.bottom > 0);
     }
     const finalCtaEl = document.getElementById("final-cta");
     if (finalCtaEl) {
       const rect = finalCtaEl.getBoundingClientRect();
-      setInPricing(rect.top < window.innerHeight && rect.bottom > 0);
+      hideFloat = hideFloat || (rect.top < window.innerHeight && rect.bottom > 0);
     }
+    setInPricing(hideFloat);
       if (window.scrollY < 200) {
         setActiveSection("program");
         return;
