@@ -118,8 +118,8 @@ export default function PricingSection() {
 
   const FEATURE_BOLD = {
     monthly: ["240+ guided sessions", "Programs", "New sessions"],
-    annual: ["Everything in Monthly", "Weekly live community calls & Q&As", "Exclusive ongoing content"],
-    inner: ["Everything in Annual, plus:", "Custom 1:1 roadmap", "Weekly live coaching sessions", "Ongoing progress reviews", "Private community"]
+    annual: ["Everything in Monthly", "Weekly live community calls & Q&As", "Ongoing exclusive content"],
+    inner: ["Everything in Annual", "Custom 1:1 roadmap", "Weekly live coaching sessions", "Ongoing progress reviews", "Private community"]
   };
 
   const renderFeatureBold = (text, boldPhrase, boldClassName) => {
@@ -286,9 +286,8 @@ export default function PricingSection() {
                 </li>
               )}
             </ul>
-            <div className="mt-4 space-y-1">
-              <p className="font-body text-xs text-white-dim">Apply → 15-min call → Approval within 48 hrs</p>
-              <p className="font-body text-xs text-white-dim">Custom pricing — discuss on your call</p>
+            <div className="mt-4">
+              <p className="font-body text-xs text-white-dim text-center">Apply → 15-min call → Approval within 48 hrs</p>
             </div>
             <button
               onClick={handleApplyInner}
@@ -416,9 +415,8 @@ export default function PricingSection() {
                   </li>
                 )}
               </ul>
-              <div className="mt-4 space-y-1">
-                <p className="font-body text-xs text-white-dim">Apply → 15-min call → Approval within 48 hrs</p>
-                <p className="font-body text-xs text-white-dim">Custom pricing — discuss on your call</p>
+              <div className="mt-4">
+                <p className="font-body text-xs text-white-dim text-center">Apply → 15-min call → Approval within 48 hrs</p>
               </div>
               <button
                 onClick={handleApplyInner}
