@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
-import BodyAgeQuiz from "@/components/homeb/BodyAgeQuiz";
+import Quiz from "@/components/landing/Quiz";
 import { trackCtaClicked } from "@/lib/analytics";
 
 export default function FinalCTASection() {
@@ -53,7 +53,7 @@ export default function FinalCTASection() {
       </section>
 
       <AnimatePresence>
-        {quizOpen && <BodyAgeQuiz onClose={() => setQuizOpen(false)} />}
+        {quizOpen && <Quiz onClose={() => setQuizOpen(false)} />}
       </AnimatePresence>
     </>
   );
