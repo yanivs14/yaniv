@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Upload } from "lucide-react";
+import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Upload, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const MARQUEE_ITEMS = [
@@ -242,6 +242,33 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
             <PricingCard config={config} onCheckout={onCheckout} loading={loading} />
           </motion.div>
         </div>
+
+        {/* What you get */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="relative max-w-6xl mx-auto mt-8 lg:mt-10"
+        >
+          <div className="bg-white border border-teal-400/30 rounded-2xl p-5 sm:p-6 shadow-lg">
+            <p className="font-heading text-sm font-bold uppercase tracking-[0.15em] text-teal-600 mb-4 text-center">What you get</p>
+            <div className="grid sm:grid-cols-3 gap-3 sm:gap-6">
+              {[
+                "All 4 phases — Wall hold to freestanding",
+                "2 bonus libraries: Elements + Toolbox",
+                "Lifetime access — no subscription",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2.5">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-teal-500/15 flex-shrink-0">
+                    <Check className="w-3 h-3 text-teal-600" strokeWidth={3} />
+                  </span>
+                  <span className="font-body text-sm text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </section>
     </>
   );

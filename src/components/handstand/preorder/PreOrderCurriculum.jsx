@@ -104,10 +104,10 @@ export default function PreOrderCurriculum() {
             className="text-center mb-12"
           >
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 uppercase tracking-tight leading-[0.95]">
-              From your first wall hold<br />to <span className="text-teal-600">one-arm mastery</span>
+              Handstands are a skill,<br />not a <span className="text-teal-600">talent.</span>
             </h2>
             <p className="mt-4 font-body text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">
-              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
+              A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
             </p>
           </motion.div>
 
