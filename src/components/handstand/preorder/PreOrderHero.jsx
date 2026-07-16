@@ -228,24 +228,7 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
             >
               A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
             </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white/70 backdrop-blur border border-teal-400/20 rounded-2xl p-4 max-w-xl mx-auto lg:mx-0 text-left"
-            >
-              <p className="font-heading text-xs font-bold uppercase tracking-[0.15em] text-teal-600 mb-2.5">What you get</p>
-              <ul className="space-y-2">
-                {["All 4 phases — Wall hold to freestanding", "2 bonus libraries: Elements + Toolbox", "Lifetime access — no subscription"].map((item, k) => (
-                  <li key={k} className="flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-green-500/15 flex-shrink-0">
-                      <Check className="w-3 h-3 text-green-600" strokeWidth={3} />
-                    </span>
-                    <span className="font-body text-sm text-gray-700">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+
           </div>
 
           {/* Right: video */}
@@ -253,9 +236,48 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2"
+            className="order-2 lg:col-start-2 lg:row-start-1"
           >
             <VideoBlock config={config} isAdmin={isAdmin} onUpdateVideo={onUpdateVideo} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="order-3 lg:col-start-2 lg:row-start-2"
+          >
+            <div className="relative bg-gray-900 rounded-2xl p-5 sm:p-6 shadow-xl border border-teal-500/20 overflow-hidden">
+              <div className="absolute -top-20 -right-20 w-44 h-44 bg-teal-500/15 rounded-full blur-3xl" />
+              <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-orange-red/10 rounded-full blur-3xl" />
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="bg-orange-red text-dark-bg text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">Included</span>
+                  <p className="font-heading text-sm font-bold uppercase tracking-[0.15em] text-white">What you get</p>
+                </div>
+                <ul className="space-y-3.5">
+                  <li className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 flex-shrink-0">
+                      <Check className="w-3.5 h-3.5 text-teal-400" strokeWidth={3} />
+                    </span>
+                    <span className="font-body text-sm text-white font-medium">All 4 phases — Wall hold to freestanding</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-red/25 flex-shrink-0">
+                      <Check className="w-3.5 h-3.5 text-orange-red" strokeWidth={3} />
+                    </span>
+                    <span className="font-body text-sm text-white font-medium">2 bonus libraries: Elements + Toolbox</span>
+                    <span className="ml-auto bg-orange-red/20 text-orange-red text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap">Bonus</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 flex-shrink-0">
+                      <Check className="w-3.5 h-3.5 text-teal-400" strokeWidth={3} />
+                    </span>
+                    <span className="font-body text-sm text-white font-medium">Lifetime access — no subscription</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </motion.div>
 
           {/* Left: pricing card (below sub-headline) */}
@@ -263,7 +285,7 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="w-full max-w-sm mx-auto lg:mx-0 order-3 lg:col-start-1 lg:row-start-2"
+            className="w-full max-w-sm mx-auto lg:mx-0 order-4 lg:col-start-1 lg:row-start-2"
           >
             <PricingCard config={config} onCheckout={onCheckout} loading={loading} />
           </motion.div>
