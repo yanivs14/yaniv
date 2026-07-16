@@ -98,6 +98,11 @@ export default function PricingSection() {
     setBookCallOpen(true);
   };
 
+  const handleDecline = () => {
+    setQualOpen(false);
+    setTimeout(() => scrollToMobilePlan("annual"), 150);
+  };
+
   const monthlyFeatures = c.monthlyFeatures?.length ? c.monthlyFeatures : [
   "Full training library with 240+ guided sessions",
   "Programs for mobility, strength, control, and longevity",
@@ -420,7 +425,7 @@ export default function PricingSection() {
         </div>
       </div>
       <BookCallModal open={bookCallOpen} onClose={() => setBookCallOpen(false)} />
-      <InnerCircleQualification open={qualOpen} onClose={() => setQualOpen(false)} onQualify={handleQualify} />
+      <InnerCircleQualification open={qualOpen} onClose={() => setQualOpen(false)} onQualify={handleQualify} onDecline={handleDecline} />
     </section>);
 
 }

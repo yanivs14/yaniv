@@ -2,7 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
 
-export default function InnerCircleQualification({ open, onClose, onQualify }) {
+export default function InnerCircleQualification({ open, onClose, onQualify, onDecline }) {
   return (
     <AnimatePresence>
       {open && (
@@ -35,8 +35,8 @@ export default function InnerCircleQualification({ open, onClose, onQualify }) {
                   Yes, continue to application <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={onClose}
-                  className="font-body text-sm text-white-muted hover:text-off-white transition-colors py-2"
+                  onClick={onDecline || onClose}
+                  className="flex items-center justify-center gap-2 w-full bg-transparent border border-dark-border text-white-muted font-body text-sm font-semibold py-3.5 rounded-full hover:border-white-muted hover:text-off-white transition-colors"
                 >
                   No, explore Annual Membership
                 </button>
