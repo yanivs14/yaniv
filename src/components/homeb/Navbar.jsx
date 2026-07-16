@@ -32,6 +32,7 @@ export default function Navbar() {
       const allSections = Array.from(document.querySelectorAll("section[id]"));
       let current = "program";
       for (const el of allSections) {
+        if (el.offsetHeight === 0) continue;
         if (el.getBoundingClientRect().top <= 120) current = el.id;
       }
       setActiveSection(current);
@@ -151,11 +152,10 @@ export default function Navbar() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06, duration: 0.2 }}
-                    className={`relative flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight transition-colors py-4 border-b border-dark-border ${isActive ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
+                    className={`flex items-center justify-between font-heading text-3xl font-bold uppercase tracking-tight transition-colors py-4 border-b border-dark-border ${isActive ? "text-orange-red" : "text-off-white hover:text-orange-red"}`}
                     onClick={(e) => scrollTo(e, effectiveHref)}
                   >
-                    {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-orange-red rounded-full" />}
-                    <span className="ml-2">{l.label}</span>
+                    {l.label}
                     <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive ? "text-orange-red" : "text-white-dim"}`} />
                   </motion.a>
                 );
