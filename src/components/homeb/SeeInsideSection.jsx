@@ -55,10 +55,6 @@ export default function SeeInsideSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-5 rounded-full bg-orange-red/10 border border-orange-red/30">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-red animate-pulse" />
-            <span className="font-body text-xs font-bold uppercase tracking-[0.18em] text-orange-red">{c.eyebrow || "This is what you're joining"}</span>
-          </span>
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {(() => {
               const h = c.headline || "See How It Works";
