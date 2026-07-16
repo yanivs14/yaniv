@@ -212,14 +212,24 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
               <span className="text-teal-600">4 Stages</span>
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="font-body text-base lg:text-lg text-gray-600 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0"
-            >
-              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
-            </motion.p>
+            <div className="flex flex-col gap-3 max-w-xl mx-auto lg:mx-0">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="font-heading text-xl sm:text-2xl font-bold text-gray-900 leading-tight"
+              >
+                Handstands are a skill, not a talent.
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="font-body text-base lg:text-lg text-gray-600 leading-relaxed"
+              >
+                A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
+              </motion.p>
+            </div>
           </div>
 
           {/* Right: video */}
@@ -251,19 +261,19 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
           transition={{ duration: 0.5 }}
           className="relative max-w-6xl mx-auto mt-8 lg:mt-10"
         >
-          <div className="bg-white border border-teal-400/30 rounded-2xl p-5 sm:p-6 shadow-lg">
-            <p className="font-heading text-sm font-bold uppercase tracking-[0.15em] text-teal-600 mb-4 text-center">What you get</p>
-            <div className="grid sm:grid-cols-3 gap-3 sm:gap-6">
+          <div className="bg-white border-2 border-teal-500/25 rounded-2xl p-6 sm:p-8 shadow-xl">
+            <p className="font-heading text-base sm:text-lg font-bold uppercase tracking-[0.2em] text-teal-600 mb-5 sm:mb-6 text-center">What you get</p>
+            <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
               {[
                 "All 4 phases — Wall hold to freestanding",
                 "2 bonus libraries: Elements + Toolbox",
                 "Lifetime access — no subscription",
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2.5">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-teal-500/15 flex-shrink-0">
-                    <Check className="w-3 h-3 text-teal-600" strokeWidth={3} />
+                <div key={i} className="flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-teal-500/10 flex-shrink-0">
+                    <Check className="w-4 h-4 text-teal-600" strokeWidth={3} />
                   </span>
-                  <span className="font-body text-sm text-gray-700">{item}</span>
+                  <span className="font-body text-sm sm:text-base font-medium text-gray-800">{item}</span>
                 </div>
               ))}
             </div>
