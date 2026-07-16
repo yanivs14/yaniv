@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const STATS = [
   { value: "1,200+", label: "Students trained" },
@@ -9,10 +9,10 @@ const STATS = [
 ];
 
 const PHASES = [
-  { num: "01", title: "Foundation", desc: "Bodyline, strength & stamina", points: ["Wrist prep & conditioning", "Hollow body holds", "Wall kick-up mechanics"] },
-  { num: "02", title: "Balance", desc: "Enter, exit & rebalance", points: ["Chest-to-wall holds", "Toe pulls & heel pulls", "Freestanding entries"] },
-  { num: "03", title: "Movement", desc: "Positions, transitions & control", points: ["Tuck, straddle & pike", "Shape transitions", "Pressing mechanics"] },
-  { num: "04", title: "Specialist", desc: "Weight shifting & one-arm prep", points: ["Weight identification", "Block work & shifts", "One-arm conditioning"] },
+  { num: "01", title: "Foundation", desc: "Bodyline, strength & stamina", description: "Build the essential strength, stamina, and straight bodyline alignment. This phase creates the vital habits that make all future training easier." },
+  { num: "02", title: "Balance", desc: "Enter, exit & rebalance", description: "Learn to safely enter, exit, and actively control your balance. This is where you achieve your very first, correct freestanding handstand." },
+  { num: "03", title: "Movement", desc: "Positions, transitions & control", description: "Introduce new shapes, transitions, and dynamic movement patterns. This phase transforms your static hold into confident, flowing control." },
+  { num: "04", title: "Specialist", desc: "Weight shifting & one-arm prep", description: "Welcome to the Specialist Phase.\n\nNow that you've mastered the handstand, it's time to take one arm away.\n\nIn this phase, we'll focus on weight shifting and one-arm handstand preparation. Standing on one arm brings a completely new set of challenges, so we'll build the strength, stamina, and control all over again.\n\nThis is where a handstand becomes true mastery." },
 ];
 
 function PhaseCard({ phase, isOpen, onToggle, index }) {
@@ -55,16 +55,11 @@ function PhaseCard({ phase, isOpen, onToggle, index }) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <ul className="grid sm:grid-cols-3 gap-2 pt-3 pl-14 pr-1">
-              {phase.points.map((pt, j) => (
-                <li key={j} className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
-                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-green-500/15 flex-shrink-0">
-                    <Check className="w-3 h-3 text-green-600" strokeWidth={3} />
-                  </span>
-                  <span className="font-body text-xs text-gray-600">{pt}</span>
-                </li>
+            <div className="px-5 pt-3 pb-1">
+              {phase.description.split("\n\n").map((para, k) => (
+                <p key={k} className="font-body text-sm text-gray-600 leading-relaxed mb-2 last:mb-0">{para}</p>
               ))}
-            </ul>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

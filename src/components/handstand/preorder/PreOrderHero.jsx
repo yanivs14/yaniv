@@ -173,8 +173,16 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
     <>
       <Marquee />
       {/* Countdown — top, centered */}
-      <div className="bg-gray-50 pt-7 pb-1 px-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="bg-gray-50 pt-7 pb-1 px-6 text-center">
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="font-heading text-sm font-bold uppercase tracking-[0.2em] text-teal-600 mb-3"
+        >
+          Special Pre-Order Price · Limited Time
+        </motion.p>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
           <CountdownTimer targetDate={config.targetDate} />
         </motion.div>
       </div>
