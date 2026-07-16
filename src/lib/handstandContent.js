@@ -13,6 +13,13 @@ export const defaultHandstandContent = {
     ctaSubtext: "One-time payment · Lifetime access",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/77f6a616e_generated_image.png",
   },
+  showcase: {
+    headline: "See It In Action",
+    subheadline: "Watch how the method works — from your first kick-up to a wall-free hold.",
+    videoUrl: "",
+    youtubeUrl: "",
+    posterUrl: "",
+  },
   problem: {
     eyebrow: "The Struggle",
     headline: "Why Most People Never Hold a Handstand",

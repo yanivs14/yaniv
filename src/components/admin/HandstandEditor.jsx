@@ -7,6 +7,7 @@ import { defaultHandstandContent } from "@/lib/handstandContent";
 const SECTIONS = [
   { key: "navbar", label: "Navbar" },
   { key: "hero", label: "Hero" },
+  { key: "showcase", label: "Video Showcase" },
   { key: "problem", label: "Problem" },
   { key: "solution", label: "Solution" },
   { key: "curriculum", label: "Curriculum" },
@@ -111,6 +112,19 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("ctaText", "CTA Button Text")}
         {f("ctaSubtext", "CTA Subtext")}
         {m("imageUrl", "Background Image")}
+      </div>
+    );
+  }
+
+  if (sectionKey === "showcase") {
+    return (
+      <div>
+        {f("headline", "Headline")}
+        {f("subheadline", "Subheadline", true)}
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Video</p>
+        {m("youtubeUrl", "YouTube URL (overrides uploaded video)")}
+        {m("videoUrl", "Uploaded Video File", true)}
+        {m("posterUrl", "Poster Image (shown before play)")}
       </div>
     );
   }
