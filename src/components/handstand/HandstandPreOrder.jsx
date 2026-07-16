@@ -3,7 +3,6 @@ import { base44 } from "@/api/base44Client";
 import { track, getGaClientId } from "@/lib/analytics";
 import PreOrderHero from "@/components/handstand/preorder/PreOrderHero";
 import PreOrderCurriculum from "@/components/handstand/preorder/PreOrderCurriculum";
-import PreOrderWhatYouGet from "@/components/handstand/preorder/PreOrderWhatYouGet";
 import PreOrderClosing from "@/components/handstand/preorder/PreOrderClosing";
 
 let _checkoutInProgress = false;
@@ -36,7 +35,6 @@ export default function HandstandPreOrder({ config, onUpdateVideo }) {
     <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
       <PreOrderHero config={config} onCheckout={handleCheckout} loading={loading} onUpdateVideo={onUpdateVideo} />
       <PreOrderCurriculum />
-      <PreOrderWhatYouGet />
       <PreOrderClosing config={config} onCheckout={handleCheckout} loading={loading} />
     </div>
   );
