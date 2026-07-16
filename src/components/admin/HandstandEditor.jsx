@@ -8,6 +8,8 @@ const SECTIONS = [
   { key: "navbar", label: "Navbar" },
   { key: "hero", label: "Hero" },
   { key: "showcase", label: "Video Showcase" },
+  { key: "phases", label: "Phases" },
+  { key: "whatYouGet", label: "What You Get" },
   { key: "problem", label: "Problem" },
   { key: "solution", label: "Solution" },
   { key: "curriculum", label: "Curriculum" },
@@ -108,6 +110,7 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("headline1", "Headline Line 1")}
         {f("headline2", "Headline Line 2")}
         {f("headlineAccent", "Accent Word")}
+        {f("boldDescription", "Bold Description")}
         {f("subheadline", "Subheadline", true)}
         {f("ctaText", "CTA Button Text")}
         {f("ctaSubtext", "CTA Subtext")}
@@ -237,6 +240,8 @@ function SectionEditor({ sectionKey, content, update }) {
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
+        {f("lockInTitle", "Lock-In Title")}
+        {f("lockInSubtitle", "Lock-In Subtitle")}
         {f("headline", "Headline")}
         {f("subtitle", "Subtitle")}
         {f("price", "Price")}
@@ -278,6 +283,51 @@ function SectionEditor({ sectionKey, content, update }) {
         <button onClick={() => update(sectionKey, "items", [...(data.items || []), { q: "New question", a: "Answer" }])}
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
           <Plus className="w-4 h-4" /> Add FAQ item
+        </button>
+      </div>
+    );
+  }
+
+  if (sectionKey === "whatYouGet") {
+    return (
+      <div>
+        {f("headline", "Headline")}
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Items</p>
+        {data.items?.map((item, i) => (
+          <div key={i} className="flex gap-2 mb-2">
+            <input value={item} onChange={(e) => { const a = [...data.items]; a[i] = e.target.value; update(sectionKey, "items", a); }}
+              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+            <button onClick={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}
+              className="text-white-muted hover:text-red-400 transition-colors p-2">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+        <button onClick={() => update(sectionKey, "items", [...(data.items || []), "New item"])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add item
+        </button>
+      </div>
+    );
+  }
+
+  if (sectionKey === "phases") {
+    return (
+      <div>
+        {f("headline", "Headline")}
+        {f("description", "Description", true)}
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Phase Items</p>
+        {data.items?.map((item, i) => (
+          <ArrayItem key={i} index={i} label="Phase" onRemove={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}>
+            <Field label="Number (e.g. 01)" value={item.number} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], number: v }; update(sectionKey, "items", a); }} />
+            <Field label="Title" value={item.title} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], title: v }; update(sectionKey, "items", a); }} />
+            <Field label="Subtitle" value={item.subtitle} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], subtitle: v }; update(sectionKey, "items", a); }} />
+            <Field label="Description" value={item.description} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], description: v }; update(sectionKey, "items", a); }} multiline />
+          </ArrayItem>
+        ))}
+        <button onClick={() => update(sectionKey, "items", [...(data.items || []), { number: "0X", title: "New Phase", subtitle: "Subtitle", description: "Description" }])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add phase
         </button>
       </div>
     );

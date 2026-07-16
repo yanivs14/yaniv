@@ -5,13 +5,32 @@ export const defaultHandstandContent = {
   },
   hero: {
     eyebrow: "Master the Handstand",
-    headline1: "From Zero to",
-    headline2: "Handstand",
-    headlineAccent: "Hero",
-    subheadline: "The complete 8-week system to build strength, balance, and wall-free confidence on your hands.",
-    ctaText: "HANDSTAND 4 LIFE",
+    headline1: "Master Your",
+    headline2: "Handstand In",
+    headlineAccent: "4 Stages",
+    boldDescription: "Handstands are a skill, not a talent.",
+    subheadline: "A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.",
+    ctaText: "Enroll Now",
     ctaSubtext: "One-time payment · Lifetime access",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/77f6a616e_generated_image.png",
+  },
+  whatYouGet: {
+    headline: "What you get",
+    items: [
+      "All 4 phases — Wall hold to freestanding",
+      "2 bonus libraries: Elements + Toolbox",
+      "Lifetime access — no subscription",
+    ],
+  },
+  phases: {
+    headline: "From your first wall hold to one-arm mastery",
+    description: "Whether this is your first kick-up or you're here to unlock one-arm work, you're in the right place. Each step builds on the last — here's exactly what you learn and where it takes you.",
+    items: [
+      { number: "01", title: "Foundation Phase", subtitle: "Bodyline, strength & stamina", description: "Build the essential strength, stamina, and straight bodyline alignment. This phase creates the vital habits that make all future training easier." },
+      { number: "02", title: "Balance Phase", subtitle: "Enter, exit & rebalance", description: "Learn to safely enter, exit, and actively control your balance. This is where you achieve your very first, correct freestanding handstand." },
+      { number: "03", title: "Movement Phase", subtitle: "Positions, transitions & control", description: "Introduce new shapes, transitions, and dynamic movement patterns. This phase transforms your static hold into confident, flowing control." },
+      { number: "04", title: "Specialist Phase", subtitle: "Weight shifting & one-arm prep", description: "Now that you've mastered the handstand, it's time to take one arm away. In this phase, we'll focus on weight shifting and one-arm handstand preparation. Standing on one arm brings a completely new set of challenges, so we'll build the strength, stamina, and control all over again. This is where a handstand becomes true mastery." },
+    ],
   },
   showcase: {
     headline: "See It In Action",
@@ -81,6 +100,8 @@ export const defaultHandstandContent = {
   },
   pricing: {
     eyebrow: "Enroll Today",
+    lockInTitle: "Lock In Our Lowest Price",
+    lockInSubtitle: "Pre-order now. Be first in line when we go live.",
     headline: "Get Full Access",
     subtitle: "One-time payment. Lifetime access. Start today.",
     price: "14.99",

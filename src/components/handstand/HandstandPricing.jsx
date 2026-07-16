@@ -54,6 +54,12 @@ export default function HandstandPricing({ c }) {
             {c?.headline}
           </h2>
           <p className="font-body text-base text-white-muted">{c?.subtitle}</p>
+          {c?.lockInTitle && (
+            <div className="mt-6">
+              <p className="font-heading text-lg font-bold text-orange-red uppercase tracking-tight">{c.lockInTitle}</p>
+              {c?.lockInSubtitle && <p className="font-body text-sm text-white-muted mt-1">{c.lockInSubtitle}</p>}
+            </div>
+          )}
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 30 }}

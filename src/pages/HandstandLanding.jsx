@@ -14,6 +14,9 @@ import HandstandPricing from "@/components/handstand/HandstandPricing";
 import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
 import HandstandPreOrder from "@/components/handstand/HandstandPreOrder";
+import HandstandPhases from "@/components/handstand/HandstandPhases";
+import HandstandWhatYouGet from "@/components/handstand/HandstandWhatYouGet";
+import HandstandStickyBar from "@/components/handstand/HandstandStickyBar";
 
 const DEFAULT_PREORDER = { enabled: false, targetDate: "", price: "99", originalPrice: "149", discountText: "Save 34%", videoUrl: "", videoPoster: "" };
 
@@ -77,15 +80,17 @@ export default function HandstandLanding() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+    <div className="min-h-screen bg-dark-bg overflow-x-hidden pb-20 lg:pb-0">
       <HandstandNavbar c={content.navbar} />
-      <HandstandHero c={content.hero} />
+      <HandstandHero c={content.hero} targetDate={preOrder.targetDate} />
       <HandstandVideoSection c={content.showcase} />
       <HandstandMarquee />
       <HandstandProblem c={content.problem} />
       <HandstandSolution c={content.solution} />
+      <HandstandPhases c={content.phases} />
       <HandstandCurriculum c={content.curriculum} />
       <HandstandInstructor c={content.instructor} />
+      <HandstandWhatYouGet c={content.whatYouGet} />
       <TestimonialsSection />
       <HandstandPricing c={content.pricing} />
       <HandstandFAQ c={content.faq} />
@@ -100,6 +105,7 @@ export default function HandstandLanding() {
           </p>
         </div>
       </footer>
+      <HandstandStickyBar price={content.pricing?.price} ctaText={content.pricing?.ctaText} targetDate={preOrder.targetDate} />
     </div>
   );
 }
