@@ -40,8 +40,14 @@ export default function SeeInsideSection() {
   };
 
   return (
-    <section className="bg-dark-bg py-12 lg:py-20" id="see-inside">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+    <section className="relative bg-dark-bg py-12 lg:py-20 overflow-hidden" id="see-inside">
+      {/* Decorative glow accents */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-72 h-72 bg-orange-red/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-72 h-72 bg-orange-red/5 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
