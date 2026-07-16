@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Upload } from "lucide-react";
+import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Upload, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const MARQUEE_ITEMS = [
@@ -216,10 +216,36 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              className="font-heading text-lg lg:text-xl font-bold text-gray-900 leading-snug max-w-xl mx-auto lg:mx-0"
+            >
+              Handstands are a skill, not a talent.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
               className="font-body text-base lg:text-lg text-gray-600 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0"
             >
-              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
+              A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
             </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white/70 backdrop-blur border border-teal-400/20 rounded-2xl p-4 max-w-xl mx-auto lg:mx-0 text-left"
+            >
+              <p className="font-heading text-xs font-bold uppercase tracking-[0.15em] text-teal-600 mb-2.5">What you get</p>
+              <ul className="space-y-2">
+                {["All 4 phases — Wall hold to freestanding", "2 bonus libraries: Elements + Toolbox", "Lifetime access — no subscription"].map((item, k) => (
+                  <li key={k} className="flex items-center gap-2.5">
+                    <span className="flex items-center justify-center w-4 h-4 rounded-full bg-green-500/15 flex-shrink-0">
+                      <Check className="w-3 h-3 text-green-600" strokeWidth={3} />
+                    </span>
+                    <span className="font-body text-sm text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </div>
 
           {/* Right: video */}
