@@ -1,112 +1,77 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-
-function TestimonialCard({ t }) {
-  const [playing, setPlaying] = useState(false);
-  const videoRef = useRef();
-
-  const handlePlay = () => {
-    setPlaying(true);
-    setTimeout(() => videoRef.current?.play(), 50);
-  };
-
-  return (
-    <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start flex flex-col">
-      <div className="aspect-[3/4] overflow-hidden relative flex-shrink-0 bg-black">
-        {t.videoUrl ? (
-          <>
-            {!playing ? (
-              <div className="w-full h-full cursor-pointer" onClick={handlePlay} onTouchStart={(e) => { e.preventDefault(); handlePlay(); }}>
-                <img src={t.img || t.videoUrl} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="w-14 h-14 bg-orange-red rounded-full flex items-center justify-center">
-                    <Play className="w-6 h-6 text-dark-bg fill-dark-bg ml-1" />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <video
-                ref={videoRef}
-                src={t.videoUrl}
-                className="w-full h-full object-contain"
-                controls
-                playsInline
-                onClick={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-              />
-            )}
-          </>
-        ) : (
-          <img src={t.img} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
-        )}
-      </div>
-      <div className="p-5 flex flex-col flex-1">
-        <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
-        <p className="font-body text-xs text-white-muted mb-3">{t.role}</p>
-        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1">"{t.quote}"</p>
-      </div>
-    </div>
-  );
-}
+import { Star, Quote } from "lucide-react";
 
 export default function HandstandTestimonials({ c }) {
-  const scrollRef = useRef();
-  if (!c) return null;
-
-  const items = c.items || [];
-  const headline = c.headline || "";
-  const headlineParts = headline.split(" ");
-  const headlineLast = headlineParts.pop();
-
-  const scroll = (dir) => {
-    scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
-  };
-
+  const items = c?.items || [];
   return (
-    <section className="py-12 lg:py-24 bg-dark-bg" id="testimonials">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+    <section className="py-20 lg:py-28 bg-dark-surface relative overflow-hidden">
+      {/* Glow */}
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-orange-red/3 rounded-full blur-[120px]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-10 flex flex-col items-center text-center"
+          className="mb-14 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4"
         >
-          {c.eyebrow && (
-            <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c.eyebrow}</p>
-          )}
-          <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-            {headlineParts.join(" ")} {headlineLast && <span className="text-orange-red">{headlineLast}</span>}
-          </h2>
-          {c.subtitle && (
-            <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>
-          )}
-        </motion.div>
-
-        <div className="relative">
-          {/* Mobile: slider */}
-          <div className="sm:hidden">
-            <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar">
-              {items.map((t, i) => (
-                <TestimonialCard key={i} t={t} />
+          <div>
+            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight leading-[0.95]">
+              Real Students.<br />
+              <span className="text-orange-red">Real Results.</span>
+            </h2>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, j) => (
+                <Star key={j} className="w-5 h-5 fill-orange-red text-orange-red" />
               ))}
             </div>
-            <div className="flex justify-center gap-3 mt-4">
-              <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
-                <ChevronRight className="w-5 h-5" />
-              </button>
+            <div>
+              <p className="font-heading text-2xl font-bold text-off-white">4.9/5</p>
+              <p className="font-body text-xs text-white-dim uppercase tracking-wider">from 200+ students</p>
             </div>
           </div>
-          {/* Desktop: grid */}
-          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
-            {items.map((t, i) => (
-              <TestimonialCard key={i} t={t} />
-            ))}
-          </div>
+        </motion.div>
+
+        {/* Masonry-style staggered grid */}
+        <div className="grid md:grid-cols-3 gap-5">
+          {items.map((t, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className={`group relative bg-dark-bg border border-dark-border rounded-2xl p-6 lg:p-7 flex flex-col hover:border-orange-red/30 transition-colors duration-300 ${i === 1 ? "md:mt-8" : ""}`}
+            >
+              {/* Large decorative quote */}
+              <Quote className="absolute top-5 right-5 w-10 h-10 text-orange-red/10 group-hover:text-orange-red/20 transition-colors" />
+
+              <div className="flex gap-0.5 mb-4">
+                {[...Array(5)].map((_, j) => (
+                  <Star key={j} className="w-4 h-4 fill-orange-red text-orange-red" />
+                ))}
+              </div>
+
+              <p className="font-body text-sm text-off-white/90 leading-relaxed flex-1 mb-6 relative z-10">"{t.quote}"</p>
+
+              <div className="flex items-center gap-3 pt-4 border-t border-dark-border">
+                {/* Avatar with initial */}
+                <div className="w-10 h-10 rounded-full bg-orange-red/10 border border-orange-red/20 flex items-center justify-center flex-shrink-0">
+                  <span className="font-heading text-base font-bold text-orange-red">
+                    {t.name?.charAt(0) || "?"}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-body text-sm font-bold text-off-white">{t.name}</p>
+                  <p className="font-body text-xs text-white-dim">{t.role}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
