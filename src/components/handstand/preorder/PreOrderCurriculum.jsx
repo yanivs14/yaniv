@@ -48,12 +48,12 @@ function PhaseCard({ phase, isOpen, onToggle, index }) {
       </div>
       <div
         className="overflow-hidden transition-all duration-300 ease-in-out"
-        style={{ maxHeight: isOpen ? "800px" : "0px", opacity: isOpen ? 1 : 0 }}
-      >
+        style={{ maxHeight: isOpen ? "800px" : "0px", opacity: isOpen ? 1 : 0 }}>
+        
         <div className="px-5 pt-3 pb-1">
-          {phase.description.split("\n\n").map((para, k) => (
-            <p key={k} className="font-body text-sm text-gray-600 leading-relaxed mb-2 last:mb-0">{para}</p>
-          ))}
+          {phase.description.split("\n\n").map((para, k) =>
+          <p key={k} className="font-body text-sm text-gray-600 leading-relaxed mb-2 last:mb-0">{para}</p>
+          )}
         </div>
       </div>
     </motion.div>);
@@ -99,8 +99,8 @@ export default function PreOrderCurriculum() {
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 uppercase tracking-tight leading-[0.95]">From your first wall hold to one-arm mastery
 
             </h2>
-            <p className="mt-4 font-body text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">
-              A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
+            <p className="mt-4 font-body text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">Whether this is your first kick-up or you're here to unlock one-arm work, you're in the right place. Each step builds on the last — here's exactly what you learn and where it takes you.
+
             </p>
           </motion.div>
 
