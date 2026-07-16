@@ -261,19 +261,20 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
           transition={{ duration: 0.5 }}
           className="relative max-w-6xl mx-auto mt-8 lg:mt-10"
         >
-          <div className="bg-white border-2 border-teal-500/25 rounded-2xl p-6 sm:p-8 shadow-xl">
-            <p className="font-heading text-base sm:text-lg font-bold uppercase tracking-[0.2em] text-teal-600 mb-5 sm:mb-6 text-center">What you get</p>
-            <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
+          <div className="relative bg-gradient-to-br from-dark-bg via-dark-surface to-teal-950/40 border border-teal-500/40 rounded-2xl p-6 sm:p-8 shadow-2xl overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-48 h-48 bg-teal-500/15 rounded-full blur-[80px] pointer-events-none" />
+            <p className="relative font-heading text-base sm:text-lg font-bold uppercase tracking-[0.2em] text-teal-400 mb-5 sm:mb-6 text-center">What you get</p>
+            <div className="relative grid sm:grid-cols-3 gap-4 sm:gap-6">
               {[
                 "All 4 phases — Wall hold to freestanding",
                 "2 bonus libraries: Elements + Toolbox",
                 "Lifetime access — no subscription",
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-teal-500/10 flex-shrink-0">
-                    <Check className="w-4 h-4 text-teal-600" strokeWidth={3} />
+                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-teal-500/20 flex-shrink-0">
+                    <Check className="w-4 h-4 text-teal-400" strokeWidth={3} />
                   </span>
-                  <span className="font-body text-sm sm:text-base font-medium text-gray-800">{item}</span>
+                  <span className="font-body text-sm sm:text-base font-medium text-off-white">{item}</span>
                 </div>
               ))}
             </div>
