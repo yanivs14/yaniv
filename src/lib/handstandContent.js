@@ -22,16 +22,6 @@ export const defaultHandstandContent = {
       "Lifetime access — no subscription",
     ],
   },
-  phases: {
-    headline: "From your first wall hold to one-arm mastery",
-    description: "Whether this is your first kick-up or you're here to unlock one-arm work, you're in the right place. Each step builds on the last — here's exactly what you learn and where it takes you.",
-    items: [
-      { number: "01", title: "Foundation Phase", subtitle: "Bodyline, strength & stamina", description: "Build the essential strength, stamina, and straight bodyline alignment. This phase creates the vital habits that make all future training easier." },
-      { number: "02", title: "Balance Phase", subtitle: "Enter, exit & rebalance", description: "Learn to safely enter, exit, and actively control your balance. This is where you achieve your very first, correct freestanding handstand." },
-      { number: "03", title: "Movement Phase", subtitle: "Positions, transitions & control", description: "Introduce new shapes, transitions, and dynamic movement patterns. This phase transforms your static hold into confident, flowing control." },
-      { number: "04", title: "Specialist Phase", subtitle: "Weight shifting & one-arm prep", description: "Now that you've mastered the handstand, it's time to take one arm away. In this phase, we'll focus on weight shifting and one-arm handstand preparation. Standing on one arm brings a completely new set of challenges, so we'll build the strength, stamina, and control all over again. This is where a handstand becomes true mastery." },
-    ],
-  },
   showcase: {
     headline: "See It In Action",
     subheadline: "Watch how the method works — from your first kick-up to a wall-free hold.",

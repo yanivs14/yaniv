@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 
 export default function HandstandSolution({ c }) {
   const benefits = c?.benefits || [];
   const videoRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [openBenefit, setOpenBenefit] = useState(0);
 
   useEffect(() => {
     if (!c?.videoUrl || videoLoaded) return;
@@ -99,29 +100,45 @@ export default function HandstandSolution({ c }) {
             </h2>
             <p className="font-body text-base text-white-muted mb-8 leading-relaxed max-w-lg">{c?.subtitle}</p>
 
-            {/* Benefits */}
-            <div className="space-y-1">
-              {benefits.map((b, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="group flex items-start gap-4 py-4 border-b border-dark-border last:border-0 hover:border-orange-red/30 transition-colors"
-                >
-                  <span className="font-heading text-2xl font-bold text-white-dim group-hover:text-orange-red transition-colors w-8 flex-shrink-0">
-                    0{i + 1}
-                  </span>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-heading text-lg font-bold text-off-white uppercase tracking-wide">{b.title}</h3>
-                      <ArrowUpRight className="w-4 h-4 text-white-dim group-hover:text-orange-red transition-colors" />
-                    </div>
-                    <p className="font-body text-sm text-white-muted leading-relaxed">{b.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
+            {/* Benefits Accordion */}
+            <div className="space-y-0">
+              {benefits.map((b, i) => {
+                const isOpen = openBenefit === i;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.1 }}
+                    className="border-b border-dark-border last:border-0"
+                  >
+                    <button
+                      onClick={() => setOpenBenefit(isOpen ? -1 : i)}
+                      className="w-full flex items-center gap-4 py-4 text-left group"
+                    >
+                      <span className={`font-heading text-2xl font-bold w-8 flex-shrink-0 transition-colors ${isOpen ? "text-orange-red" : "text-white-dim group-hover:text-orange-red"}`}>
+                        0{i + 1}
+                      </span>
+                      <h3 className="flex-1 font-heading text-lg font-bold text-off-white uppercase tracking-wide">{b.title}</h3>
+                      <ChevronDown className={`w-5 h-5 flex-shrink-0 transition-all duration-300 ${isOpen ? "rotate-180 text-orange-red" : "text-white-dim group-hover:text-orange-red"}`} />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <p className="font-body text-sm text-white-muted leading-relaxed pb-4 pl-12">{b.desc}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>

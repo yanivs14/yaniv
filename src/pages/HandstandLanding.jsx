@@ -14,7 +14,6 @@ import HandstandPricing from "@/components/handstand/HandstandPricing";
 import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
 import HandstandPreOrder from "@/components/handstand/HandstandPreOrder";
-import HandstandPhases from "@/components/handstand/HandstandPhases";
 import HandstandWhatYouGet from "@/components/handstand/HandstandWhatYouGet";
 import HandstandStickyBar from "@/components/handstand/HandstandStickyBar";
 
@@ -88,7 +87,6 @@ export default function HandstandLanding() {
       <HandstandMarquee />
       <HandstandProblem c={content.problem} />
       <HandstandSolution c={content.solution} />
-      <HandstandPhases c={content.phases} />
       <HandstandCurriculum c={content.curriculum} />
       <HandstandInstructor c={content.instructor} />
       <TestimonialsSection />
