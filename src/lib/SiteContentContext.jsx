@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 
 const DEFAULT_CONTENT = {
@@ -282,6 +282,7 @@ export function SiteContentProvider({ children, keyPrefix = "" }) {
   const [content, setContent] = useState(null);
   const [dbRecords, setDbRecords] = useState({}); // section_key -> { id, data }
   const [loading, setLoading] = useState(true);
+  const dbRecordsRef = useRef({});
 
   // Load all content from DB on mount
   useEffect(() => {
@@ -302,86 +303,78 @@ export function SiteContentProvider({ children, keyPrefix = "" }) {
         }
       }
       setDbRecords(byKey);
+      dbRecordsRef.current = byKey;
       setContent(mergeDbRecords(filtered));
       setLoading(false);
     }).catch(() => {
       setContent(DEFAULT_CONTENT);
+      dbRecordsRef.current = {};
       setLoading(false);
     });
   }, []);
 
+  // Persist a section's data to DB (uses ref to avoid duplicate creates from concurrent calls)
+  const saveRecord = useCallback(async (section, newData) => {
+    const existing = dbRecordsRef.current[section];
+    try {
+      if (existing?.id) {
+        await base44.entities.SiteContent.update(existing.id, { data: newData });
+      } else {
+        const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: newData });
+        dbRecordsRef.current = { ...dbRecordsRef.current, [section]: created };
+        setDbRecords(prev => ({ ...prev, [section]: created }));
+      }
+    } catch (err) {
+      console.error("Failed to save content:", err);
+    }
+  }, [keyPrefix]);
+
   // Update a field and persist to DB
   const update = useCallback(async (section, field, value) => {
-    // Optimistic update
+    const existing = dbRecordsRef.current[section];
+    const newData = { ...(existing?.data || DEFAULT_CONTENT[section] || {}), [field]: value };
+
     setContent(prev => ({
       ...prev,
       [section]: { ...prev[section], [field]: value },
     }));
+    const newRecord = { ...existing, data: newData };
+    dbRecordsRef.current = { ...dbRecordsRef.current, [section]: newRecord };
+    setDbRecords(prev => ({ ...prev, [section]: newRecord }));
 
-    // Persist
-    setDbRecords(prev => {
-      const existing = prev[section];
-      const newData = { ...(existing?.data || DEFAULT_CONTENT[section] || {}), [field]: value };
-      
-      const saveToDb = async () => {
-        if (existing?.id) {
-          await base44.entities.SiteContent.update(existing.id, { data: newData });
-        } else {
-          const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: newData });
-          setDbRecords(p => ({ ...p, [section]: created }));
-        }
-      };
-      saveToDb();
-
-      return { ...prev, [section]: { ...existing, data: newData } };
-    });
-  }, [keyPrefix]);
+    await saveRecord(section, newData);
+  }, [keyPrefix, saveRecord]);
 
   // Update a nested array item and persist to DB
   const updateDeep = useCallback(async (section, field, index, subField, value) => {
-    setContent(prev => {
-      const arr = [...prev[section][field]];
-      arr[index] = { ...arr[index], [subField]: value };
-      const newSectionData = { ...prev[section], [field]: arr };
+    const existing = dbRecordsRef.current[section];
+    const currentData = existing?.data || DEFAULT_CONTENT[section] || {};
+    const arr = [...(currentData[field] || [])];
+    arr[index] = { ...arr[index], [subField]: value };
+    const newSectionData = { ...currentData, [field]: arr };
 
-      // Persist
-      setDbRecords(prevRec => {
-        const existing = prevRec[section];
-        const saveToDb = async () => {
-          if (existing?.id) {
-            await base44.entities.SiteContent.update(existing.id, { data: newSectionData });
-          } else {
-            const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: newSectionData });
-            setDbRecords(p => ({ ...p, [section]: created }));
-          }
-        };
-        saveToDb();
-        return { ...prevRec, [section]: { ...existing, data: newSectionData } };
-      });
+    setContent(prev => ({
+      ...prev,
+      [section]: { ...prev[section], [field]: arr },
+    }));
+    const newRecord = { ...existing, data: newSectionData };
+    dbRecordsRef.current = { ...dbRecordsRef.current, [section]: newRecord };
+    setDbRecords(prev => ({ ...prev, [section]: newRecord }));
 
-      return { ...prev, [section]: newSectionData };
-    });
-  }, [keyPrefix]);
+    await saveRecord(section, newSectionData);
+  }, [keyPrefix, saveRecord]);
 
   // Reset a section to defaults and overwrite DB
   const resetSection = useCallback(async (section) => {
     const defaultData = DEFAULT_CONTENT[section];
     if (!defaultData) return;
+    const existing = dbRecordsRef.current[section];
     setContent(prev => ({ ...prev, [section]: defaultData }));
-    setDbRecords(prev => {
-      const existing = prev[section];
-      const save = async () => {
-        if (existing?.id) {
-          await base44.entities.SiteContent.update(existing.id, { data: defaultData });
-        } else {
-          const created = await base44.entities.SiteContent.create({ section_key: keyPrefix + section, data: defaultData });
-          setDbRecords(p => ({ ...p, [section]: created }));
-        }
-      };
-      save();
-      return { ...prev, [section]: { ...existing, data: defaultData } };
-    });
-  }, [keyPrefix]);
+    const newRecord = { ...existing, data: defaultData };
+    dbRecordsRef.current = { ...dbRecordsRef.current, [section]: newRecord };
+    setDbRecords(prev => ({ ...prev, [section]: newRecord }));
+    await saveRecord(section, defaultData);
+  }, [keyPrefix, saveRecord]);
 
   return (
     <SiteContentContext.Provider value={{ content, update, updateDeep, resetSection, loading }}>
