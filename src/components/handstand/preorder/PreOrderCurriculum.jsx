@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 const STATS = [
@@ -46,23 +46,16 @@ function PhaseCard({ phase, isOpen, onToggle, index }) {
         </div>
         <ChevronDown className={`w-5 h-5 text-teal-600 flex-shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </div>
-      <AnimatePresence initial={false}>
-        {isOpen &&
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="overflow-hidden">
-          
-            <div className="px-5 pt-3 pb-1">
-              {phase.description.split("\n\n").map((para, k) =>
+      <div
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? "800px" : "0px", opacity: isOpen ? 1 : 0 }}
+      >
+        <div className="px-5 pt-3 pb-1">
+          {phase.description.split("\n\n").map((para, k) => (
             <p key={k} className="font-body text-sm text-gray-600 leading-relaxed mb-2 last:mb-0">{para}</p>
-            )}
-            </div>
-          </motion.div>
-        }
-      </AnimatePresence>
+          ))}
+        </div>
+      </div>
     </motion.div>);
 
 }
