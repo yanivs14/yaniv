@@ -106,8 +106,11 @@ export default function PreOrderCurriculum() {
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 uppercase tracking-tight leading-[0.95]">
               From your first wall hold<br />to <span className="text-teal-600">one-arm mastery</span>
             </h2>
-            <p className="mt-4 font-body text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">Whether this is your first kick-up or you're here to unlock one-arm work, you're in the right place. Each step builds on the last — here's exactly what you learn and where it takes you.
-
+            <p className="mt-4 font-body text-base sm:text-lg font-bold text-gray-900 max-w-lg mx-auto leading-relaxed">
+              Handstands are a skill, not a talent.
+            </p>
+            <p className="mt-2 font-body text-sm text-gray-500 max-w-lg mx-auto leading-relaxed">
+              A clear, four-stage video path that takes you from your first wall hold to advanced balance work. Each phase builds on the last — with bonus challenges once you've mastered the basics.
             </p>
           </motion.div>
 
