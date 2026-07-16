@@ -40,11 +40,11 @@ export default function SeeInsideSection() {
   };
 
   return (
-    <section className="relative bg-dark-bg py-12 lg:py-20 overflow-hidden" id="see-inside">
+    <section className="relative bg-gradient-to-b from-dark-surface via-dark-bg to-dark-surface py-14 lg:py-24 overflow-hidden border-y border-orange-red/15" id="see-inside">
       {/* Decorative glow accents */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-72 h-72 bg-orange-red/5 rounded-full blur-[120px]" />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-72 h-72 bg-orange-red/5 rounded-full blur-[120px]" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-red/12 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-red/12 rounded-full blur-[140px]" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
@@ -55,6 +55,10 @@ export default function SeeInsideSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 lg:mb-12"
         >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-5 rounded-full bg-orange-red/10 border border-orange-red/30">
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-red animate-pulse" />
+            <span className="font-body text-xs font-bold uppercase tracking-[0.18em] text-orange-red">{c.eyebrow || "This is what you're joining"}</span>
+          </span>
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight">
             {(() => {
               const h = c.headline || "See How It Works";
@@ -80,7 +84,7 @@ export default function SeeInsideSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="rounded-2xl overflow-hidden bg-dark-surface border border-dark-border aspect-video max-w-4xl mx-auto relative"
+          className="rounded-2xl overflow-hidden bg-dark-surface border-2 border-orange-red/25 aspect-video max-w-4xl mx-auto relative shadow-[0_8px_60px_-12px_rgba(0,255,247,0.25)]"
         >
           {ytId ? (
             <div className="relative w-full h-full">
