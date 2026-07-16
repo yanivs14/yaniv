@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Upload, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import PreOrderCountdown from "@/components/handstand/preorder/PreOrderCountdown";
 
 const MARQUEE_ITEMS = [
   "Lowest Price Ever",
@@ -12,28 +13,6 @@ const MARQUEE_ITEMS = [
 ];
 
 const HERO_IMG = "https://media.base44.com/images/public/6a0c583766eb003a373061f3/a2656cd64_generated_image.png";
-
-function useCountdown(targetDate) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false });
-  useEffect(() => {
-    if (!targetDate) return;
-    const calc = () => {
-      const diff = new Date(targetDate).getTime() - Date.now();
-      if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
-      return {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff % 86400000) / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-        seconds: Math.floor((diff % 60000) / 1000),
-        expired: false,
-      };
-    };
-    setTimeLeft(calc());
-    const id = setInterval(() => setTimeLeft(calc()), 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
-  return timeLeft;
-}
 
 function Marquee() {
   return (
@@ -46,40 +25,6 @@ function Marquee() {
           </span>
         ))}
       </div>
-    </div>
-  );
-}
-
-function CountdownTimer({ targetDate }) {
-  const { days, hours, minutes, seconds, expired } = useCountdown(targetDate);
-  if (expired) return null;
-  const units = [
-    { label: "Days", value: days },
-    { label: "Hours", value: hours },
-    { label: "Min", value: minutes },
-    { label: "Sec", value: seconds },
-  ];
-  return (
-    <div className="flex items-center justify-center gap-2 sm:gap-3">
-      {units.map((u, i) => (
-        <React.Fragment key={u.label}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: i * 0.08 }}
-            className="relative"
-          >
-            <div className="absolute -inset-0.5 bg-teal-400/20 rounded-2xl blur-sm" />
-            <div className="relative bg-white border border-gray-200 rounded-2xl px-3 py-2 sm:px-5 sm:py-3 text-center min-w-[56px] sm:min-w-[80px] shadow-sm">
-              <div className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-teal-600 tabular-nums leading-none">
-                {String(u.value).padStart(2, "0")}
-              </div>
-              <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-gray-500 mt-1">{u.label}</div>
-            </div>
-          </motion.div>
-          {i < units.length - 1 && <span className="font-heading text-xl sm:text-2xl text-gray-300 -mx-1">:</span>}
-        </React.Fragment>
-      ))}
     </div>
   );
 }
@@ -183,7 +128,7 @@ export default function PreOrderHero({ config, onCheckout, loading, onUpdateVide
           Special Pre-Order Price · Limited Time
         </motion.p>
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
-          <CountdownTimer targetDate={config.targetDate} />
+          <PreOrderCountdown targetDate={config.targetDate} />
         </motion.div>
       </div>
 

@@ -5,6 +5,7 @@ import { track, getGaClientId } from "@/lib/analytics";
 import PreOrderHero from "@/components/handstand/preorder/PreOrderHero";
 import PreOrderCurriculum from "@/components/handstand/preorder/PreOrderCurriculum";
 import PreOrderClosing from "@/components/handstand/preorder/PreOrderClosing";
+import PreOrderCountdown from "@/components/handstand/preorder/PreOrderCountdown";
 
 let _checkoutInProgress = false;
 async function startPreOrderCheckout() {
@@ -41,11 +42,12 @@ export default function HandstandPreOrder({ config, onUpdateVideo }) {
       {/* Sticky mobile checkout bar */}
       <div className="lg:hidden sticky bottom-0 z-50 bg-dark-bg/95 backdrop-blur-md border-t border-teal-500/30 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.3)]">
         <div className="flex flex-col">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-heading text-xl font-bold text-off-white leading-none">${config.price}</span>
-            <span className="font-body text-xs text-white-dim line-through">${config.originalPrice}</span>
+          <span className="font-body text-[9px] text-teal-400 font-bold uppercase tracking-[0.12em] leading-tight">Special Pre-Order Price · Limited Time</span>
+          <div className="flex items-baseline gap-1.5 mt-0.5">
+            <span className="font-heading text-lg font-bold text-off-white leading-none">${config.price}</span>
+            <span className="font-body text-[11px] text-white-dim line-through">${config.originalPrice}</span>
           </div>
-          <span className="font-body text-[10px] text-teal-400 font-semibold uppercase tracking-wide">{config.discountText}</span>
+          <PreOrderCountdown targetDate={config.targetDate} compact />
         </div>
         <button
           onClick={handleCheckout}
