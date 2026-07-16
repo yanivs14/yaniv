@@ -259,7 +259,7 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-dark-bg border border-gold rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0">
+            className="bg-dark-bg border border-dark-border rounded-2xl p-8 pb-10 relative flex flex-col mt-6 md:mt-0">
             
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-dark-bg text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">{c.innerCircleBadge || "By Application Only"}</span>
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-4">{c.innerCircleSubtitle || "Private Coaching"}</p>
@@ -285,7 +285,7 @@ export default function PricingSection() {
             </ul>
             <button
               onClick={handleApplyInner}
-              className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-6">
+              className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-6">
               
               {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
             </button>
@@ -392,7 +392,7 @@ export default function PricingSection() {
             </div>
 
             {/* Inner Circle mobile */}
-            <div className="flex-shrink-0 w-[75vw] snap-center bg-dark-bg border border-gold rounded-2xl p-5 pb-6 relative flex flex-col">
+            <div className="flex-shrink-0 w-[75vw] snap-center bg-dark-bg border border-dark-border rounded-2xl p-5 pb-6 relative flex flex-col">
               <span className="absolute -top-3 left-3 right-3 text-center bg-gold text-dark-bg text-[9px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">{c.innerCircleBadge || "By Application Only"}</span>
               <p className="font-body text-sm font-bold text-off-white uppercase tracking-widest mb-3 mt-2">{c.innerCircleSubtitle || "Private Coaching"}</p>
               <p className="font-heading text-4xl font-bold text-gold uppercase mb-1">{c.innerCircleTitle || "Inner Circle"}</p>
@@ -413,7 +413,7 @@ export default function PricingSection() {
               </ul>
               <button
                 onClick={handleApplyInner}
-                className="flex items-center justify-center gap-2 w-full bg-gold text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-gold/90 transition-colors mt-5">
+                className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors mt-5">
                 
                 {c.innerCircleCta || "Apply for Inner Circle"} <ArrowRight className="w-4 h-4" />
               </button>
