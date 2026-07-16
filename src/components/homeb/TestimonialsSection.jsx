@@ -36,11 +36,9 @@ function TestimonialCard({ t }) {
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1 mb-4">"{t.quote}"</p>
-        <div className="mt-auto">
-          <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
-          <p className="font-body text-xs text-white-muted">{t.role}</p>
-        </div>
+        <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
+        <p className="font-body text-xs text-white-muted mb-3">{t.role}</p>
+        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1 mt-auto border-l-2 border-orange-red/40 pl-3">"{t.quote}"</p>
       </div>
     </div>
   );
