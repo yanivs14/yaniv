@@ -84,13 +84,13 @@ export default function HandstandLanding() {
       <HandstandNavbar c={content.navbar} />
       <HandstandHero c={content.hero} targetDate={preOrder.targetDate} />
       <HandstandVideoSection c={content.showcase} />
+      <HandstandWhatYouGet c={content.whatYouGet} />
       <HandstandMarquee />
       <HandstandProblem c={content.problem} />
       <HandstandSolution c={content.solution} />
       <HandstandPhases c={content.phases} />
       <HandstandCurriculum c={content.curriculum} />
       <HandstandInstructor c={content.instructor} />
-      <HandstandWhatYouGet c={content.whatYouGet} />
       <TestimonialsSection />
       <HandstandPricing c={content.pricing} />
       <HandstandFAQ c={content.faq} />

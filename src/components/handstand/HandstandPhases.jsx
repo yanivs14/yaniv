@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
-function PhaseItem({ item, isOpen, onToggle, index }) {
+function PhaseItem({ item, isOpen, onToggle }) {
   return (
     <div className="border-b border-dark-border last:border-b-0">
       <button
         onClick={onToggle}
         className="w-full flex items-center gap-4 sm:gap-6 py-5 sm:py-6 text-left group"
       >
-        <span className="font-heading text-2xl sm:text-3xl font-bold text-orange-red/50 group-hover:text-orange-red transition-colors flex-shrink-0 tabular-nums">
+        <span className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white-dim/40 group-hover:text-orange-red/50 transition-colors flex-shrink-0 tabular-nums leading-none">
           {item.number}
         </span>
         <div className="flex-1 min-w-0">
           <p className="font-heading text-lg sm:text-2xl font-bold text-off-white uppercase tracking-tight leading-tight">
             {item.title}
           </p>
-          <p className="font-body text-sm text-white-muted mt-0.5">{item.subtitle}</p>
+          {!isOpen && (
+            <p className="font-body text-sm text-white-muted mt-0.5 truncate">{item.subtitle}</p>
+          )}
         </div>
-        <span className={`flex-shrink-0 w-9 h-9 rounded-full border border-dark-border flex items-center justify-center text-white-muted group-hover:border-orange-red group-hover:text-orange-red transition-colors ${isOpen ? "bg-orange-red/10 border-orange-red text-orange-red" : ""}`}>
-          {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+        <span className={`flex-shrink-0 w-9 h-9 rounded-full border border-dark-border flex items-center justify-center text-white-muted group-hover:border-orange-red group-hover:text-orange-red transition-all ${isOpen ? "bg-orange-red/10 border-orange-red text-orange-red" : ""}`}>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
         </span>
       </button>
       <AnimatePresence initial={false}>
@@ -32,6 +34,7 @@ function PhaseItem({ item, isOpen, onToggle, index }) {
             className="overflow-hidden"
           >
             <div className="pb-6 pl-12 sm:pl-16 pr-4">
+              <p className="font-body text-sm font-semibold text-orange-red mb-2">{item.subtitle}</p>
               <p className="font-body text-sm sm:text-base text-white-muted leading-relaxed">{item.description}</p>
             </div>
           </motion.div>
@@ -80,7 +83,6 @@ export default function HandstandPhases({ c }) {
             <PhaseItem
               key={i}
               item={item}
-              index={i}
               isOpen={openIndex === i}
               onToggle={() => setOpenIndex(openIndex === i ? -1 : i)}
             />
