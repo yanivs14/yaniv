@@ -80,12 +80,13 @@ export const defaultHandstandContent = {
     imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80",
   },
   testimonials: {
-    eyebrow: "Student Wins",
-    headline: "Real Students. Real Results.",
+    eyebrow: "Testimonials",
+    headline: "Real members. Their words, on camera.",
+    subtitle: "Around day 21, the change is visible.",
     items: [
-      { quote: "I tried learning handstands for 2 years on my own. This course got me to my first 10-second wall-free hold in 6 weeks.", name: "Sarah M.", role: "Yoga Teacher" },
-      { quote: "The progression is so clear. Every week I could feel myself getting closer. By week 7, I held my first handstand.", name: "James K.", role: "Fitness Enthusiast" },
-      { quote: "As a complete beginner, I was terrified of falling. The bail techniques alone were worth the price.", name: "Lisa R.", role: "Beginner" },
+      { name: "Sarah M.", role: "Yoga Teacher", quote: "I tried learning handstands for 2 years on my own. This course got me to my first 10-second wall-free hold in 6 weeks.", videoUrl: "", img: "" },
+      { name: "James K.", role: "Fitness Enthusiast", quote: "The progression is so clear. Every week I could feel myself getting closer. By week 7, I held my first handstand.", videoUrl: "", img: "" },
+      { name: "Lisa R.", role: "Beginner", quote: "As a complete beginner, I was terrified of falling. The bail techniques alone were worth the price.", videoUrl: "", img: "" },
     ],
   },
   pricing: {

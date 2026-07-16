@@ -219,15 +219,18 @@ function SectionEditor({ sectionKey, content, update }) {
       <div>
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
+        {f("subtitle", "Subtitle", true)}
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Testimonials</p>
         {data.items?.map((t, i) => (
           <ArrayItem key={i} index={i} label="Testimonial" onRemove={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}>
-            <Field label="Quote" value={t.quote} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], quote: v }; update(sectionKey, "items", a); }} multiline />
             <Field label="Name" value={t.name} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], name: v }; update(sectionKey, "items", a); }} />
             <Field label="Role" value={t.role} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], role: v }; update(sectionKey, "items", a); }} />
+            <Field label="Quote" value={t.quote} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], quote: v }; update(sectionKey, "items", a); }} multiline />
+            <MediaField label="Video File" value={t.videoUrl} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], videoUrl: v }; update(sectionKey, "items", a); }} isVideo />
+            <MediaField label="Poster Image" value={t.img} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], img: v }; update(sectionKey, "items", a); }} />
           </ArrayItem>
         ))}
-        <button onClick={() => update(sectionKey, "items", [...(data.items || []), { quote: "New quote", name: "Name", role: "Role" }])}
+        <button onClick={() => update(sectionKey, "items", [...(data.items || []), { name: "Name", role: "Role", quote: "New quote", videoUrl: "", img: "" }])}
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
           <Plus className="w-4 h-4" /> Add testimonial
         </button>
