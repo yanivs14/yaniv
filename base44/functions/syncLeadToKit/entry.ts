@@ -137,9 +137,10 @@ Deno.serve(async (req) => {
       console.warn("Kit form subscription error:", formErr.message);
     }
 
-    // Tag the lead with "LP_Leads_June26" (quiz / Inner Circle lead saved)
+    // Tag the lead: "Inner Circle" for Inner Circle leads, otherwise "LP_Leads_June26"
     if (subscriberId) {
-      await tagSubscriber(subscriberId, ["LP_Leads_June26"]);
+      const tagName = source === "inner_circle" ? "Inner Circle" : "LP_Leads_June26";
+      await tagSubscriber(subscriberId, [tagName]);
     }
 
     if (subscriberId || formSubscribed) {

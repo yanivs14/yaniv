@@ -121,10 +121,11 @@ Deno.serve(async (req) => {
             console.warn("Kit form subscribe error:", formErr.message);
           }
 
-          // Tag subscriber with LP_Leads_June26
+          // Tag subscriber with Inner Circle (for Inner Circle leads) or LP_Leads_June26
           if (kitSubscriberId) {
             try {
-              const tagMap = await ensureKitTags(kitKey, ["LP_Leads_June26"]);
+              const tagName = isInnerCircle ? "Inner Circle" : "LP_Leads_June26";
+              const tagMap = await ensureKitTags(kitKey, [tagName]);
               for (const [name, tagId] of Object.entries(tagMap)) {
                 const tagRes = await fetch(`https://api.kit.com/v4/tags/${tagId}/subscribers/${kitSubscriberId}`, {
                   method: "POST",
