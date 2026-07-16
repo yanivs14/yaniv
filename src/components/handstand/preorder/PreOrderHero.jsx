@@ -121,7 +121,7 @@ export default function PreOrderHero({ config, onCheckout, loading }) {
   return (
     <>
       <Marquee />
-      <section className="relative min-h-[92vh] flex items-center justify-center px-6 py-16 lg:py-24 overflow-hidden bg-gray-50">
+      <section className="relative min-h-screen lg:min-h-[88vh] flex items-center px-6 py-14 lg:py-16 overflow-hidden bg-gray-50">
         {/* Background */}
         <div className="absolute inset-0">
           <img src={HERO_IMG} alt="" className="w-full h-full object-cover opacity-10" />
@@ -132,36 +132,40 @@ export default function PreOrderHero({ config, onCheckout, loading }) {
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-teal-400/10 rounded-full blur-[140px]" />
         </div>
 
-        <div className="relative max-w-3xl mx-auto flex flex-col items-center text-center gap-7">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <CountdownTimer targetDate={config.targetDate} />
-          </motion.div>
+        <div className="relative w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          {/* Left: countdown + headline + subtitle */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <CountdownTimer targetDate={config.targetDate} />
+            </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] text-gray-900 uppercase tracking-tight"
-          >
-            Master Your<br />
-            Handstand In<br />
-            <span className="text-teal-600">4 Stages</span>
-          </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[0.9] text-gray-900 uppercase tracking-tight"
+            >
+              Master Your<br />
+              Handstand In<br />
+              <span className="text-teal-600">4 Stages</span>
+            </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-body text-base lg:text-lg text-gray-600 font-medium leading-relaxed max-w-xl"
-          >
-            Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="font-body text-base lg:text-lg text-gray-600 font-medium leading-relaxed max-w-xl"
+            >
+              Handstands are a skill, not a talent. Step-by-step video lessons from first kick-up to one-arm prep — taught by Roye Gold.
+            </motion.p>
+          </div>
 
+          {/* Right: pricing card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="w-full max-w-md"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="w-full max-w-md mx-auto lg:max-w-none"
           >
             <PricingCard config={config} onCheckout={onCheckout} loading={loading} />
           </motion.div>

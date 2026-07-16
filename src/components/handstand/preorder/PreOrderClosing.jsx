@@ -1,56 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, Shield, Infinity as InfinityIcon, Quote } from "lucide-react";
-
-const TESTIMONIALS = [
-  { initial: "M", name: "Maya R.", role: "Foundation → Balance", quote: "I went from barely holding a wall stand to my first freestanding handstand in weeks. The step-by-step phases finally made it click." },
-  { initial: "D", name: "Daniel K.", role: "Calisthenics athlete", quote: "Roye breaks down alignment better than any coach I've worked with. Clear, no fluff, and the progressions actually build on each other." },
-];
+import { ArrowRight, Lock, Shield, Infinity as InfinityIcon } from "lucide-react";
 
 export default function PreOrderClosing({ config, onCheckout, loading }) {
   return (
     <>
-      {/* Testimonials */}
-      <section className="relative py-16 lg:py-24 px-6 border-t border-gray-200 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 uppercase tracking-tight leading-[0.95]">
-              Real students,<br /><span className="text-teal-600">real results</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative bg-white border border-gray-200 rounded-2xl p-6 lg:p-8 overflow-hidden shadow-sm"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-400/8 rounded-full blur-3xl" />
-                <Quote className="w-10 h-10 text-teal-200 mb-4" fill="currentColor" />
-                <p className="relative font-body text-sm lg:text-base text-gray-600 italic leading-relaxed mb-6">"{t.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-orange-red flex items-center justify-center font-heading text-lg font-bold text-dark-bg">{t.initial}</div>
-                  <div>
-                    <p className="font-body text-sm font-semibold text-gray-900">{t.name}</p>
-                    <p className="font-body text-[11px] text-gray-500">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="relative py-20 lg:py-32 px-6 border-t border-gray-200 overflow-hidden bg-gray-50">
         <div className="absolute inset-0 pointer-events-none">
