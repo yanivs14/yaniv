@@ -285,4 +285,35 @@ export function trackPurchase(transactionId, value, currency, plan, customerEmai
     product: plan || "",
     quantity: 1,
   });
+
+  // Meta Pixel: Subscribe for subscriptions (monthly/annual/promo), Purchase for one-time
+  const isSubscription = SUBSCRIPTION_PLANS.includes(plan);
+  trackMetaPixel(isSubscription ? "Subscribe" : "Purchase", {
+    value: value || 0,
+    currency: currency || "USD",
+    content_name: plan || "",
+    content_type: "product",
+    content_ids: [plan || ""],
+  });
+}
+
+// ── Meta Pixel ──
+
+const SUBSCRIPTION_PLANS = ["monthly", "annual", "promo"];
+
+function trackMetaPixel(eventName, params = {}) {
+  if (typeof window.fbq === "function") {
+    window.fbq("track", eventName, params);
+  }
+}
+
+/** Track AddToCart — fires Meta Pixel client-side */
+export function trackMetaAddToCart({ value, currency, planType, planLabel }) {
+  trackMetaPixel("AddToCart", {
+    value: value || 0,
+    currency: currency || "USD",
+    content_name: planLabel || planType || "",
+    content_type: "product",
+    content_ids: [planType || ""],
+  });
 }

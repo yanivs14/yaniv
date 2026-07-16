@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { base44 } from "@/api/base44Client";
-import { trackPricingViewed, track, getGaClientId } from "@/lib/analytics";
+import { trackPricingViewed, track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 import { useSectionTracking } from "@/hooks/useSectionTracking";
 import BookCallModal from "@/components/landing/BookCallModal";
 import InnerCircleQualification from "@/components/homeb/InnerCircleQualification";
@@ -20,6 +20,9 @@ async function startCheckout(plan) {
   _checkoutInProgress = true;
   try {
     track('begin_checkout', { currency: 'USD', plan_type: plan, plan_options: ['monthly', 'annual', 'inner_circle'], page_state: 'pricing_section' });
+    const _planValues = { monthly: 35, annual: 250, promo: 25 };
+    const _planLabels = { monthly: "Monthly Membership", annual: "Annual Membership", promo: "Promo Membership" };
+    trackMetaAddToCart({ value: _planValues[plan] || 0, currency: "USD", planType: plan, planLabel: _planLabels[plan] || plan });
     const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {

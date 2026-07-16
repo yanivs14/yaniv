@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, getGaClientId } from "@/lib/analytics";
+import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 import { useCountdown } from "@/components/handstand/preorder/PreOrderCountdown";
 
 let _checkoutInProgress = false;
@@ -14,6 +14,7 @@ async function startCheckout() {
   _checkoutInProgress = true;
   try {
     track("begin_checkout", { currency: "USD", plan_type: "handstand_course", page_state: "handstand_sticky_bar" });
+    trackMetaAddToCart({ value: 97, currency: "USD", planType: "handstand_course", planLabel: "Handstand Course" });
     const res = await base44.functions.invoke("createHandstandCheckout", { ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {

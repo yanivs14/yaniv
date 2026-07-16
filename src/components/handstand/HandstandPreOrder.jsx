@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, getGaClientId } from "@/lib/analytics";
+import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 import PreOrderHero from "@/components/handstand/preorder/PreOrderHero";
 import PreOrderCurriculum from "@/components/handstand/preorder/PreOrderCurriculum";
 import PreOrderClosing from "@/components/handstand/preorder/PreOrderClosing";
@@ -29,6 +29,7 @@ export default function HandstandPreOrder({ config, onUpdateVideo }) {
 
   const handleCheckout = async () => {
     setLoading(true);
+    trackMetaAddToCart({ value: parseFloat(config.price) || 74.25, currency: "USD", planType: "handstand_course", planLabel: "Handstand Course Pre-Order" });
     await startPreOrderCheckout();
     setLoading(false);
   };

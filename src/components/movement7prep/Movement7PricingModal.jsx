@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, trackPricingViewed, getGaClientId } from "@/lib/analytics";
+import { track, trackPricingViewed, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 
 const PLANS = [
   {
@@ -57,6 +57,9 @@ export default function Movement7PricingModal({ open, onClose, accent = "#00fff7
     }
     checkoutRef.current = true;
     track('begin_checkout', { plan_type: plan, source: '7day', currency: 'USD', plan_options: ['annual', 'monthly'], page_state: '7day_pricing_modal' });
+    const _planValues = { monthly: 35, annual: 250 };
+    const _planLabels = { monthly: "7-Day Movement Monthly", annual: "7-Day Movement Annual" };
+    trackMetaAddToCart({ value: _planValues[plan] || 0, currency: "USD", planType: plan, planLabel: _planLabels[plan] || plan });
     setLoading(plan);
     setError("");
     try {

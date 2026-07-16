@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowRight, Shield } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track, getGaClientId } from "@/lib/analytics";
+import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 
 let _checkoutInProgress = false;
 
@@ -19,6 +19,7 @@ async function startCheckout() {
       plan_type: "handstand_course",
       page_state: "handstand_pricing",
     });
+    trackMetaAddToCart({ value: 97, currency: "USD", planType: "handstand_course", planLabel: "Handstand Course" });
     const res = await base44.functions.invoke("createHandstandCheckout", {
       ga_client_id: getGaClientId(),
     });
