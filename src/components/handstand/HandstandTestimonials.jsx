@@ -1,78 +1,118 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+
+function TestimonialCard({ t }) {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef();
+
+  const handlePlay = () => {
+    setPlaying(true);
+    setTimeout(() => videoRef.current?.play(), 50);
+  };
+
+  return (
+    <div className="bg-dark-surface border border-dark-border rounded-2xl overflow-hidden flex-shrink-0 w-72 sm:w-80 snap-start flex flex-col">
+      <div className="aspect-[3/4] overflow-hidden relative flex-shrink-0">
+        {t.videoUrl ? (
+          <>
+            {!playing ? (
+              <div className="w-full h-full cursor-pointer" onClick={handlePlay}>
+                <img src={t.img || t.videoUrl} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <div className="w-14 h-14 bg-orange-red rounded-full flex items-center justify-center">
+                    <Play className="w-6 h-6 text-dark-bg fill-dark-bg ml-1" />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <video ref={videoRef} src={t.videoUrl} className="w-full h-full object-cover" controls playsInline onClick={e => e.stopPropagation()} onTouchStart={e => e.stopPropagation()} />
+            )}
+          </>
+        ) : t.img ? (
+          <img src={t.img} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
+        ) : null}
+      </div>
+      <div className="p-5 flex flex-col flex-1">
+        <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
+        <p className="font-body text-xs text-white-muted mb-3">{t.role}</p>
+        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1">"{t.quote}"</p>
+      </div>
+    </div>
+  );
+}
 
 export default function HandstandTestimonials({ c }) {
-  const items = c?.items || [];
-  return (
-    <section className="py-20 lg:py-28 bg-dark-surface relative overflow-hidden">
-      {/* Glow */}
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-orange-red/3 rounded-full blur-[120px]" />
+  const scrollRef = useRef();
+  if (!c) return null;
 
-      <div className="relative max-w-6xl mx-auto px-6 lg:px-10">
+  const items = c.items || [];
+  const stats = c.stats || [];
+
+  const scroll = (dir) => {
+    scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+  };
+
+  return (
+    <section className="py-12 lg:py-24 bg-dark-bg" id="members">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-14 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4"
+          className="mb-10 flex flex-col items-center text-center"
         >
-          <div>
-            <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight leading-[0.95]">
-              Real Students.<br />
-              <span className="text-orange-red">Real Results.</span>
-            </h2>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, j) => (
-                <Star key={j} className="w-5 h-5 fill-orange-red text-orange-red" />
-              ))}
-            </div>
-            <div>
-              <p className="font-heading text-2xl font-bold text-off-white">4.9/5</p>
-              <p className="font-body text-xs text-white-dim uppercase tracking-wider">from 200+ students</p>
-            </div>
-          </div>
+          {c.eyebrow && <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>}
+          <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+            {c.headline1}<br />
+            <span className="text-orange-red">{c.headlineAccent}</span>
+          </h2>
+          {c.subtitle && <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>}
         </motion.div>
 
-        {/* Masonry-style staggered grid */}
-        <div className="grid md:grid-cols-3 gap-5">
-          {items.map((t, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`group relative bg-dark-bg border border-dark-border rounded-2xl p-6 lg:p-7 flex flex-col hover:border-orange-red/30 transition-colors duration-300 ${i === 1 ? "md:mt-8" : ""}`}
-            >
-              {/* Large decorative quote */}
-              <Quote className="absolute top-5 right-5 w-10 h-10 text-orange-red/10 group-hover:text-orange-red/20 transition-colors" />
-
-              <div className="flex gap-0.5 mb-4">
-                {[...Array(5)].map((_, j) => (
-                  <Star key={j} className="w-4 h-4 fill-orange-red text-orange-red" />
+        {items.length > 0 && (
+          <div className="relative">
+            <div className="sm:hidden">
+              <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                {items.map((t, i) => (
+                  <TestimonialCard key={i} t={t} />
                 ))}
               </div>
-
-              <p className="font-body text-sm text-off-white/90 leading-relaxed flex-1 mb-6 relative z-10">"{t.quote}"</p>
-
-              <div className="flex items-center gap-3 pt-4 border-t border-dark-border">
-                {/* Avatar with initial */}
-                <div className="w-10 h-10 rounded-full bg-orange-red/10 border border-orange-red/20 flex items-center justify-center flex-shrink-0">
-                  <span className="font-heading text-base font-bold text-orange-red">
-                    {t.name?.charAt(0) || "?"}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-body text-sm font-bold text-off-white">{t.name}</p>
-                  <p className="font-body text-xs text-white-dim">{t.role}</p>
-                </div>
+              <div className="flex justify-center gap-3 mt-4">
+                <button onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-dark-border bg-dark-surface flex items-center justify-center text-white-muted hover:border-orange-red hover:text-orange-red transition-colors">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            </motion.div>
-          ))}
-        </div>
+            </div>
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center">
+              {items.map((t, i) => (
+                <TestimonialCard key={i} t={t} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {stats.length > 0 && (
+          <div className="grid grid-cols-3 gap-8 border-t border-dark-border pt-12 mt-12">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
+                className="text-center"
+              >
+                <div className="font-heading text-5xl lg:text-6xl font-bold text-orange-red">{stat.value}</div>
+                <p className="mt-2 font-body text-sm text-white-muted">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

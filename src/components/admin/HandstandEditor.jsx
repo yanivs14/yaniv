@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Save, Plus, Trash2, Loader2, AlertCircle, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
-import { useSiteContent } from "@/lib/SiteContentContext";
 
 const SECTIONS = [
   { key: "navbar", label: "Navbar" },
@@ -88,56 +87,6 @@ function ArrayItem({ index, onRemove, children, label }) {
 }
 
 function SectionEditor({ sectionKey, content, update }) {
-  const { content: siteContent, update: siteUpdate, updateDeep: siteUpdateDeep } = useSiteContent();
-
-  // Testimonials uses shared SiteContent (same as homepage), not LandingPageContent
-  if (sectionKey === "testimonials") {
-    const tData = siteContent?.testimonials;
-    if (!tData) return null;
-    const tf = (key, label, multiline = false) => (
-      <Field key={key} label={label} value={tData[key]} onChange={(v) => siteUpdate("testimonials", key, v)} multiline={multiline} />
-    );
-    const tm = (key, label, isVideo = false) => (
-      <MediaField key={key} label={label} value={tData[key]} onChange={(v) => siteUpdate("testimonials", key, v)} isVideo={isVideo} />
-    );
-    return (
-      <div>
-        <div className="bg-orange-red/5 border border-orange-red/20 rounded-xl p-3 mb-4">
-          <p className="text-xs text-orange-red font-body">Shared with homepage — changes affect both pages.</p>
-        </div>
-        {tf("eyebrow", "Eyebrow")}
-        {tf("headline1", "Headline (first line)")}
-        {tf("headlineAccent", "Headline Accent (highlighted in teal)")}
-        {tf("subtitle", "Subtitle", true)}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Testimonials</p>
-        {tData.items?.map((t, i) => (
-          <ArrayItem key={i} index={i} label="Testimonial" onRemove={() => siteUpdate("testimonials", "items", tData.items.filter((_, idx) => idx !== i))}>
-            <Field label="Name" value={t.name} onChange={(v) => siteUpdateDeep("testimonials", "items", i, "name", v)} />
-            <Field label="Role" value={t.role} onChange={(v) => siteUpdateDeep("testimonials", "items", i, "role", v)} />
-            <Field label="Quote" value={t.quote} onChange={(v) => siteUpdateDeep("testimonials", "items", i, "quote", v)} multiline />
-            <MediaField label="Photo" value={t.img} onChange={(v) => siteUpdateDeep("testimonials", "items", i, "img", v)} />
-            <MediaField label="Video (optional)" value={t.videoUrl} onChange={(v) => siteUpdateDeep("testimonials", "items", i, "videoUrl", v)} isVideo />
-          </ArrayItem>
-        ))}
-        <button onClick={() => siteUpdate("testimonials", "items", [...(tData.items || []), { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add testimonial
-        </button>
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Social Stats</p>
-        {tData.stats?.map((s, i) => (
-          <ArrayItem key={i} index={i} label="Stat" onRemove={() => siteUpdate("testimonials", "stats", tData.stats.filter((_, idx) => idx !== i))}>
-            <Field label="Value" value={s.value} onChange={(v) => siteUpdateDeep("testimonials", "stats", i, "value", v)} />
-            <Field label="Label" value={s.label} onChange={(v) => siteUpdateDeep("testimonials", "stats", i, "label", v)} />
-          </ArrayItem>
-        ))}
-        <button onClick={() => siteUpdate("testimonials", "stats", [...(tData.stats || []), { value: "", label: "" }])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add stat
-        </button>
-      </div>
-    );
-  }
-
   if (!content) return null;
   const data = content[sectionKey];
   if (!data) return null;
@@ -261,6 +210,42 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("title", "Title")}
         {f("bio", "Bio", true)}
         {m("imageUrl", "Instructor Image")}
+      </div>
+    );
+  }
+
+  if (sectionKey === "testimonials") {
+    return (
+      <div>
+        {f("eyebrow", "Eyebrow")}
+        {f("headline1", "Headline (first line)")}
+        {f("headlineAccent", "Headline Accent (highlighted in teal)")}
+        {f("subtitle", "Subtitle", true)}
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Testimonials</p>
+        {data.items?.map((t, i) => (
+          <ArrayItem key={i} index={i} label="Testimonial" onRemove={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}>
+            <Field label="Name" value={t.name} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], name: v }; update(sectionKey, "items", a); }} />
+            <Field label="Role" value={t.role} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], role: v }; update(sectionKey, "items", a); }} />
+            <Field label="Quote" value={t.quote} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], quote: v }; update(sectionKey, "items", a); }} multiline />
+            <MediaField label="Photo" value={t.img} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], img: v }; update(sectionKey, "items", a); }} />
+            <MediaField label="Video (optional)" value={t.videoUrl} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], videoUrl: v }; update(sectionKey, "items", a); }} isVideo />
+          </ArrayItem>
+        ))}
+        <button onClick={() => update(sectionKey, "items", [...(data.items || []), { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add testimonial
+        </button>
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Social Stats</p>
+        {data.stats?.map((s, i) => (
+          <ArrayItem key={i} index={i} label="Stat" onRemove={() => update(sectionKey, "stats", data.stats.filter((_, idx) => idx !== i))}>
+            <Field label="Value" value={s.value} onChange={(v) => { const a = [...data.stats]; a[i] = { ...a[i], value: v }; update(sectionKey, "stats", a); }} />
+            <Field label="Label" value={s.label} onChange={(v) => { const a = [...data.stats]; a[i] = { ...a[i], label: v }; update(sectionKey, "stats", a); }} />
+          </ArrayItem>
+        ))}
+        <button onClick={() => update(sectionKey, "stats", [...(data.stats || []), { value: "", label: "" }])}
+          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+          <Plus className="w-4 h-4" /> Add stat
+        </button>
       </div>
     );
   }

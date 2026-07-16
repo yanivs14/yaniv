@@ -81,11 +81,18 @@ export const defaultHandstandContent = {
   },
   testimonials: {
     eyebrow: "Student Wins",
-    headline: "Real Students. Real Results.",
+    headline1: "Real Students.",
+    headlineAccent: "Real Results.",
+    subtitle: "See how students transformed their practice with the Handstand Blueprint.",
     items: [
-      { quote: "I tried learning handstands for 2 years on my own. This course got me to my first 10-second wall-free hold in 6 weeks.", name: "Sarah M.", role: "Yoga Teacher" },
-      { quote: "The progression is so clear. Every week I could feel myself getting closer. By week 7, I held my first handstand.", name: "James K.", role: "Fitness Enthusiast" },
-      { quote: "As a complete beginner, I was terrified of falling. The bail techniques alone were worth the price.", name: "Lisa R.", role: "Beginner" },
+      { name: "Sarah M.", role: "Yoga Teacher", quote: "I tried learning handstands for 2 years on my own. This course got me to my first 10-second wall-free hold in 6 weeks.", img: "", videoUrl: "" },
+      { name: "James K.", role: "Fitness Enthusiast", quote: "The progression is so clear. Every week I could feel myself getting closer. By week 7, I held my first handstand.", img: "", videoUrl: "" },
+      { name: "Lisa R.", role: "Beginner", quote: "As a complete beginner, I was terrified of falling. The bail techniques alone were worth the price.", img: "", videoUrl: "" },
+    ],
+    stats: [
+      { value: "6wks", label: "to first wall-free hold" },
+      { value: "500+", label: "students trained" },
+      { value: "4.9", label: "avg rating" },
     ],
   },
   pricing: {
