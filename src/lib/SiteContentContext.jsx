@@ -258,6 +258,8 @@ const DEFAULT_CONTENT = {
     price: "99",
     originalPrice: "149",
     discountText: "Save 34%",
+    videoUrl: "",
+    videoPoster: "",
   },
 };
 

@@ -22,7 +22,7 @@ async function startPreOrderCheckout() {
   }
 }
 
-export default function HandstandPreOrder({ config }) {
+export default function HandstandPreOrder({ config, onUpdateVideo }) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -33,7 +33,7 @@ export default function HandstandPreOrder({ config }) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
-      <PreOrderHero config={config} onCheckout={handleCheckout} loading={loading} />
+      <PreOrderHero config={config} onCheckout={handleCheckout} loading={loading} onUpdateVideo={onUpdateVideo} />
       <PreOrderCurriculum />
       <PreOrderClosing config={config} onCheckout={handleCheckout} loading={loading} />
     </div>

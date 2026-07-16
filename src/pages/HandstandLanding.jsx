@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 import HandstandNavbar from "@/components/handstand/HandstandNavbar";
@@ -14,11 +14,12 @@ import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
 import HandstandPreOrder from "@/components/handstand/HandstandPreOrder";
 
-const DEFAULT_PREORDER = { enabled: false, targetDate: "", price: "99", originalPrice: "149", discountText: "Save 34%" };
+const DEFAULT_PREORDER = { enabled: false, targetDate: "", price: "99", originalPrice: "149", discountText: "Save 34%", videoUrl: "", videoPoster: "" };
 
 export default function HandstandLanding() {
   const [content, setContent] = useState(null);
   const [preOrder, setPreOrder] = useState(DEFAULT_PREORDER);
+  const [preOrderRecordId, setPreOrderRecordId] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -41,6 +42,7 @@ export default function HandstandLanding() {
         if (!mounted) return;
         if (records.length > 0 && records[0].data) {
           setPreOrder({ ...DEFAULT_PREORDER, ...records[0].data });
+          setPreOrderRecordId(records[0].id);
         }
       } catch {
         // Keep default (enabled: false) — regular page renders
@@ -48,6 +50,16 @@ export default function HandstandLanding() {
     })();
     return () => { mounted = false; };
   }, []);
+
+  const updatePreOrder = useCallback(async (field, value) => {
+    setPreOrder((prev) => {
+      const next = { ...prev, [field]: value };
+      if (preOrderRecordId) {
+        base44.entities.SiteContent.update(preOrderRecordId, { data: next }).catch(() => {});
+      }
+      return next;
+    });
+  }, [preOrderRecordId]);
 
   if (!content) {
     return (
@@ -60,7 +72,7 @@ export default function HandstandLanding() {
   const preOrderActive = preOrder.enabled && preOrder.targetDate && new Date(preOrder.targetDate).getTime() > Date.now();
 
   if (preOrderActive) {
-    return <HandstandPreOrder config={preOrder} />;
+    return <HandstandPreOrder config={preOrder} onUpdateVideo={updatePreOrder} />;
   }
 
   return (
