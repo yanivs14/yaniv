@@ -16,28 +16,43 @@ function getYouTubeId(url) {
 
 export default function HandstandVideoSection({ c }) {
   const [playing, setPlaying] = useState(false);
+  const [videoAspect, setVideoAspect] = useState(null);
   const iframeRef = useRef(null);
+  const videoRef = useRef(null);
 
   const ytId = getYouTubeId(c?.youtubeUrl);
   const poster = c?.posterUrl || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : "");
   const videoUrl = c?.videoUrl;
 
-  const handlePlay = () => {
+  const handleYtPlay = () => {
     setPlaying(true);
-    if (ytId) {
-      const sendPlay = () => {
-        iframeRef.current?.contentWindow?.postMessage(
-          JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-          "*"
-        );
-      };
-      [100, 500, 1000, 2000].forEach((delay) => setTimeout(sendPlay, delay));
+    const sendPlay = () => {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+        "*"
+      );
+    };
+    [100, 500, 1000, 2000].forEach((delay) => setTimeout(sendPlay, delay));
+  };
+
+  const handleVideoPlay = () => {
+    setPlaying(true);
+    setTimeout(() => videoRef.current?.play(), 50);
+  };
+
+  const handleLoadedMetadata = () => {
+    const v = videoRef.current;
+    if (v && v.videoWidth && v.videoHeight) {
+      setVideoAspect(v.videoWidth / v.videoHeight);
     }
   };
 
   const headline = c?.headline || "See It In Action";
   const headlineParts = headline.split(" ");
   const headlineLast = headlineParts.pop();
+
+  const isPortrait = videoAspect != null && videoAspect < 1;
+  const containerAspect = videoAspect ? `${videoAspect}` : "16 / 9";
 
   return (
     <section className="relative bg-dark-bg py-14 lg:py-20 overflow-hidden" id="showcase">
@@ -66,7 +81,8 @@ export default function HandstandVideoSection({ c }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="rounded-2xl overflow-hidden bg-dark-surface border border-dark-border aspect-video w-full relative shadow-[0_8px_60px_-12px_rgba(0,255,247,0.2)]"
+          className={`rounded-2xl overflow-hidden bg-black border border-dark-border w-full relative shadow-[0_8px_60px_-12px_rgba(0,255,247,0.2)] ${isPortrait ? "max-w-sm mx-auto" : ""}`}
+          style={{ aspectRatio: containerAspect }}
         >
           {ytId ? (
             <div className="relative w-full h-full">
@@ -80,7 +96,7 @@ export default function HandstandVideoSection({ c }) {
                 frameBorder="0"
               />
               {!playing && (
-                <button onClick={handlePlay} className="absolute inset-0 w-full h-full group block cursor-pointer">
+                <button onClick={handleYtPlay} className="absolute inset-0 w-full h-full group block cursor-pointer">
                   {poster && <img src={poster} alt="Showcase" className="w-full h-full object-cover" />}
                   <span className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
                   <span className="absolute inset-0 flex items-center justify-center">
@@ -92,15 +108,34 @@ export default function HandstandVideoSection({ c }) {
               )}
             </div>
           ) : videoUrl ? (
-            <video
-              src={videoUrl}
-              poster={poster || undefined}
-              controls
-              playsInline
-              className="w-full h-full object-cover"
-            />
+            <>
+              <video
+                ref={videoRef}
+                src={videoUrl}
+                poster={poster || undefined}
+                controls={playing}
+                playsInline
+                onLoadedMetadata={handleLoadedMetadata}
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
+                className="w-full h-full object-contain"
+              />
+              {!playing && (
+                <button
+                  onClick={handleVideoPlay}
+                  onTouchStart={(e) => { e.preventDefault(); handleVideoPlay(); }}
+                  className="absolute inset-0 w-full h-full group flex items-center justify-center cursor-pointer bg-black"
+                >
+                  {poster && <img src={poster} alt="Showcase" className="absolute inset-0 w-full h-full object-contain" />}
+                  <span className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+                  <span className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+                  </span>
+                </button>
+              )}
+            </>
           ) : poster ? (
-            <img src={poster} alt="Showcase" className="w-full h-full object-cover" />
+            <img src={poster} alt="Showcase" className="w-full h-full object-contain" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
               Add a video or poster image in the admin editor

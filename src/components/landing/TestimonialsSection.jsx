@@ -36,11 +36,9 @@ function TestimonialCard({ t }) {
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1 mb-4">"{t.quote}"</p>
-        <div className="mt-auto">
-          <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
-          <p className="font-body text-xs text-white-muted">{t.role}</p>
-        </div>
+        <p className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">{t.name}</p>
+        <p className="font-body text-xs text-white-muted mb-3">{t.role}</p>
+        <p className="font-body text-sm text-off-white/80 leading-relaxed flex-1">"{t.quote}"</p>
       </div>
     </div>
   );
@@ -64,17 +62,14 @@ export default function TestimonialsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-10 flex items-end justify-between"
+          className="mb-10 flex flex-col items-center text-center"
         >
-          <div>
-            <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
-            <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
-              {c.headline1}<br />
-              <span className="text-orange-red">{c.headlineAccent}</span>
-            </h2>
-            <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>
-          </div>
-
+          <p className="font-body text-sm text-white-muted uppercase tracking-widest mb-4">{c.eyebrow}</p>
+          <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.95] text-off-white uppercase tracking-tight">
+            {c.headline1}<br />
+            <span className="text-orange-red">{c.headlineAccent}</span>
+          </h2>
+          <p className="mt-4 font-body text-base text-white-muted max-w-lg leading-relaxed">{c.subtitle}</p>
         </motion.div>
 
         <div className="relative">
