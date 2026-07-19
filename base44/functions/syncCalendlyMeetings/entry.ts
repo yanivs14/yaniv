@@ -3,10 +3,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Unauthorized — admin only' }, { status: 403 });
-    }
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection("calendly");
     if (!accessToken) {
@@ -246,11 +242,11 @@ Deno.serve(async (req) => {
 </body>
 </html>`;
 
-          await base44.asServiceRole.integrations.Core.SendEmail({
+          await base44.asServiceRole.functions.invoke('sendGmail', {
             to: adminEmails.join(','),
             subject: `📅 New Meeting Booked — ${booking.name || booking.email}`,
-            from_name: 'The Movement',
-            body
+            html: body,
+            from_name: 'The Movement'
           });
           emailsSent++;
         } catch (e) {
@@ -293,11 +289,11 @@ Deno.serve(async (req) => {
 </body>
 </html>`;
 
-          await base44.asServiceRole.integrations.Core.SendEmail({
+          await base44.asServiceRole.functions.invoke('sendGmail', {
             to: adminEmails.join(','),
             subject: `❌ Meeting Cancelled — ${cancellation.name || cancellation.email}`,
-            from_name: 'The Movement',
-            body
+            html: body,
+            from_name: 'The Movement'
           });
           emailsSent++;
         } catch (e) {
