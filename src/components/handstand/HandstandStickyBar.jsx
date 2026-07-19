@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
@@ -26,16 +26,22 @@ function CompactCountdown({ targetDate }) {
   const { days, hours, minutes, seconds, expired } = useCountdown(targetDate);
   if (expired || !targetDate) return null;
   const units = [
-    { value: days }, { value: hours }, { value: minutes }, { value: seconds },
+    { value: days, label: "D" },
+    { value: hours, label: "H" },
+    { value: minutes, label: "M" },
+    { value: seconds, label: "S" },
   ];
   return (
-    <div className="flex items-center gap-1 mt-0.5">
+    <div className="flex items-center gap-1.5">
       {units.map((u, i) => (
         <React.Fragment key={i}>
-          <span className="font-heading text-xs font-bold text-off-white tabular-nums leading-none">
-            {String(u.value).padStart(2, "0")}
-          </span>
-          {i < units.length - 1 && <span className="text-white-dim text-[10px]">:</span>}
+          <div className="flex flex-col items-center leading-none">
+            <span className="font-heading text-sm font-bold text-off-white tabular-nums">
+              {String(u.value).padStart(2, "0")}
+            </span>
+            <span className="font-body text-[7px] text-white-dim uppercase tracking-wide mt-0.5">{u.label}</span>
+          </div>
+          {i < units.length - 1 && <span className="text-white-dim text-[10px] font-bold -mt-1.5">:</span>}
         </React.Fragment>
       ))}
     </div>
@@ -44,18 +50,54 @@ function CompactCountdown({ targetDate }) {
 
 export default function HandstandStickyBar({ price, ctaText, targetDate }) {
   const [loading, setLoading] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const observerRef = useRef(null);
+
+  useEffect(() => {
+    const sections = [
+      document.getElementById("hero"),
+      document.getElementById("pricing"),
+    ].filter(Boolean);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const anyVisible = entries.some((e) => e.isIntersecting);
+        setHidden(anyVisible);
+      },
+      { threshold: 0.15 }
+    );
+    observerRef.current = observer;
+    sections.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, []);
+
   const handleCheckout = async () => {
     setLoading(true);
     await startCheckout();
     setLoading(false);
   };
+
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-bg/95 backdrop-blur-md border-t border-orange-red/30 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.3)]">
-      <div className="flex flex-col">
-        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-[0.12em] leading-tight">Special Price · Limited Time</span>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="font-heading text-lg font-bold text-off-white leading-none">${price}</span>
-          <CompactCountdown targetDate={targetDate} />
+    <div
+      className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-bg/95 backdrop-blur-md border-t border-orange-red/30 px-4 py-2.5 flex items-center justify-between gap-3 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.3)] transition-transform duration-300 ${
+        hidden ? "translate-y-full" : "translate-y-0"
+      }`}
+    >
+      <div className="flex flex-col gap-1">
+        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-[0.1em] leading-none">
+          Special Price · Limited Time
+        </span>
+        <div className="flex items-center gap-3">
+          <span className="font-heading text-xl font-bold text-off-white leading-none">${price}</span>
+          {targetDate && (
+            <>
+              <span className="w-px h-7 bg-dark-border" />
+              <CompactCountdown targetDate={targetDate} />
+            </>
+          )}
         </div>
       </div>
       <button
