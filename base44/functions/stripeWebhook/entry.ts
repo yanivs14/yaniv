@@ -6,6 +6,7 @@ const PLAN_LABELS = {
   annual: "Annual — $250/year",
   promo: "Promo — $25/month (first 3 months)",
   handstand_course: "Handstand Course — $97 one-time",
+  handstand_4_life: "Handstand 4 Life — $197 one-time",
 };
 
 async function ensureKitTags(kitKey, tagNames) {
