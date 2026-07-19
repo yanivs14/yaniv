@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar, Mail, BarChart3, Settings, KanbanSquare } from "lucide-react";
+import { ArrowLeft, Lock, LogOut, Users, Send, History, MailCheck, ListChecks, DollarSign, LayoutDashboard, Zap, Calendar, Mail, BarChart3, Settings, KanbanSquare, Percent } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import RecipientList from "@/components/admin/email/RecipientList";
@@ -14,6 +14,7 @@ import EmailPreviewTab from "@/components/admin/email/EmailPreviewTab";
 import CalendlyTab from "@/components/admin/email/CalendlyTab";
 import KitTab from "@/components/admin/email/KitTab";
 import AnalyticsTab from "@/components/admin/email/AnalyticsTab";
+import ConversionTab from "@/components/admin/email/ConversionTab";
 import SettingsLogsTab from "@/components/admin/email/SettingsLogsTab";
 import TasksTab from "@/components/admin/email/TasksTab";
 
@@ -21,6 +22,7 @@ const TABS = [
   { key: "crm", label: "CRM", icon: Users },
   { key: "finances", label: "Finances", icon: DollarSign },
   { key: "analytics", label: "Analytics", icon: BarChart3 },
+  { key: "conversion", label: "Conversion", icon: Percent },
   { key: "recipients", label: "Recipients", icon: MailCheck },
   { key: "compose", label: "Compose", icon: Send },
   { key: "history", label: "History", icon: History },
@@ -314,6 +316,7 @@ export default function EmailDashboard() {
                   {activeTab === "crm" && <CrmContacts meetingsMap={meetingsMap} loadingMeetings={loadingMeetings} onGoToCalendly={() => setActiveTab("calendly")} />}
                   {activeTab === "finances" && <FinancesTab />}
                   {activeTab === "analytics" && <AnalyticsTab />}
+                  {activeTab === "conversion" && <ConversionTab />}
                   {activeTab === "recipients" && (
                     <RecipientList
                       recipients={recipients}
