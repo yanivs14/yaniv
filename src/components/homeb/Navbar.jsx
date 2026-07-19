@@ -89,7 +89,7 @@ export default function Navbar() {
               const effectiveHref = isWhoLink ? "#who" : l.href;
               const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
               const isProgramLink = labelLower.includes("program");
-              const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
+              const isActive = id !== null && (activeSection === id || (isProgramLink && (activeSection === "benefits" || activeSection === "see-inside")));
               return (
                 <a key={l.label} href={effectiveHref} onClick={(e) => scrollTo(e, effectiveHref)}
                   className={`font-body text-sm font-medium transition-colors ${isActive ? "text-orange-red" : "text-white-muted hover:text-off-white"}`}>
@@ -144,7 +144,7 @@ export default function Navbar() {
                 const effectiveHref = isWhoLink ? "#who" : l.href;
                 const id = effectiveHref?.startsWith("#") ? effectiveHref.replace("#", "") : null;
                 const isProgramLink = labelLower.includes("program");
-                const isActive = id !== null && (activeSection === id || (isProgramLink && activeSection === "benefits"));
+                const isActive = id !== null && (activeSection === id || (isProgramLink && (activeSection === "benefits" || activeSection === "see-inside")));
                 return (
                   <motion.a
                     key={l.label}
