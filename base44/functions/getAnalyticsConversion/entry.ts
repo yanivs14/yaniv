@@ -12,14 +12,23 @@ async function discoverPropertyId(accessToken: string): Promise<{ id: string; na
     throw new Error(`GA4 Admin API failed: ${res.status} ${err}`);
   }
   const data = await res.json();
+  const target = 'kinetiqo';
+  let fallback: { id: string; name: string } | null = null;
   for (const account of data.accountSummaries || []) {
     for (const prop of account.propertySummaries || []) {
-      if (prop.property) {
-        const id = prop.property.replace('properties/', '');
+      if (!prop.property) continue;
+      const id = prop.property.replace('properties/', '');
+      const name = prop.displayName || id;
+      if (!fallback) fallback = { id, name };
+      if (name.toLowerCase().includes(target)) {
         cachedPropertyId = id;
-        return { id, name: prop.displayName || id };
+        return { id, name };
       }
     }
+  }
+  if (fallback) {
+    cachedPropertyId = fallback.id;
+    return fallback;
   }
   throw new Error('No GA4 properties found in this Google Analytics account');
 }
