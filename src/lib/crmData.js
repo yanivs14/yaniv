@@ -218,11 +218,11 @@ export function mergeStripeIntoCrm(crmData, stripeData) {
         is_inner_circle: c.is_inner_circle || /inner\s*circle/i.test(sd.plan || "") || (sd.total_paid >= 350 && !sd.is_recurring),
         subscription_status: sd.subscription_status || "",
         subscription_canceled: sd.subscription_canceled || null,
-        first_payment_date: sd.first_payment_date || null,
-        last_payment_date: sd.last_payment_date || null,
-        total_paid: sd.total_paid || 0,
-        total_refunded: sd.total_refunded || 0,
-        payment_months: sd.payment_months || [],
+        first_payment_date: sd.first_payment_date || c.first_payment_date || null,
+        last_payment_date: sd.last_payment_date || c.last_payment_date || null,
+        total_paid: sd.total_paid || c.total_paid || 0,
+        total_refunded: sd.total_refunded || c.total_refunded || 0,
+        payment_months: sd.payment_months || c.payment_months || [],
       };
     }
     return c;

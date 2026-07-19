@@ -42,8 +42,8 @@ export default function ConversionTab() {
         if (active?.data) merged = mergeSkoolIntoCrm({ ...merged }, active.data, dateRange);
       } catch {}
       try {
-        const stripeData = await fetchStripeOnly(dateRange);
-        const filtered = filterStripeFinancials(stripeData, dateRange);
+        const stripeData = await fetchStripeOnly(null);
+        const filtered = filterStripeFinancials(JSON.parse(JSON.stringify(stripeData)), dateRange);
         merged = mergeStripeIntoCrm({ ...merged }, filtered);
       } catch {}
       setCrmData(merged);
