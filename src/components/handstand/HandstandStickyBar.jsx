@@ -25,23 +25,15 @@ async function startCheckout() {
 function CompactCountdown({ targetDate }) {
   const { days, hours, minutes, seconds, expired } = useCountdown(targetDate);
   if (expired || !targetDate) return null;
-  const units = [
-    { value: days, label: "D" },
-    { value: hours, label: "H" },
-    { value: minutes, label: "M" },
-    { value: seconds, label: "S" },
-  ];
+  const units = [days, hours, minutes, seconds];
   return (
-    <div className="flex items-center gap-1.5">
-      {units.map((u, i) => (
+    <div className="flex items-center gap-1">
+      {units.map((v, i) => (
         <React.Fragment key={i}>
-          <div className="flex flex-col items-center leading-none">
-            <span className="font-heading text-sm font-bold text-off-white tabular-nums">
-              {String(u.value).padStart(2, "0")}
-            </span>
-            <span className="font-body text-[7px] text-white-dim uppercase tracking-wide mt-0.5">{u.label}</span>
-          </div>
-          {i < units.length - 1 && <span className="text-white-dim text-[10px] font-bold -mt-1.5">:</span>}
+          <span className="font-heading text-sm font-bold text-off-white tabular-nums leading-none">
+            {String(v).padStart(2, "0")}
+          </span>
+          {i < units.length - 1 && <span className="text-white-dim text-[10px] font-bold">:</span>}
         </React.Fragment>
       ))}
     </div>
@@ -86,24 +78,24 @@ export default function HandstandStickyBar({ price, ctaText, targetDate }) {
         hidden ? "translate-y-full" : "translate-y-0"
       }`}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 min-w-0">
         <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-[0.1em] leading-none">
           Special Price · Limited Time
         </span>
-        <div className="flex items-center gap-3">
-          <span className="font-heading text-xl font-bold text-off-white leading-none">${price}</span>
+        <div className="flex items-center gap-2.5">
           {targetDate && (
             <>
-              <span className="w-px h-7 bg-dark-border" />
               <CompactCountdown targetDate={targetDate} />
+              <span className="w-px h-7 bg-dark-border flex-shrink-0" />
             </>
           )}
+          <span className="font-heading text-xl font-bold text-off-white leading-none">${price}</span>
         </div>
       </div>
       <button
         onClick={handleCheckout}
         disabled={loading}
-        className="flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold px-6 py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 flex-shrink-0"
+        className="flex items-center justify-center gap-1.5 bg-orange-red text-dark-bg font-body text-xs font-bold px-4 sm:px-6 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 flex-shrink-0"
       >
         {loading ? "Loading..." : <>{ctaText} <ArrowRight className="w-4 h-4" /></>}
       </button>
