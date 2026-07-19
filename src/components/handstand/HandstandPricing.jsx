@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight, Shield } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
-import Handstand4LifeCard from "@/components/handstand/Handstand4LifeCard";
+import AnnualMembershipCard from "@/components/handstand/AnnualMembershipCard";
 
 let _checkoutInProgress = false;
 
@@ -105,7 +105,7 @@ export default function HandstandPricing({ c }) {
             </div>
           )}
         </motion.div>
-        <Handstand4LifeCard />
+        <AnnualMembershipCard />
       </div>
     </section>
   );
