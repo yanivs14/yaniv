@@ -229,6 +229,14 @@ function _queueHubspot(eventName, payload) {
 
 export function trackPageView(pageVariant) {
   track("page_view", { page_variant: pageVariant || window.location.pathname });
+  const eventId = genEventId();
+  trackMetaPixel("PageView", {}, eventId);
+  sendMetaCAPI({
+    event_name: "PageView",
+    event_id: eventId,
+    event_source_url: window.location.href,
+    user_data: { fbp: getFbp(), fbc: getFbc(), client_user_agent: navigator.userAgent },
+  });
 }
 
 export function trackSectionViewed(sectionId, scrollDepth) {
@@ -288,32 +296,77 @@ export function trackPurchase(transactionId, value, currency, plan, customerEmai
 
   // Meta Pixel: Subscribe for subscriptions (monthly/annual/promo), Purchase for one-time
   const isSubscription = SUBSCRIPTION_PLANS.includes(plan);
+  const eventId = transactionId || genEventId();
   trackMetaPixel(isSubscription ? "Subscribe" : "Purchase", {
     value: value || 0,
     currency: currency || "USD",
     content_name: plan || "",
     content_type: "product",
     content_ids: [plan || ""],
-  });
+  }, eventId);
 }
 
-// ── Meta Pixel ──
+// ── Meta Pixel + Conversions API ──
 
 const SUBSCRIPTION_PLANS = ["monthly", "annual", "promo"];
 
-function trackMetaPixel(eventName, params = {}) {
+function genEventId() {
+  return "evt_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 10);
+}
+
+function getFbp() {
+  try {
+    const m = document.cookie.match(/_fbp=([^;]+)/);
+    return m ? m[1] : "";
+  } catch (_) { return ""; }
+}
+
+function getFbc() {
+  try {
+    const m = document.cookie.match(/_fbc=([^;]+)/);
+    if (m) return m[1];
+    const params = new URLSearchParams(window.location.search);
+    const fbclid = params.get("fbclid");
+    if (fbclid) return `fb.1.${Date.now()}.${fbclid}`;
+    return "";
+  } catch (_) { return ""; }
+}
+
+function sendMetaCAPI(data) {
+  base44.functions.invoke("metaConversionsApi", data).catch(() => {});
+}
+
+function trackMetaPixel(eventName, params = {}, eventId = null) {
   if (typeof window.fbq === "function") {
-    window.fbq("track", eventName, params);
+    if (eventId) {
+      window.fbq("track", eventName, params, { eventID: eventId });
+    } else {
+      window.fbq("track", eventName, params);
+    }
   }
 }
 
-/** Track AddToCart — fires Meta Pixel client-side */
+/** Track AddToCart — fires Meta Pixel + CAPI with deduplication */
 export function trackMetaAddToCart({ value, currency, planType, planLabel }) {
+  const eventId = genEventId();
   trackMetaPixel("AddToCart", {
     value: value || 0,
     currency: currency || "USD",
     content_name: planLabel || planType || "",
     content_type: "product",
     content_ids: [planType || ""],
+  }, eventId);
+  sendMetaCAPI({
+    event_name: "AddToCart",
+    event_id: eventId,
+    event_source_url: window.location.href,
+    user_data: { fbp: getFbp(), fbc: getFbc(), client_user_agent: navigator.userAgent },
+    custom_data: {
+      value: value || 0,
+      currency: currency || "USD",
+      content_name: planLabel || planType || "",
+      content_type: "product",
+      content_ids: [planType || ""],
+    },
   });
 }

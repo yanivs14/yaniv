@@ -634,6 +634,35 @@ Deno.serve(async (req) => {
       console.warn("GA4 purchase event error (non-critical):", gaErr.message);
     }
 
+    // Send Purchase/Subscribe to Meta Conversions API (deduplicated with pixel via event_id)
+    // event_id = transactionId (session.id) matches the client-side pixel event_id.
+    try {
+      const isSubscription = ["monthly", "annual", "promo"].includes(plan);
+      const metaEventName = isSubscription ? "Subscribe" : "Purchase";
+      const nameParts = (customerName || "").trim().split(" ");
+      const metaUserData = {};
+      if (customerEmail) metaUserData.em = customerEmail;
+      if (nameParts[0]) metaUserData.fn = nameParts[0];
+      if (nameParts.slice(1).join(" ")) metaUserData.ln = nameParts.slice(1).join(" ");
+
+      await base44.asServiceRole.functions.invoke("metaConversionsApi", {
+        event_name: metaEventName,
+        event_id: transactionId,
+        event_source_url: "https://royegold.com/thank-you",
+        user_data: metaUserData,
+        custom_data: {
+          value: amount,
+          currency,
+          content_name: planLabel,
+          content_type: "product",
+          content_ids: [plan],
+        },
+      });
+      console.log(`Meta CAPI ${metaEventName} sent: ${transactionId} | $${amount} ${currency} | ${planLabel}`);
+    } catch (metaErr) {
+      console.warn("Meta CAPI purchase event error (non-critical):", metaErr.message);
+    }
+
     // Sync to Kit — direct API call (non-blocking)
     if (customerEmail) {
       try {
