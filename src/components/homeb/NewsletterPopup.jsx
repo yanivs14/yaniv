@@ -37,23 +37,17 @@ export default function NewsletterPopup() {
       setVisible(true);
     };
 
-    const timer = setTimeout(show, 3000);
-
-    const sections = document.querySelectorAll("section, [data-section]");
-    const target = sections[2];
-    let observer;
-    if (target) {
-      observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) { clearTimeout(timer); show(); observer.disconnect(); } },
-        { threshold: 0.3 }
-      );
-      observer.observe(target);
-    }
-
-    return () => {
-      clearTimeout(timer);
-      observer?.disconnect();
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight > 0 && scrollTop / docHeight >= 0.2) {
+        show();
+        window.removeEventListener("scroll", onScroll);
+      }
     };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const dismiss = () => {
