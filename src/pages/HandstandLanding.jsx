@@ -80,6 +80,7 @@ export default function HandstandLanding() {
 
   return (
     <div className="min-h-screen bg-dark-bg overflow-x-hidden pb-20 lg:pb-0">
+      <div className="fixed inset-0 bg-black/20 pointer-events-none z-[9999]" />
       <HandstandNavbar c={content.navbar} targetDate={preOrder.targetDate} />
       <HandstandHero c={content.hero} targetDate={preOrder.targetDate} />
       <HandstandVideoSection c={content.showcase} />
