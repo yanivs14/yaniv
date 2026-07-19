@@ -261,6 +261,34 @@ const DEFAULT_CONTENT = {
     videoUrl: "",
     videoPoster: "",
   },
+  movementAgeQuiz: {
+    questions: [
+      { id: "age", question: "What's your age?", options: ["18–24", "25–34", "35–44", "45–54", "55+"] },
+      { id: "lifestyle", question: "What does a typical day look like?", options: ["Mostly sitting (desk/computer)", "Mix of sitting and moving", "On my feet most of the day"] },
+      { id: "problem", question: "Where do you feel the most tightness or restriction?", options: ["Neck & Shoulders", "Lower Back", "Hips", "Knees", "All Over / General Stiffness"] },
+      { id: "pain", question: "Do you feel pain or discomfort during normal daily movement (bending, reaching, sitting down)?", options: ["Regularly", "Occasionally", "Rarely or never"] },
+      { id: "capability", question: "Can you squat all the way down, heels flat, without discomfort?", options: ["Yes, easily", "Yes, but it's tight", "No, can't get there"] },
+      { id: "history", question: "How would you describe your relationship with movement right now?", options: ["Starting from near-zero", "Used to train but fell off", "Training but plateaued", "Consistent, want to go further"] },
+      { id: "motivation", question: "What would change most for you if your body felt 10 years younger?", options: ["Less pain, more comfort", "More energy & confidence", "Strength & performance", "Want to build an impressive skill (handstand, flags, etc.)"] },
+      { id: "commitment", question: "How much time can you give this daily?", options: ["10 min", "15–20 min", "20+ min, I'm serious about this"] },
+    ],
+    emailHeadline: "Your Movement Age is ready 👀",
+    emailSubhead: "Enter your email to see your results + get your personalized plan.",
+    emailCta: "Reveal My Results",
+    resultsLabel: "Your Movement Age",
+    limiterLabel: "Your biggest limiter",
+    videoLabel: "Free Drill For You",
+    planLabel: "Recommended Plan",
+    confirmationText: "We've also sent your full breakdown + a free guide on {limiter} to your inbox.",
+    doneButton: "Done",
+    videoRouting: [
+      "Shoulder mobility / neck release drill",
+      "Spinal mobility / hip-hinge decompression drill",
+      "Hip opener / 90-90 style drill",
+      "Knee-friendly controlled range drill (not deep loaded squats)",
+      "Full-body flow / 'movement snack' video",
+    ],
+  },
 };
 
 const SiteContentContext = createContext(null);

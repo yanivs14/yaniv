@@ -7,6 +7,7 @@ import PromotionEditor from "@/components/admin/PromotionEditor";
 import HandstandEditor from "@/components/admin/HandstandEditor";
 import HsPreEditor from "@/components/admin/HsPreEditor";
 import HomeBEditor from "@/components/admin/HomeBEditor";
+import MovementAgeQuizEditor from "@/components/admin/MovementAgeQuizEditor";
 import DraggableFeatureList from "@/components/admin/DraggableFeatureList";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Pagination from "@/components/admin/leads/Pagination";
@@ -27,6 +28,7 @@ const CONTENT_SECTIONS = [
   { key: "innerCircle", label: "Inner Circle", icon: "⬤" },
   { key: "finalCta", label: "Final CTA", icon: "✦" },
   { key: "footer", label: "Footer", icon: "▬" },
+  { key: "movementAgeQuiz", label: "Mvmt Age Quiz", icon: "?" },
   { key: "social", label: "Social Links", icon: "⬡" },
   { key: "policy_privacy-policy", label: "Privacy Policy", icon: "🔒" },
   { key: "policy_terms-of-use", label: "Terms of Use", icon: "📋" },
@@ -170,6 +172,8 @@ function SectionEditor({ sectionKey, homePath = "/" }) {
   const m = (key, label, isVideo = false) => <MediaField key={key} label={label} value={data[key]} onChange={v => update(sectionKey, key, v)} isVideo={isVideo} />;
 
   if (sectionKey === "social") return <SocialEditor />;
+
+  if (sectionKey === "movementAgeQuiz") return <MovementAgeQuizEditor />;
 
   if (sectionKey === "navbar") {
     const anchorOptions = homePath === "/home-b"

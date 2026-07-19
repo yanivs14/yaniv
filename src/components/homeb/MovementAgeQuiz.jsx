@@ -1,155 +1,100 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Check, ArrowLeft } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track } from "@/lib/analytics";
+import { useSiteContent } from "@/lib/SiteContentContext";
 
-const QUESTIONS = [
-  {
-    id: "age",
-    question: "What's your age?",
-    options: ["18–24", "25–34", "35–44", "45–54", "55+"],
-  },
-  {
-    id: "lifestyle",
-    question: "What does a typical day look like?",
-    options: [
-      "Mostly sitting (desk/computer)",
-      "Mix of sitting and moving",
-      "On my feet most of the day",
-    ],
-  },
-  {
-    id: "problem",
-    question: "Where do you feel the most tightness or restriction?",
-    options: [
-      "Neck & Shoulders",
-      "Lower Back",
-      "Hips",
-      "Knees",
-      "All Over / General Stiffness",
-    ],
-  },
-  {
-    id: "pain",
-    question:
-      "Do you feel pain or discomfort during normal daily movement (bending, reaching, sitting down)?",
-    options: ["Regularly", "Occasionally", "Rarely or never"],
-  },
-  {
-    id: "capability",
-    question: "Can you squat all the way down, heels flat, without discomfort?",
-    options: ["Yes, easily", "Yes, but it's tight", "No, can't get there"],
-  },
-  {
-    id: "history",
-    question: "How would you describe your relationship with movement right now?",
-    options: [
-      "Starting from near-zero",
-      "Used to train but fell off",
-      "Training but plateaued",
-      "Consistent, want to go further",
-    ],
-  },
-  {
-    id: "motivation",
-    question: "What would change most for you if your body felt 10 years younger?",
-    options: [
-      "Less pain, more comfort",
-      "More energy & confidence",
-      "Strength & performance",
-      "Want to build an impressive skill (handstand, flags, etc.)",
-    ],
-  },
-  {
-    id: "commitment",
-    question: "How much time can you give this daily?",
-    options: ["10 min", "15–20 min", "20+ min, I'm serious about this"],
-  },
+const DEFAULT_QUESTIONS = [
+  { id: "age", question: "What's your age?", options: ["18–24", "25–34", "35–44", "45–54", "55+"] },
+  { id: "lifestyle", question: "What does a typical day look like?", options: ["Mostly sitting (desk/computer)", "Mix of sitting and moving", "On my feet most of the day"] },
+  { id: "problem", question: "Where do you feel the most tightness or restriction?", options: ["Neck & Shoulders", "Lower Back", "Hips", "Knees", "All Over / General Stiffness"] },
+  { id: "pain", question: "Do you feel pain or discomfort during normal daily movement (bending, reaching, sitting down)?", options: ["Regularly", "Occasionally", "Rarely or never"] },
+  { id: "capability", question: "Can you squat all the way down, heels flat, without discomfort?", options: ["Yes, easily", "Yes, but it's tight", "No, can't get there"] },
+  { id: "history", question: "How would you describe your relationship with movement right now?", options: ["Starting from near-zero", "Used to train but fell off", "Training but plateaued", "Consistent, want to go further"] },
+  { id: "motivation", question: "What would change most for you if your body felt 10 years younger?", options: ["Less pain, more comfort", "More energy & confidence", "Strength & performance", "Want to build an impressive skill (handstand, flags, etc.)"] },
+  { id: "commitment", question: "How much time can you give this daily?", options: ["10 min", "15–20 min", "20+ min, I'm serious about this"] },
 ];
 
-const AGE_MIDPOINTS = { "18–24": 21, "25–34": 30, "35–44": 40, "45–54": 50, "55+": 57 };
-
+// Index-based scoring (option position → delta added to Q1 midpoint)
+const AGE_MIDPOINTS = [21, 30, 40, 50, 57];
 const SCORING = {
-  lifestyle: {
-    "Mostly sitting (desk/computer)": 4,
-    "Mix of sitting and moving": 1,
-    "On my feet most of the day": -2,
-  },
-  problem: {
-    "All Over / General Stiffness": 3,
-    "Neck & Shoulders": 2,
-    "Lower Back": 2,
-    Hips: 2,
-    Knees: 2,
-  },
-  pain: { Regularly: 5, Occasionally: 2, "Rarely or never": 0 },
-  capability: { "No, can't get there": 4, "Yes, but it's tight": 2, "Yes, easily": -2 },
-  history: {
-    "Starting from near-zero": 4,
-    "Used to train but fell off": 3,
-    "Training but plateaued": 1,
-    "Consistent, want to go further": -3,
-  },
+  lifestyle: [4, 1, -2],
+  problem: [2, 2, 2, 2, 3],
+  pain: [5, 2, 0],
+  capability: [-2, 2, 4],
+  history: [4, 3, 1, -3],
 };
 
-const VIDEO_ROUTING = {
-  "Neck & Shoulders": "Shoulder mobility / neck release drill",
-  "Lower Back": "Spinal mobility / hip-hinge decompression drill",
-  Hips: "Hip opener / 90-90 style drill",
-  Knees: "Knee-friendly controlled range drill (not deep loaded squats)",
-  "All Over / General Stiffness": "Full-body flow / 'movement snack' video",
+const DEFAULT_VIDEO_ROUTING = [
+  "Shoulder mobility / neck release drill",
+  "Spinal mobility / hip-hinge decompression drill",
+  "Hip opener / 90-90 style drill",
+  "Knee-friendly controlled range drill (not deep loaded squats)",
+  "Full-body flow / 'movement snack' video",
+];
+
+const DEFAULT_TEXT = {
+  emailHeadline: "Your Movement Age is ready 👀",
+  emailSubhead: "Enter your email to see your results + get your personalized plan.",
+  emailCta: "Reveal My Results",
+  resultsLabel: "Your Movement Age",
+  limiterLabel: "Your biggest limiter",
+  videoLabel: "Free Drill For You",
+  planLabel: "Recommended Plan",
+  confirmationText: "We've also sent your full breakdown + a free guide on {limiter} to your inbox.",
+  doneButton: "Done",
 };
 
-function getPlanRouting(answers) {
-  const q6 = answers.history;
-  const q7 = answers.motivation;
-  const q8 = answers.commitment;
+function getPlanRouting(indices) {
+  const hist = indices.history;
+  const motiv = indices.motivation;
+  const commit = indices.commitment;
 
-  if (q6 === "Consistent, want to go further" && q8 === "20+ min, I'm serious about this") {
-    return { plan: "Inner Circle", handstandUpsell: false };
-  }
-  if (
-    q7 === "Want to build an impressive skill (handstand, flags, etc.)" &&
-    (q6 === "Training but plateaued" || q6 === "Consistent, want to go further")
-  ) {
-    return { plan: "Annual", handstandUpsell: true };
-  }
+  if (hist === 3 && commit === 2) return { plan: "Inner Circle", handstandUpsell: false };
+  if (motiv === 3 && (hist === 2 || hist === 3)) return { plan: "Annual", handstandUpsell: true };
   return { plan: "Annual", handstandUpsell: false };
 }
 
-function calculateMovementAge(answers) {
-  const base = AGE_MIDPOINTS[answers.age] || 35;
+function calculateMovementAge(indices) {
+  const base = AGE_MIDPOINTS[indices.age] ?? 35;
   const delta =
-    (SCORING.lifestyle[answers.lifestyle] || 0) +
-    (SCORING.problem[answers.problem] || 0) +
-    (SCORING.pain[answers.pain] || 0) +
-    (SCORING.capability[answers.capability] || 0) +
-    (SCORING.history[answers.history] || 0);
+    (SCORING.lifestyle[indices.lifestyle] || 0) +
+    (SCORING.problem[indices.problem] || 0) +
+    (SCORING.pain[indices.pain] || 0) +
+    (SCORING.capability[indices.capability] || 0) +
+    (SCORING.history[indices.history] || 0);
   return Math.max(18, base + delta);
 }
 
 export default function MovementAgeQuiz({ open, onClose }) {
-  const [step, setStep] = useState(0); // 0..7 = questions, 8 = email, 9 = results
-  const [answers, setAnswers] = useState({});
+  const { content } = useSiteContent();
+  const quizContent = content?.movementAgeQuiz;
+  const questions = quizContent?.questions?.length ? quizContent.questions : DEFAULT_QUESTIONS;
+  const videoRouting = quizContent?.videoRouting?.length ? quizContent.videoRouting : DEFAULT_VIDEO_ROUTING;
+  const text = { ...DEFAULT_TEXT, ...(quizContent || {}) };
+
+  const totalSteps = questions.length;
+  const [step, setStep] = useState(0); // 0..N-1 = questions, N = email, N+1 = results
+  const [answers, setAnswers] = useState({}); // questionId → option index
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState(null);
 
-  const totalSteps = QUESTIONS.length;
-
-  const handleSelect = (option) => {
-    const q = QUESTIONS[step];
-    setAnswers({ ...answers, [q.id]: option });
-  };
-
-  const handleNext = () => {
+  const goToNext = () => {
     if (step < totalSteps - 1) {
       setStep(step + 1);
     } else {
-      setStep(totalSteps); // go to email screen (step 8)
+      setStep(totalSteps); // email screen
     }
+  };
+
+  const handleSelect = (optionIndex) => {
+    const q = questions[step];
+    setAnswers({ ...answers, [q.id]: optionIndex });
+    // Auto-advance after a brief delay so the selection is visible
+    setTimeout(goToNext, 300);
   };
 
   const handleBack = () => {
@@ -162,31 +107,43 @@ export default function MovementAgeQuiz({ open, onClose }) {
       setEmailError("Please enter a valid email");
       return;
     }
+
+    // Build index map and calculate results FIRST (so results always show)
+    const indices = {};
+    questions.forEach(q => { indices[q.id] = answers[q.id]; });
+    const problemIdx = indices.problem ?? 0;
+    const movementAge = calculateMovementAge(indices);
+    const { plan, handstandUpsell } = getPlanRouting(indices);
+    const limiterText = questions[2].options[problemIdx] || "";
+    const videoCategory = videoRouting[problemIdx] || "";
+    const confirmation = (text.confirmationText || "").replace("{limiter}", limiterText);
+
+    setResults({ movementAge, plan, handstandUpsell, videoCategory, limiter: limiterText, confirmation });
+    track("quiz_completed", {
+      movement_age: movementAge,
+      recommended_plan: plan,
+      handstand_upsell: handstandUpsell,
+      problem_area: limiterText,
+    });
+    setStep(totalSteps + 1); // results screen
+
+    // Save lead in the background (non-blocking)
     setSubmitting(true);
     try {
-      const movementAge = calculateMovementAge(answers);
-      const { plan, handstandUpsell } = getPlanRouting(answers);
-      const videoCategory = VIDEO_ROUTING[answers.problem] || "";
-      setResults({ movementAge, plan, handstandUpsell, videoCategory, limiter: answers.problem });
-
-      track("quiz_completed", {
-        movement_age: movementAge,
-        recommended_plan: plan,
-        handstand_upsell: handstandUpsell,
-        problem_area: answers.problem,
+      const quizAnswersText = {};
+      questions.forEach(q => {
+        quizAnswersText[q.id] = q.options[answers[q.id]];
       });
-
       await base44.functions.invoke("submitLead", {
-        full_name: "",
+        full_name: email.trim(),
         email: email.trim(),
         source: "movement_age_quiz",
         quiz_section: "footer_test",
         quiz_recommendation: plan,
-        quiz_answers: answers,
+        quiz_answers: quizAnswersText,
       });
-      setStep(totalSteps + 1); // results screen (step 9)
     } catch {
-      setEmailError("Something went wrong. Try again.");
+      // non-critical — results already shown
     }
     setSubmitting(false);
   };
@@ -200,8 +157,8 @@ export default function MovementAgeQuiz({ open, onClose }) {
     onClose();
   };
 
-  const currentQ = QUESTIONS[step];
-  const currentAnswer = currentQ ? answers[currentQ.id] : null;
+  const currentQ = questions[step];
+  const currentAnswerIndex = currentQ ? answers[currentQ.id] : null;
   const isQuestionStep = step < totalSteps;
   const isEmailStep = step === totalSteps;
   const isResultsStep = step === totalSteps + 1;
@@ -249,17 +206,18 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     {currentQ.question}
                   </h3>
                   <div className="space-y-2.5">
-                    {currentQ.options.map((opt) => (
+                    {currentQ.options.map((opt, oi) => (
                       <button
-                        key={opt}
-                        onClick={() => handleSelect(opt)}
-                        className={`w-full text-left px-4 py-3.5 rounded-xl border font-body text-sm transition-all ${
-                          currentAnswer === opt
+                        key={oi}
+                        onClick={() => handleSelect(oi)}
+                        className={`w-full text-left px-4 py-3.5 rounded-xl border font-body text-sm transition-all flex items-center justify-between ${
+                          currentAnswerIndex === oi
                             ? "border-orange-red bg-orange-red/10 text-off-white"
                             : "border-dark-border bg-dark-bg text-white-muted hover:border-orange-red/50 hover:text-off-white"
                         }`}
                       >
-                        {opt}
+                        <span>{opt}</span>
+                        {currentAnswerIndex === oi && <Check className="w-4 h-4 text-orange-red flex-shrink-0 ml-2" />}
                       </button>
                     ))}
                   </div>
@@ -274,13 +232,6 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     ) : (
                       <span />
                     )}
-                    <button
-                      onClick={handleNext}
-                      disabled={!currentAnswer}
-                      className="flex items-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-6 py-3 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      Next <ArrowRight className="w-4 h-4" />
-                    </button>
                   </div>
                 </>
               )}
@@ -291,10 +242,10 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     <span className="text-4xl">👀</span>
                   </div>
                   <h3 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-3 leading-tight">
-                    Your Movement Age is ready
+                    {text.emailHeadline}
                   </h3>
                   <p className="font-body text-sm text-white-muted mb-6">
-                    Enter your email to see your results + get your personalized plan.
+                    {text.emailSubhead}
                   </p>
                   <form onSubmit={handleEmailSubmit} className="space-y-3">
                     <input
@@ -310,7 +261,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                       disabled={submitting}
                       className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
                     >
-                      {submitting ? "Calculating..." : <>Reveal My Results <ArrowRight className="w-4 h-4" /></>}
+                      {submitting ? "Calculating..." : <>{text.emailCta} <ArrowRight className="w-4 h-4" /></>}
                     </button>
                   </form>
                 </div>
@@ -319,19 +270,19 @@ export default function MovementAgeQuiz({ open, onClose }) {
               {isResultsStep && results && (
                 <div className="text-center">
                   <p className="font-body text-[11px] text-orange-red font-bold uppercase tracking-widest mb-2">
-                    Your Movement Age
+                    {text.resultsLabel}
                   </p>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
                     <span className="font-heading text-7xl font-bold text-off-white">{results.movementAge}</span>
                   </div>
                   <div className="bg-dark-bg border border-dark-border rounded-xl px-4 py-3 mb-5">
-                    <p className="font-body text-xs text-white-dim uppercase tracking-wide mb-1">Your biggest limiter</p>
+                    <p className="font-body text-xs text-white-dim uppercase tracking-wide mb-1">{text.limiterLabel}</p>
                     <p className="font-heading text-lg font-bold text-orange-red uppercase">{results.limiter}</p>
                   </div>
 
                   <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-5 text-left">
                     <p className="font-body text-[11px] font-bold text-white-muted uppercase tracking-widest mb-2">
-                      Free Drill For You
+                      {text.videoLabel}
                     </p>
                     <p className="font-body text-sm text-off-white leading-relaxed">{results.videoCategory}</p>
                     <div className="mt-3 aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
@@ -341,7 +292,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
 
                   <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-4 text-left">
                     <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-1">
-                      Recommended Plan
+                      {text.planLabel}
                     </p>
                     <p className="font-heading text-xl font-bold text-off-white uppercase">{results.plan}</p>
                     {results.handstandUpsell && (
@@ -350,14 +301,14 @@ export default function MovementAgeQuiz({ open, onClose }) {
                   </div>
 
                   <p className="font-body text-xs text-white-muted leading-relaxed mb-5">
-                    We've also sent your full breakdown + a free guide on {results.limiter} to your inbox.
+                    {results.confirmation}
                   </p>
 
                   <button
                     onClick={handleClose}
                     className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors"
                   >
-                    Done
+                    {text.doneButton}
                   </button>
                 </div>
               )}
