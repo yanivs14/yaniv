@@ -145,6 +145,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
         is_churned: c.is_churned || sd.is_churned,
         purchase_plan: c.purchase_plan || sd.skool_plan || "",
         is_inner_circle: c.is_inner_circle || /inner\s*circle/i.test(sd.skool_plan || ""),
+        first_payment_date: c.first_payment_date || sd.skool_joined || null,
       };
     }
     return c;
@@ -161,6 +162,7 @@ export function mergeSkoolIntoCrm(crmData, skoolData, dateRange) {
       purchase_plan: sd.skool_plan || "",
       is_inner_circle: /inner\s*circle/i.test(sd.skool_plan || ""),
       created_date: sd.skool_joined || null,
+      first_payment_date: sd.skool_joined || null,
     };
     for (const k of Object.keys(contact)) {
       if (!contact[k]) delete contact[k];

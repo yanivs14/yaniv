@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Percent, Globe, ShoppingBag, DollarSign, RefreshCw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm } from "@/lib/crmData";
+import { fetchCrmOnly, fetchStripeOnly, mergeStripeIntoCrm, fetchSkoolUploads, mergeSkoolIntoCrm, filterStripeFinancials } from "@/lib/crmData";
 import ConversionStatCard from "./ConversionStatCard";
 import ConversionByPlan, { getPurchasesByPlan } from "./ConversionByPlan";
 import ConversionBySource from "./ConversionBySource";
@@ -27,6 +27,7 @@ export default function ConversionTab() {
     try {
       const today = new Date().toISOString().slice(0, 10);
       const from = new Date(Date.now() - (days - 1) * 86400000).toISOString().slice(0, 10);
+      const dateRange = { created_after: from, created_before: today };
 
       const [gaRes, crm] = await Promise.all([
         base44.functions.invoke("getAnalyticsConversion", { date_from: from, date_to: today }),
@@ -38,11 +39,12 @@ export default function ConversionTab() {
       try {
         const uploads = await fetchSkoolUploads();
         const active = uploads.find((u) => u.is_active);
-        if (active?.data) merged = mergeSkoolIntoCrm({ ...merged }, active.data, null);
+        if (active?.data) merged = mergeSkoolIntoCrm({ ...merged }, active.data, dateRange);
       } catch {}
       try {
-        const stripeData = await fetchStripeOnly(null);
-        merged = mergeStripeIntoCrm({ ...merged }, stripeData);
+        const stripeData = await fetchStripeOnly(dateRange);
+        const filtered = filterStripeFinancials(stripeData, dateRange);
+        merged = mergeStripeIntoCrm({ ...merged }, filtered);
       } catch {}
       setCrmData(merged);
     } catch (e) {
@@ -70,6 +72,7 @@ export default function ConversionTab() {
   const totalSessions = totals.sessions || 0;
   const totalPurchases = purchasesByPlan.reduce((sum, p) => sum + p.count, 0);
   const conversionRate = totalSessions > 0 ? (totalPurchases / totalSessions) * 100 : 0;
+  const totalRevenue = (crmData?.financials?.total_revenue || 0) + (crmData?.financials?.skool_revenue || 0);
 
   if (loading) {
     return (
@@ -110,7 +113,7 @@ export default function ConversionTab() {
           <select
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
-            className="text-sm border border-slate-200 rounded-lg px-3 py-2 font-body bg-white"
+            className="text-sm border border-slate-200 rounded-lg px-3 py-2 font-body bg-white text-slate-900"
           >
             {DATE_OPTIONS.map((opt) => (
               <option key={opt.days} value={opt.days}>
@@ -132,7 +135,7 @@ export default function ConversionTab() {
         <ConversionStatCard
           icon={DollarSign}
           label="Revenue"
-          value={`$${(totals.revenue || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
+          value={`$${totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
           color="text-amber-600"
           bg="bg-amber-50"
         />
