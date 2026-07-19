@@ -58,7 +58,7 @@ export default function HandstandHero({ c, targetDate }) {
             <span className="text-orange-red">{c?.headlineAccent}</span>
           </h1>
           {c?.boldDescription && (
-            <p className="font-heading text-xl sm:text-2xl font-bold text-off-white leading-tight mb-4">
+            <p className="font-heading text-xl sm:text-2xl font-bold text-white leading-tight mb-4">
               {c.boldDescription}
             </p>
           )}

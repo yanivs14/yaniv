@@ -51,8 +51,11 @@ export default function HandstandVideoSection({ c }) {
   const headlineParts = headline.split(" ");
   const headlineLast = headlineParts.pop();
 
-  const isPortrait = videoAspect != null && videoAspect < 1;
-  const containerAspect = videoAspect ? `${videoAspect}` : "16 / 9";
+  const adminAspect = c?.posterAspect;
+  const isPortrait = adminAspect === "vertical" || (!adminAspect && videoAspect != null && videoAspect < 1);
+  const containerAspect = adminAspect === "vertical" ? "9 / 16"
+    : adminAspect === "horizontal" ? "16 / 9"
+    : videoAspect ? `${videoAspect}` : "16 / 9";
 
   return (
     <section className="relative bg-dark-bg py-14 lg:py-20 overflow-hidden" id="showcase">

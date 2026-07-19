@@ -28,6 +28,7 @@ export const defaultHandstandContent = {
     videoUrl: "",
     youtubeUrl: "",
     posterUrl: "",
+    posterAspect: "horizontal",
   },
   problem: {
     eyebrow: "The Struggle",

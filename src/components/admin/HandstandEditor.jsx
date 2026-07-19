@@ -127,6 +127,17 @@ function SectionEditor({ sectionKey, content, update }) {
         {m("youtubeUrl", "YouTube URL (overrides uploaded video)")}
         {m("videoUrl", "Uploaded Video File", true)}
         {m("posterUrl", "Poster Image (shown before play)")}
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Poster Aspect Ratio</label>
+          <div className="flex gap-2">
+            {["horizontal", "vertical"].map((opt) => (
+              <button key={opt} onClick={() => update(sectionKey, "posterAspect", opt)}
+                className={`px-4 py-2 rounded-lg text-sm font-body transition-colors capitalize ${data.posterAspect === opt ? "bg-orange-red/10 text-orange-red border border-orange-red/30" : "bg-[#111] border border-[#2a2a2a] text-white-muted hover:text-off-white"}`}>
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
