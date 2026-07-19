@@ -54,6 +54,14 @@ export default function AnnualMembershipCard() {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="mt-8 w-full"
     >
+      <div className="text-center mb-5">
+        <p className="font-heading text-xl sm:text-2xl font-bold text-off-white uppercase tracking-tight leading-tight">
+          Want the Handstand Course <span className="text-orange-red">+ the full Roye Gold library?</span>
+        </p>
+        <p className="font-body text-sm text-white-muted mt-2 max-w-xl mx-auto">
+          Get an Annual Membership and receive the Handstand Course for free — it's a much better value.
+        </p>
+      </div>
       <div className="bg-orange-red rounded-2xl relative overflow-hidden">
         <span className="absolute -top-px left-8 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-b-xl whitespace-nowrap">
           Best Offer
@@ -61,7 +69,7 @@ export default function AnnualMembershipCard() {
         <div className="flex flex-col lg:flex-row lg:items-stretch">
           {/* Left: Price + CTA */}
           <div className="p-6 lg:p-8 lg:w-[42%] flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-dark-bg/20">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 pr-4">
               <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide whitespace-nowrap">
                 Annual Membership
               </p>
