@@ -1,0 +1,10 @@
+{
+  "type": "calendly",
+  "scopes": [
+    "availability:read",
+    "event_types:read",
+    "locations:read",
+    "scheduled_events:read",
+    "users:read"
+  ]
+}
