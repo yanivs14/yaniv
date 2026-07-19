@@ -129,7 +129,7 @@ export default function HandstandVideoSection({ c }) {
                   onTouchStart={(e) => { e.preventDefault(); handleVideoPlay(); }}
                   className="absolute inset-0 w-full h-full group flex items-center justify-center cursor-pointer bg-black"
                 >
-                  {poster && <img src={poster} alt="Showcase" className="absolute inset-0 w-full h-full object-contain" />}
+                  {poster && <img src={poster} alt="Showcase" className="absolute inset-0 w-full h-full object-cover" />}
                   <span className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
                   <span className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                     <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
@@ -138,7 +138,7 @@ export default function HandstandVideoSection({ c }) {
               )}
             </>
           ) : poster ? (
-            <img src={poster} alt="Showcase" className="w-full h-full object-contain" />
+            <img src={poster} alt="Showcase" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
               Add a video or poster image in the admin editor
