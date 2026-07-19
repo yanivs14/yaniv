@@ -79,7 +79,7 @@ export default function HandstandStickyBar({ price, ctaText, targetDate }) {
       }`}
     >
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-[0.1em] leading-none">
+        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-tight leading-none whitespace-nowrap">
           Special Price · Limited Time
         </span>
         <div className="flex items-center gap-2.5">

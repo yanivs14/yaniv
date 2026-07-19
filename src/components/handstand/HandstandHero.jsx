@@ -34,7 +34,7 @@ export default function HandstandHero({ c, targetDate }) {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section id="hero" className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center pt-8 lg:pt-16 overflow-hidden">
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
