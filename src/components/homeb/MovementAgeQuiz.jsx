@@ -50,12 +50,10 @@ const DEFAULT_TEXT = {
   planLabel: "Your Recommended Plan",
 };
 
-const ANNUAL_FEATURES = [
-  "240+ guided sessions in the full training library",
-  "Programs for mobility, strength, and longevity",
-  "New sessions and challenges added regularly",
-  "Weekly live community calls & Q&As with The Movement team",
-  "Exclusive ongoing content & masterclasses",
+const PLAN_FEATURES = [
+  "240+ guided sessions",
+  "Programs for mobility, strength & longevity",
+  "New sessions added regularly",
 ];
 
 const AGE_MIDPOINTS = [16, 21, 30, 40, 50];
@@ -147,7 +145,8 @@ export default function MovementAgeQuiz({ open, onClose }) {
   const [emailError, setEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState(null);
-  const [planExpanded, setPlanExpanded] = useState(false);
+  const [monthlyExpanded, setMonthlyExpanded] = useState(false);
+  const [annualExpanded, setAnnualExpanded] = useState(false);
   const [planChoice, setPlanChoice] = useState("annual");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
@@ -262,7 +261,8 @@ export default function MovementAgeQuiz({ open, onClose }) {
     setEmail("");
     setEmailError("");
     setResults(null);
-    setPlanExpanded(false);
+    setMonthlyExpanded(false);
+    setAnnualExpanded(false);
     setPlanChoice("annual");
     onClose();
   };
@@ -400,48 +400,45 @@ export default function MovementAgeQuiz({ open, onClose }) {
               {isResultsStep && results && (
                 <div className="text-left">
                   {/* 1. Headline */}
-                  <h3 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-2 leading-tight">
+                  <h3 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-1.5 leading-tight">
                     Your Fitness Age: {results.fitnessAge}
                   </h3>
                   {/* 2. Sub-line */}
                   <p className="font-body text-sm text-white-muted mb-4">
-                    You're {results.realAge}. Right now, your body is moving more like someone {results.fitnessAge}.
-                  </p>
-                  {/* 3. Explainer */}
-                  <p className="font-body text-xs text-white-dim leading-relaxed mb-5">
-                    {text.explainer}
+                    Our prediction of your body's true physical age. Unlike your real age, this one can go down.
                   </p>
 
-                  {/* 4. Top contributors */}
+                  {/* 4. Gap line */}
+                  <p className="font-body text-sm font-semibold text-off-white mb-5">
+                    You're not where you should be yet. Here's how we get you there.
+                  </p>
+
+                  {/* 5. Pushing Your Score Up */}
                   {results.topContributors.length > 0 && (
                     <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4">
                       <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-2">
-                        What's pushing your score up
+                        Pushing Your Score Up
                       </p>
-                      <p className="font-body text-sm text-off-white leading-relaxed mb-2">
-                        {contributorSentence}.
+                      <p className="font-heading text-sm font-bold text-off-white mb-2">
+                        {contributorSentence}
                       </p>
-                      <p className="font-body text-xs text-white-muted leading-relaxed">
-                        These are fixable — they're exactly what our program is built to target first.
-                      </p>
+                      <p className="font-body text-xs text-white-muted">First thing we fix.</p>
                     </div>
                   )}
 
-                  {/* 5. Limiter */}
+                  {/* 6. Limiter */}
                   <div className="bg-dark-bg border border-orange-red/30 rounded-xl p-4 mb-4">
                     <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-1">
-                      Your biggest limiter
+                      Your Biggest Limiter
                     </p>
                     <p className="font-heading text-lg font-bold text-off-white uppercase mb-2">{results.limiter}</p>
-                    <p className="font-body text-xs text-white-muted leading-relaxed">
-                      This is the single thing standing between where you are and where you want to be. Here's specifically what it's been costing you, and what the first 4 weeks of fixing it looks like.
-                    </p>
+                    <p className="font-body text-xs text-white-muted">This is what's really been in your way.</p>
                   </div>
 
-                  {/* 6. Squat video */}
+                  {/* 7. Video section */}
                   <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4">
                     <p className="font-body text-[11px] font-bold text-white-muted uppercase tracking-widest mb-2">
-                      {text.squatLabel}
+                      A Look Inside
                     </p>
                     {VIDEO_EMBEDS[results.videoCategory] ? (
                       <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
@@ -458,77 +455,102 @@ export default function MovementAgeQuiz({ open, onClose }) {
                         <span className="font-body text-xs text-white-dim">Video embed area</span>
                       </div>
                     )}
+                    <p className="font-body text-xs text-white-muted mt-3 leading-relaxed">
+                      One real exercise from your program, this is what training with us actually looks like.
+                    </p>
                   </div>
 
-                  {/* 7. Benefit line */}
-                  <p className="font-body text-sm text-white-muted leading-relaxed mb-4">
-                    We think you could benefit a lot from a program built around exactly this. Thousands of people have lowered their Fitness Age by fixing the same things you're dealing with.
+                  {/* 8. Benefit line */}
+                  <p className="font-body text-sm text-white-muted leading-relaxed mb-5">
+                    Thousands have lowered their Fitness Age doing exactly this.
                   </p>
 
-                  {/* 8. Plan section with toggle */}
-                  <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-3">
-                    <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-3">
-                      {text.planLabel}
+                  {/* 9. Plan section */}
+                  <div className="mb-4">
+                    <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-3 text-center">
+                      Your Plan
                     </p>
-                    <div className="grid grid-cols-2 gap-2 mb-3">
-                      <button
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {/* Monthly card */}
+                      <div
                         onClick={() => setPlanChoice("monthly")}
-                        className={`text-left p-3 rounded-xl border transition-all ${
+                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all ${
                           planChoice === "monthly"
                             ? "border-orange-red bg-orange-red/10"
                             : "border-dark-border bg-dark-bg hover:border-orange-red/50"
                         }`}
                       >
-                        <p className="font-heading text-sm font-bold text-off-white uppercase mb-1">Monthly</p>
-                        <p className="font-heading text-xl font-bold text-off-white">$25<span className="text-xs text-white-muted font-body">/mo</span></p>
-                      </button>
-                      <button
+                        <p className="font-heading text-sm font-bold text-off-white uppercase mb-1.5">Monthly</p>
+                        <p className="font-heading text-2xl font-bold text-off-white mb-1.5">$30<span className="text-sm text-white-muted font-body">/mo</span></p>
+                        <p className="font-body text-[11px] text-white-muted mb-2.5">Full access, cancel anytime.</p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setMonthlyExpanded(!monthlyExpanded); }}
+                          className="flex items-center justify-center gap-1.5 w-full border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
+                        >
+                          What's included <ChevronDown className={`w-3.5 h-3.5 transition-transform ${monthlyExpanded ? "rotate-180" : ""}`} />
+                        </button>
+                        <AnimatePresence>
+                          {monthlyExpanded && (
+                            <motion.ul
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25 }}
+                              className="overflow-hidden space-y-1.5 mt-2.5"
+                            >
+                              {PLAN_FEATURES.map((f, i) => (
+                                <li key={i} className="flex items-start gap-1.5">
+                                  <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+                                  <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Annual card */}
+                      <div
                         onClick={() => setPlanChoice("annual")}
-                        className={`text-left p-3 rounded-xl border transition-all relative ${
+                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all relative ${
                           planChoice === "annual"
                             ? "border-orange-red bg-orange-red/10"
                             : "border-dark-border bg-dark-bg hover:border-orange-red/50"
                         }`}
                       >
                         <span className="absolute top-1.5 right-1.5 bg-orange-red text-dark-bg text-[9px] font-bold uppercase px-1.5 py-0.5 rounded">Save 20%</span>
-                        <p className="font-heading text-sm font-bold text-off-white uppercase mb-1">Annual</p>
-                        <p className="font-heading text-xl font-bold text-off-white">$20<span className="text-xs text-white-muted font-body">/mo</span></p>
-                        <p className="font-body text-[10px] text-white-dim">Billed $240/yr</p>
-                      </button>
-                    </div>
-                    <p className="font-body text-xs text-white-muted mb-3">
-                      Choose the option that fits how you commit — switch anytime.
-                    </p>
-                    <button
-                      onClick={() => setPlanExpanded(!planExpanded)}
-                      className="flex items-center justify-center gap-1.5 w-full border border-orange-red/40 bg-dark-bg/50 text-orange-red font-body text-xs font-semibold py-2.5 rounded-full hover:bg-orange-red/10 transition-colors"
-                    >
-                      {planExpanded ? "Hide details" : "What's included?"} <ChevronDown className={`w-4 h-4 transition-transform ${planExpanded ? "rotate-180" : ""}`} />
-                    </button>
-                    <AnimatePresence>
-                      {planExpanded && (
-                        <motion.ul
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="overflow-hidden space-y-2 mt-3"
+                        <p className="font-heading text-sm font-bold text-off-white uppercase mb-1.5">Annual</p>
+                        <p className="font-heading text-2xl font-bold text-off-white mb-1.5">$20<span className="text-sm text-white-muted font-body">/mo</span></p>
+                        <p className="font-body text-[11px] text-white-dim mb-2.5">Billed $240/yr</p>
+                        <p className="font-body text-[11px] text-white-muted mb-2.5">Everything in Monthly, at our lowest price.</p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setAnnualExpanded(!annualExpanded); }}
+                          className="flex items-center justify-center gap-1.5 w-full border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
                         >
-                          {ANNUAL_FEATURES.map((f, i) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                              <span className="font-body text-xs text-off-white/90 leading-relaxed">{f}</span>
-                            </li>
-                          ))}
-                        </motion.ul>
-                      )}
-                    </AnimatePresence>
+                          What's included <ChevronDown className={`w-3.5 h-3.5 transition-transform ${annualExpanded ? "rotate-180" : ""}`} />
+                        </button>
+                        <AnimatePresence>
+                          {annualExpanded && (
+                            <motion.ul
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25 }}
+                              className="overflow-hidden space-y-1.5 mt-2.5"
+                            >
+                              {PLAN_FEATURES.map((f, i) => (
+                                <li key={i} className="flex items-start gap-1.5">
+                                  <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+                                  <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
+                                </li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                    <p className="font-body text-xs text-white-muted text-center">Switch or cancel anytime.</p>
                   </div>
-
-                  {/* 9. Confirmation text */}
-                  <p className="font-body text-xs text-white-muted leading-relaxed mb-4">
-                    You could be in a noticeably better place than you are today — and it starts with fixing {results.limiter}. Here's your plan.
-                  </p>
 
                   {/* 10. CTA button */}
                   <button
@@ -536,7 +558,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     disabled={checkoutLoading}
                     className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
                   >
-                    {checkoutLoading ? "Loading..." : <>Get My Plan <ArrowRight className="w-4 h-4" /></>}
+                    {checkoutLoading ? "Loading..." : <>Start My Plan <ArrowRight className="w-4 h-4" /></>}
                   </button>
                 </div>
               )}
