@@ -44,7 +44,7 @@ const DEFAULT_TEXT = {
   emailHeadline: "Your Fitness Age is ready",
   emailSubhead: "Enter your email to see your results + get your personalized plan.",
   emailCta: "Reveal My Results",
-  introLine: "What's your real Fitness Age?",
+  introLine: "What's your real Movement Age?",
   explainer: "Fitness Age isn't your real age — it's how well your body is actually performing based on your squat, mobility, energy, and sleep. It goes up when your body is stiffer, weaker, or more worn down than it should be for your age, and it goes down as those things improve. The good news: unlike your real age, this number can go down.",
   squatLabel: "Your Squat Breakdown",
   planLabel: "Your Recommended Plan",
