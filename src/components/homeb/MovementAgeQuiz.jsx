@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Check, ChevronDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -50,11 +50,33 @@ const DEFAULT_TEXT = {
   planLabel: "Your Recommended Plan",
 };
 
-const PLAN_FEATURES = [
+const MONTHLY_FEATURES = [
   "240+ guided sessions",
-  "Programs for mobility, strength & longevity",
+  "Programs for mobility, strength and longevity",
   "New sessions added regularly",
 ];
+
+const ANNUAL_FEATURES = [
+  "Everything in Monthly",
+  "Weekly live community calls and Q&As with The Movement team",
+  "Exclusive ongoing content and masterclasses",
+];
+
+const CALC_MESSAGES = [
+  "Calculating your Fitness Age...",
+  "Analyzing your movement patterns...",
+  "Building your plan...",
+];
+
+const BARRIER_PHRASES = {
+  "No clear plan": "not having a clear plan",
+  "Motivation": "staying motivated",
+  "Time": "finding the time",
+  "Work or family demands": "juggling work and family",
+  "A big life change (move, breakup, finances, etc.)": "a major life change",
+  "An injury": "an old injury",
+  "None of these, I just haven't started": "not having started yet",
+};
 
 const AGE_MIDPOINTS = [16, 21, 30, 40, 50];
 const SQUAT_DELTAS = [-2, 1, 4]; // Yes easily, tight, No
@@ -75,9 +97,13 @@ function calculateFitnessAge(indices, questions) {
   let delta = 0;
 
   // Q8 squat
-  const squatDelta = SQUAT_DELTAS[indices.squat] ?? 0;
+  const squatIdx = indices.squat;
+  const squatDelta = SQUAT_DELTAS[squatIdx] ?? 0;
   delta += squatDelta;
-  if (squatDelta > 0) contributors.push({ key: "squat", delta: squatDelta, label: "your squat pattern" });
+  if (squatDelta > 0) {
+    const squatLabel = squatIdx === 1 ? "tightness in your squat" : "your squat pattern";
+    contributors.push({ key: "squat", delta: squatDelta, label: squatLabel });
+  }
 
   // Q12 pain (multi)
   const painQ = questions.find(q => q.id === "pain_issues");
@@ -93,43 +119,43 @@ function calculateFitnessAge(indices, questions) {
   if (painDelta > 0) contributors.push({ key: "pain", delta: painDelta, label: "pain or stiffness" });
 
   // Q13 energy
-  const energyDelta = ENERGY_DELTAS[indices.energy_activity] ?? 0;
+  const energyIdx = indices.energy_activity;
+  const energyDelta = ENERGY_DELTAS[energyIdx] ?? 0;
   delta += energyDelta;
   if (energyDelta > 0) {
-    const label = indices.energy_activity === 0 ? "low daily energy" : "fatigue on your feet";
-    contributors.push({ key: "energy", delta: energyDelta, label });
+    const energyLabel = energyIdx === 0 ? "low daily activity" : "daily fatigue";
+    contributors.push({ key: "energy", delta: energyDelta, label: energyLabel });
   }
 
   // Q14 sleep
   const sleepDelta = SLEEP_DELTAS[indices.sleep] ?? 0;
   delta += sleepDelta;
-  if (sleepDelta > 0) contributors.push({ key: "sleep", delta: sleepDelta, label: "limited sleep" });
+  if (sleepDelta > 0) contributors.push({ key: "sleep", delta: sleepDelta, label: "poor sleep" });
 
-  // Q9 + Q10 training gap (0 workouts last month, wants 5+ days/week)
+  // Q9 + Q10 training gap (0 workouts last month, wants 5+ days/week) — affects score, not shown in phrase
   if (indices.workouts_last_month === 0 && indices.train_frequency === 2) {
     delta += 1;
-    contributors.push({ key: "trainingGap", delta: 1, label: "wanting to train more than you have been" });
   }
 
   const clampedDelta = Math.max(-10, Math.min(10, delta));
   const fitnessAge = Math.max(18, realAge + clampedDelta);
 
   contributors.sort((a, b) => b.delta - a.delta);
-  const topContributors = contributors.slice(0, 3);
+  const topContributors = contributors.slice(0, 2);
 
   return { realAge, fitnessAge, topContributors };
 }
 
-function getLimiter(indices, questions) {
+function getLimiterPhrase(indices, questions) {
   const barriersQ = questions.find(q => q.id === "barriers");
   const selected = indices.barriers || [];
   const bNone = noneIndex(barriersQ.options);
   // Prefer the first selected non-"None of these" answer
   const first = selected.find(i => i !== bNone);
-  if (first !== undefined) return barriersQ.options[first];
-  // Otherwise use the "None of these" answer if selected, else fallback
-  if (selected.length) return barriersQ.options[selected[0]];
-  return "staying consistent";
+  const chosen = first !== undefined
+    ? barriersQ.options[first]
+    : (selected.length ? barriersQ.options[selected[0]] : "");
+  return BARRIER_PHRASES[chosen] || "staying consistent";
 }
 
 export default function MovementAgeQuiz({ open, onClose }) {
@@ -149,6 +175,17 @@ export default function MovementAgeQuiz({ open, onClose }) {
   const [annualExpanded, setAnnualExpanded] = useState(false);
   const [planChoice, setPlanChoice] = useState("annual");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [calculating, setCalculating] = useState(false);
+  const [calcMsgIndex, setCalcMsgIndex] = useState(0);
+
+  useEffect(() => {
+    if (!calculating) return;
+    setCalcMsgIndex(0);
+    const interval = setInterval(() => {
+      setCalcMsgIndex(i => (i + 1) % CALC_MESSAGES.length);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [calculating]);
 
   const goToNext = () => {
     if (step < totalSteps - 1) {
@@ -198,45 +235,46 @@ export default function MovementAgeQuiz({ open, onClose }) {
     questions.forEach(q => { indices[q.id] = answers[q.id]; });
 
     const { realAge, fitnessAge, topContributors } = calculateFitnessAge(indices, questions);
-    const limiter = getLimiter(indices, questions);
+    const limiter = getLimiterPhrase(indices, questions);
 
-    // Q8 squat → video
-    const squatAnswer = questions.find(q => q.id === "squat").options[indices.squat] || "";
-    const videoCategory = SQUAT_VIDEO_ROUTING[squatAnswer] || "";
-
-    setResults({ realAge, fitnessAge, topContributors, limiter, videoCategory });
-    track("quiz_completed", {
-      fitness_age: fitnessAge,
-      real_age: realAge,
-      limiter,
-      plan_choice: planChoice,
-    });
-    setStep(totalSteps + 1); // results screen
-
-    // Save lead in the background (non-blocking)
     setSubmitting(true);
-    try {
-      const quizAnswersText = {};
-      questions.forEach(q => {
-        const a = answers[q.id];
-        if (Array.isArray(a)) {
-          quizAnswersText[q.id] = a.map(i => q.options[i]);
-        } else {
-          quizAnswersText[q.id] = q.options[a];
-        }
+    setCalculating(true);
+
+    setTimeout(() => {
+      setCalculating(false);
+      setResults({ realAge, fitnessAge, topContributors, limiter });
+      track("quiz_completed", {
+        fitness_age: fitnessAge,
+        real_age: realAge,
+        limiter,
+        plan_choice: planChoice,
       });
-      await base44.functions.invoke("submitLead", {
-        full_name: email.trim(),
-        email: email.trim(),
-        source: "movement_age_quiz",
-        quiz_section: "footer_test",
-        quiz_recommendation: planChoice,
-        quiz_answers: quizAnswersText,
-      });
-    } catch {
-      // non-critical — results already shown
-    }
-    setSubmitting(false);
+      setStep(totalSteps + 1); // results screen
+
+      // Save lead in the background (non-blocking)
+      try {
+        const quizAnswersText = {};
+        questions.forEach(q => {
+          const a = answers[q.id];
+          if (Array.isArray(a)) {
+            quizAnswersText[q.id] = a.map(i => q.options[i]);
+          } else {
+            quizAnswersText[q.id] = q.options[a];
+          }
+        });
+        base44.functions.invoke("submitLead", {
+          full_name: email.trim(),
+          email: email.trim(),
+          source: "movement_age_quiz",
+          quiz_section: "footer_test",
+          quiz_recommendation: planChoice,
+          quiz_answers: quizAnswersText,
+        });
+      } catch {
+        // non-critical — results already shown
+      }
+      setSubmitting(false);
+    }, 3000);
   };
 
   const handleCheckout = async () => {
@@ -263,6 +301,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
     setResults(null);
     setMonthlyExpanded(false);
     setAnnualExpanded(false);
+    setCalculating(false);
     setPlanChoice("annual");
     onClose();
   };
@@ -275,8 +314,11 @@ export default function MovementAgeQuiz({ open, onClose }) {
   const isResultsStep = step === totalSteps + 1;
 
   const contributorSentence = results?.topContributors?.length
-    ? results.topContributors.map(c => c.label).join(", ").replace(/, ([^,]*)$/, " and $1")
+    ? results.topContributors.map(c => c.label).join(" and ")
     : "";
+
+  const behindParts = [contributorSentence, results?.limiter].filter(Boolean);
+  const behindText = behindParts.length ? `${behindParts.join(", and ")}. Exactly what your plan fixes first.` : "";
 
   return (
     <AnimatePresence>
@@ -304,7 +346,32 @@ export default function MovementAgeQuiz({ open, onClose }) {
             </button>
 
             <div className="p-6 lg:p-8">
-              {isQuestionStep && (
+              {calculating && (
+                <div className="text-center py-10">
+                  <div className="w-12 h-12 mx-auto mb-6 border-2 border-orange-red border-t-transparent rounded-full animate-spin" />
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={calcMsgIndex}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.3 }}
+                      className="font-heading text-lg font-bold text-off-white uppercase tracking-tight mb-6"
+                    >
+                      {CALC_MESSAGES[calcMsgIndex]}
+                    </motion.p>
+                  </AnimatePresence>
+                  <div className="w-full h-1 bg-dark-bg rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 3, ease: "linear" }}
+                      className="h-full bg-orange-red rounded-full"
+                    />
+                  </div>
+                </div>
+              )}
+              {!calculating && isQuestionStep && (
                 <>
                   {step === 0 && (
                     <p className="font-body text-sm text-white-muted leading-relaxed mb-5 text-left">
@@ -369,7 +436,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                 </>
               )}
 
-              {isEmailStep && (
+              {!calculating && isEmailStep && (
                 <div className="text-center">
                   <h3 className="font-heading text-2xl font-bold text-off-white uppercase tracking-tight mb-3 leading-tight">
                     {text.emailHeadline}
@@ -413,26 +480,14 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     You're not where you should be yet. Here's how we get you there.
                   </p>
 
-                  {/* 5. Pushing Your Score Up */}
-                  {results.topContributors.length > 0 && (
-                    <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4">
-                      <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-2">
-                        Pushing Your Score Up
-                      </p>
-                      <p className="font-heading text-sm font-bold text-off-white mb-2">
-                        {contributorSentence}
-                      </p>
-                      <p className="font-body text-xs text-white-muted">First thing we fix.</p>
-                    </div>
-                  )}
-
-                  {/* 6. Limiter */}
-                  <div className="bg-dark-bg border border-orange-red/30 rounded-xl p-4 mb-4">
-                    <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-1">
-                      Your Biggest Limiter
+                  {/* 5. Behind Your Score */}
+                  <div className="bg-dark-bg border border-dark-border rounded-xl p-4 mb-4">
+                    <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-2">
+                      Behind Your Score
                     </p>
-                    <p className="font-heading text-lg font-bold text-off-white uppercase mb-2">{results.limiter}</p>
-                    <p className="font-body text-xs text-white-muted">This is what's really been in your way.</p>
+                    <p className="font-body text-sm text-off-white leading-relaxed">
+                      {behindText}
+                    </p>
                   </div>
 
                   {/* 7. Video section */}
@@ -440,21 +495,15 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     <p className="font-body text-[11px] font-bold text-white-muted uppercase tracking-widest mb-2">
                       A Look Inside
                     </p>
-                    {VIDEO_EMBEDS[results.videoCategory] ? (
-                      <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
-                        <iframe
-                          src={VIDEO_EMBEDS[results.videoCategory]}
-                          frameBorder="0"
-                          allowFullScreen
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          className="w-full h-full"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
-                        <span className="font-body text-xs text-white-dim">Video embed area</span>
-                      </div>
-                    )}
+                    <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
+                      <iframe
+                        src="https://www.loom.com/embed/1f21fbe4d15c48a8b0c5190ae49a7bbe"
+                        frameBorder="0"
+                        allowFullScreen
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        className="w-full h-full"
+                      />
+                    </div>
                     <p className="font-body text-xs text-white-muted mt-3 leading-relaxed">
                       One real exercise from your program, this is what training with us actually looks like.
                     </p>
@@ -481,7 +530,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                         }`}
                       >
                         <p className="font-heading text-sm font-bold text-off-white uppercase mb-1.5">Monthly</p>
-                        <p className="font-heading text-2xl font-bold text-off-white mb-1.5">$30<span className="text-sm text-white-muted font-body">/mo</span></p>
+                        <p className="font-heading text-2xl font-bold text-off-white mb-1.5">$35<span className="text-sm text-white-muted font-body">/mo</span></p>
                         <p className="font-body text-[11px] text-white-muted mb-2.5">Full access, cancel anytime.</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); setMonthlyExpanded(!monthlyExpanded); }}
@@ -498,7 +547,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                               transition={{ duration: 0.25 }}
                               className="overflow-hidden space-y-1.5 mt-2.5"
                             >
-                              {PLAN_FEATURES.map((f, i) => (
+                              {MONTHLY_FEATURES.map((f, i) => (
                                 <li key={i} className="flex items-start gap-1.5">
                                   <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
                                   <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
@@ -522,7 +571,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                         <p className="font-heading text-sm font-bold text-off-white uppercase mb-1.5">Annual</p>
                         <p className="font-heading text-2xl font-bold text-off-white mb-1.5">$20<span className="text-sm text-white-muted font-body">/mo</span></p>
                         <p className="font-body text-[11px] text-white-dim mb-2.5">Billed $240/yr</p>
-                        <p className="font-body text-[11px] text-white-muted mb-2.5">Everything in Monthly, at our lowest price.</p>
+                        <p className="font-body text-[11px] text-white-muted mb-2.5">Everything in Monthly plus more. Best offer.</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); setAnnualExpanded(!annualExpanded); }}
                           className="flex items-center justify-center gap-1.5 w-full border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
@@ -538,7 +587,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                               transition={{ duration: 0.25 }}
                               className="overflow-hidden space-y-1.5 mt-2.5"
                             >
-                              {PLAN_FEATURES.map((f, i) => (
+                              {ANNUAL_FEATURES.map((f, i) => (
                                 <li key={i} className="flex items-start gap-1.5">
                                   <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
                                   <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
