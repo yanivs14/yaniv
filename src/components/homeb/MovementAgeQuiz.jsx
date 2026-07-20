@@ -319,24 +319,32 @@ export default function MovementAgeQuiz({ open, onClose }) {
 
                   <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-3 text-left">
                     {results.motivation && (
-                      <p className="font-body text-xs text-white-muted leading-relaxed mb-3">
-                        Recommended plan to help you <span className="text-orange-red font-semibold">{results.motivation.toLowerCase()}</span>
-                      </p>
-                    )}
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex-1">
-                        <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-1">
-                          {text.planLabel}
+                      <>
+                        <p className="font-body text-[11px] text-orange-red font-semibold uppercase tracking-widest mb-2">
+                          Recommended for your goal
                         </p>
-                        <p className="font-heading text-xl font-bold text-off-white uppercase">{results.plan}</p>
+                        <h3 className="font-heading text-lg font-bold text-off-white leading-tight mb-3">
+                          {results.motivation}
+                        </h3>
+                      </>
+                    )}
+                    <div className="border-t border-dark-border pt-3 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-heading text-base font-bold text-off-white">Annual plan</p>
+                        <p className="font-body text-xs text-white-dim">Billed yearly</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-heading text-2xl font-bold text-off-white">$20<span className="text-sm text-white-muted font-body">/mo</span></p>
-                      </div>
+                      <p className="font-heading text-2xl font-bold text-orange-red">$20<span className="text-sm text-white-muted font-body">/mo</span></p>
                     </div>
                     <button
+                      onClick={handleCheckout}
+                      disabled={checkoutLoading}
+                      className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 mt-4"
+                    >
+                      {checkoutLoading ? "Loading..." : <>Start my plan <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                    <button
                       onClick={() => setPlanExpanded(!planExpanded)}
-                      className="flex items-center gap-1.5 mt-3 text-orange-red font-body text-xs font-semibold hover:text-orange-red-hover transition-colors"
+                      className="flex items-center justify-center gap-1.5 w-full mt-3 border border-orange-red/40 bg-dark-bg/50 text-orange-red font-body text-xs font-semibold py-2.5 rounded-full hover:bg-orange-red/10 transition-colors"
                     >
                       {planExpanded ? "Hide details" : "What's included?"} <ChevronDown className={`w-4 h-4 transition-transform ${planExpanded ? "rotate-180" : ""}`} />
                     </button>
@@ -366,14 +374,6 @@ export default function MovementAgeQuiz({ open, onClose }) {
                   <p className="font-body text-xs text-white-muted leading-relaxed mb-4">
                     {results.confirmation}
                   </p>
-
-                  <button
-                    onClick={handleCheckout}
-                    disabled={checkoutLoading}
-                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
-                  >
-                    {checkoutLoading ? "Loading..." : <>Get My Plan <ArrowRight className="w-4 h-4" /></>}
-                  </button>
                 </div>
               )}
             </div>
