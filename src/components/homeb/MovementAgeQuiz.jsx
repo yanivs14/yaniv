@@ -57,7 +57,6 @@ const MONTHLY_FEATURES = [
 ];
 
 const ANNUAL_FEATURES = [
-  "Everything in Monthly",
   "Weekly live community calls and Q&As with The Movement team",
   "Exclusive ongoing content and masterclasses",
 ];
@@ -479,7 +478,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                 <div className="text-left">
                   {/* 1. Headline */}
                   <h3 className="font-heading text-3xl font-bold text-off-white uppercase tracking-tight mb-1.5 leading-tight">
-                    Your Fitness Age: {results.fitnessAge}
+                    Your Movement Age: {results.fitnessAge}
                   </h3>
                   {/* 2. Sub-line */}
                   <p className="font-body text-sm text-white-muted mb-4">
@@ -506,21 +505,15 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     <p className="font-body text-[11px] font-bold text-white-muted uppercase tracking-widest mb-2">
                       A Look Inside
                     </p>
-                    {VIDEO_EMBEDS[results.videoCategory] ? (
-                      <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
-                        <iframe
-                          src={VIDEO_EMBEDS[results.videoCategory]}
-                          frameBorder="0"
-                          allowFullScreen
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          className="w-full h-full"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
-                        <span className="font-body text-xs text-white-dim">Video embed area</span>
-                      </div>
-                    )}
+                    <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
+                      <iframe
+                        src="https://www.loom.com/embed/ebf4988d0b2048988bf5077dfa521244"
+                        frameBorder="0"
+                        allowFullScreen
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        className="w-full h-full"
+                      />
+                    </div>
                     <p className="font-body text-xs text-white-muted mt-3 leading-relaxed">
                       One real exercise from your program, this is what training with us actually looks like.
                     </p>
@@ -528,7 +521,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
 
                   {/* 8. Benefit line */}
                   <p className="font-body text-sm text-white-muted leading-relaxed mb-5">
-                    Thousands have lowered their Fitness Age doing exactly this.
+                    Thousands have already lowered their Movement Age doing exactly this. Now it's your turn.
                   </p>
 
                   {/* 9. Plan section */}
@@ -540,7 +533,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                       {/* Monthly card */}
                       <div
                         onClick={() => setPlanChoice("monthly")}
-                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all ${
+                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col ${
                           planChoice === "monthly"
                             ? "border-orange-red bg-orange-red/10"
                             : "border-dark-border bg-dark-bg hover:border-orange-red/50"
@@ -551,7 +544,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                         <p className="font-body text-[11px] text-white-muted mb-2.5">Full access, cancel anytime.</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); setMonthlyExpanded(!monthlyExpanded); }}
-                          className="flex items-center justify-center gap-1.5 w-full border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
+                          className="flex items-center justify-center gap-1.5 w-full mt-auto border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
                         >
                           What's included <ChevronDown className={`w-3.5 h-3.5 transition-transform ${monthlyExpanded ? "rotate-180" : ""}`} />
                         </button>
@@ -578,7 +571,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                       {/* Annual card */}
                       <div
                         onClick={() => setPlanChoice("annual")}
-                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all relative ${
+                        className={`text-left p-3.5 rounded-xl border cursor-pointer transition-all relative flex flex-col ${
                           planChoice === "annual"
                             ? "border-orange-red bg-orange-red/10"
                             : "border-dark-border bg-dark-bg hover:border-orange-red/50"
@@ -591,7 +584,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                         <p className="font-body text-[11px] text-white-muted mb-2.5">Everything in Monthly plus more. Best offer.</p>
                         <button
                           onClick={(e) => { e.stopPropagation(); setAnnualExpanded(!annualExpanded); }}
-                          className="flex items-center justify-center gap-1.5 w-full border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
+                          className="flex items-center justify-center gap-1.5 w-full mt-auto border border-dark-border bg-dark-surface-2 text-orange-red font-body text-[11px] font-semibold py-2 rounded-full hover:bg-orange-red/10 transition-colors"
                         >
                           What's included <ChevronDown className={`w-3.5 h-3.5 transition-transform ${annualExpanded ? "rotate-180" : ""}`} />
                         </button>
@@ -604,9 +597,12 @@ export default function MovementAgeQuiz({ open, onClose }) {
                               transition={{ duration: 0.25 }}
                               className="overflow-hidden space-y-1.5 mt-2.5"
                             >
+                              <li className="flex items-start gap-1.5">
+                                <span className="font-body text-[11px] text-off-white/90 leading-snug font-semibold">Everything in Monthly, plus:</span>
+                              </li>
                               {ANNUAL_FEATURES.map((f, i) => (
                                 <li key={i} className="flex items-start gap-1.5">
-                                  {i !== 0 && <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />}
+                                  <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
                                   <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
                                 </li>
                               ))}
