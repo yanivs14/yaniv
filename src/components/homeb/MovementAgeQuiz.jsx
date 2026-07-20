@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, Check, ChevronDown } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { track } from "@/lib/analytics";
+import { track, getGaClientId } from "@/lib/analytics";
 import { useSiteContent } from "@/lib/SiteContentContext";
 
 const DEFAULT_QUESTIONS = [
@@ -46,6 +46,14 @@ const DEFAULT_TEXT = {
   doneButton: "Done",
 };
 
+const ANNUAL_FEATURES = [
+  "240+ guided sessions in the full training library",
+  "Programs for mobility, strength, and longevity",
+  "New sessions and challenges added regularly",
+  "Weekly live community calls & Q&As with The Movement team",
+  "Exclusive ongoing content & masterclasses",
+];
+
 function getPlanRouting(indices) {
   const hist = indices.history;
   const motiv = indices.motivation;
@@ -81,6 +89,8 @@ export default function MovementAgeQuiz({ open, onClose }) {
   const [emailError, setEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState(null);
+  const [planExpanded, setPlanExpanded] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const goToNext = () => {
     if (step < totalSteps - 1) {
@@ -117,8 +127,9 @@ export default function MovementAgeQuiz({ open, onClose }) {
     const limiterText = questions[2].options[problemIdx] || "";
     const videoCategory = videoRouting[problemIdx] || "";
     const confirmation = (text.confirmationText || "").replace("{limiter}", limiterText);
+    const motivationText = questions.find(q => q.id === "motivation")?.options[indices.motivation] || "";
 
-    setResults({ movementAge, plan, handstandUpsell, videoCategory, limiter: limiterText, confirmation });
+    setResults({ movementAge, plan, handstandUpsell, videoCategory, limiter: limiterText, confirmation, motivation: motivationText });
     track("quiz_completed", {
       movement_age: movementAge,
       recommended_plan: plan,
@@ -146,6 +157,22 @@ export default function MovementAgeQuiz({ open, onClose }) {
       // non-critical — results already shown
     }
     setSubmitting(false);
+  };
+
+  const handleCheckout = async () => {
+    if (window.self !== window.top) {
+      alert("Checkout is only available from the published app.");
+      return;
+    }
+    setCheckoutLoading(true);
+    try {
+      track("quiz_checkout_click", { plan: "annual", movement_age: results?.movementAge });
+      const res = await base44.functions.invoke("createCheckout", { plan: "annual", ga_client_id: getGaClientId() });
+      if (res.data?.url) window.location.href = res.data.url;
+    } catch {
+      // non-critical
+    }
+    setCheckoutLoading(false);
   };
 
   const handleClose = () => {
@@ -290,25 +317,62 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     </div>
                   </div>
 
-                  <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-4 text-left">
-                    <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-1">
-                      {text.planLabel}
-                    </p>
-                    <p className="font-heading text-xl font-bold text-off-white uppercase">{results.plan}</p>
+                  <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-3 text-left">
+                    {results.motivation && (
+                      <p className="font-body text-xs text-white-muted leading-relaxed mb-3">
+                        Recommended plan to help you <span className="text-orange-red font-semibold">{results.motivation.toLowerCase()}</span>
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex-1">
+                        <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-1">
+                          {text.planLabel}
+                        </p>
+                        <p className="font-heading text-xl font-bold text-off-white uppercase">{results.plan}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-heading text-2xl font-bold text-off-white">$20<span className="text-sm text-white-muted font-body">/mo</span></p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setPlanExpanded(!planExpanded)}
+                      className="flex items-center gap-1.5 mt-3 text-orange-red font-body text-xs font-semibold hover:text-orange-red-hover transition-colors"
+                    >
+                      {planExpanded ? "Hide details" : "What's included?"} <ChevronDown className={`w-4 h-4 transition-transform ${planExpanded ? "rotate-180" : ""}`} />
+                    </button>
+                    <AnimatePresence>
+                      {planExpanded && (
+                        <motion.ul
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="overflow-hidden space-y-2 mt-3"
+                        >
+                          {ANNUAL_FEATURES.map((f, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
+                              <span className="font-body text-xs text-off-white/90 leading-relaxed">{f}</span>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
                     {results.handstandUpsell && (
-                      <p className="font-body text-xs text-orange-red mt-1">+ Handstand Course upsell flagged</p>
+                      <p className="font-body text-xs text-orange-red mt-3">+ Handstand Course upsell flagged</p>
                     )}
                   </div>
 
-                  <p className="font-body text-xs text-white-muted leading-relaxed mb-5">
+                  <p className="font-body text-xs text-white-muted leading-relaxed mb-4">
                     {results.confirmation}
                   </p>
 
                   <button
-                    onClick={handleClose}
-                    className="flex items-center justify-center gap-2 w-full bg-off-white text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-off-white/90 transition-colors"
+                    onClick={handleCheckout}
+                    disabled={checkoutLoading}
+                    className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
                   >
-                    {text.doneButton}
+                    {checkoutLoading ? "Loading..." : <>Get My Plan <ArrowRight className="w-4 h-4" /></>}
                   </button>
                 </div>
               )}
