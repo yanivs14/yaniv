@@ -34,6 +34,14 @@ const DEFAULT_VIDEO_ROUTING = [
   "Full-body flow / 'movement snack' video",
 ];
 
+const VIDEO_EMBEDS = {
+  "Shoulder mobility / neck release drill": "https://www.loom.com/embed/f824fe0923244e99ad9c28c38b8e1a85",
+  "Spinal mobility / hip-hinge decompression drill": "https://www.loom.com/embed/046154e7beb54434823fad2f05fb563c",
+  "Hip opener / 90-90 style drill": "https://www.loom.com/embed/ca0b9f1d28be4eb8ac4948252a73d17f",
+  "Knee-friendly controlled range drill (not deep loaded squats)": "https://www.loom.com/embed/1f21fbe4d15c48a8b0c5190ae49a7bbe",
+  "Full-body flow / 'movement snack' video": "https://www.loom.com/embed/31d8dd5c444f49299e6988fe172a23c6",
+};
+
 const DEFAULT_TEXT = {
   emailHeadline: "Your Movement Age is ready 👀",
   emailSubhead: "Enter your email to see your results + get your personalized plan.",
@@ -312,9 +320,21 @@ export default function MovementAgeQuiz({ open, onClose }) {
                       {text.videoLabel}
                     </p>
                     <p className="font-body text-sm text-off-white leading-relaxed">{results.videoCategory}</p>
-                    <div className="mt-3 aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
-                      <span className="font-body text-xs text-white-dim">Video embed area</span>
-                    </div>
+                    {VIDEO_EMBEDS[results.videoCategory] ? (
+                      <div className="mt-3 aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
+                        <iframe
+                          src={VIDEO_EMBEDS[results.videoCategory]}
+                          frameBorder="0"
+                          allowFullScreen
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          className="w-full h-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="mt-3 aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
+                        <span className="font-body text-xs text-white-dim">Video embed area</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-orange-red/10 border border-orange-red/30 rounded-xl p-4 mb-3 text-left">
