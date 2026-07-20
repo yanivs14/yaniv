@@ -44,7 +44,7 @@ const DEFAULT_TEXT = {
   emailHeadline: "Your Fitness Age is ready",
   emailSubhead: "Enter your email to see your results + get your personalized plan.",
   emailCta: "Reveal My Results",
-  introLine: "Answer 15 quick questions and we'll show you your Fitness Age — how your body is actually performing right now — plus a plan built around exactly where you're stuck.",
+  introLine: "What's your real Fitness Age?",
   explainer: "Fitness Age isn't your real age — it's how well your body is actually performing based on your squat, mobility, energy, and sleep. It goes up when your body is stiffer, weaker, or more worn down than it should be for your age, and it goes down as those things improve. The good news: unlike your real age, this number can go down.",
   squatLabel: "Your Squat Breakdown",
   planLabel: "Your Recommended Plan",
@@ -158,6 +158,17 @@ function getLimiterPhrase(indices, questions) {
   return BARRIER_PHRASES[chosen] || "staying consistent";
 }
 
+function buildBehindText(items) {
+  const filtered = items.filter(Boolean);
+  if (!filtered.length) return "";
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  if (filtered.length === 1) return `${cap(filtered[0])} is exactly what your plan fixes first.`;
+  const list = filtered.length === 2
+    ? `${filtered[0]} and ${filtered[1]}`
+    : `${filtered.slice(0, -1).join(", ")}, and ${filtered[filtered.length - 1]}`;
+  return `${cap(list)} are exactly what your plan fixes first.`;
+}
+
 export default function MovementAgeQuiz({ open, onClose }) {
   const { content } = useSiteContent();
   const quizContent = content?.movementAgeQuiz;
@@ -236,13 +247,15 @@ export default function MovementAgeQuiz({ open, onClose }) {
 
     const { realAge, fitnessAge, topContributors } = calculateFitnessAge(indices, questions);
     const limiter = getLimiterPhrase(indices, questions);
+    const squatAnswer = questions.find(q => q.id === "squat").options[indices.squat] || "";
+    const videoCategory = SQUAT_VIDEO_ROUTING[squatAnswer] || "";
 
     setSubmitting(true);
     setCalculating(true);
 
     setTimeout(() => {
       setCalculating(false);
-      setResults({ realAge, fitnessAge, topContributors, limiter });
+      setResults({ realAge, fitnessAge, topContributors, limiter, videoCategory });
       track("quiz_completed", {
         fitness_age: fitnessAge,
         real_age: realAge,
@@ -313,12 +326,10 @@ export default function MovementAgeQuiz({ open, onClose }) {
   const isEmailStep = step === totalSteps;
   const isResultsStep = step === totalSteps + 1;
 
-  const contributorSentence = results?.topContributors?.length
-    ? results.topContributors.map(c => c.label).join(" and ")
-    : "";
-
-  const behindParts = [contributorSentence, results?.limiter].filter(Boolean);
-  const behindText = behindParts.length ? `${behindParts.join(", and ")}. Exactly what your plan fixes first.` : "";
+  const behindText = buildBehindText([
+    ...(results?.topContributors || []).map(c => c.label),
+    results?.limiter,
+  ]);
 
   return (
     <AnimatePresence>
@@ -495,15 +506,21 @@ export default function MovementAgeQuiz({ open, onClose }) {
                     <p className="font-body text-[11px] font-bold text-white-muted uppercase tracking-widest mb-2">
                       A Look Inside
                     </p>
-                    <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
-                      <iframe
-                        src="https://www.loom.com/embed/1f21fbe4d15c48a8b0c5190ae49a7bbe"
-                        frameBorder="0"
-                        allowFullScreen
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        className="w-full h-full"
-                      />
-                    </div>
+                    {VIDEO_EMBEDS[results.videoCategory] ? (
+                      <div className="aspect-video rounded-lg overflow-hidden bg-dark-surface-2">
+                        <iframe
+                          src={VIDEO_EMBEDS[results.videoCategory]}
+                          frameBorder="0"
+                          allowFullScreen
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          className="w-full h-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-dark-surface-2 rounded-lg flex items-center justify-center">
+                        <span className="font-body text-xs text-white-dim">Video embed area</span>
+                      </div>
+                    )}
                     <p className="font-body text-xs text-white-muted mt-3 leading-relaxed">
                       One real exercise from your program, this is what training with us actually looks like.
                     </p>
@@ -589,7 +606,7 @@ export default function MovementAgeQuiz({ open, onClose }) {
                             >
                               {ANNUAL_FEATURES.map((f, i) => (
                                 <li key={i} className="flex items-start gap-1.5">
-                                  <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />
+                                  {i !== 0 && <Check className="w-3.5 h-3.5 text-orange-red flex-shrink-0 mt-0.5" />}
                                   <span className="font-body text-[11px] text-off-white/90 leading-snug">{f}</span>
                                 </li>
                               ))}
