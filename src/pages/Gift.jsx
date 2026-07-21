@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { Play, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { defaultGiftContent } from "@/lib/giftContent";
 import GdprConsent from "@/components/landing/GdprConsent";
-import PricingSection from "@/components/homeb/PricingSection";
-import { trackLeadCapture } from "@/lib/analytics";
+import { track, trackLeadCapture } from "@/lib/analytics";
+import GiftHeader from "@/components/gift/GiftHeader";
+import GiftIntro from "@/components/gift/GiftIntro";
+import GiftPractice from "@/components/gift/GiftPractice";
+import GiftBridge from "@/components/gift/GiftBridge";
+import GiftMembership from "@/components/gift/GiftMembership";
+import GiftProof from "@/components/gift/GiftProof";
+import GiftStickyBar from "@/components/gift/GiftStickyBar";
+import GiftFooter from "@/components/gift/GiftFooter";
 
 const STORAGE_KEY = "gift_unlocked_until";
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
@@ -47,8 +55,12 @@ export default function Gift() {
   const [gdpr, setGdpr] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const videoRef = useRef(null);
+
+  // sticky bar state
+  const [showSticky, setShowSticky] = useState(false);
+  const [stickyMode, setStickyMode] = useState("view"); // "view" | "annual"
+  const practiceRef = useRef(null);
+  const membershipRef = useRef(null);
 
   useEffect(() => {
     setUnlocked(isUnlocked());
@@ -65,6 +77,42 @@ export default function Gift() {
       }
     })();
   }, []);
+
+  // Track access view once unlocked
+  useEffect(() => {
+    if (unlocked) track("movement_reset_access_view");
+  }, [unlocked]);
+
+  // Sticky bar: show after scrolled past practice OR completed; switch to annual at membership
+  useEffect(() => {
+    if (!unlocked) return;
+    const practice = practiceRef.current;
+    const membership = membershipRef.current;
+
+    const onScroll = () => {
+      if (practice) {
+        const rect = practice.getBoundingClientRect();
+        if (rect.bottom < window.innerHeight * 0.5) {
+          setShowSticky(true);
+        }
+      }
+      if (membership) {
+        const rect = membership.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.6) {
+          setStickyMode("annual");
+        } else {
+          setStickyMode("view");
+        }
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [unlocked]);
+
+  const handlePracticeComplete = () => {
+    setShowSticky(true);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,11 +137,6 @@ export default function Gift() {
     setLoading(false);
   };
 
-  const handleVideoPlay = () => {
-    setPlaying(true);
-    setTimeout(() => videoRef.current?.play(), 50);
-  };
-
   if (!content) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
@@ -103,11 +146,15 @@ export default function Gift() {
   }
 
   const gate = content.gate;
-  const video = content.video;
 
+  // Gate screen (first visit)
   if (!unlocked) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+        <Helmet>
+          <meta name="robots" content="noindex, nofollow" />
+          <title>Your Free Movement Reset — Roye Gold</title>
+        </Helmet>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,70 +196,38 @@ export default function Gift() {
     );
   }
 
-  const isPortrait = video.posterAspect === "vertical";
-  const containerAspect = isPortrait ? "9 / 16" : "16 / 9";
-
   return (
     <div className="min-h-screen bg-dark-bg">
-      <div className="max-w-4xl mx-auto px-6 lg:px-10 py-12 lg:py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-4 leading-tight">
-            {video.title}
-          </h1>
-          {video.description && (
-            <p className="font-body text-base text-white-muted leading-relaxed max-w-2xl mx-auto">{video.description}</p>
-          )}
-        </motion.div>
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Your Free Movement Reset — Roye Gold</title>
+      </Helmet>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className={`rounded-2xl overflow-hidden bg-black border border-dark-border w-full relative ${isPortrait ? "max-w-sm mx-auto" : ""}`}
-          style={{ aspectRatio: containerAspect }}
-        >
-          {video.videoUrl ? (
-            <>
-              <video
-                ref={videoRef}
-                src={video.videoUrl}
-                poster={video.posterUrl || undefined}
-                controls={playing}
-                playsInline
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                className="w-full h-full object-contain"
-              />
-              {!playing && (
-                <button
-                  onClick={handleVideoPlay}
-                  onTouchStart={(e) => { e.preventDefault(); handleVideoPlay(); }}
-                  className="absolute inset-0 w-full h-full group flex items-center justify-center cursor-pointer bg-black"
-                >
-                  {video.posterUrl && <img src={video.posterUrl} alt="" className="absolute inset-0 w-full h-full object-cover" />}
-                  <span className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-                  <span className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
-                  </span>
-                </button>
-              )}
-            </>
-          ) : video.posterUrl ? (
-            <img src={video.posterUrl} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">
-              Add a video in the admin editor
-            </div>
-          )}
-        </motion.div>
-      </div>
+      <GiftHeader c={content.header} />
 
-      <PricingSection />
+      <main className="pb-16 lg:pb-0">
+        <GiftIntro c={content.stage1} />
+
+        <div ref={practiceRef}>
+          <GiftPractice c={content.stage2} onComplete={handlePracticeComplete} />
+        </div>
+
+        <GiftBridge c={content.stage3} />
+
+        <div ref={membershipRef}>
+          <GiftMembership c={content.stage4} />
+        </div>
+
+        <GiftProof c={content.stage5} />
+      </main>
+
+      <GiftFooter c={content.footer} />
+
+      <GiftStickyBar
+        visible={showSticky}
+        mode={stickyMode}
+        annualCta={content.stage4?.annual?.cta}
+      />
     </div>
   );
 }
