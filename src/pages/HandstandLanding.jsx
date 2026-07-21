@@ -77,8 +77,14 @@ export default function HandstandLanding() {
     return <HandstandPreOrder config={preOrder} onUpdateVideo={updatePreOrder} />;
   }
 
+  const rawAccent = content?.settings?.accentColor;
+  const accentColor = rawAccent && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(rawAccent) ? rawAccent : null;
+
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden pb-20 lg:pb-0">
+    <div id="hs-root" className="min-h-screen bg-dark-bg overflow-x-hidden pb-20 lg:pb-0">
+      {accentColor && (
+        <style>{`#hs-root h1 .text-orange-red,#hs-root h2 .text-orange-red,#hs-root h3 .text-orange-red,#hs-root h1.text-orange-red,#hs-root h2.text-orange-red,#hs-root h3.text-orange-red,#hs-root .font-heading.text-orange-red,#hs-root .font-heading .text-orange-red{color:${accentColor} !important;}`}</style>
+      )}
       <HandstandNavbar c={content.navbar} targetDate={preOrder.targetDate} />
       <HandstandHero c={content.hero} targetDate={preOrder.targetDate} />
       <HandstandVideoSection c={content.showcase} />

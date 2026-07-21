@@ -139,4 +139,7 @@ export const defaultHandstandContent = {
     ctaText: "Enroll Now",
     priceNote: "One-time payment · Lifetime access · 30-day guarantee",
   },
+  settings: {
+    accentColor: "",
+  },
 };

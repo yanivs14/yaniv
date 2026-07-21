@@ -17,6 +17,7 @@ const SECTIONS = [
   { key: "pricing", label: "Pricing" },
   { key: "faq", label: "FAQ" },
   { key: "finalCta", label: "Final CTA" },
+  { key: "settings", label: "Page Settings" },
 ];
 
 function UploadButton({ onUpload, accept = "image/*", label = "Upload" }) {
@@ -348,6 +349,24 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("subtitle", "Subtitle", true)}
         {f("ctaText", "CTA Button Text")}
         {f("priceNote", "Price Note")}
+      </div>
+    );
+  }
+
+  if (sectionKey === "settings") {
+    return (
+      <div>
+        <div className="mb-4">
+          <label className="block text-xs text-white-muted mb-1.5 font-body">Accent Color (replaces turquoise in all headings)</label>
+          <div className="flex items-center gap-3">
+            <input type="color" value={data.accentColor || "#00fff7"} onChange={(e) => update(sectionKey, "accentColor", e.target.value)} className="w-12 h-10 rounded-lg border border-[#2a2a2a] bg-transparent cursor-pointer p-0.5" />
+            <input value={data.accentColor || ""} onChange={(e) => update(sectionKey, "accentColor", e.target.value)} placeholder="Leave empty for default turquoise" className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red transition-colors" />
+            {data.accentColor && (
+              <button onClick={() => update(sectionKey, "accentColor", "")} className="text-xs text-white-muted hover:text-red-400 transition-colors whitespace-nowrap">Reset</button>
+            )}
+          </div>
+          <p className="text-[11px] text-white-dim mt-2 font-body">Applies to the turquoise accent words across all headings on this page.</p>
+        </div>
       </div>
     );
   }
