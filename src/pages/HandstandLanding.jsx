@@ -78,13 +78,22 @@ export default function HandstandLanding() {
   }
 
   const rawAccent = content?.settings?.accentColor;
-  const accentColor = rawAccent && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(rawAccent) ? rawAccent : null;
+  let accentStyle = null;
+  if (rawAccent) {
+    const hex = rawAccent.replace('#', '');
+    const full = hex.length === 3 ? hex.split('').map(ch => ch + ch).join('') : hex;
+    if (/^[0-9a-fA-F]{6}$/.test(full)) {
+      const r = parseInt(full.slice(0, 2), 16);
+      const g = parseInt(full.slice(2, 4), 16);
+      const b = parseInt(full.slice(4, 6), 16);
+      const hr = Math.round(r * 0.8), hg = Math.round(g * 0.8), hb = Math.round(b * 0.8);
+      accentStyle = `#hs-root{--orange-red-rgb:${r} ${g} ${b};--orange-red-hover-rgb:${hr} ${hg} ${hb};}`;
+    }
+  }
 
   return (
     <div id="hs-root" className="min-h-screen bg-dark-bg overflow-x-hidden pb-20 lg:pb-0">
-      {accentColor && (
-        <style>{`#hs-root h1 .text-orange-red,#hs-root h2 .text-orange-red,#hs-root h3 .text-orange-red,#hs-root h1.text-orange-red,#hs-root h2.text-orange-red,#hs-root h3.text-orange-red,#hs-root .font-heading.text-orange-red,#hs-root .font-heading .text-orange-red{color:${accentColor} !important;}`}</style>
-      )}
+      {accentStyle && <style>{accentStyle}</style>}
       <HandstandNavbar c={content.navbar} targetDate={preOrder.targetDate} />
       <HandstandHero c={content.hero} targetDate={preOrder.targetDate} />
       <HandstandVideoSection c={content.showcase} />

@@ -365,7 +365,7 @@ function SectionEditor({ sectionKey, content, update }) {
               <button onClick={() => update(sectionKey, "accentColor", "")} className="text-xs text-white-muted hover:text-red-400 transition-colors whitespace-nowrap">Reset</button>
             )}
           </div>
-          <p className="text-[11px] text-white-dim mt-2 font-body">Applies to the turquoise accent words across all headings on this page.</p>
+          <p className="text-[11px] text-white-dim mt-2 font-body">Applies globally to every accent element on this page — buttons, eyebrow text, play button, checkmarks, badges, borders, and heading highlights.</p>
         </div>
       </div>
     );

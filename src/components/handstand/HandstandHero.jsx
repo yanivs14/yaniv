@@ -53,9 +53,13 @@ export default function HandstandHero({ c, targetDate }) {
             <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c.eyebrow}</p>
           )}
           <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] text-off-white uppercase tracking-tight mb-6">
-            {c?.headline1}<br />
-            {c?.headline2}<br />
-            <span className="text-orange-red">{c?.headlineAccent}</span>
+            {c?.headline1} {c?.headline2}
+            {c?.headlineAccent && (
+              <>
+                <br />
+                <span className="text-orange-red">{c?.headlineAccent}</span>
+              </>
+            )}
           </h1>
           {c?.boldDescription && (
             <p className="font-heading text-xl sm:text-2xl font-bold text-white leading-tight mb-4">
