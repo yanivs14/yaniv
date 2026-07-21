@@ -45,6 +45,27 @@ export default function HomeBackup() {
     }
   }, []);
 
+  // Auto-scroll to anchor (#pricing, #faq, etc.) once content has mounted
+  useEffect(() => {
+    if (loading) return;
+    const hash = window.location.hash;
+    if (!hash) return;
+    const id = hash.slice(1);
+    let attempts = 0;
+    let cancelled = false;
+    const tryScroll = () => {
+      if (cancelled) return;
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attempts++ < 25) {
+        setTimeout(tryScroll, 100);
+      }
+    };
+    const t = setTimeout(tryScroll, 100);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [loading]);
+
   if (loading || !content) return null;
 
   const ogImage = "https://media.base44.com/images/public/6a0c583766eb003a373061f3/a16cf5928_generated_acb3ceec.png";
