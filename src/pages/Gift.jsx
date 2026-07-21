@@ -10,6 +10,26 @@ import { trackLeadCapture } from "@/lib/analytics";
 const STORAGE_KEY = "gift_unlocked_until";
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
 
+const DISPOSABLE_DOMAINS = [
+  "mailinator.com", "tempmail.com", "tempmail.io", "10minutemail.com", "guerrillamail.com",
+  "yopmail.com", "throwawaymail.com", "trashmail.com", "getnada.com", "maildrop.cc",
+  "dispostable.com", "fakeinbox.com", "sharklasers.com", "guerrillamailblock.com", "tmpmail.org",
+  "temp-mail.org", "mintemail.com", "mohmal.com", "emailondeck.com", "spambog.com",
+];
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function validateEmail(value) {
+  const trimmed = value.trim();
+  if (!trimmed) return "Please enter your email";
+  if (!EMAIL_REGEX.test(trimmed)) return "Please enter a valid email address";
+  const domain = trimmed.split("@")[1].toLowerCase();
+  const tld = domain.split(".").pop();
+  if (tld.length < 2) return "Please enter a valid email address";
+  if (DISPOSABLE_DOMAINS.includes(domain)) return "Temporary email addresses are not accepted";
+  return null;
+}
+
 function isUnlocked() {
   const until = localStorage.getItem(STORAGE_KEY);
   if (!until) return false;
@@ -48,8 +68,9 @@ export default function Gift() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email");
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
       return;
     }
     if (!gdpr) {
