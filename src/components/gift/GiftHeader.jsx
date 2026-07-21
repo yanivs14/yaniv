@@ -10,7 +10,7 @@ export default function GiftHeader({ c }) {
         </a>
         <a
           href="#membership"
-          className="font-body text-xs font-semibold text-off-white hover:text-orange-red transition-colors uppercase tracking-wide"
+          className="font-body text-xs font-semibold text-off-white border border-dark-border rounded-full px-4 py-2 hover:border-orange-red/50 hover:text-orange-red transition-colors uppercase tracking-wide"
         >
           {c.ctaText || "Membership"}
         </a>
