@@ -35,7 +35,7 @@ export default function GiftPractice({ c, onComplete }) {
           <p className="font-body text-base text-white-muted leading-relaxed max-w-2xl mx-auto">{c.supporting}</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 mb-10">
           {c.instructions?.map((item, i) => (
             <motion.div
               key={i}
@@ -43,15 +43,13 @@ export default function GiftPractice({ c, onComplete }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="flex gap-3"
+              className="bg-dark-bg border border-dark-border rounded-2xl p-6 lg:p-7 flex flex-col items-center text-center"
             >
-              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-red/10 border border-orange-red/30 text-orange-red font-heading font-bold text-sm flex items-center justify-center">
+              <span className="flex-shrink-0 w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-orange-red/10 border border-orange-red/40 text-orange-red font-heading font-bold text-xl flex items-center justify-center mb-4">
                 {i + 1}
               </span>
-              <div>
-                <p className="font-heading text-sm font-bold text-off-white uppercase tracking-tight mb-1">{item.title}</p>
-                <p className="font-body text-xs text-white-muted leading-relaxed">{item.desc}</p>
-              </div>
+              <p className="font-heading text-lg lg:text-xl font-bold text-off-white uppercase tracking-tight mb-2 leading-tight">{item.title}</p>
+              <p className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>

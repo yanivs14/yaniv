@@ -30,9 +30,9 @@ export const defaultGiftContent = {
     supporting:
       "Press play and move continuously with Roye. Do not worry about perfection—focus on attention, control, and the experience of the movement.",
     instructions: [
-      { title: "Follow Along", desc: "Clear a small amount of space, press play, and move with Roye at your own pace." },
-      { title: "Work Within Your Range", desc: "Focus on control. Never force a position or movement that does not feel appropriate." },
-      { title: "Repeat for Seven Days", desc: "Return to the practice daily for one week and notice how your body begins to respond." },
+      { title: "Guided Daily Practices", desc: "Know exactly what to practice with Roye each day." },
+      { title: "A Complete Method", desc: "Develop mobility, strength, and control as one integrated practice." },
+      { title: "Ongoing Progression", desc: "Access new content and continue developing over time." },
     ],
     practiceVideoUrl: "",
     practiceYoutubeUrl: "",

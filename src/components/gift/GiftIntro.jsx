@@ -45,7 +45,7 @@ export default function GiftIntro({ c }) {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-4">
+          <h2 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-4 text-center">
             {c.beforeHeading}
           </h2>
           <GiftVideo
@@ -56,7 +56,7 @@ export default function GiftIntro({ c }) {
             onStarted={() => track("movement_reset_intro_video_started")}
             onCompleted={() => track("movement_reset_intro_video_completed")}
           />
-          <p className="font-body text-sm text-white-muted leading-relaxed mt-4 max-w-2xl">
+          <p className="font-body text-sm text-white-muted leading-relaxed mt-4 max-w-2xl mx-auto text-center">
             {c.beforeNote}
           </p>
         </motion.div>
