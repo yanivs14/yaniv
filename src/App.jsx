@@ -28,6 +28,7 @@ import EmailDashboard from './pages/EmailDashboard';
 import ThankYou from './pages/ThankYou';
 import Unsubscribe from './pages/Unsubscribe';
 import HandstandLanding from './pages/HandstandLanding';
+import Gift from './pages/Gift';
 import HsPre from './pages/HsPre';
 import HomeBackup from './pages/HomeBackup';
 import HomeBackupLayout from './components/HomeBackupLayout';
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />
+        <Route path="/gift" element={<Gift />} />
         <Route path="/hspre" element={<HsPre />} />
         <Route path="/" element={<HomeBackupLayout><HomeBackup /></HomeBackupLayout>} />
         <Route path="/admin-home-b" element={<AdminHomeB />} />

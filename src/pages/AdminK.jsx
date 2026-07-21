@@ -5,6 +5,7 @@ import InnerCircleEditor from "@/components/admin/InnerCircleEditor";
 import PrepPageEditor from "@/components/admin/PrepPageEditor";
 import PromotionEditor from "@/components/admin/PromotionEditor";
 import HandstandEditor from "@/components/admin/HandstandEditor";
+import GiftEditor from "@/components/admin/GiftEditor";
 import HsPreEditor from "@/components/admin/HsPreEditor";
 import HomeBEditor from "@/components/admin/HomeBEditor";
 import MovementAgeQuizEditor from "@/components/admin/MovementAgeQuizEditor";
@@ -1209,6 +1210,7 @@ const TABS = [
   { key: "prep7", label: "Prep Page", icon: Play },
   { key: "promotion", label: "Promo Page", icon: Zap },
   { key: "handstand", label: "Handstand", icon: Zap },
+  { key: "gift", label: "Gift Page", icon: Zap },
   { key: "hspre", label: "HsPre Page", icon: Zap },
   { key: "homeb", label: "Home-B", icon: Layout },
   { key: "settings", label: "Settings", icon: Settings },
@@ -1330,7 +1332,7 @@ export default function AdminK({ homePath = "/" }) {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight">
-              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "handstand" ? "Handstand Landing" : activeTab === "hspre" ? "HsPre Page" : activeTab === "homeb" ? "Home-B Sections" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
+              {activeTab === "content" ? activeSectionLabel : activeTab === "leads" ? "Leads" : activeTab === "innercircle" ? "Inner Circle Page" : activeTab === "prep7" ? "Prep Page" : activeTab === "promotion" ? "Promo Page" : activeTab === "handstand" ? "Handstand Landing" : activeTab === "gift" ? "Gift Page" : activeTab === "hspre" ? "HsPre Page" : activeTab === "homeb" ? "Home-B Sections" : activeTab === "newsletter" ? "Newsletter" : "Settings"}
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -1383,6 +1385,11 @@ export default function AdminK({ homePath = "/" }) {
           {activeTab === "handstand" && (
             <div className="max-w-3xl mx-auto px-4 sm:px-8 py-6">
               <HandstandEditor />
+            </div>
+          )}
+          {activeTab === "gift" && (
+            <div className="max-w-3xl mx-auto px-4 sm:px-8 py-6">
+              <GiftEditor />
             </div>
           )}
           {activeTab === "hspre" && (
