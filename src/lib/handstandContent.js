@@ -117,6 +117,9 @@ export const defaultHandstandContent = {
     ],
     ctaText: "Enroll Now",
     guarantee: "30-day money-back guarantee",
+    annualCardTitle: "The Handstand Course is included free",
+    annualCardTitleAccent: "+ Roye's entire library",
+    annualCardDescription: "Go annual and the full Handstand Course is yours at no extra cost — alongside 240+ guided sessions, weekly live coaching, and every new release. One membership, Roye's complete method.",
   },
   faq: {
     eyebrow: "Questions",

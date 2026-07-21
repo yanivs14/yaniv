@@ -9,7 +9,6 @@ import HandstandProblem from "@/components/handstand/HandstandProblem";
 import HandstandSolution from "@/components/handstand/HandstandSolution";
 import HandstandCurriculum from "@/components/handstand/HandstandCurriculum";
 import HandstandInstructor from "@/components/handstand/HandstandInstructor";
-import HandstandTestimonials from "@/components/handstand/HandstandTestimonials";
 import HandstandPricing from "@/components/handstand/HandstandPricing";
 import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
@@ -89,7 +88,6 @@ export default function HandstandLanding() {
       <HandstandSolution c={content.solution} />
       <HandstandCurriculum c={content.curriculum} />
       <HandstandInstructor c={content.instructor} />
-      <HandstandTestimonials c={content.testimonials} />
       <HandstandPricing c={content.pricing} />
       <HandstandFAQ c={content.faq} />
       <HandstandFinalCTA c={content.finalCta} />

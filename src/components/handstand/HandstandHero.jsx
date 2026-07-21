@@ -62,7 +62,7 @@ export default function HandstandHero({ c, targetDate }) {
               {c.boldDescription}
             </p>
           )}
-          <p className="font-body text-lg text-white-muted mb-8 max-w-xl leading-relaxed">{c?.subheadline}</p>
+          <p className="font-body text-lg text-white mb-8 max-w-xl leading-relaxed">{c?.subheadline}</p>
 
           {targetDate && (
             <div className="mb-8">

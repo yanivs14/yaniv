@@ -107,7 +107,7 @@ export default function HandstandPricing({ c }) {
         </motion.div>
       </div>
       <div className="max-w-3xl mx-auto px-6 lg:px-10">
-        <AnnualMembershipCard />
+        <AnnualMembershipCard c={c} />
       </div>
     </section>
   );

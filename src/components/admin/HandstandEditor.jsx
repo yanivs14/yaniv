@@ -274,6 +274,10 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("badge", "Badge")}
         {f("ctaText", "CTA Button Text")}
         {f("guarantee", "Guarantee Text")}
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Annual Membership Card</p>
+        {f("annualCardTitle", "Annual Card Title")}
+        {f("annualCardTitleAccent", "Annual Card Title Accent (teal)")}
+        {f("annualCardDescription", "Annual Card Description", true)}
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Features</p>
         {data.features?.map((feat, i) => (
           <div key={i} className="flex gap-2 mb-2">
