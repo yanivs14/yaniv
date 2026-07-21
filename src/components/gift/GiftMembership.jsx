@@ -77,9 +77,9 @@ export default function GiftMembership({ c }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-orange-red rounded-2xl p-7 lg:p-8 relative flex flex-col shadow-[0_8px_50px_-12px_rgba(0,255,247,0.45)]"
+            className="bg-orange-red rounded-2xl p-7 lg:p-8 relative flex flex-col"
           >
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap border border-orange-red/30">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
               {annual.badge || "RECOMMENDED"}
             </span>
             <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide mb-4">{annual.title}</p>
@@ -112,7 +112,7 @@ export default function GiftMembership({ c }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 flex flex-col hover:border-orange-red/30 transition-colors"
+            className="bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 flex flex-col"
           >
             <p className="font-body text-sm font-bold text-off-white uppercase tracking-wide mb-4">{monthly.title}</p>
             <div className="flex items-baseline gap-1.5 mb-1">
