@@ -62,7 +62,7 @@ export default function HandstandProblem({ c }) {
         </motion.div>
 
         {/* Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
           {items.map((item, i) => {
             const Icon = item.icon;
             return (
