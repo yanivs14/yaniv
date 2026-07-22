@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 import HandstandNavbar from "@/components/handstand/HandstandNavbar";
@@ -111,6 +112,11 @@ export default function HandstandLanding() {
           <p className="font-heading text-lg font-bold text-off-white uppercase mb-2">
             {content.navbar?.brandName || "Handstand"}
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-3">
+            <Link to="/privacy-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Privacy Policy</Link>
+            <Link to="/refund-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Refund Policy</Link>
+            <Link to="/consumer-health-statement" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Consumer Health Statement</Link>
+          </div>
           <p className="font-body text-xs text-white-dim">
             © {new Date().getFullYear()} The Movement by Roye Gold. All rights reserved.
           </p>

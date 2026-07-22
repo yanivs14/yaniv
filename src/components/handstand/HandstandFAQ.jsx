@@ -31,15 +31,7 @@ export default function HandstandFAQ({ c }) {
             <p className="font-body text-sm text-white-muted leading-relaxed mb-6">
               Everything you need to know before starting your handstand journey.
             </p>
-            <div className="hidden lg:block">
-              <p className="font-body text-xs text-white-dim">Still have questions?</p>
-              <a
-                href="#pricing"
-                className="font-body text-sm text-orange-red font-semibold hover:text-orange-red-hover transition-colors"
-              >
-                Talk to us →
-              </a>
-            </div>
+
           </motion.div>
 
           {/* Right — accordion */}
