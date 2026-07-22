@@ -7,13 +7,11 @@ function getYouTubeId(url) {
   return m ? m[1] : null;
 }
 
-export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onStarted, on25, on50, on75, onCompleted, overlay, subOverlay }) {
+export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onStarted, on50, onCompleted }) {
   const [playing, setPlaying] = useState(false);
   const [aspect, setAspect] = useState(null);
   const videoRef = useRef(null);
-  const fired25 = useRef(false);
   const fired50 = useRef(false);
-  const fired75 = useRef(false);
   const fired100 = useRef(false);
 
   const ytId = getYouTubeId(youtubeUrl);
@@ -35,9 +33,7 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
     const v = videoRef.current;
     if (!v || !v.duration) return;
     const pct = v.currentTime / v.duration;
-    if (pct >= 0.25 && !fired25.current) { fired25.current = true; if (on25) on25(); }
     if (pct >= 0.5 && !fired50.current) { fired50.current = true; if (on50) on50(); }
-    if (pct >= 0.75 && !fired75.current) { fired75.current = true; if (on75) on75(); }
     if (pct >= 0.98 && !fired100.current) { fired100.current = true; if (onCompleted) onCompleted(); }
   };
 
@@ -53,13 +49,6 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
       </div>
     );
   }
-
-  const renderOverlay = () => (overlay || subOverlay) && (
-    <div className="absolute inset-0 flex flex-col justify-end p-5 lg:p-6 z-10 pointer-events-none">
-      {overlay && <p className="font-heading text-sm lg:text-base font-bold text-white uppercase tracking-tight leading-tight drop-shadow-lg">{overlay}</p>}
-      {subOverlay && <p className="font-body text-xs text-white/80 mt-0.5 drop-shadow-lg">{subOverlay}</p>}
-    </div>
-  );
 
   return (
     <div
@@ -80,7 +69,6 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
           <div className="absolute inset-0">
             {posterImg && <img src={posterImg} alt="" className="w-full h-full object-cover" />}
             <span className="absolute inset-0 bg-black/30" />
-            {renderOverlay()}
             <span className="absolute inset-0 flex items-center justify-center">
               <button onClick={handlePlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                 <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
@@ -96,7 +84,6 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
             poster={posterImg || undefined}
             controls={playing}
             playsInline
-            preload="none"
             onLoadedMetadata={handleLoadedMetadata}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
@@ -108,7 +95,6 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
             <div className="absolute inset-0 bg-black">
               {posterImg && <img src={posterImg} alt="" className="absolute inset-0 w-full h-full object-cover" />}
               <span className="absolute inset-0 bg-black/40" />
-              {renderOverlay()}
               <span className="absolute inset-0 flex items-center justify-center">
                 <button onClick={handlePlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                   <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />

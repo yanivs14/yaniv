@@ -14,11 +14,10 @@ async function startCheckout(plan) {
   }
   _checkoutInProgress = true;
   try {
-    track(plan === "annual" ? "gift_annual_cta_clicked" : "gift_monthly_cta_clicked", { plan });
-    track("gift_checkout_started", { plan });
+    track(plan === "annual" ? "annual_membership_clicked" : "monthly_membership_clicked", { plan });
+    track("checkout_started", { plan });
     trackMetaAddToCart({ value: plan === "annual" ? 240 : 35, currency: "USD", planType: plan, planLabel: plan === "annual" ? "Annual Membership" : "Monthly Membership" });
-    const email = localStorage.getItem("gift_email") || "";
-    const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId(), email: email || undefined });
+    const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {
     _checkoutInProgress = false;
@@ -35,7 +34,7 @@ export default function GiftMembership({ c }) {
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
-          track("gift_membership_section_viewed");
+          track("membership_options_viewed");
           obs.disconnect();
         }
       },
@@ -48,7 +47,6 @@ export default function GiftMembership({ c }) {
   if (!c) return null;
   const annual = c.annual || {};
   const monthly = c.monthly || {};
-  const pt = c.primaryTestimonial;
 
   const handleCheckout = async (plan) => {
     setLoading(plan);
@@ -64,37 +62,13 @@ export default function GiftMembership({ c }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8"
+          className="text-center mb-10"
         >
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight leading-[1.05] mb-4">
             {c.heading}
           </h2>
           <p className="font-body text-base text-white-muted leading-relaxed max-w-2xl mx-auto">{c.supporting}</p>
         </motion.div>
-
-        {/* Primary testimonial before pricing */}
-        {pt && pt.quote && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="max-w-2xl mx-auto mb-10 text-center"
-          >
-            <p className="font-heading text-lg lg:text-xl text-off-white leading-relaxed italic mb-3">"{pt.quote}"</p>
-            <div className="flex items-center justify-center gap-3">
-              {pt.img ? (
-                <img src={pt.img} alt={pt.name} className="w-10 h-10 rounded-full object-cover" />
-              ) : (
-                <span className="w-10 h-10 rounded-full bg-orange-red/15 flex items-center justify-center text-orange-red font-heading font-bold text-base">
-                  {(pt.name || "?").charAt(0)}
-                </span>
-              )}
-              <span className="font-body text-sm font-semibold text-off-white">{pt.name}</span>
-              {pt.context && <span className="font-body text-sm text-white-dim">— {pt.context}</span>}
-            </div>
-          </motion.div>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto items-stretch">
           {/* Annual — primary */}
@@ -106,15 +80,15 @@ export default function GiftMembership({ c }) {
             className="bg-orange-red rounded-2xl p-7 lg:p-8 relative flex flex-col"
           >
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-bg text-orange-red text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
-              {annual.badge || "MOST POPULAR"}
+              {annual.badge || "RECOMMENDED"}
             </span>
-            <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide mb-3">{annual.title}</p>
-            {annual.description && <p className="font-body text-xs text-dark-bg/80 leading-relaxed mb-4">{annual.description}</p>}
+            <p className="font-body text-sm font-bold text-dark-bg uppercase tracking-wide mb-4">{annual.title}</p>
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="font-heading text-5xl font-bold text-dark-bg">{annual.price}</span>
               <span className="font-body text-sm text-dark-bg/70">{annual.period}</span>
             </div>
             <p className="font-body text-xs text-dark-bg font-semibold mb-5">{annual.billingNote}</p>
+            <p className="font-body text-[11px] font-bold text-dark-bg uppercase tracking-widest mb-3">What's Included</p>
             <ul className="space-y-2.5 flex-1">
               {annual.benefits?.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -130,7 +104,6 @@ export default function GiftMembership({ c }) {
             >
               {loading === "annual" ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{annual.cta} <ArrowRight className="w-4 h-4" /></>}
             </button>
-            {annual.microcopy && <p className="mt-3 text-center font-body text-[11px] text-dark-bg/70">{annual.microcopy}</p>}
           </motion.div>
 
           {/* Monthly — secondary */}
@@ -141,13 +114,13 @@ export default function GiftMembership({ c }) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="bg-dark-surface border border-dark-border rounded-2xl p-7 lg:p-8 flex flex-col"
           >
-            <p className="font-body text-sm font-bold text-off-white uppercase tracking-wide mb-3">{monthly.title}</p>
-            {monthly.description && <p className="font-body text-xs text-white-muted leading-relaxed mb-4">{monthly.description}</p>}
+            <p className="font-body text-sm font-bold text-off-white uppercase tracking-wide mb-4">{monthly.title}</p>
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="font-heading text-5xl font-bold text-off-white">{monthly.price}</span>
               <span className="font-body text-sm text-white-muted">{monthly.period}</span>
             </div>
-            <p className="font-body text-xs text-white-muted mb-5">{monthly.billingNote}</p>
+            <p className="font-body text-xs text-white-muted mb-5">{monthly.cancelNote}</p>
+            <p className="font-body text-[11px] font-bold text-orange-red uppercase tracking-widest mb-3">What's Included</p>
             <ul className="space-y-2.5 flex-1">
               {monthly.benefits?.map((f, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -163,9 +136,10 @@ export default function GiftMembership({ c }) {
             >
               {loading === "monthly" ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{monthly.cta} <ArrowRight className="w-4 h-4" /></>}
             </button>
-            {monthly.microcopy && <p className="mt-3 text-center font-body text-[11px] text-white-dim">{monthly.microcopy}</p>}
           </motion.div>
         </div>
+
+        <p className="font-body text-xs text-white-dim text-center max-w-xl mx-auto mt-6 leading-relaxed">{c.noteLine}</p>
       </div>
     </section>
   );

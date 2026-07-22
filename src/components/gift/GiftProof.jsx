@@ -13,10 +13,9 @@ async function startCheckout(plan) {
   }
   _checkoutInProgress = true;
   try {
-    track(plan === "annual" ? "gift_annual_cta_clicked" : "gift_monthly_cta_clicked", { plan, source: "final_cta" });
-    track("gift_checkout_started", { plan, source: "final_cta" });
-    const email = localStorage.getItem("gift_email") || "";
-    const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId(), email: email || undefined });
+    track(plan === "annual" ? "final_annual_cta_clicked" : "final_monthly_cta_clicked", { plan });
+    track("checkout_started", { plan });
+    const res = await base44.functions.invoke("createCheckout", { plan, ga_client_id: getGaClientId() });
     if (res.data?.url) window.location.href = res.data.url;
   } finally {
     _checkoutInProgress = false;
@@ -32,7 +31,7 @@ export default function GiftProof({ c }) {
     const isOpening = openFaq !== i;
     setOpenFaq(isOpening ? i : null);
     if (isOpening) {
-      track("gift_faq_opened", { question_id: `faq_${i + 1}`, question: c.faqs?.[i]?.q || "" });
+      track("movement_reset_faq_opened", { question_id: `faq_${i + 1}`, question: c.faqs?.[i]?.q || "" });
     }
   };
 
@@ -42,17 +41,26 @@ export default function GiftProof({ c }) {
     setCheckoutLoading(null);
   };
 
+  const handleQuestion = () => {
+    track("membership_question_clicked");
+    const msg = encodeURIComponent(c.final.questionMessage || "");
+    const url = c.final.supportUrl
+      ? `${c.final.supportUrl}${c.final.supportUrl.includes("?") ? "&" : "?"}message=${msg}`
+      : null;
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   const testimonials = c.testimonials || [];
   const faqs = c.faqs || [];
 
   return (
     <section className="bg-dark-surface py-14 lg:py-20 border-t border-dark-border">
-      {/* Additional testimonials */}
+      {/* Testimonials */}
       <div className="max-w-5xl mx-auto px-6 lg:px-10 mb-14 lg:mb-20">
         <h2 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight text-center mb-10">
           {c.testimonialsHeading}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {testimonials.map((t, i) => (
             <motion.div
               key={i}
@@ -71,10 +79,7 @@ export default function GiftProof({ c }) {
                     {(t.name || "?").charAt(0)}
                   </span>
                 )}
-                <div>
-                  <span className="font-body text-sm font-semibold text-off-white block">{t.name}</span>
-                  {t.context && <span className="font-body text-xs text-white-dim">{t.context}</span>}
-                </div>
+                <span className="font-body text-sm font-semibold text-off-white">{t.name}</span>
               </div>
             </motion.div>
           ))}
@@ -143,12 +148,12 @@ export default function GiftProof({ c }) {
               {checkoutLoading === "monthly" ? "Loading..." : c.final.secondaryCta}
             </button>
           </div>
-          <a
-            href="#practice"
-            className="mt-4 inline-block font-body text-xs text-white-dim hover:text-orange-red transition-colors underline underline-offset-4"
+          <button
+            onClick={handleQuestion}
+            className="mt-4 font-body text-xs text-white-muted hover:text-orange-red transition-colors underline underline-offset-4"
           >
             {c.final.tertiaryLink}
-          </a>
+          </button>
         </motion.div>
       </div>
     </section>
