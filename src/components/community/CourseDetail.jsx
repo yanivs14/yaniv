@@ -77,7 +77,7 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
             </div>
             {selectedLesson && (
               <div className="mt-6">
-                <h2 className="text-2xl font-bold text-[#1D2120]" style={{ fontFamily: FONT_HEADING }}>{selectedLesson.title}</h2>
+                <h2 className="text-2xl font-bold text-[#1D2120]" dir="auto">{selectedLesson.title}</h2>
                 {selectedLesson.description && (
                   <p className="text-[#6B6B6B] mt-3 leading-relaxed text-lg" dir="auto">{selectedLesson.description}</p>
                 )}

@@ -32,6 +32,10 @@
       "default": false,
       "description": "Whether this topic is Inner Circle only"
     },
+    "image_url": {
+      "type": "string",
+      "description": "Optional image attached to the topic"
+    },
     "reply_count": {
       "type": "number",
       "default": 0,

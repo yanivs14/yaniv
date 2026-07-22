@@ -17,6 +17,10 @@
     "author_id": {
       "type": "string",
       "description": "Author user ID"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Optional image attached to the reply"
     }
   },
   "required": [
