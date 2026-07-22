@@ -3,51 +3,34 @@ import { motion } from "framer-motion";
 import AccentText from "@/components/handstand/AccentText";
 
 export default function HandstandInstructor({ c }) {
+  if (!c) return null;
   return (
-    <section className="py-20 lg:py-28 bg-dark-surface">
-      <div className="max-w-5xl mx-auto px-6 lg:px-10">
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="py-14 lg:py-20 bg-dark-surface">
+      <div className="max-w-[1250px] mx-auto px-6 lg:px-10">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative"
+            transition={{ duration: 0.5 }}
+            className="relative order-1"
           >
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden bg-dark-bg">
-              {c?.imageUrl && <img src={c.imageUrl} alt={c?.name} className="w-full h-full object-cover" />}
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-dark-bg">
+              {c?.imageUrl && <img src={c.imageUrl} alt={c?.headline} className="w-full h-full object-cover" />}
             </div>
-            {c?.title && (
-              <div className="absolute -bottom-4 -right-4 bg-orange-red text-dark-bg px-6 py-3 rounded-2xl">
-                <p className="font-heading text-sm font-bold uppercase">{c.title}</p>
-              </div>
-            )}
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
+            className="order-2"
           >
-            
-            <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-6">
-              <AccentText text={c?.name} />
+            {c?.eyebrow && <p className="font-body text-xs text-orange-red uppercase tracking-widest font-semibold mb-3">{c.eyebrow}</p>}
+            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-5 leading-[0.95]">
+              <AccentText text={c?.headline} />
             </h2>
-            <p className="font-body text-base text-white-muted leading-relaxed mb-8">{c?.bio}</p>
-            <div className="flex gap-8">
-              <div>
-                <p className="font-heading text-3xl font-bold text-orange-red">10+</p>
-                <p className="font-body text-xs text-white-dim uppercase">Years Teaching</p>
-              </div>
-              <div>
-                <p className="font-heading text-3xl font-bold text-orange-red">5K+</p>
-                <p className="font-body text-xs text-white-dim uppercase">Students Coached</p>
-              </div>
-              <div>
-                <p className="font-heading text-3xl font-bold text-orange-red">240+</p>
-                <p className="font-body text-xs text-white-dim uppercase">Training Sessions</p>
-              </div>
-            </div>
+            <p className="font-body text-sm lg:text-base text-white-muted leading-relaxed">{c?.bio}</p>
           </motion.div>
         </div>
       </div>

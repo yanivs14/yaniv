@@ -1,105 +1,105 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useHandstandOffer } from "@/lib/handstandDeadline";
+import { startStandaloneCheckout } from "@/lib/handstandCheckout";
 import AccentText from "@/components/handstand/AccentText";
-import { useCountdown } from "@/components/handstand/preorder/PreOrderCountdown";
 
-function DarkCountdown({ targetDate }) {
-  const { days, hours, minutes, seconds, expired } = useCountdown(targetDate);
-  if (expired || !targetDate) return null;
-  const units = [
-    { label: "Days", value: days },
-    { label: "Hours", value: hours },
-    { label: "Min", value: minutes },
-    { label: "Sec", value: seconds },
-  ];
+function HeroCountdown() {
+  const { countdown, isPreLaunch } = useHandstandOffer();
+  if (!isPreLaunch) return null;
+  const { days, hours, minutes, seconds } = countdown;
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
-      {units.map((u, i) => (
-        <React.Fragment key={u.label}>
-          <div className="bg-gradient-to-b from-dark-surface to-black/60 border border-orange-red/25 rounded-xl px-3 py-2.5 sm:px-5 sm:py-3 text-center min-w-[58px] sm:min-w-[84px] shadow-[0_4px_24px_-8px_rgba(0,255,247,0.35)] backdrop-blur-sm">
-            <div className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-red tabular-nums leading-none">
-              {String(u.value).padStart(2, "0")}
-            </div>
-            <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-white-muted mt-1.5">{u.label}</div>
-          </div>
-          {i < units.length - 1 && (
-            <span className="flex flex-col items-center justify-center gap-1.5 -mx-0.5">
-              <span className="w-1 h-1 rounded-full bg-orange-red/50" />
-              <span className="w-1 h-1 rounded-full bg-orange-red/50" />
-            </span>
-          )}
-        </React.Fragment>
-      ))}
+    <div className="inline-flex items-center gap-1.5 bg-dark-surface/80 border border-orange-red/25 rounded-full px-3 py-1.5 backdrop-blur-sm">
+      <span className="font-body text-[10px] text-white-dim uppercase tracking-wide">Pre-launch ends in</span>
+      <span className="font-heading text-xs font-bold text-orange-red tabular-nums">
+        {days}d {String(hours).padStart(2, "0")}h {String(minutes).padStart(2, "0")}m {String(seconds).padStart(2, "0")}s
+      </span>
     </div>
   );
 }
 
-export default function HandstandHero({ c, targetDate }) {
-  const scrollToPricing = () => {
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+export default function HandstandHero({ c }) {
+  const { isPreLaunch, priceDisplay, nextPriceDisplay, ctaText, secondaryCtaText, deliveryNote, preLaunchLabel, offerLabel } = useHandstandOffer();
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    await startStandaloneCheckout("handstand_hero");
+    setLoading(false);
   };
+
+  const scrollToAnnual = () => {
+    document.getElementById("purchase")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col overflow-hidden pt-10 lg:pt-11">
       <div className="absolute inset-0 z-0">
-        {c?.imageUrl && (
-          <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
-        )}
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/15 via-dark-bg/15 to-dark-bg" />
+        {c?.imageUrl && <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />}
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/30 via-dark-bg/40 to-dark-bg" />
       </div>
-      {(c?.eyebrow || targetDate) && (
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full pt-4 lg:pt-6">
-          {c?.eyebrow && (
-            <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-3 leading-relaxed">
-              {c.eyebrow}
-            </p>
-          )}
-          {targetDate && <DarkCountdown targetDate={targetDate} />}
-        </div>
-      )}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full flex-1 flex items-center py-12 lg:py-16">
+      <div className="relative z-10 max-w-[1250px] mx-auto px-6 lg:px-10 w-full flex-1 flex items-center py-10 lg:py-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-3xl"
+          transition={{ duration: 0.7 }}
+          className="max-w-2xl"
         >
-          <h1 className="font-heading text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] sm:leading-[0.95] text-off-white uppercase tracking-tight mb-6">
+          {c?.eyebrow && (
+            <p className="font-body text-[11px] text-orange-red uppercase tracking-widest font-semibold mb-3">{c.eyebrow}</p>
+          )}
+          {isPreLaunch && preLaunchLabel && (
+            <div className="inline-flex items-center gap-2 bg-orange-red/10 border border-orange-red/30 rounded-full px-3 py-1.5 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-red animate-pulse" />
+              <span className="font-body text-[10px] text-orange-red font-bold uppercase tracking-wider">{preLaunchLabel}</span>
+            </div>
+          )}
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.0] sm:leading-[0.95] text-off-white uppercase tracking-tight mb-5">
             {c?.headline1}
             {c?.headline2 && (
               <>
                 <br />
-                {c?.headlineAccent ? c?.headline2 : <AccentText text={c?.headline2} />}
-              </>
-            )}
-            {c?.headlineAccent && (
-              <>
-                <br />
-                <span className="text-orange-red">{c?.headlineAccent}</span>
+                <AccentText text={c.headline2} />
               </>
             )}
           </h1>
-          {c?.boldDescription && (
-            <p className="font-heading text-xl sm:text-2xl font-bold text-white leading-tight mb-4">
-              {c.boldDescription}
-            </p>
-          )}
-          <p className="font-body text-lg text-white mb-8 max-w-xl leading-relaxed">{c?.subheadline}</p>
+          <p className="font-body text-base lg:text-lg text-white-muted leading-relaxed mb-3 max-w-xl">{c?.supporting}</p>
+          <p className="font-heading text-base lg:text-lg font-semibold text-off-white leading-relaxed mb-6 max-w-xl">{c?.outcomeLine}</p>
 
-          <button
-            onClick={scrollToPricing}
-            data-cta-id="handstand_hero_cta"
-            className="flex items-center gap-2 bg-orange-red text-dark-bg font-body text-base font-semibold px-8 py-4 rounded-full hover:bg-orange-red-hover transition-colors"
-          >
-            {c?.ctaText} <ArrowRight className="w-5 h-5" />
-          </button>
-          {c?.ctaSubtext && (
-            <div className="mt-5 inline-flex items-center gap-2 bg-dark-surface/70 border border-dark-border rounded-full px-4 py-1.5 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-red" />
-              <span className="font-body text-xs text-white-muted">{c.ctaSubtext}</span>
+          {/* Offer block */}
+          <div className="flex flex-wrap items-center gap-4 mb-5">
+            <div>
+              <p className="font-body text-[10px] text-white-dim uppercase tracking-widest mb-0.5">{offerLabel}</p>
+              <div className="flex items-baseline gap-2">
+                <span className="font-heading text-4xl lg:text-5xl font-bold text-orange-red">{priceDisplay}</span>
+                {isPreLaunch && <span className="font-body text-sm text-white-dim line-through">{nextPriceDisplay}</span>}
+              </div>
             </div>
-          )}
+            <div className="h-12 w-px bg-dark-border hidden sm:block" />
+            <HeroCountdown />
+          </div>
+          {isPreLaunch && <p className="font-body text-xs text-white-muted mb-6">{deliveryNote}</p>}
+
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+            <button
+              onClick={handleCheckout}
+              disabled={loading}
+              data-cta-id="handstand_hero_cta"
+              className="flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-bold px-7 py-4 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 w-full sm:w-auto"
+            >
+              {loading ? "Loading..." : <>{ctaText} <ArrowRight className="w-4 h-4" /></>}
+            </button>
+            <button
+              onClick={scrollToAnnual}
+              className="font-body text-sm font-semibold text-white-muted hover:text-orange-red transition-colors underline underline-offset-4"
+            >
+              {secondaryCtaText}
+            </button>
+          </div>
+          <p className="font-body text-[11px] text-white-dim">One-time payment · No subscription · Access instructions delivered by email</p>
         </motion.div>
       </div>
     </section>
