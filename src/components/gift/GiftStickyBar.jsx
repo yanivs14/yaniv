@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function GiftStickyBar({ visible, inCheckout }) {
+export default function GiftStickyBar({ c, visible, inCheckout }) {
   const [hidden, setHidden] = useState(false);
 
   // Hide during fullscreen
@@ -29,11 +29,11 @@ export default function GiftStickyBar({ visible, inCheckout }) {
       >
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="font-body text-[10px] text-orange-red font-bold uppercase tracking-tight leading-none">Continue With Roye</span>
-            <span className="font-heading text-sm font-bold text-off-white leading-none">From $20/month</span>
+            <span className="font-body text-[10px] text-orange-red font-bold uppercase tracking-tight leading-none">{c?.label || "Continue With Roye"}</span>
+            <span className="font-heading text-sm font-bold text-off-white leading-none">{c?.price || "From $20/month"}</span>
           </div>
           <button onClick={scrollToMembership} className="bg-orange-red text-dark-bg font-body text-xs font-bold px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors flex-shrink-0 focus:outline-none focus:ring-4 focus:ring-orange-red/30">
-            View Options
+            {c?.ctaText || "View Options"}
           </button>
         </div>
       </motion.div>

@@ -160,7 +160,7 @@ export default function Gift() {
         <meta name="robots" content="noindex, nofollow" />
         <title>Your Free Movement Reset — Roye Gold</title>
       </Helmet>
-      <GiftHeader c={{ brand: "The Movement", ctaText: "Membership" }} />
+      <GiftHeader c={content.header} />
       <main className="pb-16 lg:pb-0">
         <GiftHero c={content.hero} />
         <GiftIntroVideo c={content.introVideo} />
@@ -178,7 +178,7 @@ export default function Gift() {
         <GiftFinalCTA c={content.final} email={email} onCheckoutStart={() => setInCheckout(true)} />
       </main>
       <GiftFooter c={content.footer} />
-      <GiftStickyBar visible={showSticky} inCheckout={inCheckout} />
+      <GiftStickyBar c={content.stickyBar} visible={showSticky} inCheckout={inCheckout} />
     </div>
   );
 }

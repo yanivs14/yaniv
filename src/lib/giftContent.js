@@ -1,4 +1,13 @@
 export const defaultGiftContent = {
+  header: {
+    brand: "The Movement",
+    ctaText: "Membership",
+  },
+  stickyBar: {
+    label: "Continue With Roye",
+    price: "From $20/month",
+    ctaText: "View Options",
+  },
   gate: {
     eyebrow: "YOUR FREE MOVEMENT RESET",
     headline: "UNLOCK YOUR 5-MINUTE PRACTICE",

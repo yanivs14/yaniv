@@ -7,11 +7,18 @@ import { defaultGiftContent } from "@/lib/giftContent";
 const SECTIONS = [
   { key: "gate", label: "Email Gate" },
   { key: "header", label: "Header" },
-  { key: "stage1", label: "1 · Intro" },
-  { key: "stage2", label: "2 · Practice" },
-  { key: "stage3", label: "3 · Bridge" },
-  { key: "stage4", label: "4 · Membership" },
-  { key: "stage5", label: "5 · Proof & FAQ" },
+  { key: "hero", label: "Access Hero" },
+  { key: "introVideo", label: "Intro Video" },
+  { key: "prep", label: "Prep Info" },
+  { key: "practice", label: "Practice Video" },
+  { key: "closing", label: "Closing Video" },
+  { key: "bridge", label: "Bridge" },
+  { key: "primaryTestimonial", label: "Primary Testimonial" },
+  { key: "membership", label: "Membership" },
+  { key: "testimonials", label: "More Testimonials" },
+  { key: "faq", label: "FAQ" },
+  { key: "final", label: "Final CTA" },
+  { key: "stickyBar", label: "Sticky Bar" },
   { key: "footer", label: "Footer" },
 ];
 
@@ -68,18 +75,13 @@ function MediaField({ label, value, onChange, isVideo = false }) {
   );
 }
 
-function StringList({ items, onChange, addLabel, multiline }) {
+function StringList({ items, onChange, addLabel }) {
   return (
     <div>
       {(items || []).map((item, i) => (
         <div key={i} className="flex gap-2 mb-2">
-          {multiline ? (
-            <textarea value={item} onChange={(e) => { const a = [...items]; a[i] = e.target.value; onChange(a); }} rows={2}
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red resize-none" />
-          ) : (
-            <input value={item} onChange={(e) => { const a = [...items]; a[i] = e.target.value; onChange(a); }}
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-          )}
+          <input value={item} onChange={(e) => { const a = [...items]; a[i] = e.target.value; onChange(a); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
           <button onClick={() => onChange(items.filter((_, idx) => idx !== i))}
             className="text-white-muted hover:text-red-400 transition-colors p-2">
             <Trash2 className="w-4 h-4" />
@@ -106,10 +108,14 @@ function ObjectList({ items, onChange, addLabel, fields }) {
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
-          {fields.map((fld) => (
-            <Field key={fld.key} label={fld.label} value={item[fld.key]} multiline={fld.multiline}
-              onChange={(v) => { const a = [...items]; a[i] = { ...a[i], [fld.key]: v }; onChange(a); }} />
-          ))}
+          {fields.map((fld) => {
+            if (fld.media) {
+              return <MediaField key={fld.key} label={fld.label} value={item[fld.key]} isVideo={fld.isVideo}
+                onChange={(v) => { const a = [...items]; a[i] = { ...a[i], [fld.key]: v }; onChange(a); }} />;
+            }
+            return <Field key={fld.key} label={fld.label} value={item[fld.key]} multiline={fld.multiline}
+              onChange={(v) => { const a = [...items]; a[i] = { ...a[i], [fld.key]: v }; onChange(a); }} />;
+          })}
         </div>
       ))}
       <button onClick={() => onChange([...(items || []), fields.reduce((o, f) => ({ ...o, [f.key]: "" }), {})])}
@@ -118,6 +124,10 @@ function ObjectList({ items, onChange, addLabel, fields }) {
       </button>
     </div>
   );
+}
+
+function SectionLabel({ children }) {
+  return <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">{children}</p>;
 }
 
 function SectionEditor({ sectionKey, content, update }) {
@@ -131,126 +141,184 @@ function SectionEditor({ sectionKey, content, update }) {
   const m = (key, label, isVideo = false) => (
     <MediaField key={key} label={label} value={data[key]} onChange={(v) => update(sectionKey, key, v)} isVideo={isVideo} />
   );
-  // helper to update a nested sub-object (e.g. stage4.annual)
   const sf = (sub, key, label, multiline = false) => (
     <Field key={`${sub}.${key}`} label={label} value={data[sub]?.[key]} onChange={(v) => update(sectionKey, sub, { ...data[sub], [key]: v })} multiline={multiline} />
   );
 
-  if (sectionKey === "gate") {
-    return <div>{f("eyebrow", "Eyebrow")}{f("headline", "Headline")}{f("subheadline", "Subheadline", true)}{f("ctaText", "CTA Button Text")}{f("footnote", "Footnote")}</div>;
+  switch (sectionKey) {
+    case "gate":
+      return (
+        <div>
+          {f("eyebrow", "Eyebrow")}
+          {f("headline", "Headline")}
+          {f("subheadline", "Subheadline", true)}
+          {f("benefitLine", "Benefit Line")}
+          {f("emailPlaceholder", "Email Placeholder")}
+          {f("ctaText", "CTA Button Text")}
+          {f("microcopy", "Microcopy (under button)")}
+          {f("marketingLabel", "Marketing Checkbox Label", true)}
+          <SectionLabel>Gate Image</SectionLabel>
+          {m("gateImage", "Gate Image (optional)")}
+        </div>
+      );
+    case "header":
+      return <div>{f("brand", "Brand Name")}{f("ctaText", "Header CTA Text")}</div>;
+    case "hero":
+      return (
+        <div>
+          {f("eyebrow", "Eyebrow")}
+          {f("headline", "Headline")}
+          {f("supporting", "Supporting Text", true)}
+          {f("primaryCta", "Primary CTA")}
+          {f("secondaryCta", "Secondary CTA")}
+        </div>
+      );
+    case "introVideo":
+      return (
+        <div>
+          {f("headline", "Heading")}
+          {f("thumbnailLabel", "Thumbnail Label")}
+          {f("duration", "Duration Label")}
+          <SectionLabel>Video</SectionLabel>
+          {m("youtubeUrl", "YouTube URL (optional)")}
+          {m("videoUrl", "Uploaded Video File", true)}
+          {m("poster", "Poster / Thumbnail")}
+        </div>
+      );
+    case "prep":
+      return (
+        <div>
+          <SectionLabel>Prep Items</SectionLabel>
+          <ObjectList items={data.items} onChange={(v) => update(sectionKey, "items", v)} addLabel="Add item"
+            fields={[{ key: "title", label: "Title" }, { key: "desc", label: "Description", multiline: true }]} />
+        </div>
+      );
+    case "practice":
+      return (
+        <div>
+          {f("eyebrow", "Eyebrow")}
+          {f("headline", "Headline")}
+          {f("supporting", "Supporting Text", true)}
+          {f("thumbnailLabel", "Thumbnail Label")}
+          {f("thumbnailSub", "Thumbnail Sub-label")}
+          {f("duration", "Duration Label")}
+          <SectionLabel>Video</SectionLabel>
+          {m("youtubeUrl", "YouTube URL (optional)")}
+          {m("videoUrl", "Uploaded Video File", true)}
+          {m("poster", "Poster / Thumbnail")}
+        </div>
+      );
+    case "closing":
+      return (
+        <div>
+          {f("headline", "Headline")}
+          {f("supporting", "Supporting Text", true)}
+          {f("ctaText", "CTA Button Text")}
+          <SectionLabel>Video</SectionLabel>
+          {m("youtubeUrl", "YouTube URL (optional)")}
+          {m("videoUrl", "Uploaded Video File", true)}
+          {m("poster", "Poster / Thumbnail")}
+        </div>
+      );
+    case "bridge":
+      return (
+        <div>
+          {f("eyebrow", "Eyebrow")}
+          {f("headline", "Headline")}
+          {f("copy", "Copy", true)}
+          {f("ctaText", "CTA Button Text")}
+          <SectionLabel>Benefit Cards</SectionLabel>
+          <ObjectList items={data.cards} onChange={(v) => update(sectionKey, "cards", v)} addLabel="Add card"
+            fields={[{ key: "title", label: "Title" }, { key: "desc", label: "Description", multiline: true }]} />
+        </div>
+      );
+    case "primaryTestimonial":
+      return (
+        <div>
+          {f("quote", "Quote", true)}
+          {f("name", "Name")}
+          {f("context", "Context")}
+          {m("img", "Photo (optional)")}
+        </div>
+      );
+    case "membership":
+      return (
+        <div>
+          <SectionLabel>Annual Membership</SectionLabel>
+          {sf("annual", "badge", "Badge")}
+          {sf("annual", "title", "Title")}
+          {sf("annual", "price", "Price (e.g. $20)")}
+          {sf("annual", "period", "Period (e.g. / month)")}
+          {sf("annual", "billingNote", "Billing Note")}
+          {sf("annual", "description", "Description", true)}
+          {sf("annual", "cta", "CTA Button Text")}
+          {sf("annual", "microcopy", "Microcopy")}
+          <p className="text-xs text-white-dim mb-2 font-body">Annual Benefits</p>
+          <StringList items={data.annual?.benefits} onChange={(v) => update(sectionKey, "annual", { ...data.annual, benefits: v })} addLabel="Add benefit" />
+          <SectionLabel>Monthly Membership</SectionLabel>
+          {sf("monthly", "title", "Title")}
+          {sf("monthly", "price", "Price (e.g. $35)")}
+          {sf("monthly", "period", "Period (e.g. / month)")}
+          {sf("monthly", "billingNote", "Billing Note")}
+          {sf("monthly", "description", "Description", true)}
+          {sf("monthly", "cta", "CTA Button Text")}
+          {sf("monthly", "microcopy", "Microcopy")}
+          <p className="text-xs text-white-dim mb-2 font-body">Monthly Benefits</p>
+          <StringList items={data.monthly?.benefits} onChange={(v) => update(sectionKey, "monthly", { ...data.monthly, benefits: v })} addLabel="Add benefit" />
+        </div>
+      );
+    case "testimonials":
+      return (
+        <div>
+          {f("heading", "Heading")}
+          <SectionLabel>Testimonials</SectionLabel>
+          <ObjectList items={data.items} onChange={(v) => update(sectionKey, "items", v)} addLabel="Add testimonial"
+            fields={[
+              { key: "quote", label: "Quote", multiline: true },
+              { key: "name", label: "Name" },
+              { key: "context", label: "Context" },
+              { key: "img", label: "Photo", media: true },
+            ]} />
+        </div>
+      );
+    case "faq":
+      return (
+        <div>
+          {f("heading", "Heading")}
+          <SectionLabel>FAQ Items</SectionLabel>
+          <ObjectList items={data.items} onChange={(v) => update(sectionKey, "items", v)} addLabel="Add FAQ"
+            fields={[{ key: "q", label: "Question" }, { key: "a", label: "Answer", multiline: true }]} />
+        </div>
+      );
+    case "final":
+      return (
+        <div>
+          {f("headline", "Headline")}
+          {f("copy", "Copy", true)}
+          {f("primaryCta", "Primary CTA (Annual)")}
+          {f("secondaryCta", "Secondary CTA (Monthly)")}
+          {f("returnLink", "Return Link Text")}
+        </div>
+      );
+    case "stickyBar":
+      return (
+        <div>
+          {f("label", "Label")}
+          {f("price", "Price Text")}
+          {f("ctaText", "CTA Button Text")}
+        </div>
+      );
+    case "footer":
+      return <div>{f("brand", "Brand Name")}{f("copyright", "Copyright (use {year} for year)")}</div>;
+    default:
+      return null;
   }
-  if (sectionKey === "header") {
-    return <div>{f("brand", "Brand Name")}{f("ctaText", "Header CTA Text")}</div>;
-  }
-  if (sectionKey === "stage1") {
-    return (
-      <div>
-        {f("eyebrow", "Eyebrow")}
-        {f("headline", "Headline")}
-        {f("supporting", "Supporting Text", true)}
-        {f("primaryCta", "Primary CTA")}
-        {f("secondaryCta", "Secondary CTA")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Intro Video</p>
-        {m("introYoutubeUrl", "YouTube URL (optional)")}
-        {m("introVideoUrl", "Uploaded Video File", true)}
-        {m("introPoster", "Poster / Thumbnail")}
-        {f("beforeHeading", "Before-You-Begin Heading")}
-        {f("beforeNote", "Before-You-Begin Note", true)}
-      </div>
-    );
-  }
-  if (sectionKey === "stage2") {
-    return (
-      <div>
-        {f("heading", "Heading")}
-        {f("supporting", "Supporting Text", true)}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Instructions</p>
-        <ObjectList items={data.instructions} onChange={(v) => update(sectionKey, "instructions", v)} addLabel="Add instruction"
-          fields={[{ key: "title", label: "Title" }, { key: "desc", label: "Description", multiline: true }]} />
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Practice Video</p>
-        {m("practiceYoutubeUrl", "YouTube URL (optional)")}
-        {m("practiceVideoUrl", "Uploaded Video File", true)}
-        {m("practicePoster", "Poster / Thumbnail")}
-        {f("feedbackHeading", "Feedback Heading")}
-        {f("completeBtn", "Complete Button Text")}
-        {f("laterBtn", "Later Button Text")}
-        {f("completeMessage", "Complete Message", true)}
-        {f("laterMessage", "Later Message", true)}
-      </div>
-    );
-  }
-  if (sectionKey === "stage3") {
-    return (
-      <div>
-        {f("eyebrow", "Eyebrow")}
-        {f("headline", "Headline")}
-        {f("copy", "Copy", true)}
-        {f("ctaText", "CTA Button Text")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Benefits</p>
-        <ObjectList items={data.benefits} onChange={(v) => update(sectionKey, "benefits", v)} addLabel="Add benefit"
-          fields={[{ key: "title", label: "Title" }, { key: "desc", label: "Description", multiline: true }]} />
-      </div>
-    );
-  }
-  if (sectionKey === "stage4") {
-    return (
-      <div>
-        {f("heading", "Section Heading")}
-        {f("supporting", "Supporting Text", true)}
-        {f("noteLine", "Note Line (under both cards)", true)}
-        {f("handstandLine", "Handstand Highlight Line")}
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Annual Membership</p>
-        {sf("annual", "badge", "Badge")}
-        {sf("annual", "title", "Title")}
-        {sf("annual", "price", "Price (e.g. $20)")}
-        {sf("annual", "period", "Period (e.g. / month)")}
-        {sf("annual", "billingNote", "Billing Note")}
-        {sf("annual", "cta", "CTA Button Text")}
-        <p className="text-xs text-white-dim mb-2 font-body">Annual Benefits</p>
-        <StringList items={data.annual?.benefits} onChange={(v) => update(sectionKey, "annual", { ...data.annual, benefits: v })} addLabel="Add benefit" />
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Monthly Membership</p>
-        {sf("monthly", "title", "Title")}
-        {sf("monthly", "price", "Price (e.g. $35)")}
-        {sf("monthly", "period", "Period (e.g. / month)")}
-        {sf("monthly", "cancelNote", "Cancel Note")}
-        {sf("monthly", "cta", "CTA Button Text")}
-        <p className="text-xs text-white-dim mb-2 font-body">Monthly Benefits</p>
-        <StringList items={data.monthly?.benefits} onChange={(v) => update(sectionKey, "monthly", { ...data.monthly, benefits: v })} addLabel="Add benefit" />
-      </div>
-    );
-  }
-  if (sectionKey === "stage5") {
-    return (
-      <div>
-        {f("testimonialsHeading", "Testimonials Heading")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Testimonials</p>
-        <ObjectList items={data.testimonials} onChange={(v) => update(sectionKey, "testimonials", v)} addLabel="Add testimonial"
-          fields={[{ key: "quote", label: "Quote", multiline: true }, { key: "name", label: "Name" }, { key: "img", label: "Photo URL" }]} />
-        {f("faqHeading", "FAQ Heading")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">FAQ Items</p>
-        <ObjectList items={data.faqs} onChange={(v) => update(sectionKey, "faqs", v)} addLabel="Add FAQ"
-          fields={[{ key: "q", label: "Question" }, { key: "a", label: "Answer", multiline: true }]} />
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Final CTA Block</p>
-        {sf("final", "headline", "Headline")}
-        {sf("final", "copy", "Copy", true)}
-        {sf("final", "primaryCta", "Primary CTA (Annual)")}
-        {sf("final", "secondaryCta", "Secondary CTA (Monthly)")}
-        {sf("final", "tertiaryLink", "Tertiary Link Text")}
-        {sf("final", "questionMessage", "Pre-filled Question Message")}
-        {sf("final", "supportUrl", "Support / Instagram DM URL")}
-      </div>
-    );
-  }
-  if (sectionKey === "footer") {
-    return <div>{f("brand", "Brand Name")}{f("copyright", "Copyright (use {year} for year)")}</div>;
-  }
-  return null;
 }
 
 export default function GiftEditor() {
   const [content, setContent] = useState(null);
   const [recordId, setRecordId] = useState(null);
-  const [activeSection, setActiveSection] = useState("stage1");
+  const [activeSection, setActiveSection] = useState("gate");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -261,7 +329,18 @@ export default function GiftEditor() {
         const pages = await base44.entities.LandingPageContent.filter({ page_key: "gift" });
         if (pages.length > 0 && pages[0].data) {
           setRecordId(pages[0].id);
-          setContent({ ...defaultGiftContent, ...pages[0].data });
+          const dbData = pages[0].data;
+          const merged = {};
+          for (const key of Object.keys(defaultGiftContent)) {
+            const defVal = defaultGiftContent[key];
+            const dbVal = dbData[key];
+            if (dbVal && typeof defVal === "object" && !Array.isArray(defVal) && typeof dbVal === "object" && !Array.isArray(dbVal)) {
+              merged[key] = deepMerge(defVal, dbVal);
+            } else {
+              merged[key] = dbVal !== undefined ? dbVal : defVal;
+            }
+          }
+          setContent(merged);
         } else {
           setContent(defaultGiftContent);
         }
@@ -307,7 +386,7 @@ export default function GiftEditor() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      <div className="lg:w-48 flex-shrink-0">
+      <div className="lg:w-52 flex-shrink-0">
         <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
           {SECTIONS.map(({ key, label }) => (
             <button key={key} onClick={() => setActiveSection(key)}
@@ -349,4 +428,19 @@ export default function GiftEditor() {
       </div>
     </div>
   );
+}
+
+function deepMerge(def, override) {
+  if (Array.isArray(def)) return override !== undefined ? override : def;
+  const result = { ...def };
+  if (override && typeof override === "object") {
+    for (const key of Object.keys(override)) {
+      if (def[key] && typeof def[key] === "object" && !Array.isArray(def[key]) && override[key] && typeof override[key] === "object") {
+        result[key] = deepMerge(def[key], override[key]);
+      } else {
+        result[key] = override[key];
+      }
+    }
+  }
+  return result;
 }
