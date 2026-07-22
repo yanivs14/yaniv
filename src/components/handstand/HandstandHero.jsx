@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import AccentText from "@/components/handstand/AccentText";
 import { useCountdown } from "@/components/handstand/preorder/PreOrderCountdown";
 
 function DarkCountdown({ targetDate }) {
@@ -64,8 +65,9 @@ export default function HandstandHero({ c, targetDate }) {
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] text-off-white uppercase tracking-tight mb-6">
-            {c?.headline1} {c?.headline2}
+          <h1 className="font-heading text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] sm:leading-[0.95] text-off-white uppercase tracking-tight mb-6">
+            {c?.headline1}{" "}
+            {c?.headlineAccent ? c?.headline2 : <AccentText text={c?.headline2} />}
             {c?.headlineAccent && (
               <>
                 <br />

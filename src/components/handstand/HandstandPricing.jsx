@@ -4,6 +4,7 @@ import { Check, ArrowRight, Shield } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { track, getGaClientId, trackMetaAddToCart } from "@/lib/analytics";
 import AnnualMembershipCard from "@/components/handstand/AnnualMembershipCard";
+import AccentText from "@/components/handstand/AccentText";
 
 let _checkoutInProgress = false;
 
@@ -53,7 +54,7 @@ export default function HandstandPricing({ c }) {
         >
           
           <h2 className="font-heading text-4xl sm:text-5xl font-bold text-off-white uppercase tracking-tight mb-3">
-            {c?.headline}
+            <AccentText text={c?.headline} />
           </h2>
           <p className="font-body text-base text-white-muted">{c?.subtitle}</p>
           {c?.lockInTitle && (

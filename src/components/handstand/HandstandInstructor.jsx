@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import AccentText from "@/components/handstand/AccentText";
 
 export default function HandstandInstructor({ c }) {
   return (
@@ -30,7 +31,7 @@ export default function HandstandInstructor({ c }) {
           >
             
             <h2 className="font-heading text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-6">
-              {c?.name}
+              <AccentText text={c?.name} />
             </h2>
             <p className="font-body text-base text-white-muted leading-relaxed mb-8">{c?.bio}</p>
             <div className="flex gap-8">

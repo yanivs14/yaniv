@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import AccentText from "@/components/handstand/AccentText";
 
 export default function HandstandFinalCTA({ c }) {
   const scrollToPricing = () => {
@@ -18,7 +19,7 @@ export default function HandstandFinalCTA({ c }) {
         >
           
           <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight mb-5 leading-[0.95]">
-            {c?.headline}
+            <AccentText text={c?.headline} />
           </h2>
           <p className="font-body text-lg text-white-muted mb-8 max-w-xl mx-auto">{c?.subtitle}</p>
           <button
