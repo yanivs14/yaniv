@@ -16,13 +16,18 @@ function DarkCountdown({ targetDate }) {
     <div className="flex items-center gap-2 sm:gap-3">
       {units.map((u, i) => (
         <React.Fragment key={u.label}>
-          <div className="bg-dark-surface border border-orange-red/30 rounded-2xl px-3 py-2 sm:px-5 sm:py-3 text-center min-w-[56px] sm:min-w-[80px]">
+          <div className="bg-gradient-to-b from-dark-surface to-black/60 border border-orange-red/25 rounded-xl px-3 py-2.5 sm:px-5 sm:py-3 text-center min-w-[58px] sm:min-w-[84px] shadow-[0_4px_24px_-8px_rgba(0,255,247,0.35)] backdrop-blur-sm">
             <div className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-red tabular-nums leading-none">
               {String(u.value).padStart(2, "0")}
             </div>
-            <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-white-muted mt-1">{u.label}</div>
+            <div className="font-body text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-white-muted mt-1.5">{u.label}</div>
           </div>
-          {i < units.length - 1 && <span className="font-heading text-xl sm:text-2xl text-white-dim -mx-1">:</span>}
+          {i < units.length - 1 && (
+            <span className="flex flex-col items-center justify-center gap-1.5 -mx-0.5">
+              <span className="w-1 h-1 rounded-full bg-orange-red/50" />
+              <span className="w-1 h-1 rounded-full bg-orange-red/50" />
+            </span>
+          )}
         </React.Fragment>
       ))}
     </div>
@@ -34,7 +39,7 @@ export default function HandstandHero({ c, targetDate }) {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col overflow-hidden">
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -43,18 +48,16 @@ export default function HandstandHero({ c, targetDate }) {
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/15 via-dark-bg/15 to-dark-bg" />
       </div>
       {(c?.eyebrow || targetDate) && (
-        <div className="absolute top-3 lg:top-6 left-0 right-0 z-20 px-6 lg:px-10">
-          <div className="max-w-7xl mx-auto">
-            {c?.eyebrow && (
-              <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-3 leading-relaxed">
-                {c.eyebrow}
-              </p>
-            )}
-            {targetDate && <DarkCountdown targetDate={targetDate} />}
-          </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full pt-4 lg:pt-6">
+          {c?.eyebrow && (
+            <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-3 leading-relaxed">
+              {c.eyebrow}
+            </p>
+          )}
+          {targetDate && <DarkCountdown targetDate={targetDate} />}
         </div>
       )}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full flex-1 flex items-center py-12 lg:py-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +88,10 @@ export default function HandstandHero({ c, targetDate }) {
             {c?.ctaText} <ArrowRight className="w-5 h-5" />
           </button>
           {c?.ctaSubtext && (
-            <p className="mt-4 font-body text-sm text-white-dim">{c.ctaSubtext}</p>
+            <div className="mt-5 inline-flex items-center gap-2 bg-dark-surface/70 border border-dark-border rounded-full px-4 py-1.5 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-red" />
+              <span className="font-body text-xs text-white-muted">{c.ctaSubtext}</span>
+            </div>
           )}
         </motion.div>
       </div>
