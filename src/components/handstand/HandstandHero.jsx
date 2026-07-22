@@ -66,8 +66,13 @@ export default function HandstandHero({ c, targetDate }) {
           className="max-w-3xl"
         >
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] sm:leading-[0.95] text-off-white uppercase tracking-tight mb-6">
-            {c?.headline1}{" "}
-            {c?.headlineAccent ? c?.headline2 : <AccentText text={c?.headline2} />}
+            {c?.headline1}
+            {c?.headline2 && (
+              <>
+                <br />
+                {c?.headlineAccent ? c?.headline2 : <AccentText text={c?.headline2} />}
+              </>
+            )}
             {c?.headlineAccent && (
               <>
                 <br />
