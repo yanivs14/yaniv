@@ -24,7 +24,18 @@ export default function Gift() {
       try {
         const pages = await base44.entities.LandingPageContent.filter({ page_key: "gift" });
         if (pages.length > 0 && pages[0].data) {
-          setContent({ ...defaultGiftContent, ...pages[0].data });
+          const dbData = pages[0].data;
+          const merged = {};
+          for (const key of Object.keys(defaultGiftContent)) {
+            const defVal = defaultGiftContent[key];
+            const dbVal = dbData[key];
+            if (dbVal && typeof defVal === "object" && !Array.isArray(defVal) && typeof dbVal === "object" && !Array.isArray(dbVal)) {
+              merged[key] = { ...defVal, ...dbVal };
+            } else {
+              merged[key] = dbVal !== undefined ? dbVal : defVal;
+            }
+          }
+          setContent(merged);
         } else {
           setContent(defaultGiftContent);
         }
