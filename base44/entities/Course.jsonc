@@ -63,6 +63,11 @@
       "type": "boolean",
       "default": false,
       "description": "Whether to show in the video slider"
+    },
+    "is_inner_circle": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this course is Inner Circle exclusive"
     }
   },
   "required": [

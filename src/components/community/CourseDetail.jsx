@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Lock, Play } from "lucide-react";
+import { ArrowLeft, Lock, Play } from "lucide-react";
+
+const FONT_HEADING = "'Frank Ruhl Libre', 'Times New Roman', serif";
 
 function getYouTubeId(url) {
   if (!url) return null;
@@ -28,21 +30,20 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
 
   return (
     <div>
-      {/* Hero header */}
       <div className="bg-[#1D2120] text-white py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <button onClick={onBack} className="flex items-center gap-2 text-white/60 hover:text-[#D4F658] transition-colors mb-8">
-            <ArrowRight className="w-4 h-4" />
-            <span className="text-sm font-medium">חזרה לקורסים</span>
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Courses</span>
           </button>
           <div className="max-w-3xl">
             {course.category && (
               <span className="text-xs text-[#D4F658] font-bold uppercase tracking-widest">{course.category}</span>
             )}
-            <h1 className="text-4xl lg:text-5xl font-bold mt-3" style={{ fontFamily: "'Times New Roman', serif" }}>{course.title}</h1>
+            <h1 className="text-4xl lg:text-5xl font-bold mt-3" style={{ fontFamily: FONT_HEADING }}>{course.title}</h1>
             {course.short_description && <p className="text-white/60 text-lg mt-4 leading-relaxed">{course.short_description}</p>}
             <div className="flex items-center gap-4 mt-5 text-sm text-white/40">
-              {course.instructor && <span>מרצה: {course.instructor}</span>}
+              {course.instructor && <span>Instructor: {course.instructor}</span>}
               {course.instructor && course.duration_label && <span>•</span>}
               {course.duration_label && <span>{course.duration_label}</span>}
             </div>
@@ -50,10 +51,8 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10 lg:py-14">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Video player */}
           <div className="lg:col-span-2">
             <div className="aspect-video rounded-3xl overflow-hidden bg-black shadow-2xl">
               {loading ? (
@@ -78,26 +77,25 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
             </div>
             {selectedLesson && (
               <div className="mt-6">
-                <h2 className="text-2xl font-bold text-[#1D2120]" style={{ fontFamily: "'Times New Roman', serif" }}>{selectedLesson.title}</h2>
+                <h2 className="text-2xl font-bold text-[#1D2120]" style={{ fontFamily: FONT_HEADING }}>{selectedLesson.title}</h2>
                 {selectedLesson.description && (
-                  <p className="text-[#6B6B6B] mt-3 leading-relaxed text-lg">{selectedLesson.description}</p>
+                  <p className="text-[#6B6B6B] mt-3 leading-relaxed text-lg" dir="auto">{selectedLesson.description}</p>
                 )}
               </div>
             )}
           </div>
 
-          {/* Lessons list */}
           <div>
             <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-[#1D2120]/5">
               <div className="px-6 py-5 border-b border-[#1D2120]/5">
-                <h3 className="font-bold text-[#1D2120] text-lg" style={{ fontFamily: "'Times New Roman', serif" }}>סילבוס הקורס</h3>
-                <p className="text-xs text-[#6B6B6B] mt-1">{lessons.length} שיעורים</p>
+                <h3 className="font-bold text-[#1D2120] text-lg" style={{ fontFamily: FONT_HEADING }}>Course Syllabus</h3>
+                <p className="text-xs text-[#6B6B6B] mt-1">{lessons.length} lessons</p>
               </div>
               <div className="max-h-[600px] overflow-y-auto">
                 {loading ? (
-                  <div className="p-6 text-center text-[#6B6B6B] text-sm">טוען שיעורים...</div>
+                  <div className="p-6 text-center text-[#6B6B6B] text-sm">Loading lessons...</div>
                 ) : lessons.length === 0 ? (
-                  <div className="p-6 text-center text-[#6B6B6B] text-sm">אין שיעורים עדיין</div>
+                  <div className="p-6 text-center text-[#6B6B6B] text-sm">No lessons yet</div>
                 ) : (
                   lessons.map((lesson, i) => {
                     const canAccess = isEnrolled || lesson.is_preview;
@@ -107,7 +105,7 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
                         key={lesson.id}
                         onClick={() => canAccess && setSelectedLesson(lesson)}
                         disabled={!canAccess}
-                        className={`w-full text-right p-4 border-b border-[#1D2120]/5 last:border-0 flex items-start gap-3 transition-all ${
+                        className={`w-full text-left p-4 border-b border-[#1D2120]/5 last:border-0 flex items-start gap-3 transition-all ${
                           isActive ? "bg-[#D4F658]/10" : canAccess ? "hover:bg-[#1D2120]/3" : "opacity-40 cursor-not-allowed"
                         }`}
                       >
@@ -123,11 +121,11 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium ${isActive ? "text-[#1D2120]" : "text-[#1D2120]"}`}>{lesson.title}</p>
+                          <p className="text-sm font-medium text-[#1D2120]" dir="auto">{lesson.title}</p>
                           <div className="flex items-center gap-2 mt-1">
                             {lesson.duration && <span className="text-xs text-[#6B6B6B]">{lesson.duration}</span>}
                             {lesson.is_preview && (
-                              <span className="text-xs text-[#1D2120] bg-[#D4F658] px-2 py-0.5 rounded-full font-medium">תצוגה מקדימה</span>
+                              <span className="text-xs text-[#1D2120] bg-[#D4F658] px-2 py-0.5 rounded-full font-medium">Preview</span>
                             )}
                           </div>
                         </div>
@@ -139,9 +137,9 @@ export default function CourseDetail({ course, isEnrolled, onBack }) {
             </div>
             {!isEnrolled && (
               <div className="mt-6 bg-[#1D2120] rounded-3xl p-6 text-center">
-                <p className="text-white/70 text-sm mb-4">רכשו את הקורס כדי לפתוח את כל השיעורים</p>
+                <p className="text-white/70 text-sm mb-4">Get this course to unlock all lessons</p>
                 <a href="/handstand-course" className="inline-block bg-[#D4F658] text-[#1D2120] px-6 py-3 rounded-xl text-sm font-bold hover:bg-[#c4e64a] transition-colors">
-                  רכשו עכשיו
+                  Get Now
                 </a>
               </div>
             )}

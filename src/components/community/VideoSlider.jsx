@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 
+const FONT_HEADING = "'Frank Ruhl Libre', 'Times New Roman', serif";
+
 export default function VideoSlider({ courses, onSelectCourse }) {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -31,13 +33,13 @@ export default function VideoSlider({ courses, onSelectCourse }) {
   return (
     <section className="py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 mb-10">
-        <span className="text-xs text-[#6B6B6B] uppercase tracking-widest font-medium">חקר וגילוי</span>
-        <h2 className="text-4xl lg:text-6xl font-bold text-[#1D2120] mt-2" style={{ fontFamily: "'Times New Roman', serif" }}>
-          גלה את הקורסים
+        <span className="text-xs text-[#6B6B6B] uppercase tracking-widest font-medium">Explore</span>
+        <h2 className="text-4xl lg:text-6xl font-bold text-[#1D2120] mt-2" style={{ fontFamily: FONT_HEADING }}>
+          Discover the Courses
         </h2>
-        <p className="text-[#6B6B6B] text-lg mt-3 max-w-lg">הצצה לתוכן שמחכה לך בפנים — גלילה אופקית לחוויית גילוי מלאה</p>
+        <p className="text-[#6B6B6B] text-lg mt-3 max-w-lg">A glimpse of the content waiting for you inside</p>
       </div>
-      <div className="relative" dir="ltr">
+      <div className="relative">
         {canScrollLeft && (
           <button
             onClick={() => scroll(-1)}
@@ -62,7 +64,7 @@ export default function VideoSlider({ courses, onSelectCourse }) {
             <button
               key={course.id}
               onClick={() => onSelectCourse(course)}
-              className="flex-shrink-0 w-[260px] sm:w-[300px] aspect-[9/16] rounded-3xl overflow-hidden snap-center group relative shadow-2xl hover:shadow-3xl transition-shadow duration-500"
+              className="flex-shrink-0 w-[260px] sm:w-[300px] aspect-[9/16] rounded-3xl overflow-hidden snap-center group relative shadow-2xl transition-shadow duration-500"
             >
               {course.thumbnail_url ? (
                 <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -70,22 +72,19 @@ export default function VideoSlider({ courses, onSelectCourse }) {
                 <div className="w-full h-full bg-gradient-to-br from-[#1D2120] to-[#2a302e]" />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1D2120] via-[#1D2120]/20 to-transparent" />
-              {/* Play button */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-16 h-16 rounded-full bg-[#D4F658] flex items-center justify-center shadow-2xl">
                   <Play className="w-7 h-7 text-[#1D2120] ml-1" fill="currentColor" />
                 </div>
               </div>
-              {/* Number badge */}
               <div className="absolute top-5 left-5 w-9 h-9 rounded-full bg-[#D4F658] flex items-center justify-center">
                 <span className="text-xs font-bold text-[#1D2120]">{String(i + 1).padStart(2, "0")}</span>
               </div>
-              {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
                 {course.category && (
                   <span className="text-[10px] text-[#D4F658] font-bold uppercase tracking-widest">{course.category}</span>
                 )}
-                <h3 className="text-white text-2xl font-bold leading-tight mt-2" style={{ fontFamily: "'Times New Roman', serif" }}>{course.title}</h3>
+                <h3 className="text-white text-2xl font-bold leading-tight mt-2" style={{ fontFamily: FONT_HEADING }}>{course.title}</h3>
                 {course.instructor && (
                   <p className="text-white/50 text-sm mt-2">{course.instructor}</p>
                 )}

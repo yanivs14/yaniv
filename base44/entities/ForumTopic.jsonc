@@ -27,6 +27,11 @@
       "default": false,
       "description": "Whether topic is pinned"
     },
+    "is_inner_circle": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this topic is Inner Circle only"
+    },
     "reply_count": {
       "type": "number",
       "default": 0,
