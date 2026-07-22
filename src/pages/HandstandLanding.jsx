@@ -72,7 +72,24 @@ export default function HandstandLanding() {
 
   return (
     <div id="hs-root" className="min-h-screen bg-dark-bg overflow-x-hidden pb-16 lg:pb-0">
-      {accentStyle && <style>{accentStyle}</style>}
+      <style>{`
+        #hs-root {
+          --c-dark-bg: 255 255 255;
+          --c-dark-surface: 248 248 248;
+          --c-dark-surface-2: 240 240 240;
+          --c-dark-border: 229 229 229;
+          --c-off-white: 26 26 26;
+          --c-white-muted: 74 74 74;
+          --c-white-dim: 100 100 100;
+          --orange-red-rgb: 13 148 136;
+          --orange-red-hover-rgb: 15 118 110;
+        }
+        #hs-root .text-dark-bg { color: #0F0F0F; }
+        #hs-root #hero .text-off-white { color: rgb(245 245 245); }
+        #hs-root #hero .text-white-muted { color: rgb(210 210 210); }
+        #hs-root #hero .text-white-dim { color: rgb(170 170 170); }
+        ${accentStyle || ''}
+      `}</style>
       <AnnouncementBar t={content.texts} />
       <HandstandHero c={content.hero} t={content.texts} />
       <ValueStrip c={content.valueStrip} />

@@ -38,7 +38,7 @@ export default function HandstandHero({ c, t = {} }) {
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />}
         <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/30 via-dark-bg/40 to-dark-bg" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-white" />
       </div>
       <div className="relative z-10 max-w-[1250px] mx-auto px-6 lg:px-10 w-full flex-1 flex items-center py-10 lg:py-16">
         <motion.div

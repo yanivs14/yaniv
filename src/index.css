@@ -54,6 +54,14 @@
     --orange-red-hover: #00ccc6;
     --orange-red-hover-rgb: 0 204 198;
     --gold: #f5c542;
+
+    --c-dark-bg: 15 15 15;
+    --c-dark-surface: 22 22 22;
+    --c-dark-surface-2: 28 28 28;
+    --c-dark-border: 42 42 42;
+    --c-off-white: 245 245 245;
+    --c-white-muted: 200 200 200;
+    --c-white-dim: 85 85 85;
   }
 }
 
