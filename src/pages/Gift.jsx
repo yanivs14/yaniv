@@ -88,7 +88,7 @@ export default function Gift() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg">
+    <div className="min-h-screen bg-dark-bg" data-gift-page="v2">
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
         <title>Your Free Movement Reset — Roye Gold</title>
