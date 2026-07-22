@@ -3,7 +3,6 @@ import { useSiteContent } from "@/lib/SiteContentContext";
 import SocialLinks from "@/components/landing/SocialLinks";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight, Check } from "lucide-react";
-import MovementAgeQuiz from "@/components/homeb/MovementAgeQuiz";
 
 function GdprCheckbox({ checked, onChange }) {
   return (
@@ -98,7 +97,6 @@ const POLICY_PAGES = [
 
 export default function Footer() {
   const { content } = useSiteContent();
-  const [quizOpen, setQuizOpen] = useState(false);
 
   if (!content) return null;
   const c = content.footer;
@@ -154,16 +152,7 @@ export default function Footer() {
         )}
 
         <p className="font-body text-xs text-white-dim">{c.copyright}</p>
-
-        {/* TEST BUTTON — remove after preview */}
-        <button
-          onClick={() => setQuizOpen(true)}
-          className="mt-6 text-[10px] font-body text-white-dim border border-dark-border rounded-full px-3 py-1.5 hover:text-orange-red hover:border-orange-red/40 transition-colors"
-        >
-          Test: Movement Age Quiz
-        </button>
       </div>
-      <MovementAgeQuiz open={quizOpen} onClose={() => setQuizOpen(false)} />
     </footer>
   );
 }
