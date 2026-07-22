@@ -8,7 +8,7 @@ const PRICE_IDS = {
 
 Deno.serve(async (req) => {
   try {
-    const { plan, ga_client_id } = await req.json();
+    const { plan, ga_client_id, email } = await req.json();
 
     if (!plan || !PRICE_IDS[plan]) {
       return Response.json({ error: "Invalid plan. Use 'monthly', 'annual', or 'promo'." }, { status: 400 });
@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: PRICE_IDS[plan], quantity: 1 }],
+      customer_email: email || undefined,
       success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}?checkout=cancelled`,
       metadata: {

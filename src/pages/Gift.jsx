@@ -1,70 +1,59 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { defaultGiftContent } from "@/lib/giftContent";
-import GdprConsent from "@/components/landing/GdprConsent";
 import { track, trackLeadCapture } from "@/lib/analytics";
+import GiftGate from "@/components/gift/GiftGate";
 import GiftHeader from "@/components/gift/GiftHeader";
-import GiftIntro from "@/components/gift/GiftIntro";
+import GiftHero from "@/components/gift/GiftHero";
+import GiftIntroVideo from "@/components/gift/GiftIntroVideo";
+import GiftPrep from "@/components/gift/GiftPrep";
 import GiftPractice from "@/components/gift/GiftPractice";
+import GiftClosing from "@/components/gift/GiftClosing";
 import GiftBridge from "@/components/gift/GiftBridge";
+import GiftTestimonial from "@/components/gift/GiftTestimonial";
 import GiftMembership from "@/components/gift/GiftMembership";
 import GiftProof from "@/components/gift/GiftProof";
+import GiftFinalCTA from "@/components/gift/GiftFinalCTA";
 import GiftStickyBar from "@/components/gift/GiftStickyBar";
 import GiftFooter from "@/components/gift/GiftFooter";
 
 const STORAGE_KEY = "gift_unlocked_until";
+const EMAIL_KEY = "gift_email";
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
-
-const DISPOSABLE_DOMAINS = [
-  "mailinator.com", "tempmail.com", "tempmail.io", "10minutemail.com", "guerrillamail.com",
-  "yopmail.com", "throwawaymail.com", "trashmail.com", "getnada.com", "maildrop.cc",
-  "dispostable.com", "fakeinbox.com", "sharklasers.com", "guerrillamailblock.com", "tmpmail.org",
-  "temp-mail.org", "mintemail.com", "mohmal.com", "emailondeck.com", "spambog.com",
-];
-
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-function validateEmail(value) {
-  const trimmed = value.trim();
-  if (!trimmed) return "Please enter your email";
-  if (!EMAIL_REGEX.test(trimmed)) return "Please enter a valid email address";
-  const domain = trimmed.split("@")[1].toLowerCase();
-  const tld = domain.split(".").pop();
-  if (tld.length < 2) return "Please enter a valid email address";
-  if (DISPOSABLE_DOMAINS.includes(domain)) return "Temporary email addresses are not accepted";
-  return null;
-}
 
 function isUnlocked() {
   const until = localStorage.getItem(STORAGE_KEY);
   if (!until) return false;
   return Date.now() < parseInt(until, 10);
 }
-
 function unlock() {
   localStorage.setItem(STORAGE_KEY, String(Date.now() + ONE_MONTH));
+}
+function getStoredEmail() {
+  return localStorage.getItem(EMAIL_KEY) || "";
+}
+function storeEmail(email) {
+  if (email) localStorage.setItem(EMAIL_KEY, email);
 }
 
 export default function Gift() {
   const [content, setContent] = useState(null);
   const [unlocked, setUnlocked] = useState(false);
   const [email, setEmail] = useState("");
-  const [gdpr, setGdpr] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  // sticky bar state
+  const [gateLoading, setGateLoading] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
-  const [stickyMode, setStickyMode] = useState("view"); // "view" | "annual"
+  const [inCheckout, setInCheckout] = useState(false);
   const practiceRef = useRef(null);
-  const membershipRef = useRef(null);
+  const closingRef = useRef(null);
 
+  // Load content + check token/localStorage on mount
   useEffect(() => {
-    setUnlocked(isUnlocked());
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
     (async () => {
+      // Load content
       try {
         const pages = await base44.entities.LandingPageContent.filter({ page_key: "gift" });
         if (pages.length > 0 && pages[0].data) {
@@ -75,66 +64,73 @@ export default function Gift() {
       } catch {
         setContent(defaultGiftContent);
       }
+
+      // Check token from URL (ManyChat or return-link)
+      if (token) {
+        try {
+          const res = await base44.functions.invoke("manageGiftAccess", { action: "verify", token });
+          if (res.data?.valid && res.data.email) {
+            unlock();
+            storeEmail(res.data.email);
+            setEmail(res.data.email);
+            setUnlocked(true);
+            track("gift_unlocked_via_token", { source: "token" });
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+          }
+        } catch (e) {
+          console.warn("Token verification failed:", e.message);
+        }
+      }
+
+      // Check localStorage
+      if (isUnlocked()) {
+        setEmail(getStoredEmail());
+        setUnlocked(true);
+      }
     })();
   }, []);
 
-  // Track access view once unlocked
+  // Track access view
   useEffect(() => {
-    if (unlocked) track("movement_reset_access_view");
+    if (unlocked) track("gift_access_view");
   }, [unlocked]);
 
-  // Sticky bar: show after scrolled past practice OR completed; switch to annual at membership
-  useEffect(() => {
-    if (!unlocked) return;
-    const practice = practiceRef.current;
-    const membership = membershipRef.current;
-
-    const onScroll = () => {
-      if (practice) {
-        const rect = practice.getBoundingClientRect();
-        if (rect.bottom < window.innerHeight * 0.5) {
-          setShowSticky(true);
-        }
-      }
-      if (membership) {
-        const rect = membership.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.6) {
-          setStickyMode("annual");
-        } else {
-          setStickyMode("view");
-        }
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [unlocked]);
-
-  const handlePracticeComplete = () => {
+  // Sticky bar: show after practice video starts OR closing section reached
+  const handlePracticeStarted = () => {
     setShowSticky(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const emailError = validateEmail(email);
-    if (emailError) {
-      setError(emailError);
-      return;
-    }
-    if (!gdpr) {
-      setError("Please accept the privacy policy to continue");
-      return;
-    }
-    setLoading(true);
+  useEffect(() => {
+    if (!unlocked) return;
+    const closing = closingRef.current;
+    if (!closing) return;
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) setShowSticky(true);
+    }, { threshold: 0.3 });
+    obs.observe(closing);
+    return () => obs.disconnect();
+  }, [unlocked]);
+
+  // Handle email gate submission
+  const handleGateSubmit = async (emailValue, marketing) => {
+    setGateLoading(true);
     try {
-      await base44.functions.invoke("subscribeNewsletter", { email: email.trim(), source: "gift_page" });
-      trackLeadCapture(email.trim(), "gift_page", gdpr, "");
+      // Subscribe to newsletter (handles Kit sync)
+      await base44.functions.invoke("subscribeNewsletter", { email: emailValue, source: "gift_page" });
+      // Create token + send return-link email
+      await base44.functions.invoke("manageGiftAccess", { action: "create", email: emailValue, source: "gift_page" });
+      trackLeadCapture(emailValue, "gift_page", marketing, "");
+      track("gift_email_submitted", { marketing_consent: marketing ? "true" : "false" });
       unlock();
+      storeEmail(emailValue);
+      setEmail(emailValue);
       setUnlocked(true);
-    } catch {
-      setError("Something went wrong. Try again.");
+    } catch (e) {
+      console.warn("Gate submission error:", e.message);
     }
-    setLoading(false);
+    setGateLoading(false);
   };
 
   if (!content) {
@@ -145,54 +141,16 @@ export default function Gift() {
     );
   }
 
-  const gate = content.gate;
-
-  // Gate screen (first visit)
+  // Gate screen
   if (!unlocked) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center px-6">
+      <>
         <Helmet>
           <meta name="robots" content="noindex, nofollow" />
           <title>Your Free Movement Reset — Roye Gold</title>
         </Helmet>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md text-center"
-        >
-          {gate.eyebrow && (
-            <p className="font-body text-[11px] text-orange-red uppercase tracking-widest mb-3">{gate.eyebrow}</p>
-          )}
-          <h1 className="font-heading text-3xl sm:text-4xl font-bold text-off-white uppercase tracking-tight mb-3 leading-tight">
-            {gate.headline}
-          </h1>
-          <p className="font-body text-sm text-white-muted mb-7 leading-relaxed">{gate.subheadline}</p>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-left">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setError(""); }}
-              placeholder="your@email.com"
-              className={`w-full bg-dark-surface border rounded-xl px-5 py-3.5 font-body text-sm text-off-white placeholder-white-dim focus:outline-none transition-colors ${error ? "border-red-500" : "border-dark-border focus:border-orange-red"}`}
-            />
-            {error && <p className="text-xs text-red-400 font-body">{error}</p>}
-            <GdprConsent id="gift-gdpr" checked={gdpr} onChange={(v) => { setGdpr(v); setError(""); }} />
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex items-center justify-center gap-2 w-full bg-orange-red text-dark-bg font-body text-sm font-semibold py-3.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60"
-            >
-              {loading ? (
-                <div className="w-4 h-4 border-2 border-dark-bg border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>{gate.ctaText} <ArrowRight className="w-4 h-4" /></>
-              )}
-            </button>
-          </form>
-          {gate.footnote && <p className="mt-4 text-center font-body text-xs text-white-dim">{gate.footnote}</p>}
-        </motion.div>
-      </div>
+        <GiftGate c={content.gate} onSubmit={handleGateSubmit} loading={gateLoading} />
+      </>
     );
   }
 
@@ -202,32 +160,25 @@ export default function Gift() {
         <meta name="robots" content="noindex, nofollow" />
         <title>Your Free Movement Reset — Roye Gold</title>
       </Helmet>
-
-      <GiftHeader c={content.header} />
-
+      <GiftHeader c={{ brand: "The Movement", ctaText: "Membership" }} />
       <main className="pb-16 lg:pb-0">
-        <GiftIntro c={content.stage1} />
-
+        <GiftHero c={content.hero} />
+        <GiftIntroVideo c={content.introVideo} />
+        <GiftPrep c={content.prep} />
         <div ref={practiceRef}>
-          <GiftPractice c={content.stage2} onComplete={handlePracticeComplete} />
+          <GiftPractice c={content.practice} onVideoStarted={handlePracticeStarted} />
         </div>
-
-        <GiftBridge c={content.stage3} />
-
-        <div ref={membershipRef}>
-          <GiftMembership c={content.stage4} />
+        <div ref={closingRef}>
+          <GiftClosing c={content.closing} />
         </div>
-
-        <GiftProof c={content.stage5} />
+        <GiftBridge c={content.bridge} />
+        <GiftTestimonial c={content.primaryTestimonial} />
+        <GiftMembership c={content.membership} email={email} onCheckoutStart={() => setInCheckout(true)} />
+        <GiftProof c={{ testimonials: content.testimonials, faq: content.faq }} />
+        <GiftFinalCTA c={content.final} email={email} onCheckoutStart={() => setInCheckout(true)} />
       </main>
-
       <GiftFooter c={content.footer} />
-
-      <GiftStickyBar
-        visible={showSticky}
-        mode={stickyMode}
-        annualCta={content.stage4?.annual?.cta}
-      />
+      <GiftStickyBar visible={showSticky} inCheckout={inCheckout} />
     </div>
   );
 }
