@@ -38,24 +38,24 @@ export default function Community() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-gray-200 border-t-teal-600 rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#F5F5F3] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#1D2120]/10 border-t-[#D4F658] rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div dir="rtl" className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="text-center max-w-sm">
-          <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl font-bold text-teal-700">M</span>
+      <div dir="rtl" className="min-h-screen bg-[#F5F5F3] flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-[#D4F658] rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span className="text-2xl font-bold text-[#1D2120]">M</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">ברוכים הבאים ל-The Movement</h1>
-          <p className="text-gray-600 mb-6">יש להתחבר כדי לגשת לקורסים ולקהילה שלך</p>
+          <h1 className="text-4xl font-bold text-[#1D2120] mb-3" style={{ fontFamily: "'Times New Roman', serif" }}>ברוכים הבאים</h1>
+          <p className="text-[#6B6B6B] mb-8 text-lg">יש להתחבר כדי לגשת לקורסים ולקהילה שלך</p>
           <button
             onClick={() => base44.auth.redirectToLogin("/community")}
-            className="bg-teal-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-teal-700 transition-colors"
+            className="bg-[#D4F658] text-[#1D2120] px-8 py-3.5 rounded-xl font-bold hover:bg-[#c4e64a] transition-colors"
           >
             התחברות
           </button>
@@ -82,36 +82,42 @@ export default function Community() {
     window.scrollTo(0, 0);
   };
 
+  const firstName = user?.full_name?.split(" ")[0] || "";
+
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50">
+    <div dir="rtl" className="min-h-screen bg-[#F5F5F3]">
       {/* Navbar */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <button onClick={goHome} className="flex items-center gap-2">
-            <span className="font-bold text-xl text-gray-900">The Movement</span>
-            <span className="text-[10px] text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full font-medium">LMS</span>
+      <header className="sticky top-0 z-50 bg-[#F5F5F3]/80 backdrop-blur-xl border-b border-[#1D2120]/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
+          <button onClick={goHome} className="flex items-center gap-3">
+            <span className="text-xl font-bold text-[#1D2120]" style={{ fontFamily: "'Times New Roman', serif" }}>The Movement</span>
+            <span className="text-[10px] text-[#1D2120] bg-[#D4F658] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">LMS</span>
           </button>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-2">
             <button
               onClick={goHome}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                view === "home" || view === "course" ? "bg-teal-50 text-teal-700" : "text-gray-600 hover:bg-gray-100"
+              className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                view === "home" || view === "course"
+                  ? "bg-[#1D2120] text-[#D4F658]"
+                  : "text-[#6B6B6B] hover:bg-[#1D2120]/5"
               }`}
             >
               הקורסים שלי
             </button>
             <button
               onClick={() => { setView("forum"); setSelectedCourse(null); window.scrollTo(0, 0); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                view === "forum" ? "bg-teal-50 text-teal-700" : "text-gray-600 hover:bg-gray-100"
+              className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                view === "forum"
+                  ? "bg-[#1D2120] text-[#D4F658]"
+                  : "text-[#6B6B6B] hover:bg-[#1D2120]/5"
               }`}
             >
               פורום תלמידים
             </button>
           </nav>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center">
-              <span className="text-sm font-bold text-teal-700">{user?.full_name?.[0]?.toUpperCase() || "U"}</span>
+            <div className="w-10 h-10 rounded-xl bg-[#D4F658] flex items-center justify-center">
+              <span className="text-sm font-bold text-[#1D2120]">{user?.full_name?.[0]?.toUpperCase() || "U"}</span>
             </div>
           </div>
         </div>
@@ -125,7 +131,7 @@ export default function Community() {
             myCourses={myCourses}
             availableCourses={availableCourses}
             onSelectCourse={openCourse}
-            userName={user?.full_name}
+            userName={firstName}
           />
         </>
       )}
@@ -143,28 +149,39 @@ export default function Community() {
 
 function HomeContent({ myCourses, availableCourses, onSelectCourse, userName }) {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">שלום {userName?.split(" ")[0] || ""} 👋</h2>
-        <p className="text-gray-500 mb-6">המשך מאיפה שעצרת</p>
+    <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 lg:py-24">
+      {/* My Courses */}
+      <section className="mb-20">
+        <div className="mb-8">
+          <span className="text-xs text-[#6B6B6B] uppercase tracking-widest font-medium">תוכן מותאם אישית</span>
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#1D2120] mt-2" style={{ fontFamily: "'Times New Roman', serif" }}>
+            שלום {userName}
+          </h2>
+          <p className="text-[#6B6B6B] text-lg mt-2">המשך מאיפה שעצרת</p>
+        </div>
         {myCourses.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {myCourses.map((course) => (
               <CourseCard key={course.id} course={course} enrolled onClick={() => onSelectCourse(course)} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
-            <p className="text-gray-500">עדיין אין לך קורסים פעילים. הצצה לקטלוג למטה.</p>
+          <div className="bg-white rounded-3xl p-12 text-center border border-[#1D2120]/5">
+            <p className="text-[#6B6B6B] text-lg">עדיין אין לך קורסים פעילים. הצצה לקטלוג למטה.</p>
           </div>
         )}
       </section>
 
+      {/* Available Courses */}
       {availableCourses.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">קטלוג קורסים</h2>
-          <p className="text-gray-500 mb-6">כל הקורסים הזמינים</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="mb-8">
+            <span className="text-xs text-[#6B6B6B] uppercase tracking-widest font-medium">קטלוג מלא</span>
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#1D2120] mt-2" style={{ fontFamily: "'Times New Roman', serif" }}>
+              קורסים זמינים
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableCourses.map((course) => (
               <CourseCard key={course.id} course={course} onClick={() => onSelectCourse(course)} />
             ))}
@@ -179,37 +196,33 @@ function CourseCard({ course, enrolled, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="text-right bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-teal-300 hover:shadow-md transition-all group"
+      className="text-right bg-white rounded-3xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
     >
-      <div className="aspect-video bg-gray-100 relative overflow-hidden">
+      <div className="aspect-[16/10] bg-[#1D2120] relative overflow-hidden">
         {course.thumbnail_url ? (
-          <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+          <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-300 text-4xl">📹</div>
+          <div className="w-full h-full flex items-center justify-center text-[#D4F658]/30 text-5xl">📹</div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1D2120]/60 to-transparent" />
         {enrolled && (
-          <span className="absolute top-3 right-3 bg-teal-600 text-white text-[10px] font-bold px-2 py-1 rounded-full">פעיל</span>
+          <span className="absolute top-4 right-4 bg-[#D4F658] text-[#1D2120] text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">פעיל</span>
         )}
       </div>
-      <div className="p-4">
+      <div className="p-6">
         {course.category && (
-          <span className="text-xs text-teal-600 font-medium uppercase tracking-wide">{course.category}</span>
+          <span className="text-xs text-[#1D2120] font-bold uppercase tracking-widest">{course.category}</span>
         )}
-        <h3 className="font-bold text-gray-900 mt-1 line-clamp-2">{course.title}</h3>
+        <h3 className="text-xl font-bold text-[#1D2120] mt-2" style={{ fontFamily: "'Times New Roman', serif" }}>{course.title}</h3>
         {course.short_description && (
-          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{course.short_description}</p>
+          <p className="text-[#6B6B6B] text-sm mt-2 leading-relaxed line-clamp-2">{course.short_description}</p>
         )}
-        <div className="flex items-center gap-2 mt-3 text-xs text-gray-400">
+        <div className="flex items-center gap-3 mt-4 text-xs text-[#6B6B6B]">
+          {course.instructor && <span className="font-medium">{course.instructor}</span>}
+          {course.instructor && course.duration_label && <span>•</span>}
           {course.duration_label && <span>{course.duration_label}</span>}
-          {course.duration_label && course.difficulty && <span>•</span>}
-          {course.difficulty && <span>{difficultyLabel(course.difficulty)}</span>}
         </div>
       </div>
     </button>
   );
-}
-
-function difficultyLabel(d) {
-  const map = { beginner: "מתחיל", intermediate: "בינוני", advanced: "מתקדם", all_levels: "כל הרמות" };
-  return map[d] || d;
 }
