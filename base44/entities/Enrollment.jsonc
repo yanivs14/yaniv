@@ -1,0 +1,54 @@
+{
+  "name": "Enrollment",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User email"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Course ID"
+    },
+    "stripe_product_id": {
+      "type": "string",
+      "description": "Stripe product ID for matching"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "Enrollment status"
+    }
+  },
+  "required": [
+    "user_id",
+    "course_id"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

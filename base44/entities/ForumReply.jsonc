@@ -1,0 +1,40 @@
+{
+  "name": "ForumReply",
+  "type": "object",
+  "properties": {
+    "topic_id": {
+      "type": "string",
+      "description": "Topic ID this reply belongs to"
+    },
+    "content": {
+      "type": "string",
+      "description": "Reply content"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Author display name"
+    },
+    "author_id": {
+      "type": "string",
+      "description": "Author user ID"
+    }
+  },
+  "required": [
+    "topic_id",
+    "content"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Course",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Course title"
+    },
+    "short_description": {
+      "type": "string",
+      "description": "Short description for cards"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full course description"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "Course thumbnail image URL"
+    },
+    "preview_video_url": {
+      "type": "string",
+      "description": "Preview/trailer video URL for slider"
+    },
+    "category": {
+      "type": "string",
+      "description": "Course category/topic"
+    },
+    "stripe_product_id": {
+      "type": "string",
+      "description": "Stripe product ID for enrollment matching"
+    },
+    "instructor": {
+      "type": "string",
+      "description": "Instructor name"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "all_levels"
+      ],
+      "default": "all_levels",
+      "description": "Difficulty level"
+    },
+    "duration_label": {
+      "type": "string",
+      "description": "Human-readable duration (e.g. '8 weeks')"
+    },
+    "order": {
+      "type": "number",
+      "default": 0,
+      "description": "Display order"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether course is visible to students"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show in the video slider"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

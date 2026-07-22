@@ -1,0 +1,53 @@
+{
+  "name": "ForumTopic",
+  "type": "object",
+  "properties": {
+    "course_id": {
+      "type": "string",
+      "description": "Related course ID (optional)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Topic title"
+    },
+    "content": {
+      "type": "string",
+      "description": "Topic content"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Author display name"
+    },
+    "author_id": {
+      "type": "string",
+      "description": "Author user ID"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether topic is pinned"
+    },
+    "reply_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of replies"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "create": {},
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
