@@ -29,6 +29,7 @@ import ThankYou from './pages/ThankYou';
 import Unsubscribe from './pages/Unsubscribe';
 import HandstandLanding from './pages/HandstandLanding';
 import Community from './pages/Community';
+import CommunityAdmin from './pages/CommunityAdmin';
 import Gift from './pages/Gift';
 import HsPre from './pages/HsPre';
 import HomeBackup from './pages/HomeBackup';
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
         <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/handstand-course" element={<HandstandLanding />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community-admin" element={<CommunityAdmin />} />
         <Route path="/gift" element={<Gift />} />
         <Route path="/hspre" element={<HsPre />} />
         <Route path="/" element={<HomeBackupLayout><HomeBackup /></HomeBackupLayout>} />

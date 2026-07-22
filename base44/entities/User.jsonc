@@ -1,17 +1,30 @@
 {
+  "name": "User",
+  "type": "object",
   "properties": {
     "role": {
       "type": "string",
-      "description": "The role of the user in the app",
       "enum": [
         "admin",
         "user"
-      ]
+      ],
+      "default": "user"
+    },
+    "is_instructor": {
+      "type": "boolean",
+      "default": false,
+      "description": "Can manage courses and lessons"
+    },
+    "is_moderator": {
+      "type": "boolean",
+      "default": false,
+      "description": "Can moderate forum content"
+    },
+    "is_banned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Banned from posting in forum"
     }
   },
-  "required": [
-    "role"
-  ],
-  "name": "User",
-  "type": "object"
+  "required": []
 }
