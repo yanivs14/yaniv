@@ -54,7 +54,7 @@ export default function HandstandVideoSection({ c, t = {} }) {
   const isPortrait = adminAspect === "vertical" || (!adminAspect && videoAspect != null && videoAspect < 1);
 
   return (
-    <section className="bg-dark-bg py-12 lg:py-16 overflow-hidden">
+    <section className="bg-dark-bg py-10 lg:py-16 overflow-hidden">
       <div className="max-w-[1250px] mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -63,11 +63,11 @@ export default function HandstandVideoSection({ c, t = {} }) {
           transition={{ duration: 0.5 }}
           className="text-center mb-6 lg:mb-8"
         >
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight leading-[0.95]">
+          <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight leading-[1.0]">
             <AccentText text={c?.headline} />
           </h2>
           {c?.subheadline && (
-            <p className="mt-3 font-body text-sm lg:text-base text-white-muted max-w-2xl mx-auto leading-relaxed">{c.subheadline}</p>
+            <p className="mt-3 font-body text-[15px] lg:text-base text-white-muted max-w-2xl mx-auto leading-[1.5]">{c.subheadline}</p>
           )}
         </motion.div>
       </div>
@@ -92,13 +92,14 @@ export default function HandstandVideoSection({ c, t = {} }) {
                 frameBorder="0"
               />
               {!playing && (
-                <div className="absolute inset-0">
+                <div className="absolute inset-0 cursor-pointer" onClick={handleYtPlay}>
                   {poster && <img src={poster} alt="Method" className="w-full h-full object-cover" />}
-                  <span className="absolute inset-0 bg-black/30" />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <button onClick={handleYtPlay} aria-label="Play video" className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <span className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                       <Play className="w-6 h-6 lg:w-7 lg:h-7 text-dark-bg ml-1" fill="currentColor" />
-                    </button>
+                    </span>
+                    {c?.overlayText && <span className="font-body text-xs lg:text-sm font-semibold text-off-white uppercase tracking-wide">{c.overlayText}</span>}
                   </span>
                 </div>
               )}
@@ -117,19 +118,29 @@ export default function HandstandVideoSection({ c, t = {} }) {
                 className="w-full h-full object-contain"
               />
               {!playing && (
-                <div className="absolute inset-0 bg-black">
+                <div className="absolute inset-0 bg-black cursor-pointer" onClick={handleVideoPlay}>
                   {poster && <img src={poster} alt="Method" className="absolute inset-0 w-full h-full object-cover" />}
                   <span className="absolute inset-0 bg-black/40" />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <button onClick={handleVideoPlay} aria-label="Play video" className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <span className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                       <Play className="w-6 h-6 lg:w-7 lg:h-7 text-dark-bg ml-1" fill="currentColor" />
-                    </button>
+                    </span>
+                    {c?.overlayText && <span className="font-body text-xs lg:text-sm font-semibold text-off-white uppercase tracking-wide">{c.overlayText}</span>}
                   </span>
                 </div>
               )}
             </>
           ) : poster ? (
-            <img src={poster} alt="Method" className="w-full h-full object-cover" />
+            <div className="relative w-full h-full cursor-pointer" onClick={handleVideoPlay}>
+              <img src={poster} alt="Method" className="w-full h-full object-cover" />
+              <span className="absolute inset-0 bg-black/30" />
+              <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <span className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <Play className="w-6 h-6 lg:w-7 lg:h-7 text-dark-bg ml-1" fill="currentColor" />
+                </span>
+                {c?.overlayText && <span className="font-body text-xs lg:text-sm font-semibold text-off-white uppercase tracking-wide">{c.overlayText}</span>}
+              </span>
+            </div>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">{videoPlaceholder}</div>
           )}

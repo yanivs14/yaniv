@@ -42,8 +42,8 @@ export function useHandstandOffer(t = {}) {
     ctaText: preLaunch
       ? (t.ctaPreLaunch || `Get the Handstand Course — $${PRE_LAUNCH_PRICE}`)
       : (t.ctaRegular || `Get the Handstand Course — $${REGULAR_PRICE}`),
-    secondaryCtaText: t.secondaryCtaText || "Explore Annual Membership",
-    microcopy: t.microcopy || "One-time payment · No subscription · Access instructions delivered by email",
+    secondaryCtaText: t.secondaryCtaText || "View Purchase Options",
+    microcopy: t.microcopy || "One-time payment · Hosted on Skool · Access instructions sent by email",
     // Offer labels
     offerLabel: preLaunch ? (t.offerLabelPreLaunch || "PRE-LAUNCH PRICE") : (t.offerLabelRegular || "NOW AVAILABLE"),
     preLaunchLabel: preLaunch ? (t.preLaunchLabel || "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2") : "",
@@ -52,6 +52,8 @@ export function useHandstandOffer(t = {}) {
       : (t.deliveryNoteRegular || "Access instructions delivered by email."),
     // Hero
     heroCountdownLabel: t.heroCountdownLabel || "Pre-launch ends in",
+    nextPriceNote: t.nextPriceNote || "$149 beginning August 3",
+    alsoIncludedText: t.alsoIncludedText || "Also included with Annual Membership",
     // Announcement bar
     announcementLeftText: t.announcementLeftText || "PRE-LAUNCH PRICE ENDS AUGUST 2",
     announcementRightText: t.announcementRightText || "$99 NOW · $149 FROM AUGUST 3",
@@ -61,11 +63,11 @@ export function useHandstandOffer(t = {}) {
     announcementCountdownLabel: t.announcementCountdownLabel || "Pre-launch price ends in",
     announcementMobileEndsLabel: t.announcementMobileEndsLabel || "· ENDS",
     // Sticky mobile bar
-    stickyBarPreLaunch: t.stickyBarPreLaunch || "$99 UNTIL AUG 2",
-    stickyBarRegular: t.stickyBarRegular || "ONE-TIME PAYMENT",
-    stickyBarCtaText: t.stickyBarCtaText || "GET THE COURSE",
+    stickyBarPreLaunch: t.stickyBarPreLaunch || "$99 until Aug 2",
+    stickyBarRegular: t.stickyBarRegular || "$149",
+    stickyBarCtaText: t.stickyBarCtaText || "Get the Course",
     // Purchase options price notes
-    standalonePriceNotePreLaunch: t.standalonePriceNotePreLaunch || `Pre-launch price · $${REGULAR_PRICE} from August 3`,
+    standalonePriceNotePreLaunch: t.standalonePriceNotePreLaunch || "Pre-launch price · $149 beginning August 3",
     standalonePriceNoteRegular: t.standalonePriceNoteRegular || "One-time payment",
     // Final CTA
     finalCtaPreLaunchReminder: t.finalCtaPreLaunchReminder || `Pre-launch price: $${PRE_LAUNCH_PRICE} until August 2`,

@@ -8,7 +8,7 @@ const ICONS = [Lock, AlertTriangle, Route];
 export default function HandstandProblem({ c }) {
   const points = c?.points || [];
   return (
-    <section className="py-14 lg:py-20 bg-dark-surface relative overflow-hidden">
+    <section className="py-10 lg:py-16 bg-dark-surface relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-orange-red/[0.03] rounded-full blur-[120px]" />
       <div className="relative max-w-[1250px] mx-auto px-6 lg:px-10">
         <motion.div
@@ -34,13 +34,13 @@ export default function HandstandProblem({ c }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="bg-dark-bg border border-dark-border rounded-2xl p-6 hover:border-orange-red/30 transition-colors"
+                className="bg-dark-bg border border-dark-border rounded-2xl p-4 lg:p-6 hover:border-orange-red/30 transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-dark-surface-2 border border-dark-border flex items-center justify-center mb-4">
                   <Icon className="w-5 h-5 text-orange-red" />
                 </div>
                 <h3 className="font-heading text-lg font-bold text-off-white uppercase tracking-tight mb-2">{p.title}</h3>
-                <p className="font-body text-sm text-white-muted leading-relaxed">{p.desc}</p>
+                <p className="font-body text-[15px] text-white-muted leading-[1.5]">{p.desc}</p>
               </motion.div>
             );
           })}

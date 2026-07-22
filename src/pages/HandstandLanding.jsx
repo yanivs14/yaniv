@@ -4,14 +4,16 @@ import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 import AnnouncementBar from "@/components/handstand/AnnouncementBar";
 import HandstandHero from "@/components/handstand/HandstandHero";
-import ValueStrip from "@/components/handstand/ValueStrip";
+import AuthorityStrip from "@/components/handstand/AuthorityStrip";
 import HandstandVideoSection from "@/components/handstand/HandstandVideoSection";
+import MidPageOffer from "@/components/handstand/MidPageOffer";
 import HandstandProblem from "@/components/handstand/HandstandProblem";
 import StartFromLevel from "@/components/handstand/StartFromLevel";
 import HandstandCurriculum from "@/components/handstand/HandstandCurriculum";
 import WhatIsIncluded from "@/components/handstand/WhatIsIncluded";
-import HandstandInstructor from "@/components/handstand/HandstandInstructor";
 import PurchaseOptions from "@/components/handstand/PurchaseOptions";
+import HandstandInstructor from "@/components/handstand/HandstandInstructor";
+import HandstandSocialProof from "@/components/handstand/HandstandSocialProof";
 import HandstandFAQ from "@/components/handstand/HandstandFAQ";
 import HandstandFinalCTA from "@/components/handstand/HandstandFinalCTA";
 import HandstandStickyBar from "@/components/handstand/HandstandStickyBar";
@@ -92,14 +94,16 @@ export default function HandstandLanding() {
       `}</style>
       <AnnouncementBar t={content.texts} />
       <HandstandHero c={content.hero} t={content.texts} />
-      <ValueStrip c={content.valueStrip} />
+      <AuthorityStrip c={content.authorityStrip} />
       <HandstandVideoSection c={content.methodVideo} t={content.texts} />
+      <MidPageOffer c={content.midPageOffer} t={content.texts} />
       <HandstandProblem c={content.problem} />
       <StartFromLevel c={content.startFromLevel} />
       <HandstandCurriculum c={content.curriculum} />
       <WhatIsIncluded c={content.whatIsIncluded} />
-      <HandstandInstructor c={content.instructor} />
       <PurchaseOptions c={content.purchaseOptions} t={content.texts} />
+      <HandstandInstructor c={content.instructor} />
+      <HandstandSocialProof c={content.socialProof} />
       <HandstandFAQ c={content.faq} t={content.texts} />
       <HandstandFinalCTA c={content.finalCta} t={content.texts} />
       <footer id="footer" className="bg-dark-bg border-t border-dark-border py-8">

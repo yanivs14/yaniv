@@ -7,7 +7,7 @@ export default function StartFromLevel({ c }) {
   if (!c) return null;
   const cards = c.cards || [];
   return (
-    <section className="py-14 lg:py-20 bg-dark-bg">
+    <section className="py-10 lg:py-16 bg-dark-bg">
       <div className="max-w-[1250px] mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -37,7 +37,7 @@ export default function StartFromLevel({ c }) {
                 {card.bullets?.map((b, j) => (
                   <li key={j} className="flex items-start gap-2.5">
                     <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
-                    <span className="font-body text-sm text-white-muted leading-relaxed">{b}</span>
+                    <span className="font-body text-[15px] text-white-muted leading-[1.5]">{b}</span>
                   </li>
                 ))}
               </ul>

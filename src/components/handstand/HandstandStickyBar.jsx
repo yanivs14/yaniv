@@ -4,26 +4,26 @@ import { useHandstandOffer } from "@/lib/handstandDeadline";
 import { startStandaloneCheckout } from "@/lib/handstandCheckout";
 
 export default function HandstandStickyBar({ t = {} }) {
-  const { isPreLaunch, priceDisplay, stickyBarPreLaunch, stickyBarRegular, stickyBarCtaText } = useHandstandOffer(t);
+  const { isPreLaunch, stickyBarPreLaunch, stickyBarRegular, stickyBarCtaText } = useHandstandOffer(t);
   const [loading, setLoading] = useState(false);
   const [hidden, setHidden] = useState(true);
-  const observerRef = useRef(null);
 
   useEffect(() => {
-    const sections = [
-      document.getElementById("hero"),
-      document.getElementById("purchase"),
-      document.getElementById("footer"),
-    ].filter(Boolean);
+    const heroCta = document.getElementById("hero-cta");
+    const purchase = document.getElementById("purchase");
+    const footer = document.getElementById("footer");
+    const sections = [heroCta, purchase, footer].filter(Boolean);
     if (sections.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const anyVisible = entries.some((e) => e.isIntersecting);
-        setHidden(anyVisible);
+        const heroCtaVisible = entries.some((e) => e.target.id === "hero-cta" && e.isIntersecting);
+        const purchaseVisible = entries.some((e) => e.target.id === "purchase" && e.isIntersecting);
+        const footerVisible = entries.some((e) => e.target.id === "footer" && e.isIntersecting);
+        setHidden(heroCtaVisible || purchaseVisible || footerVisible);
       },
       { threshold: 0.1 }
     );
-    observerRef.current = observer;
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
   }, []);
@@ -39,13 +39,11 @@ export default function HandstandStickyBar({ t = {} }) {
       className={`lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-dark-bg/95 backdrop-blur-md border-t border-orange-red/30 px-4 py-2.5 flex items-center justify-between gap-3 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.3)] transition-transform duration-300 ${
         hidden ? "translate-y-full" : "translate-y-0"
       }`}
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex flex-col gap-0.5 min-w-0">
-        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-tight leading-none">
-          {isPreLaunch ? stickyBarPreLaunch : stickyBarRegular}
-        </span>
-        <span className="font-heading text-xl font-bold text-off-white leading-none">{priceDisplay}</span>
-      </div>
+      <span className="font-heading text-sm font-bold text-off-white leading-none whitespace-nowrap">
+        {isPreLaunch ? stickyBarPreLaunch : stickyBarRegular}
+      </span>
       <button
         onClick={handleCheckout}
         disabled={loading}

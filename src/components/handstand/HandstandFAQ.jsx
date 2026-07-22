@@ -10,7 +10,7 @@ export default function HandstandFAQ({ c, t = {} }) {
   const [open, setOpen] = useState(0);
 
   return (
-    <section className="py-14 lg:py-20 bg-dark-bg">
+    <section className="py-10 lg:py-16 bg-dark-bg">
       <div className="max-w-3xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -61,7 +61,7 @@ export default function HandstandFAQ({ c, t = {} }) {
                     >
                       <div className="px-5 pb-5">
                         <div className="w-8 h-px bg-orange-red/30 mb-3" />
-                        <p className="font-body text-sm text-white-muted leading-relaxed">{answer}</p>
+                        <p className="font-body text-[15px] text-white-muted leading-[1.5]">{answer}</p>
                       </div>
                     </motion.div>
                   )}

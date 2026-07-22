@@ -7,37 +7,36 @@ export default function WhatIsIncluded({ c }) {
   if (!c) return null;
   const items = c.items || [];
   return (
-    <section className="py-14 lg:py-20 bg-dark-surface">
-      <div className="max-w-[1250px] mx-auto px-6 lg:px-10">
+    <section className="py-10 lg:py-16 bg-dark-surface">
+      <div className="max-w-2xl mx-auto px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-10"
+          className="text-center mb-6"
         >
           {c.eyebrow && <p className="font-body text-xs text-orange-red uppercase tracking-widest font-semibold mb-3">{c.eyebrow}</p>}
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight leading-[0.95]">
+          <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight leading-[1.0]">
             <AccentText text={c.headline} />
           </h2>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 max-w-4xl mx-auto">
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="flex items-start gap-3 bg-dark-bg border border-dark-border rounded-xl p-5"
-            >
-              <div className="w-8 h-8 rounded-lg bg-orange-red/10 border border-orange-red/30 flex items-center justify-center flex-shrink-0">
-                <Check className="w-4 h-4 text-orange-red" />
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-dark-bg border border-dark-border rounded-2xl p-5 lg:p-6"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+            {items.map((item, i) => (
+              <div key={i} className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-orange-red flex-shrink-0 mt-0.5" />
+                <span className="font-body text-[15px] text-off-white leading-[1.4]">{item}</span>
               </div>
-              <span className="font-body text-sm text-off-white leading-relaxed pt-1">{item}</span>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

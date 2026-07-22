@@ -1,23 +1,17 @@
 export const defaultHandstandContent = {
   texts: {
-    // Primary CTA (auto-switches with deadline)
     ctaPreLaunch: "Get the Handstand Course — $99",
     ctaRegular: "Get the Handstand Course — $149",
-    // Secondary CTA
-    secondaryCtaText: "Explore Annual Membership",
-    // Microcopy (under CTAs)
-    microcopy: "One-time payment · No subscription · Access instructions delivered by email",
-    // Offer labels
+    secondaryCtaText: "View Purchase Options",
+    microcopy: "One-time payment · Hosted on Skool · Access instructions sent by email",
     offerLabelPreLaunch: "PRE-LAUNCH PRICE",
     offerLabelRegular: "NOW AVAILABLE",
-    // Pre-launch badge
     preLaunchLabel: "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2",
-    // Delivery notes
-    deliveryNotePreLaunch: "Course access begins August 3.",
-    deliveryNoteRegular: "Access instructions delivered by email.",
-    // Hero countdown label
+    deliveryNotePreLaunch: "Course access begins August 3",
+    deliveryNoteRegular: "Access instructions delivered by email",
     heroCountdownLabel: "Pre-launch ends in",
-    // Announcement bar
+    nextPriceNote: "$149 beginning August 3",
+    alsoIncludedText: "Also included with Annual Membership",
     announcementLeftText: "PRE-LAUNCH PRICE ENDS AUGUST 2",
     announcementRightText: "$99 NOW · $149 FROM AUGUST 3",
     announcementCtaText: "GET THE COURSE",
@@ -25,21 +19,16 @@ export const defaultHandstandContent = {
     announcementOneTimePayment: "One-time payment",
     announcementCountdownLabel: "Pre-launch price ends in",
     announcementMobileEndsLabel: "· ENDS",
-    // Sticky mobile bar
-    stickyBarPreLaunch: "$99 UNTIL AUG 2",
-    stickyBarRegular: "ONE-TIME PAYMENT",
-    stickyBarCtaText: "GET THE COURSE",
-    // Purchase options price notes
-    standalonePriceNotePreLaunch: "Pre-launch price · $149 from August 3",
+    stickyBarPreLaunch: "$99 until Aug 2",
+    stickyBarRegular: "$149",
+    stickyBarCtaText: "Get the Course",
+    standalonePriceNotePreLaunch: "Pre-launch price · $149 beginning August 3",
     standalonePriceNoteRegular: "One-time payment",
-    // Final CTA
     finalCtaPreLaunchReminder: "Pre-launch price: $99 until August 2",
-    // Footer links
     footerTerms: "Terms",
     footerPrivacy: "Privacy Policy",
     footerRefund: "Refund Policy",
     footerContact: "Contact",
-    // Video placeholder
     videoPlaceholder: "Add a video in the admin editor",
   },
   hero: {
@@ -47,25 +36,29 @@ export const defaultHandstandContent = {
     preLaunchLabel: "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2",
     headline1: "BUILD A STRONGER,",
     headline2: "MORE CONTROLLED HANDSTAND",
-    supporting: "An eight-week, step-by-step course from Roye Gold for beginners building their foundations and experienced practitioners refining balance, alignment and control.",
-    outcomeLine: "Build toward your first controlled wall-free hold—or take the handstand you already have further.",
+    supporting: "Roye Gold's eight-week course for beginners building toward their first wall-free hold—and experienced practitioners refining balance, alignment, and control.",
     imageUrl: "https://media.base44.com/images/public/6a0c583766eb003a373061f3/77f6a616e_generated_image.png",
   },
-  valueStrip: {
+  authorityStrip: {
     items: [
-      "8-week guided progression",
-      "Beginner and advanced pathways",
-      "Structured video practices",
-      "Dedicated access through Skool",
+      { stat: "10+ years", label: "teaching movement" },
+      { stat: "Thousands", label: "of students coached" },
+      { stat: "Workshops", label: "& training sessions" },
     ],
   },
   methodVideo: {
     headline: "SEE HOW ROYE TEACHES THE HANDSTAND",
-    subheadline: "Watch a short introduction to the approach behind the course—from building a reliable foundation to developing balance away from the wall.",
+    subheadline: "See how Roye's structured progression helps students build stronger foundations, reduce wall dependence, and develop greater balance and control.",
+    overlayText: "Watch the 60-Second Course Preview",
     youtubeUrl: "",
     videoUrl: "",
     posterUrl: "",
     posterAspect: "horizontal",
+  },
+  midPageOffer: {
+    line1: "Pre-order the complete Handstand Course for $99",
+    line2: "Regular price $149 beginning August 3",
+    line3: "One-time payment · Course access emailed August 3",
   },
   problem: {
     eyebrow: "THE CORE PROBLEM",
@@ -81,7 +74,7 @@ export const defaultHandstandContent = {
   startFromLevel: {
     eyebrow: "WHEREVER YOU ARE STARTING",
     headline: "START FROM YOUR LEVEL",
-    subtitle: "The same course can meet you at different stages of the handstand journey.",
+    subtitle: "The course meets you at your current level and gives you the appropriate progression from there.",
     cards: [
       {
         title: "NEW TO HANDSTANDS",
@@ -95,10 +88,10 @@ export const defaultHandstandContent = {
       {
         title: "ALREADY TRAINING HANDSTANDS",
         bullets: [
-          "Improve your line and body position",
-          "Refine kick-ups and entries",
-          "Build greater balance and consistency",
-          "Use more advanced variations where appropriate",
+          "Cleaner alignment",
+          "More controlled entries",
+          "Greater balance and consistency",
+          "Advanced variations where appropriate",
         ],
       },
     ],
@@ -107,15 +100,43 @@ export const defaultHandstandContent = {
     eyebrow: "THE EIGHT-WEEK ROADMAP",
     headline: "YOUR EIGHT-WEEK HANDSTAND ROADMAP",
     subtitle: "Each week builds on the last, helping you develop the physical preparation, technique and control required for a stronger handstand.",
-    modules: [
-      { week: "Week 1", title: "Foundations & Wrist Preparation", desc: "Prepare the wrists and shoulders and establish the positions that support the rest of the course." },
-      { week: "Week 2", title: "Wall Fundamentals", desc: "Learn controlled wall entries, exits and holds with stronger alignment." },
-      { week: "Week 3", title: "Building Hold Time", desc: "Develop the strength, endurance and comfort required to spend more time upside down." },
-      { week: "Week 4", title: "Balance Mechanics", desc: "Learn how weight shift, fingertip pressure and body position affect balance." },
-      { week: "Week 5", title: "Wall-Free Progressions", desc: "Begin reducing wall dependence through controlled drills and safe exit techniques." },
-      { week: "Week 6", title: "The Kick-Up", desc: "Practice more repeatable entries and learn how to control the amount of force you use." },
-      { week: "Week 7", title: "Wall-Free Holds", desc: "Bring the individual skills together and work toward controlled independent holds." },
-      { week: "Week 8", title: "Refinement & Next Progressions", desc: "Improve form, diagnose weaknesses and identify the next progression for your level." },
+    stages: [
+      {
+        title: "STAGE 1 — BUILD THE FOUNDATION",
+        weeks: "Weeks 1–2",
+        summary: "Wrist preparation, alignment, safe wall entries, exits, and foundational holds.",
+        modules: [
+          { week: "Week 1", title: "Foundations & Wrist Preparation", desc: "Prepare the wrists and shoulders and establish the positions that support the rest of the course." },
+          { week: "Week 2", title: "Wall Fundamentals", desc: "Learn controlled wall entries, exits and holds with stronger alignment." },
+        ],
+      },
+      {
+        title: "STAGE 2 — DEVELOP CONTROL",
+        weeks: "Weeks 3–4",
+        summary: "Build hold time, strength, endurance, fingertip control, and balance awareness.",
+        modules: [
+          { week: "Week 3", title: "Building Hold Time", desc: "Develop the strength, endurance and comfort required to spend more time upside down." },
+          { week: "Week 4", title: "Balance Mechanics", desc: "Learn how weight shift, fingertip pressure and body position affect balance." },
+        ],
+      },
+      {
+        title: "STAGE 3 — MOVE AWAY FROM THE WALL",
+        weeks: "Weeks 5–7",
+        summary: "Practice safe exits, controlled kick-ups, reduced wall dependence, and wall-free holds.",
+        modules: [
+          { week: "Week 5", title: "Wall-Free Progressions", desc: "Begin reducing wall dependence through controlled drills and safe exit techniques." },
+          { week: "Week 6", title: "The Kick-Up", desc: "Practice more repeatable entries and learn how to control the amount of force you use." },
+          { week: "Week 7", title: "Wall-Free Holds", desc: "Bring the individual skills together and work toward controlled independent holds." },
+        ],
+      },
+      {
+        title: "STAGE 4 — REFINE YOUR HANDSTAND",
+        weeks: "Week 8",
+        summary: "Improve form and consistency and identify the right next progression for your level.",
+        modules: [
+          { week: "Week 8", title: "Refinement & Next Progressions", desc: "Improve form, diagnose weaknesses and identify the next progression for your level." },
+        ],
+      },
     ],
     callout: "Already comfortable upside down? Follow the advanced variations within the course to refine alignment, entries, balance and control.",
   },
@@ -123,24 +144,13 @@ export const defaultHandstandContent = {
     eyebrow: "WHAT IS INCLUDED",
     headline: "EVERYTHING YOU NEED TO TRAIN WITH A PLAN",
     items: [
-      "Complete eight-week training progression",
-      "Guided video lessons and demonstrations",
+      "Complete eight-week progression",
+      "Guided video lessons",
       "Structured practice plans",
-      "Safe kick-up and exit techniques",
+      "Safe entries and exit techniques",
       "Beginner and advanced variations",
-      "Dedicated Handstand Course access through Skool",
+      "Dedicated Skool course access",
     ],
-  },
-  instructor: {
-    eyebrow: "YOUR COACH",
-    headline: "TAUGHT BY ROYE GOLD",
-    bio: "Roye Gold has spent years teaching movement, strength and body control to students at different levels. This course distills his handstand teaching into a structured system that students can follow independently, one progression at a time.",
-    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80",
-  },
-  socialProof: {
-    headline: "PROGRESS BUILT THROUGH PRACTICE",
-    subtitle: "Real students. Real progress. Coming soon.",
-    items: [],
   },
   purchaseOptions: {
     eyebrow: "PURCHASE OPTIONS",
@@ -151,30 +161,39 @@ export const defaultHandstandContent = {
       title: "THE HANDSTAND COURSE",
       features: [
         "Complete eight-week course",
-        "Structured practice plans",
-        "Beginner and advanced variations",
-        "Dedicated course access through Skool",
-        "Access instructions sent by email",
+        "Guided lessons and practice plans",
+        "Beginner and advanced progressions",
+        "Dedicated access through Skool",
+        "Access instructions emailed August 3",
       ],
       microcopy: "One-time payment · No subscription",
     },
     annual: {
-      eyebrow: "WANT MORE THAN HANDSTANDS?",
+      eyebrow: "ONGOING TRAINING",
       title: "THE MOVEMENT ANNUAL MEMBERSHIP",
       priceMonthly: "$20/month",
       priceNote: "Billed annually at $240",
-      valueStatement: "The Handstand Course is included, together with Roye's broader Movement programming and annual-member benefits.",
+      valueStatement: "Includes the Handstand Course, Roye's complete Movement library, ongoing member programming, and live member sessions.",
       features: [
         "Handstand Course included while membership remains active",
         "Full Movement training library",
         "Ongoing member programming",
-        "Weekly live calls or Q&As, where applicable",
-        "Access to qualifying new releases",
+        "Live member sessions",
       ],
-      ctaText: "Join Annual Membership",
-      disclosure: "Course and Skool access remain available while your Annual Membership is active.",
-      badge: "Best Overall Value",
+      ctaText: "Choose Annual Membership",
+      disclosure: "Handstand Course access remains available while your Annual Membership is active.",
     },
+  },
+  instructor: {
+    eyebrow: "YOUR COACH",
+    headline: "TAUGHT BY ROYE GOLD",
+    bio: "Roye Gold has spent years teaching movement, strength and body control to students at different levels. This course distills his handstand teaching into a structured system that students can follow independently, one progression at a time.",
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80",
+  },
+  socialProof: {
+    headline: "PROGRESS BUILT THROUGH PRACTICE",
+    subtitle: "Real students. Real progress.",
+    items: [],
   },
   faq: {
     eyebrow: "FAQ",
@@ -195,7 +214,7 @@ export const defaultHandstandContent = {
     eyebrow: "START TODAY",
     headline: "BUILD YOUR HANDSTAND WITH A CLEAR PLAN",
     subtitle: "Stop collecting random drills. Follow a structured eight-week progression designed to meet you at your current level.",
-    microcopy: "One-time payment · No subscription · Access instructions delivered by email",
+    microcopy: "One-time payment · Hosted on Skool · Access instructions sent by email",
   },
   footer: {
     brand: "The Movement by Roye Gold",

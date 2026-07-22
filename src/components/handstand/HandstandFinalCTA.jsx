@@ -20,7 +20,7 @@ export default function HandstandFinalCTA({ c, t = {} }) {
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-dark-surface relative overflow-hidden">
+    <section className="py-10 lg:py-16 bg-dark-surface relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-orange-red/5 to-transparent" />
       <div className="relative max-w-3xl mx-auto px-6 lg:px-10 text-center">
         <motion.div
@@ -33,7 +33,7 @@ export default function HandstandFinalCTA({ c, t = {} }) {
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-off-white uppercase tracking-tight mb-4 leading-[0.95]">
             <AccentText text={c?.headline} />
           </h2>
-          <p className="font-body text-base text-white-muted mb-6 max-w-xl mx-auto leading-relaxed">{c?.subtitle}</p>
+          <p className="font-body text-[15px] lg:text-base text-white-muted mb-6 max-w-xl mx-auto leading-[1.5]">{c?.subtitle}</p>
           {isPreLaunch && (
             <p className="font-body text-sm text-off-white mb-1">{finalCtaPreLaunchReminder}</p>
           )}

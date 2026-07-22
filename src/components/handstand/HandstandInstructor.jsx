@@ -5,7 +5,7 @@ import AccentText from "@/components/handstand/AccentText";
 export default function HandstandInstructor({ c }) {
   if (!c) return null;
   return (
-    <section className="py-14 lg:py-20 bg-dark-surface">
+    <section className="py-10 lg:py-16 bg-dark-surface">
       <div className="max-w-[1250px] mx-auto px-6 lg:px-10">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center max-w-4xl mx-auto">
           <motion.div
@@ -30,7 +30,7 @@ export default function HandstandInstructor({ c }) {
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-off-white uppercase tracking-tight mb-5 leading-[0.95]">
               <AccentText text={c?.headline} />
             </h2>
-            <p className="font-body text-sm lg:text-base text-white-muted leading-relaxed">{c?.bio}</p>
+            <p className="font-body text-[15px] lg:text-base text-white-muted leading-[1.5]">{c?.bio}</p>
           </motion.div>
         </div>
       </div>
