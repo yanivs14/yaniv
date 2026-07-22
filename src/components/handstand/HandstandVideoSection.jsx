@@ -11,13 +11,13 @@ function getYouTubeId(url) {
   return m ? m[1] : null;
 }
 
-export default function HandstandVideoSection({ c }) {
+export default function HandstandVideoSection({ c, t = {} }) {
   const [playing, setPlaying] = useState(false);
   const [videoAspect, setVideoAspect] = useState(null);
   const [loading, setLoading] = useState(false);
   const iframeRef = useRef(null);
   const videoRef = useRef(null);
-  const { ctaText } = useHandstandOffer();
+  const { ctaText, videoPlaceholder } = useHandstandOffer(t);
 
   const ytId = getYouTubeId(c?.youtubeUrl);
   const poster = c?.posterUrl || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : "");
@@ -131,7 +131,7 @@ export default function HandstandVideoSection({ c }) {
           ) : poster ? (
             <img src={poster} alt="Method" className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">Add a video in the admin editor</div>
+            <div className="w-full h-full flex items-center justify-center text-white-dim font-body text-sm">{videoPlaceholder}</div>
           )}
         </motion.div>
         <div className="text-center mt-6">

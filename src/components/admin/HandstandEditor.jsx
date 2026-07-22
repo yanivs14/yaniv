@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 
 const SECTIONS = [
-  { key: "announcementBar", label: "Announcement Bar" },
+  { key: "texts", label: "Texts & CTAs" },
   { key: "hero", label: "Hero" },
   { key: "valueStrip", label: "Value Strip" },
   { key: "methodVideo", label: "Method Video" },
@@ -125,12 +125,54 @@ function SectionEditor({ sectionKey, content, update }) {
     <Field key={`${objKey}.${key}`} label={label} value={data[objKey]?.[key]} onChange={(v) => update(sectionKey, objKey, { ...data[objKey], [key]: v })} multiline={multiline} />
   );
 
-  if (sectionKey === "announcementBar") {
+  if (sectionKey === "texts") {
     return (
       <div>
-        {f("leftText", "Left Text (Desktop)")}
-        {f("rightText", "Right Text (Desktop)")}
-        {f("ctaText", "CTA Text")}
+        <p className="text-xs text-white-muted mb-2 font-body font-semibold">Primary CTA (auto-switches with deadline)</p>
+        {f("ctaPreLaunch", "CTA Text — Pre-Launch")}
+        {f("ctaRegular", "CTA Text — After Deadline")}
+        {f("secondaryCtaText", "Secondary CTA Text")}
+        {f("microcopy", "Microcopy (under CTAs)", true)}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Offer Labels</p>
+        {f("offerLabelPreLaunch", "Offer Label — Pre-Launch")}
+        {f("offerLabelRegular", "Offer Label — After Deadline")}
+        {f("preLaunchLabel", "Pre-Launch Badge Text")}
+        {f("deliveryNotePreLaunch", "Delivery Note — Pre-Launch")}
+        {f("deliveryNoteRegular", "Delivery Note — After Deadline")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Announcement Bar</p>
+        {f("announcementLeftText", "Left Text — Pre-Launch")}
+        {f("announcementRightText", "Right Text — Pre-Launch")}
+        {f("announcementCtaText", "CTA Text")}
+        {f("announcementNowAvailable", "Left Text — After Deadline")}
+        {f("announcementOneTimePayment", "Right Text — After Deadline")}
+        {f("announcementCountdownLabel", "Countdown Label")}
+        {f("announcementMobileEndsLabel", "Mobile 'Ends' Label")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Hero</p>
+        {f("heroCountdownLabel", "Countdown Label")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Sticky Mobile Bar</p>
+        {f("stickyBarPreLaunch", "Left Text — Pre-Launch")}
+        {f("stickyBarRegular", "Left Text — After Deadline")}
+        {f("stickyBarCtaText", "Button Text")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Purchase Options</p>
+        {f("standalonePriceNotePreLaunch", "Standalone Price Note — Pre-Launch")}
+        {f("standalonePriceNoteRegular", "Standalone Price Note — After Deadline")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Final CTA</p>
+        {f("finalCtaPreLaunchReminder", "Pre-Launch Reminder")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Footer Links</p>
+        {f("footerTerms", "Terms Link")}
+        {f("footerPrivacy", "Privacy Link")}
+        {f("footerRefund", "Refund Link")}
+        {f("footerContact", "Contact Link")}
+
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Video</p>
+        {f("videoPlaceholder", "Placeholder Text (when no video)")}
       </div>
     );
   }

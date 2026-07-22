@@ -4,8 +4,8 @@ import { Plus } from "lucide-react";
 import { useHandstandOffer } from "@/lib/handstandDeadline";
 import AccentText from "@/components/handstand/AccentText";
 
-export default function HandstandFAQ({ c }) {
-  const { isPreLaunch } = useHandstandOffer();
+export default function HandstandFAQ({ c, t = {} }) {
+  const { isPreLaunch } = useHandstandOffer(t);
   const items = c?.items || [];
   const [open, setOpen] = useState(0);
 

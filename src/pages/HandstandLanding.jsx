@@ -73,33 +73,33 @@ export default function HandstandLanding() {
   return (
     <div id="hs-root" className="min-h-screen bg-dark-bg overflow-x-hidden pb-16 lg:pb-0">
       {accentStyle && <style>{accentStyle}</style>}
-      <AnnouncementBar c={content.announcementBar} />
-      <HandstandHero c={content.hero} />
+      <AnnouncementBar t={content.texts} />
+      <HandstandHero c={content.hero} t={content.texts} />
       <ValueStrip c={content.valueStrip} />
-      <HandstandVideoSection c={content.methodVideo} />
+      <HandstandVideoSection c={content.methodVideo} t={content.texts} />
       <HandstandProblem c={content.problem} />
       <StartFromLevel c={content.startFromLevel} />
       <HandstandCurriculum c={content.curriculum} />
       <WhatIsIncluded c={content.whatIsIncluded} />
       <HandstandInstructor c={content.instructor} />
-      <PurchaseOptions c={content.purchaseOptions} />
-      <HandstandFAQ c={content.faq} />
-      <HandstandFinalCTA c={content.finalCta} />
+      <PurchaseOptions c={content.purchaseOptions} t={content.texts} />
+      <HandstandFAQ c={content.faq} t={content.texts} />
+      <HandstandFinalCTA c={content.finalCta} t={content.texts} />
       <footer id="footer" className="bg-dark-bg border-t border-dark-border py-8">
         <div className="max-w-[1250px] mx-auto px-6 lg:px-10 text-center">
           <p className="font-heading text-lg font-bold text-off-white uppercase mb-3">
             {content.footer?.brand || "The Movement by Roye Gold"}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-3">
-            <Link to="/terms-of-use" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Terms</Link>
-            <Link to="/privacy-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Privacy Policy</Link>
-            <Link to="/refund-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Refund Policy</Link>
-            <a href="mailto:support@themovement.royegold.com" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">Contact</a>
+            <Link to="/terms-of-use" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">{content.texts?.footerTerms}</Link>
+            <Link to="/privacy-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">{content.texts?.footerPrivacy}</Link>
+            <Link to="/refund-policy" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">{content.texts?.footerRefund}</Link>
+            <a href="mailto:support@themovement.royegold.com" className="font-body text-xs text-white-muted hover:text-orange-red transition-colors">{content.texts?.footerContact}</a>
           </div>
           <p className="font-body text-xs text-white-dim">{content.footer?.copyright}</p>
         </div>
       </footer>
-      <HandstandStickyBar />
+      <HandstandStickyBar t={content.texts} />
     </div>
   );
 }

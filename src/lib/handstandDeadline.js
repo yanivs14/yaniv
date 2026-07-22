@@ -8,7 +8,7 @@ export function isPreLaunch() {
   return Date.now() < HANDSTAND_DEADLINE;
 }
 
-export function useHandstandOffer() {
+export function useHandstandOffer(t = {}) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -38,11 +38,43 @@ export function useHandstandOffer() {
     priceDisplay: `$${price}`,
     nextPrice: REGULAR_PRICE,
     nextPriceDisplay: `$${REGULAR_PRICE}`,
-    ctaText: `Get the Handstand Course — $${price}`,
-    secondaryCtaText: "Explore Annual Membership",
-    deliveryNote: preLaunch ? "Course access begins August 3." : "Access instructions delivered by email.",
-    offerLabel: preLaunch ? "PRE-LAUNCH PRICE" : "NOW AVAILABLE",
-    preLaunchLabel: preLaunch ? "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2" : "",
-    saveText: preLaunch ? "Save $50" : "",
+    // CTAs
+    ctaText: preLaunch
+      ? (t.ctaPreLaunch || `Get the Handstand Course — $${PRE_LAUNCH_PRICE}`)
+      : (t.ctaRegular || `Get the Handstand Course — $${REGULAR_PRICE}`),
+    secondaryCtaText: t.secondaryCtaText || "Explore Annual Membership",
+    microcopy: t.microcopy || "One-time payment · No subscription · Access instructions delivered by email",
+    // Offer labels
+    offerLabel: preLaunch ? (t.offerLabelPreLaunch || "PRE-LAUNCH PRICE") : (t.offerLabelRegular || "NOW AVAILABLE"),
+    preLaunchLabel: preLaunch ? (t.preLaunchLabel || "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2") : "",
+    deliveryNote: preLaunch
+      ? (t.deliveryNotePreLaunch || "Course access begins August 3.")
+      : (t.deliveryNoteRegular || "Access instructions delivered by email."),
+    // Hero
+    heroCountdownLabel: t.heroCountdownLabel || "Pre-launch ends in",
+    // Announcement bar
+    announcementLeftText: t.announcementLeftText || "PRE-LAUNCH PRICE ENDS AUGUST 2",
+    announcementRightText: t.announcementRightText || "$99 NOW · $149 FROM AUGUST 3",
+    announcementCtaText: t.announcementCtaText || "GET THE COURSE",
+    announcementNowAvailable: t.announcementNowAvailable || "NOW AVAILABLE",
+    announcementOneTimePayment: t.announcementOneTimePayment || "One-time payment",
+    announcementCountdownLabel: t.announcementCountdownLabel || "Pre-launch price ends in",
+    announcementMobileEndsLabel: t.announcementMobileEndsLabel || "· ENDS",
+    // Sticky mobile bar
+    stickyBarPreLaunch: t.stickyBarPreLaunch || "$99 UNTIL AUG 2",
+    stickyBarRegular: t.stickyBarRegular || "ONE-TIME PAYMENT",
+    stickyBarCtaText: t.stickyBarCtaText || "GET THE COURSE",
+    // Purchase options price notes
+    standalonePriceNotePreLaunch: t.standalonePriceNotePreLaunch || `Pre-launch price · $${REGULAR_PRICE} from August 3`,
+    standalonePriceNoteRegular: t.standalonePriceNoteRegular || "One-time payment",
+    // Final CTA
+    finalCtaPreLaunchReminder: t.finalCtaPreLaunchReminder || `Pre-launch price: $${PRE_LAUNCH_PRICE} until August 2`,
+    // Footer
+    footerTerms: t.footerTerms || "Terms",
+    footerPrivacy: t.footerPrivacy || "Privacy Policy",
+    footerRefund: t.footerRefund || "Refund Policy",
+    footerContact: t.footerContact || "Contact",
+    // Video
+    videoPlaceholder: t.videoPlaceholder || "Add a video in the admin editor",
   };
 }

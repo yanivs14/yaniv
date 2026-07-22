@@ -1,8 +1,46 @@
 export const defaultHandstandContent = {
-  announcementBar: {
-    leftText: "PRE-LAUNCH PRICE ENDS AUGUST 2",
-    rightText: "$99 NOW · $149 FROM AUGUST 3",
-    ctaText: "GET THE COURSE",
+  texts: {
+    // Primary CTA (auto-switches with deadline)
+    ctaPreLaunch: "Get the Handstand Course — $99",
+    ctaRegular: "Get the Handstand Course — $149",
+    // Secondary CTA
+    secondaryCtaText: "Explore Annual Membership",
+    // Microcopy (under CTAs)
+    microcopy: "One-time payment · No subscription · Access instructions delivered by email",
+    // Offer labels
+    offerLabelPreLaunch: "PRE-LAUNCH PRICE",
+    offerLabelRegular: "NOW AVAILABLE",
+    // Pre-launch badge
+    preLaunchLabel: "PRE-LAUNCH ACCESS · SAVE $50 UNTIL AUGUST 2",
+    // Delivery notes
+    deliveryNotePreLaunch: "Course access begins August 3.",
+    deliveryNoteRegular: "Access instructions delivered by email.",
+    // Hero countdown label
+    heroCountdownLabel: "Pre-launch ends in",
+    // Announcement bar
+    announcementLeftText: "PRE-LAUNCH PRICE ENDS AUGUST 2",
+    announcementRightText: "$99 NOW · $149 FROM AUGUST 3",
+    announcementCtaText: "GET THE COURSE",
+    announcementNowAvailable: "NOW AVAILABLE",
+    announcementOneTimePayment: "One-time payment",
+    announcementCountdownLabel: "Pre-launch price ends in",
+    announcementMobileEndsLabel: "· ENDS",
+    // Sticky mobile bar
+    stickyBarPreLaunch: "$99 UNTIL AUG 2",
+    stickyBarRegular: "ONE-TIME PAYMENT",
+    stickyBarCtaText: "GET THE COURSE",
+    // Purchase options price notes
+    standalonePriceNotePreLaunch: "Pre-launch price · $149 from August 3",
+    standalonePriceNoteRegular: "One-time payment",
+    // Final CTA
+    finalCtaPreLaunchReminder: "Pre-launch price: $99 until August 2",
+    // Footer links
+    footerTerms: "Terms",
+    footerPrivacy: "Privacy Policy",
+    footerRefund: "Refund Policy",
+    footerContact: "Contact",
+    // Video placeholder
+    videoPlaceholder: "Add a video in the admin editor",
   },
   hero: {
     eyebrow: "THE MOVEMENT PRESENTS",

@@ -3,8 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { useHandstandOffer } from "@/lib/handstandDeadline";
 import { startStandaloneCheckout } from "@/lib/handstandCheckout";
 
-export default function HandstandStickyBar() {
-  const { isPreLaunch, priceDisplay, ctaText } = useHandstandOffer();
+export default function HandstandStickyBar({ t = {} }) {
+  const { isPreLaunch, priceDisplay, stickyBarPreLaunch, stickyBarRegular, stickyBarCtaText } = useHandstandOffer(t);
   const [loading, setLoading] = useState(false);
   const [hidden, setHidden] = useState(true);
   const observerRef = useRef(null);
@@ -41,11 +41,9 @@ export default function HandstandStickyBar() {
       }`}
     >
       <div className="flex flex-col gap-0.5 min-w-0">
-        {isPreLaunch ? (
-          <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-tight leading-none">$99 UNTIL AUG 2</span>
-        ) : (
-          <span className="font-body text-[9px] text-white-dim font-bold uppercase tracking-tight leading-none">ONE-TIME PAYMENT</span>
-        )}
+        <span className="font-body text-[9px] text-orange-red font-bold uppercase tracking-tight leading-none">
+          {isPreLaunch ? stickyBarPreLaunch : stickyBarRegular}
+        </span>
         <span className="font-heading text-xl font-bold text-off-white leading-none">{priceDisplay}</span>
       </div>
       <button
@@ -53,7 +51,7 @@ export default function HandstandStickyBar() {
         disabled={loading}
         className="flex items-center justify-center gap-1.5 bg-orange-red text-dark-bg font-body text-xs font-bold px-5 py-2.5 rounded-full hover:bg-orange-red-hover transition-colors disabled:opacity-60 flex-shrink-0"
       >
-        {loading ? "Loading..." : <>GET THE COURSE <ArrowRight className="w-4 h-4" /></>}
+        {loading ? "Loading..." : <>{stickyBarCtaText} <ArrowRight className="w-4 h-4" /></>}
       </button>
     </div>
   );

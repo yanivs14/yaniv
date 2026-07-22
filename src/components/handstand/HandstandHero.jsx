@@ -5,13 +5,13 @@ import { useHandstandOffer } from "@/lib/handstandDeadline";
 import { startStandaloneCheckout } from "@/lib/handstandCheckout";
 import AccentText from "@/components/handstand/AccentText";
 
-function HeroCountdown() {
+function HeroCountdown({ label }) {
   const { countdown, isPreLaunch } = useHandstandOffer();
   if (!isPreLaunch) return null;
   const { days, hours, minutes, seconds } = countdown;
   return (
     <div className="inline-flex items-center gap-1.5 bg-dark-surface/80 border border-orange-red/25 rounded-full px-3 py-1.5 backdrop-blur-sm">
-      <span className="font-body text-[10px] text-white-dim uppercase tracking-wide">Pre-launch ends in</span>
+      <span className="font-body text-[10px] text-white-dim uppercase tracking-wide">{label}</span>
       <span className="font-heading text-xs font-bold text-orange-red tabular-nums">
         {days}d {String(hours).padStart(2, "0")}h {String(minutes).padStart(2, "0")}m {String(seconds).padStart(2, "0")}s
       </span>
@@ -19,8 +19,8 @@ function HeroCountdown() {
   );
 }
 
-export default function HandstandHero({ c }) {
-  const { isPreLaunch, priceDisplay, nextPriceDisplay, ctaText, secondaryCtaText, deliveryNote, preLaunchLabel, offerLabel } = useHandstandOffer();
+export default function HandstandHero({ c, t = {} }) {
+  const { isPreLaunch, priceDisplay, nextPriceDisplay, ctaText, secondaryCtaText, deliveryNote, preLaunchLabel, offerLabel, microcopy, heroCountdownLabel } = useHandstandOffer(t);
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -78,7 +78,7 @@ export default function HandstandHero({ c }) {
               </div>
             </div>
             <div className="h-12 w-px bg-dark-border hidden sm:block" />
-            <HeroCountdown />
+            <HeroCountdown label={heroCountdownLabel} />
           </div>
           {isPreLaunch && <p className="font-body text-xs text-white-muted mb-6">{deliveryNote}</p>}
 
@@ -99,7 +99,7 @@ export default function HandstandHero({ c }) {
               {secondaryCtaText}
             </button>
           </div>
-          <p className="font-body text-[11px] text-white-dim">One-time payment · No subscription · Access instructions delivered by email</p>
+          <p className="font-body text-[11px] text-white-dim">{microcopy}</p>
         </motion.div>
       </div>
     </section>

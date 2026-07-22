@@ -5,8 +5,8 @@ import { useHandstandOffer } from "@/lib/handstandDeadline";
 import { startStandaloneCheckout, startAnnualCheckout } from "@/lib/handstandCheckout";
 import AccentText from "@/components/handstand/AccentText";
 
-export default function PurchaseOptions({ c }) {
-  const { isPreLaunch, priceDisplay, nextPriceDisplay, ctaText, deliveryNote } = useHandstandOffer();
+export default function PurchaseOptions({ c, t = {} }) {
+  const { isPreLaunch, priceDisplay, nextPriceDisplay, ctaText, deliveryNote, standalonePriceNotePreLaunch, standalonePriceNoteRegular } = useHandstandOffer(t);
   const [standaloneLoading, setStandaloneLoading] = useState(false);
   const [annualLoading, setAnnualLoading] = useState(false);
 
@@ -61,7 +61,7 @@ export default function PurchaseOptions({ c }) {
               )}
             </div>
             <p className="font-body text-xs text-white-muted mb-6">
-              {isPreLaunch ? `Pre-launch price · ${nextPriceDisplay} from August 3` : "One-time payment"}
+              {isPreLaunch ? standalonePriceNotePreLaunch : standalonePriceNoteRegular}
             </p>
             <ul className="space-y-2.5 mb-7">
               {(s.features || []).map((f, i) => (

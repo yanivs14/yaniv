@@ -5,8 +5,8 @@ import { useHandstandOffer } from "@/lib/handstandDeadline";
 import { startStandaloneCheckout } from "@/lib/handstandCheckout";
 import AccentText from "@/components/handstand/AccentText";
 
-export default function HandstandFinalCTA({ c }) {
-  const { isPreLaunch, priceDisplay, ctaText, secondaryCtaText, deliveryNote } = useHandstandOffer();
+export default function HandstandFinalCTA({ c, t = {} }) {
+  const { isPreLaunch, ctaText, secondaryCtaText, deliveryNote, finalCtaPreLaunchReminder } = useHandstandOffer(t);
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -35,7 +35,7 @@ export default function HandstandFinalCTA({ c }) {
           </h2>
           <p className="font-body text-base text-white-muted mb-6 max-w-xl mx-auto leading-relaxed">{c?.subtitle}</p>
           {isPreLaunch && (
-            <p className="font-body text-sm text-off-white mb-1">Pre-launch price: {priceDisplay} until August 2</p>
+            <p className="font-body text-sm text-off-white mb-1">{finalCtaPreLaunchReminder}</p>
           )}
           {isPreLaunch && <p className="font-body text-sm text-white-muted mb-6">{deliveryNote}</p>}
           {!isPreLaunch && <div className="mb-6" />}
