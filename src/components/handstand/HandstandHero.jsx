@@ -34,7 +34,7 @@ export default function HandstandHero({ c, targetDate }) {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section id="hero" className="relative min-h-screen flex items-start pt-6 lg:pt-20 overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-start pt-3 lg:pt-6 overflow-hidden">
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -42,7 +42,7 @@ export default function HandstandHero({ c, targetDate }) {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/15 via-dark-bg/15 to-dark-bg" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-0 pb-12 lg:pb-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
