@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { defaultGiftContent } from "@/lib/giftContent";
 
 const SECTIONS = [
+  { key: "gate", label: "Email Gate" },
   { key: "header", label: "Header" },
   { key: "stage1", label: "1 · Intro" },
   { key: "stage2", label: "2 · Practice" },
@@ -135,6 +136,9 @@ function SectionEditor({ sectionKey, content, update }) {
     <Field key={`${sub}.${key}`} label={label} value={data[sub]?.[key]} onChange={(v) => update(sectionKey, sub, { ...data[sub], [key]: v })} multiline={multiline} />
   );
 
+  if (sectionKey === "gate") {
+    return <div>{f("eyebrow", "Eyebrow")}{f("headline", "Headline")}{f("subheadline", "Subheadline", true)}{f("ctaText", "CTA Button Text")}{f("footnote", "Footnote")}</div>;
+  }
   if (sectionKey === "header") {
     return <div>{f("brand", "Brand Name")}{f("ctaText", "Header CTA Text")}</div>;
   }

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import { Play } from "lucide-react";
 
 function getYouTubeId(url) {
@@ -7,108 +7,21 @@ function getYouTubeId(url) {
   return m ? m[1] : null;
 }
 
-let ytApiPromise = null;
-function loadYTApi() {
-  if (ytApiPromise) return ytApiPromise;
-  ytApiPromise = new Promise((resolve) => {
-    if (window.YT && window.YT.Player) { resolve(); return; }
-    const prev = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => { prev?.(); resolve(); };
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-  });
-  return ytApiPromise;
-}
-
 export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onStarted, on50, onCompleted }) {
   const [playing, setPlaying] = useState(false);
   const [aspect, setAspect] = useState(null);
   const videoRef = useRef(null);
-  const ytDivRef = useRef(null);
-  const ytPlayerRef = useRef(null);
-  const pollRef = useRef(null);
   const fired50 = useRef(false);
   const fired100 = useRef(false);
-  const startedRef = useRef(false);
 
   const ytId = getYouTubeId(youtubeUrl);
   const src = videoUrl;
   const posterImg = poster || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : "");
 
-  const stopPolling = useCallback(() => {
-    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
-  }, []);
-
-  useEffect(() => {
-    if (!playing || !ytId || !ytDivRef.current) return;
-    let cancelled = false;
-    loadYTApi().then(() => {
-      if (cancelled || !ytDivRef.current) return;
-      ytPlayerRef.current = new window.YT.Player(ytDivRef.current, {
-        videoId: ytId,
-        width: "100%",
-        height: "100%",
-        playerVars: {
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          autoplay: 1,
-          cc_load_policy: 1,
-          origin: typeof window !== "undefined" ? window.location.origin : "",
-        },
-        events: {
-          onReady: (e) => { e.target.playVideo(); },
-          onStateChange: (e) => {
-            if (e.data === 1) {
-              if (!startedRef.current) {
-                startedRef.current = true;
-                if (onStarted) onStarted();
-              }
-              stopPolling();
-              pollRef.current = setInterval(() => {
-                const p = ytPlayerRef.current;
-                if (!p || !p.getDuration) return;
-                const dur = p.getDuration();
-                if (!dur) return;
-                const pct = p.getCurrentTime() / dur;
-                if (pct >= 0.5 && !fired50.current) {
-                  fired50.current = true;
-                  if (on50) on50();
-                }
-                if (pct >= 0.98 && !fired100.current) {
-                  fired100.current = true;
-                  if (onCompleted) onCompleted();
-                  stopPolling();
-                }
-              }, 1000);
-            } else if (e.data === 0) {
-              if (!fired100.current) {
-                fired100.current = true;
-                if (onCompleted) onCompleted();
-              }
-              stopPolling();
-            }
-          },
-        },
-      });
-    });
-    return () => {
-      cancelled = true;
-      stopPolling();
-      if (ytPlayerRef.current && ytPlayerRef.current.destroy) {
-        ytPlayerRef.current.destroy();
-        ytPlayerRef.current = null;
-      }
-    };
-  }, [playing, ytId]);
-
   const handlePlay = () => {
     setPlaying(true);
-    if (!ytId) {
-      if (onStarted) onStarted();
-      setTimeout(() => videoRef.current?.play(), 50);
-    }
+    if (onStarted) onStarted();
+    if (!ytId) setTimeout(() => videoRef.current?.play(), 50);
   };
 
   const handleLoadedMetadata = () => {
@@ -144,7 +57,14 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
     >
       {ytId ? (
         playing ? (
-          <div ref={ytDivRef} className="w-full h-full" />
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1&autoplay=1&cc_load_policy=1&origin=${typeof window !== "undefined" ? window.location.origin : ""}`}
+            title={videoId || "Gift video"}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            frameBorder="0"
+          />
         ) : (
           <div className="absolute inset-0">
             {posterImg && <img src={posterImg} alt="" className="w-full h-full object-cover" />}
