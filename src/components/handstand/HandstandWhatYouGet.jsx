@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 export default function HandstandWhatYouGet({ c }) {
   if (!c) return null;
   const items = c.items || [];
+  const headline = (c.headline || "What you get").trim();
+  const parts = headline.split(" ");
+  const last = parts.pop();
   return (
     <section className="py-16 lg:py-28 bg-dark-bg">
       <div className="max-w-6xl mx-auto px-6 lg:px-10">
@@ -12,9 +15,9 @@ export default function HandstandWhatYouGet({ c }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-[0.25em] text-orange-red mb-12 lg:mb-16 text-center"
+          className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-off-white uppercase tracking-tight leading-[0.95] mb-12 lg:mb-16 text-center"
         >
-          {c.headline || "What you get"}
+          {parts.join(" ")} <span className="text-orange-red">{last}</span>
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
           {items.map((item, i) => (
