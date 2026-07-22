@@ -34,7 +34,7 @@ export default function HandstandHero({ c, targetDate }) {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section id="hero" className="relative min-h-screen flex items-center pt-4 lg:pt-16 overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-start pt-6 lg:pt-20 overflow-hidden">
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -50,7 +50,14 @@ export default function HandstandHero({ c, targetDate }) {
           className="max-w-3xl"
         >
           {c?.eyebrow && (
-            <p className="font-body text-sm text-orange-red uppercase tracking-widest mb-4">{c.eyebrow}</p>
+            <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-4 leading-relaxed">
+              {c.eyebrow}
+            </p>
+          )}
+          {targetDate && (
+            <div className="mb-8">
+              <DarkCountdown targetDate={targetDate} />
+            </div>
           )}
           <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] text-off-white uppercase tracking-tight mb-6">
             {c?.headline1} {c?.headline2}
@@ -67,15 +74,6 @@ export default function HandstandHero({ c, targetDate }) {
             </p>
           )}
           <p className="font-body text-lg text-white mb-8 max-w-xl leading-relaxed">{c?.subheadline}</p>
-
-          {targetDate && (
-            <div className="mb-8">
-              <p className="font-heading text-sm font-bold uppercase tracking-[0.2em] text-orange-red mb-3">
-                Special Price · Limited Time
-              </p>
-              <DarkCountdown targetDate={targetDate} />
-            </div>
-          )}
 
           <button
             onClick={scrollToPricing}

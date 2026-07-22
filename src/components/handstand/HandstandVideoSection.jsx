@@ -99,15 +99,15 @@ export default function HandstandVideoSection({ c }) {
                 frameBorder="0"
               />
               {!playing && (
-                <button onClick={handleYtPlay} className="absolute inset-0 w-full h-full group block cursor-pointer">
+                <div className="absolute inset-0">
                   {poster && <img src={poster} alt="Showcase" className="w-full h-full object-cover" />}
-                  <span className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+                  <span className="absolute inset-0 bg-black/30" />
                   <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <button onClick={handleYtPlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                       <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
-                    </span>
+                    </button>
                   </span>
-                </button>
+                </div>
               )}
             </div>
           ) : videoUrl ? (
@@ -124,17 +124,15 @@ export default function HandstandVideoSection({ c }) {
                 className="w-full h-full object-contain"
               />
               {!playing && (
-                <button
-                  onClick={handleVideoPlay}
-                  onTouchStart={(e) => { e.preventDefault(); handleVideoPlay(); }}
-                  className="absolute inset-0 w-full h-full group flex items-center justify-center cursor-pointer bg-black"
-                >
+                <div className="absolute inset-0 bg-black">
                   {poster && <img src={poster} alt="Showcase" className="absolute inset-0 w-full h-full object-cover" />}
-                  <span className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-                  <span className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <button onClick={handleVideoPlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                      <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+                    </button>
                   </span>
-                </button>
+                </div>
               )}
             </>
           ) : poster ? (
