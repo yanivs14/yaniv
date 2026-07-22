@@ -30,7 +30,7 @@ export default function GiftIntro({ c }) {
             </a>
             <a
               href="#membership"
-              className="font-body text-sm font-semibold text-white-muted hover:text-off-white transition-colors underline underline-offset-4"
+              className="font-body text-sm font-semibold text-white-dim hover:text-white-muted transition-colors underline underline-offset-4"
             >
               {c.secondaryCta}
             </a>
@@ -46,19 +46,18 @@ export default function GiftIntro({ c }) {
           transition={{ duration: 0.5 }}
         >
           <h2 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-4 text-center">
-            {c.beforeHeading}
+            {c.introHeading}
           </h2>
           <GiftVideo
             youtubeUrl={c.introYoutubeUrl}
             videoUrl={c.introVideoUrl}
             poster={c.introPoster}
-            videoId="movement_reset_intro"
-            onStarted={() => track("movement_reset_intro_video_started")}
-            onCompleted={() => track("movement_reset_intro_video_completed")}
+            videoId="gift_intro"
+            overlay={c.introOverlay}
+            subOverlay={c.introSubOverlay}
+            onStarted={() => track("gift_intro_started")}
+            onCompleted={() => track("gift_intro_completed")}
           />
-          <p className="font-body text-sm text-white-muted leading-relaxed mt-4 max-w-2xl mx-auto text-center">
-            {c.beforeNote}
-          </p>
         </motion.div>
       </div>
     </section>
