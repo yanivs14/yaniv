@@ -66,15 +66,15 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
             frameBorder="0"
           />
         ) : (
-          <button onClick={handlePlay} className="absolute inset-0 w-full h-full group block cursor-pointer" aria-label="Play video">
+          <div className="absolute inset-0">
             {posterImg && <img src={posterImg} alt="" className="w-full h-full object-cover" />}
-            <span className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+            <span className="absolute inset-0 bg-black/30" />
             <span className="absolute inset-0 flex items-center justify-center">
-              <span className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <button onClick={handlePlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                 <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
-              </span>
+              </button>
             </span>
-          </button>
+          </div>
         )
       ) : (
         <>
@@ -92,18 +92,15 @@ export default function GiftVideo({ youtubeUrl, videoUrl, poster, videoId, onSta
             className="w-full h-full object-contain"
           />
           {!playing && (
-            <button
-              onClick={handlePlay}
-              onTouchStart={(e) => { e.preventDefault(); handlePlay(); }}
-              className="absolute inset-0 w-full h-full group flex items-center justify-center cursor-pointer bg-black"
-              aria-label="Play video"
-            >
+            <div className="absolute inset-0 bg-black">
               {posterImg && <img src={posterImg} alt="" className="absolute inset-0 w-full h-full object-cover" />}
-              <span className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-              <span className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+              <span className="absolute inset-0 bg-black/40" />
+              <span className="absolute inset-0 flex items-center justify-center">
+                <button onClick={handlePlay} aria-label="Play video" className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-orange-red flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <Play className="w-7 h-7 lg:w-9 lg:h-9 text-dark-bg ml-1" fill="currentColor" />
+                </button>
               </span>
-            </button>
+            </div>
           )}
         </>
       )}
