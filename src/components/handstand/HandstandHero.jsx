@@ -34,7 +34,7 @@ export default function HandstandHero({ c, targetDate }) {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <section id="hero" className="relative min-h-screen flex items-start pt-3 lg:pt-6 overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         {c?.imageUrl && (
           <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
@@ -42,23 +42,25 @@ export default function HandstandHero({ c, targetDate }) {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/15 via-dark-bg/15 to-dark-bg" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-0 pb-12 lg:pb-20 w-full">
+      {(c?.eyebrow || targetDate) && (
+        <div className="absolute top-3 lg:top-6 left-0 right-0 z-20 px-6 lg:px-10">
+          <div className="max-w-7xl mx-auto">
+            {c?.eyebrow && (
+              <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-3 leading-relaxed">
+                {c.eyebrow}
+              </p>
+            )}
+            {targetDate && <DarkCountdown targetDate={targetDate} />}
+          </div>
+        </div>
+      )}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 py-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          {c?.eyebrow && (
-            <p className="font-body text-xs sm:text-sm text-orange-red uppercase tracking-wider sm:tracking-widest mb-4 leading-relaxed">
-              {c.eyebrow}
-            </p>
-          )}
-          {targetDate && (
-            <div className="mb-8">
-              <DarkCountdown targetDate={targetDate} />
-            </div>
-          )}
           <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] text-off-white uppercase tracking-tight mb-6">
             {c?.headline1} {c?.headline2}
             {c?.headlineAccent && (
