@@ -97,6 +97,12 @@ export default function GiftMembership({ c }) {
                 </li>
               ))}
             </ul>
+            {c.handstandLine && (
+              <div className="mt-4 bg-dark-bg/25 rounded-lg px-4 py-3 flex items-center gap-2">
+                <Check className="w-4 h-4 text-dark-bg flex-shrink-0" />
+                <p className="font-body text-xs font-bold text-dark-bg uppercase tracking-wide">{c.handstandLine}</p>
+              </div>
+            )}
             <button
               onClick={() => handleCheckout("annual")}
               disabled={loading === "annual"}

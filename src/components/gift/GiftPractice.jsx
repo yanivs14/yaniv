@@ -1,10 +1,29 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 import GiftVideo from "./GiftVideo";
 import { track } from "@/lib/analytics";
 
-export default function GiftPractice({ c }) {
+export default function GiftPractice({ c, onComplete }) {
+  const [feedback, setFeedback] = useState(null);
+
   if (!c) return null;
+
+  const handleComplete = () => {
+    if (feedback) return;
+    setFeedback("complete");
+    track("movement_reset_completed");
+    if (onComplete) onComplete();
+    setTimeout(() => {
+      const el = document.getElementById("bridge");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 1000);
+  };
+
+  const handleLater = () => {
+    if (feedback) return;
+    setFeedback("later");
+  };
 
   return (
     <section id="practice" className="bg-dark-surface py-14 lg:py-20">
@@ -22,22 +41,24 @@ export default function GiftPractice({ c }) {
           <p className="font-body text-base text-white-muted leading-relaxed max-w-2xl mx-auto">{c.supporting}</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 mb-12">
+        {/* Compact instruction row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto">
           {c.instructions?.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="group relative bg-gradient-to-b from-dark-surface-2 to-dark-bg border border-dark-border rounded-2xl p-7 lg:p-8 flex flex-col items-center text-center overflow-hidden hover:border-orange-red/40 transition-colors"
+              className="flex items-start gap-2.5"
             >
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-orange-red rounded-b-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              <span className="relative flex-shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-dark-bg border-2 border-orange-red/50 text-orange-red font-heading font-bold text-xl lg:text-2xl flex items-center justify-center mb-5 shadow-[0_0_24px_-4px_rgba(0,255,247,0.4)]">
+              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-orange-red/10 border border-orange-red/40 text-orange-red font-heading font-bold text-xs flex items-center justify-center mt-0.5">
                 {i + 1}
               </span>
-              <p className="font-heading text-lg lg:text-xl font-bold text-off-white uppercase tracking-tight mb-2.5 leading-tight">{item.title}</p>
-              <p className="font-body text-base lg:text-lg text-white-muted leading-relaxed">{item.desc}</p>
+              <div>
+                <p className="font-heading text-sm font-bold text-off-white uppercase tracking-tight mb-0.5 leading-tight">{item.title}</p>
+                <p className="font-body text-xs text-white-muted leading-relaxed">{item.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -52,6 +73,57 @@ export default function GiftPractice({ c }) {
             on50={() => track("movement_reset_video_50_percent")}
             onCompleted={() => track("movement_reset_video_completed")}
           />
+        </div>
+
+        {/* Completion feedback */}
+        <div className="max-w-3xl mx-auto mt-8 text-center">
+          <h3 className="font-heading text-xl font-bold text-off-white uppercase tracking-tight mb-5">{c.feedbackHeading}</h3>
+          <AnimatePresence mode="wait">
+            {feedback === null && (
+              <motion.div
+                key="buttons"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-3"
+              >
+                <button
+                  onClick={handleComplete}
+                  className="flex items-center justify-center gap-2 bg-orange-red text-dark-bg font-body text-sm font-semibold px-7 py-3.5 rounded-full hover:bg-orange-red-hover transition-colors w-full sm:w-auto"
+                >
+                  <Check className="w-4 h-4" /> {c.completeBtn}
+                </button>
+                <button
+                  onClick={handleLater}
+                  className="font-body text-sm font-semibold text-white-muted hover:text-off-white transition-colors underline underline-offset-4"
+                >
+                  {c.laterBtn}
+                </button>
+              </motion.div>
+            )}
+            {feedback === "complete" && (
+              <motion.div
+                key="complete"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="bg-dark-bg border border-orange-red/30 rounded-2xl p-6"
+              >
+                <p className="font-body text-sm text-off-white leading-relaxed">{c.completeMessage}</p>
+              </motion.div>
+            )}
+            {feedback === "later" && (
+              <motion.div
+                key="later"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="bg-dark-bg border border-dark-border rounded-2xl p-6"
+              >
+                <p className="font-body text-sm text-white-muted leading-relaxed">{c.laterMessage}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>
