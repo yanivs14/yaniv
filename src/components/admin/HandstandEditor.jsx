@@ -5,18 +5,19 @@ import { base44 } from "@/api/base44Client";
 import { defaultHandstandContent } from "@/lib/handstandContent";
 
 const SECTIONS = [
-  { key: "navbar", label: "Navbar" },
+  { key: "announcementBar", label: "Announcement Bar" },
   { key: "hero", label: "Hero" },
-  { key: "showcase", label: "Video Showcase" },
-  { key: "whatYouGet", label: "What You Get" },
+  { key: "valueStrip", label: "Value Strip" },
+  { key: "methodVideo", label: "Method Video" },
   { key: "problem", label: "Problem" },
-  { key: "solution", label: "Solution" },
+  { key: "startFromLevel", label: "Start From Level" },
   { key: "curriculum", label: "Curriculum" },
+  { key: "whatIsIncluded", label: "What Is Included" },
   { key: "instructor", label: "Instructor" },
-  { key: "testimonials", label: "Testimonials" },
-  { key: "pricing", label: "Pricing" },
+  { key: "purchaseOptions", label: "Purchase Options" },
   { key: "faq", label: "FAQ" },
   { key: "finalCta", label: "Final CTA" },
+  { key: "footer", label: "Footer" },
   { key: "settings", label: "Page Settings" },
 ];
 
@@ -87,6 +88,27 @@ function ArrayItem({ index, onRemove, children, label }) {
   );
 }
 
+function StringList({ items, onChange, label = "item" }) {
+  return (
+    <div>
+      {items?.map((item, i) => (
+        <div key={i} className="flex gap-2 mb-2">
+          <input value={item} onChange={(e) => { const a = [...items]; a[i] = e.target.value; onChange(a); }}
+            className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+          <button onClick={() => onChange(items.filter((_, idx) => idx !== i))}
+            className="text-white-muted hover:text-red-400 transition-colors p-2">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ))}
+      <button onClick={() => onChange([...(items || []), `New ${label}`])}
+        className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+        <Plus className="w-4 h-4" /> Add {label}
+      </button>
+    </div>
+  );
+}
+
 function SectionEditor({ sectionKey, content, update }) {
   if (!content) return null;
   const data = content[sectionKey];
@@ -98,28 +120,45 @@ function SectionEditor({ sectionKey, content, update }) {
   const m = (key, label, isVideo = false) => (
     <MediaField key={key} label={label} value={data[key]} onChange={(v) => update(sectionKey, key, v)} isVideo={isVideo} />
   );
+  // Helper for nested object fields (e.g. purchaseOptions.standalone.label)
+  const nf = (objKey, key, label, multiline = false) => (
+    <Field key={`${objKey}.${key}`} label={label} value={data[objKey]?.[key]} onChange={(v) => update(sectionKey, objKey, { ...data[objKey], [key]: v })} multiline={multiline} />
+  );
 
-  if (sectionKey === "navbar") {
-    return <div>{f("brandName", "Brand Name")}{f("navCtaText", "Nav CTA Text")}</div>;
+  if (sectionKey === "announcementBar") {
+    return (
+      <div>
+        {f("leftText", "Left Text (Desktop)")}
+        {f("rightText", "Right Text (Desktop)")}
+        {f("ctaText", "CTA Text")}
+      </div>
+    );
   }
 
   if (sectionKey === "hero") {
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
+        {f("preLaunchLabel", "Pre-Launch Label (badge)")}
         {f("headline1", "Headline Line 1")}
-        {f("headline2", "Headline Line 2")}
-        {f("headlineAccent", "Accent Word")}
-        {f("boldDescription", "Bold Description")}
-        {f("subheadline", "Subheadline", true)}
-        {f("ctaText", "CTA Button Text")}
-        {f("ctaSubtext", "CTA Subtext")}
+        {f("headline2", "Headline Line 2 (accent)")}
+        {f("supporting", "Supporting Copy", true)}
+        {f("outcomeLine", "Outcome Line")}
         {m("imageUrl", "Background Image")}
       </div>
     );
   }
 
-  if (sectionKey === "showcase") {
+  if (sectionKey === "valueStrip") {
+    return (
+      <div>
+        <p className="text-xs text-white-muted mb-2 font-body font-semibold">Value Items</p>
+        <StringList items={data.items} onChange={(v) => update(sectionKey, "items", v)} label="item" />
+      </div>
+    );
+  }
+
+  if (sectionKey === "methodVideo") {
     return (
       <div>
         {f("headline", "Headline")}
@@ -148,7 +187,8 @@ function SectionEditor({ sectionKey, content, update }) {
       <div>
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
-        {f("subtitle", "Subtitle")}
+        {f("subtitle", "Subtitle", true)}
+        {f("conclusion", "Conclusion", true)}
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Problem Cards</p>
         {data.points?.map((p, i) => (
           <ArrayItem key={i} index={i} label="Card" onRemove={() => update(sectionKey, "points", data.points.filter((_, idx) => idx !== i))}>
@@ -164,29 +204,36 @@ function SectionEditor({ sectionKey, content, update }) {
     );
   }
 
-  if (sectionKey === "solution") {
+  if (sectionKey === "startFromLevel") {
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
         {f("subtitle", "Subtitle", true)}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Media</p>
-        {m("imageUrl", "Section Image")}
-        {m("videoUrl", "Section Video (overrides image)", true)}
-        {f("videoLabel", "Video Label (e.g. Watch the method)")}
-        {f("videoDuration", "Video Duration (e.g. 2:14)")}
-        {f("statValue", "Floating Stat Value (e.g. 8wks)")}
-        {f("statLabel", "Floating Stat Label (e.g. to wall-free)")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Benefits</p>
-        {data.benefits?.map((b, i) => (
-          <ArrayItem key={i} index={i} label="Benefit" onRemove={() => update(sectionKey, "benefits", data.benefits.filter((_, idx) => idx !== i))}>
-            <Field label="Title" value={b.title} onChange={(v) => { const a = [...data.benefits]; a[i] = { ...a[i], title: v }; update(sectionKey, "benefits", a); }} />
-            <Field label="Description" value={b.desc} onChange={(v) => { const a = [...data.benefits]; a[i] = { ...a[i], desc: v }; update(sectionKey, "benefits", a); }} multiline />
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Cards</p>
+        {data.cards?.map((card, i) => (
+          <ArrayItem key={i} index={i} label="Card" onRemove={() => update(sectionKey, "cards", data.cards.filter((_, idx) => idx !== i))}>
+            <Field label="Title" value={card.title} onChange={(v) => { const a = [...data.cards]; a[i] = { ...a[i], title: v }; update(sectionKey, "cards", a); }} />
+            <p className="text-xs text-white-dim mb-1 mt-2 font-body">Bullets</p>
+            {card.bullets?.map((b, j) => (
+              <div key={j} className="flex gap-2 mb-2">
+                <input value={b} onChange={(e) => { const cards = [...data.cards]; const bullets = [...cards[i].bullets]; bullets[j] = e.target.value; cards[i] = { ...cards[i], bullets }; update(sectionKey, "cards", cards); }}
+                  className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
+                <button onClick={() => { const cards = [...data.cards]; cards[i] = { ...cards[i], bullets: cards[i].bullets.filter((_, idx) => idx !== j) }; update(sectionKey, "cards", cards); }}
+                  className="text-white-muted hover:text-red-400 transition-colors p-2">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button onClick={() => { const cards = [...data.cards]; cards[i] = { ...cards[i], bullets: [...(cards[i].bullets || []), "New bullet"] }; update(sectionKey, "cards", cards); }}
+              className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
+              <Plus className="w-4 h-4" /> Add bullet
+            </button>
           </ArrayItem>
         ))}
-        <button onClick={() => update(sectionKey, "benefits", [...(data.benefits || []), { title: "New Benefit", desc: "Description" }])}
+        <button onClick={() => update(sectionKey, "cards", [...(data.cards || []), { title: "New Card", bullets: [] }])}
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add benefit
+          <Plus className="w-4 h-4" /> Add card
         </button>
       </div>
     );
@@ -198,6 +245,7 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
         {f("subtitle", "Subtitle", true)}
+        {f("callout", "Callout (after roadmap)", true)}
         <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Modules</p>
         {data.modules?.map((mod, i) => (
           <ArrayItem key={i} index={i} label="Module" onRemove={() => update(sectionKey, "modules", data.modules.filter((_, idx) => idx !== i))}>
@@ -214,86 +262,51 @@ function SectionEditor({ sectionKey, content, update }) {
     );
   }
 
+  if (sectionKey === "whatIsIncluded") {
+    return (
+      <div>
+        {f("eyebrow", "Eyebrow")}
+        {f("headline", "Headline")}
+        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Items</p>
+        <StringList items={data.items} onChange={(v) => update(sectionKey, "items", v)} label="item" />
+      </div>
+    );
+  }
+
   if (sectionKey === "instructor") {
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
-        {f("name", "Name")}
-        {f("title", "Title")}
+        {f("headline", "Headline")}
         {f("bio", "Bio", true)}
         {m("imageUrl", "Instructor Image")}
       </div>
     );
   }
 
-  if (sectionKey === "testimonials") {
+  if (sectionKey === "purchaseOptions") {
     return (
       <div>
         {f("eyebrow", "Eyebrow")}
-        {f("headline1", "Headline (first line)")}
-        {f("headlineAccent", "Headline Accent (highlighted in teal)")}
-        {f("subtitle", "Subtitle", true)}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Testimonials</p>
-        {data.items?.map((t, i) => (
-          <ArrayItem key={i} index={i} label="Testimonial" onRemove={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}>
-            <Field label="Name" value={t.name} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], name: v }; update(sectionKey, "items", a); }} />
-            <Field label="Role" value={t.role} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], role: v }; update(sectionKey, "items", a); }} />
-            <Field label="Quote" value={t.quote} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], quote: v }; update(sectionKey, "items", a); }} multiline />
-            <MediaField label="Photo" value={t.img} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], img: v }; update(sectionKey, "items", a); }} />
-            <MediaField label="Video (optional)" value={t.videoUrl} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], videoUrl: v }; update(sectionKey, "items", a); }} isVideo />
-          </ArrayItem>
-        ))}
-        <button onClick={() => update(sectionKey, "items", [...(data.items || []), { name: "", role: "", quote: "", img: "", videoUrl: "" }])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add testimonial
-        </button>
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Social Stats</p>
-        {data.stats?.map((s, i) => (
-          <ArrayItem key={i} index={i} label="Stat" onRemove={() => update(sectionKey, "stats", data.stats.filter((_, idx) => idx !== i))}>
-            <Field label="Value" value={s.value} onChange={(v) => { const a = [...data.stats]; a[i] = { ...a[i], value: v }; update(sectionKey, "stats", a); }} />
-            <Field label="Label" value={s.label} onChange={(v) => { const a = [...data.stats]; a[i] = { ...a[i], label: v }; update(sectionKey, "stats", a); }} />
-          </ArrayItem>
-        ))}
-        <button onClick={() => update(sectionKey, "stats", [...(data.stats || []), { value: "", label: "" }])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add stat
-        </button>
-      </div>
-    );
-  }
-
-  if (sectionKey === "pricing") {
-    return (
-      <div>
-        {f("eyebrow", "Eyebrow")}
-        {f("lockInTitle", "Lock-In Title")}
-        {f("lockInSubtitle", "Lock-In Subtitle")}
         {f("headline", "Headline")}
-        {f("subtitle", "Subtitle")}
-        {f("price", "Price")}
-        {f("priceNote", "Price Note")}
-        {f("badge", "Badge")}
-        {f("ctaText", "CTA Button Text")}
-        {f("guarantee", "Guarantee Text")}
-        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Annual Membership Card</p>
-        {f("annualCardTitle", "Annual Card Title")}
-        {f("annualCardTitleAccent", "Annual Card Title Accent (teal)")}
-        {f("annualCardDescription", "Annual Card Description", true)}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Features</p>
-        {data.features?.map((feat, i) => (
-          <div key={i} className="flex gap-2 mb-2">
-            <input value={feat} onChange={(e) => { const a = [...data.features]; a[i] = e.target.value; update(sectionKey, "features", a); }}
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-            <button onClick={() => update(sectionKey, "features", data.features.filter((_, idx) => idx !== i))}
-              className="text-white-muted hover:text-red-400 transition-colors p-2">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        <button onClick={() => update(sectionKey, "features", [...(data.features || []), "New feature"])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add feature
-        </button>
+        {f("subtitle", "Subtitle", true)}
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Standalone Course</p>
+        {nf("standalone", "label", "Label")}
+        {nf("standalone", "title", "Title")}
+        {nf("standalone", "microcopy", "Microcopy")}
+        <p className="text-xs text-white-dim mb-1 mt-2 font-body">Features</p>
+        <StringList items={data.standalone?.features} onChange={(v) => update(sectionKey, "standalone", { ...data.standalone, features: v })} label="feature" />
+        <p className="text-xs text-white-muted mb-2 mt-4 font-body font-semibold">Annual Membership</p>
+        {nf("annual", "eyebrow", "Eyebrow")}
+        {nf("annual", "title", "Title")}
+        {nf("annual", "priceMonthly", "Price (monthly)")}
+        {nf("annual", "priceNote", "Price Note")}
+        {nf("annual", "valueStatement", "Value Statement", true)}
+        {nf("annual", "ctaText", "CTA Text")}
+        {nf("annual", "disclosure", "Disclosure", true)}
+        {nf("annual", "badge", "Badge")}
+        <p className="text-xs text-white-dim mb-1 mt-2 font-body">Features</p>
+        <StringList items={data.annual?.features} onChange={(v) => update(sectionKey, "annual", { ...data.annual, features: v })} label="feature" />
       </div>
     );
   }
@@ -307,35 +320,13 @@ function SectionEditor({ sectionKey, content, update }) {
         {data.items?.map((item, i) => (
           <ArrayItem key={i} index={i} label="FAQ" onRemove={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}>
             <Field label="Question" value={item.q} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], q: v }; update(sectionKey, "items", a); }} />
-            <Field label="Answer" value={item.a} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], a: v }; update(sectionKey, "items", a); }} multiline />
+            <Field label="Answer (pre-launch)" value={item.a} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], a: v }; update(sectionKey, "items", a); }} multiline />
+            <Field label="Answer (after Aug 3, optional)" value={item.aPost} onChange={(v) => { const a = [...data.items]; a[i] = { ...a[i], aPost: v }; update(sectionKey, "items", a); }} multiline />
           </ArrayItem>
         ))}
         <button onClick={() => update(sectionKey, "items", [...(data.items || []), { q: "New question", a: "Answer" }])}
           className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
           <Plus className="w-4 h-4" /> Add FAQ item
-        </button>
-      </div>
-    );
-  }
-
-  if (sectionKey === "whatYouGet") {
-    return (
-      <div>
-        {f("headline", "Headline")}
-        <p className="text-xs text-white-muted mb-2 mt-3 font-body font-semibold">Items</p>
-        {data.items?.map((item, i) => (
-          <div key={i} className="flex gap-2 mb-2">
-            <input value={item} onChange={(e) => { const a = [...data.items]; a[i] = e.target.value; update(sectionKey, "items", a); }}
-              className="flex-1 bg-[#111] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-off-white font-body focus:outline-none focus:border-orange-red" />
-            <button onClick={() => update(sectionKey, "items", data.items.filter((_, idx) => idx !== i))}
-              className="text-white-muted hover:text-red-400 transition-colors p-2">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        <button onClick={() => update(sectionKey, "items", [...(data.items || []), "New item"])}
-          className="flex items-center gap-2 text-sm text-orange-red hover:text-orange-red-hover transition-colors mt-2">
-          <Plus className="w-4 h-4" /> Add item
         </button>
       </div>
     );
@@ -347,8 +338,16 @@ function SectionEditor({ sectionKey, content, update }) {
         {f("eyebrow", "Eyebrow")}
         {f("headline", "Headline")}
         {f("subtitle", "Subtitle", true)}
-        {f("ctaText", "CTA Button Text")}
-        {f("priceNote", "Price Note")}
+        {f("microcopy", "Microcopy")}
+      </div>
+    );
+  }
+
+  if (sectionKey === "footer") {
+    return (
+      <div>
+        {f("brand", "Brand Name")}
+        {f("copyright", "Copyright")}
       </div>
     );
   }
@@ -388,7 +387,18 @@ export default function HandstandEditor() {
         const pages = await base44.entities.LandingPageContent.filter({ page_key: "handstand_course" });
         if (pages.length > 0 && pages[0].data) {
           setRecordId(pages[0].id);
-          setContent({ ...defaultHandstandContent, ...pages[0].data });
+          const dbData = pages[0].data;
+          const merged = {};
+          for (const key of Object.keys(defaultHandstandContent)) {
+            const defVal = defaultHandstandContent[key];
+            const dbVal = dbData[key];
+            if (dbVal && typeof defVal === "object" && !Array.isArray(defVal) && typeof dbVal === "object" && !Array.isArray(dbVal)) {
+              merged[key] = { ...defVal, ...dbVal };
+            } else {
+              merged[key] = dbVal !== undefined ? dbVal : defVal;
+            }
+          }
+          setContent(merged);
         } else {
           setContent(defaultHandstandContent);
         }
