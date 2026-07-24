@@ -1,0 +1,34 @@
+{
+  "name": "Sync New Lead to HubSpot",
+  "description": "",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Lead"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "sync_new_lead_to_hubspot",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "syncLeadToHubspot",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  }
+}
